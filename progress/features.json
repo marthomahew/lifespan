@@ -381,33 +381,33 @@
   },
   "M10.1": {
     "title": "Event totals and per-stage minimums from DONE §3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run content:check (296 events, per-stage minimums, notice share, all thresholds enforced); tests/content/content-check.test.ts thresholds"
   },
   "M10.2": {
     "title": "At least 15 multi-year event chains.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run content:check (22 chains ≥ 15, enforced; chain role consistency); tests/content/content-check.test.ts"
   },
   "M10.3": {
     "title": "Achievements and life titles meeting DONE §3, with toasts and an Achievements screen.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/achievements.test.ts (41 achievements, 19 titles, toasts, once-only, chosen from record); e2e/new-life.spec.ts (toast + Achievements screen)"
   },
   "M10.4": {
     "title": "Activities meeting DONE §3, each with at least 3 outcome texts.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run content:check (37 activities with 3+ outcome texts, enforced; validateActivities); tests/content/content-check.test.ts"
   },
   "M10.5": {
     "title": "`sim:coverage` across all personas fires at least 85% of events at least once, and its report lists the rest with reasons.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/coverage.test.ts (240 lives across all personas ≥ 85% with reasons); npm run sim:coverage (2,080 lives, 93.6%, reports/coverage-report.md)"
   },
   "M10.6": {
     "title": "The balance bands in DONE §4.2 hold for the default persona.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run sim (ENFORCE_BANDS true; all DONE §4.2 bands pass, reports/balance-report.md); tests/integration/sim.test.ts"
   },
   "M11.1": {
     "title": "Continue as a child: choosing the heir, inheritance, and history carried over.",

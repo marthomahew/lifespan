@@ -3,6 +3,7 @@ import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
 import { addStat } from '../stats';
+import { addNpc } from '../npc';
 import type { Degree, GameState } from '../types';
 import { clampStat } from '../util';
 import { hasEducation } from './careers';
@@ -41,13 +42,16 @@ export function schoolTick(ctx: Ctx): void {
       'You start primary school with a new backpack and a firm opinion about lunch.',
       true,
     );
+    newTeacher(ctx);
   }
-  if (age === 12 && !e.droppedOut)
+  if (age === 12 && !e.droppedOut) {
     ctx.log(
       'school',
       'You start secondary school. The corridors are enormous and so are the older kids.',
       true,
     );
+    newTeacher(ctx);
+  }
   if (inSchoolAge(s) && !s.legal.prison) {
     e.grade = clampStat(e.grade + (gradeTarget(s) - e.grade) * 0.4 + ctx.rng.int(-5, 5));
     if (age % 3 === 0)
@@ -318,4 +322,13 @@ export function parentalHelp(s: GameState, total: number, dryRun = false): numbe
 export function leaveEnrollment(s: GameState): void {
   s.education.enrollment = null;
   startStudentRepayment(s);
+}
+
+/** A teacher for this stage of school (the previous one becomes an acquaintance). */
+function newTeacher(ctx: Ctx): void {
+  for (const n of ctx.s.npcs)
+    if (n.roles.includes('teacher'))
+      n.roles = n.roles.map((r) => (r === 'teacher' ? 'acquaintance' : r));
+  const t = addNpc(ctx, { role: 'teacher', age: ctx.rng.int(26, 60), rel: ctx.rng.int(45, 70) });
+  t.job = 'Teacher';
 }

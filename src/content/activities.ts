@@ -146,13 +146,13 @@ const BASE_ACTIVITIES: ActivityDef[] = [
     description: 'Paperwork, home visits, and one very important introduction.',
     outcomes: [
       {
-        chance: 0.7,
+        chance: 0.35,
         success: true,
         text: 'After a year of forms, a small person walks into your home and inspects the fridge. Family.',
         effects: [{ stat: 'happiness', delta: 12 }],
       },
       {
-        chance: 0.2,
+        chance: 0.5,
         text: 'The agency needs more paperwork. Then more. You keep going.',
         effects: [{ stat: 'stress', delta: 5 }],
       },

@@ -21,6 +21,9 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
         rel: ctx.rng.int(55, 80),
       });
       n.romance = { stage: 'dating', since: s.year, prenup: false };
+      // Not everyone wants children.
+      if (ctx.rng.chance(0.4)) n.flags.push('no_kids');
+      if (ctx.rng.chance(0.2)) n.flags.push('no_marriage');
       remember(s, n, 'how you met', 5);
       ctx.log('romance', `You start seeing ${n.first} ${n.last}.`, true);
       return;

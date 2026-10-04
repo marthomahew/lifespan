@@ -57,7 +57,7 @@ describe('illness catalog (M8.1)', () => {
       cheats: { ...s.cheats, immortal: false },
     });
     const q1 = deathProbability({ ...s, cheats: { ...s.cheats, immortal: false } });
-    expect(q1).toBeGreaterThan(q0 * 1.5);
+    expect(q1).toBeGreaterThan(q0 * 1.2);
     const sev0 = s.health.illnesses[0]?.severity ?? 0;
     s = playYears(s, 3);
     expect(s.health.illnesses.find((i) => i.id === 'heart_disease')?.severity ?? 0).toBeGreaterThan(

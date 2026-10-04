@@ -101,6 +101,13 @@ export type AchievementDef = {
   label: string;
   emoji: string;
   description: string;
+  /** Checked after every year and action; awarded once when true. */
+  check?: (s: import('../engine/types').GameState) => boolean;
+};
+
+export type LifeTitleDef = {
+  title: string;
+  when: (s: import('../engine/types').GameState) => boolean;
 };
 
 export type Treatment =

@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { answerPopup, startSeeded } from './helpers';
+import { answerPopup, clearPopups, startSeeded } from './helpers';
 import type { Page } from '@playwright/test';
 
 async function consoleCmd(page: Page, cmd: string): Promise<void> {
@@ -66,11 +66,19 @@ test('activities: find a date, then propose and plan the wedding from the NPC pa
   await page.getByTestId('act-find_date').click();
   await expect(page.getByTestId('fact-relationship')).toContainText('Seeing');
   await page.getByTestId('tab-relationships').click();
-  await page
+  const partnerRow = page
     .locator('[data-testid^="npc-"]')
     .filter({ hasText: /boyfriend|girlfriend|partner/ })
-    .first()
-    .click();
+    .first();
+  // Proposals wait until things are serious: age up a few years, keeping the relationship warm.
+  for (let i = 0; i < 8; i++) {
+    await partnerRow.click();
+    if (await page.getByTestId('int-propose').isVisible()) break;
+    if (await page.getByTestId('int-date_night').isEnabled()) await page.getByTestId('int-date_night').click();
+    await page.keyboard.press('Escape');
+    await page.getByTestId('age-up').click();
+    await clearPopups(page);
+  }
   await page.getByTestId('int-propose').click();
   await expect(page.getByTestId('fact-relationship')).toContainText('Engaged');
   await page.getByTestId('int-plan_wedding').click();

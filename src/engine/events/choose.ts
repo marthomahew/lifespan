@@ -6,6 +6,7 @@ import { VISIBLE_STATS, type GameState, type PendingEvent } from '../types';
 import { cloneState } from '../util';
 import { applyOutcome, pickOutcome } from './apply';
 import { prunePending, selectableChoices } from './select';
+import { checkAchievements } from '../systems/achievements';
 import { renderText } from './tokens';
 import type { EventDef } from './types';
 
@@ -92,5 +93,6 @@ export function choose(input: GameState, choiceId: string): Step {
   if (!input.pending[0]) throw new EngineError('no decision is pending');
   const ctx = new Ctx(cloneState(input));
   chooseInPlace(ctx, choiceId);
+  checkAchievements(ctx);
   return ctx.finish();
 }

@@ -21,7 +21,8 @@ export function onsetChance(s: GameState, def: IllnessDef): number {
   const age = s.player.age;
   const o = def.onset;
   if (age < o.ages[0] || age > o.ages[1]) return 0;
-  let p = o.base;
+  // Chronic conditions are calibrated a little rarer than the catalog's raw rates.
+  let p = o.base * (def.chronic ? 0.7 : 1);
   if (o.vice && s.vices.levels[o.vice.key] > 30)
     p *= 1 + ((o.vice.mult - 1) * s.vices.levels[o.vice.key]) / 100;
   if (o.lowHealth && s.player.stats.health < 40) p *= o.lowHealth;
@@ -119,6 +120,8 @@ export function treat(
       );
     } else {
       s.health.illnesses = s.health.illnesses.filter((i) => i !== ill);
+      if (/cancer|tumour/.test(def.id) && !s.player.flags.includes('survived_cancer'))
+        s.player.flags.push('survived_cancer');
       ctx.log('health', `${def.emoji} The ${method} works. Your ${label} is gone.`, true);
     }
     addStat(s, 'happiness', 3);
@@ -134,6 +137,9 @@ export function treat(
   }
 }
 
+/** Calibrates catalog death factors against the DONE §4.2 age band. */
+export const ILLNESS_RISK_SCALE = 0.15;
+
 /** Illness contributions to mortality (hazard × (1 + deathFactor × severity / 100)). */
 export function illnessRisks(s: GameState): RiskFactor[] {
   // Contributions add up rather than multiply, so several mild conditions don't compound wildly.
@@ -143,7 +149,7 @@ export function illnessRisks(s: GameState): RiskFactor[] {
     const def = ILLNESS_BY_ID[ill.id];
     if (!def) continue;
     const managed = def.chronic && s.year - ill.treated <= 4 ? 0.5 : 1;
-    const part = (def.deathFactor * ill.severity * managed) / 100;
+    const part = (def.deathFactor * ill.severity * managed * ILLNESS_RISK_SCALE) / 100;
     extra += part;
     if (!worst || part > worst.part) worst = { label: def.label.toLowerCase(), part };
   }

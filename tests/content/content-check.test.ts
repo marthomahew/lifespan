@@ -228,3 +228,17 @@ describe('interaction and activity rules (DONE §3)', () => {
     ).toMatch(/3 outcome/);
   });
 });
+
+import { ENFORCED, failedThresholds, thresholds } from '../../scripts/content-lib';
+
+describe('DONE §3 thresholds (M10.1, M10.2, M10.4)', () => {
+  it('every threshold is enforced and met', () => {
+    const ts = thresholds(ENFORCED);
+    expect(ts.filter((t) => !t.enforced).map((t) => t.label)).toEqual([]);
+    expect(failedThresholds(ts)).toEqual([]);
+    const byLabel = Object.fromEntries(ts.map((t) => [t.label, t.value]));
+    expect(byLabel['Events in total']).toBeGreaterThanOrEqual(250);
+    expect(byLabel['Event chains']).toBeGreaterThanOrEqual(15);
+    expect(byLabel['Activities with 3+ outcome texts']).toBeGreaterThanOrEqual(25);
+  });
+});

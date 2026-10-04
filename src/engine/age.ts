@@ -4,6 +4,7 @@ import { die } from './death';
 import { causeOfDeath, rollMortality } from './mortality';
 import { pushSnapshot } from './snapshots';
 import { prunePending } from './events/select';
+import { checkAchievements } from './systems/achievements';
 import { stageOf, STAGE_LABEL } from './stage';
 import { applyLocks, driftStats, recordStatHistory } from './stats';
 import { runYearSystems, yearCircumstances } from './systems';
@@ -57,6 +58,7 @@ export function ageUpInPlace(ctx: Ctx): void {
 
   // 8. Records and snapshot (autosave is the platform's job).
   ctx.phase('records');
+  checkAchievements(ctx);
   prunePending(s);
   applyLocks(s);
   recordStatHistory(s);

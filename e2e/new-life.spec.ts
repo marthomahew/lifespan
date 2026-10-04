@@ -67,3 +67,17 @@ test('flow 2: custom life with every field set', async ({ page }) => {
   await expect(page.getByTestId('header')).toHaveAttribute('data-attraction', 'everyone');
   await expect(page.getByTestId('header')).toHaveAttribute('data-wealth', 'rich');
 });
+
+test('achievements: a toast when earned and an Achievements screen', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await page.getByTestId('btn-random-life').click();
+  await page.getByTestId('age-up').click();
+  await expect(page.getByTestId('toast').filter({ hasText: 'First Words' })).toBeVisible();
+  await page.getByTestId('btn-achievements').click();
+  await expect(page.getByTestId('achievements')).toBeVisible();
+  await expect(page.getByTestId('ach-first_words')).toHaveAttribute('data-earned', 'true');
+  await expect(page.getByTestId('ach-millionaire')).toHaveAttribute('data-earned', 'false');
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('achievements')).toHaveCount(0);
+});

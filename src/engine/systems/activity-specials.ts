@@ -26,6 +26,16 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   }
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
+  if (sp === 'adopt') {
+    // Agencies want a stable home: a partner, or a steady income of your own.
+    const partnered = s.npcs.some(
+      (n) => n.alive && (n.roles.includes('spouse') || n.roles.includes('partner')),
+    );
+    if (!partnered && s.career.salary < money(s, 40000, 'wage'))
+      return 'agencies want a partner or a steady income';
+    if (s.npcs.filter((n) => n.alive && n.roles.includes('child') && n.age < 18).length >= 3)
+      return 'agencies say three children at home is plenty';
+  }
   return null;
 }
 
@@ -114,6 +124,7 @@ export function runSpecial(
       if (s.cheats.forceSuccess || ctx.rng.chance(0.0005)) {
         const prize = money(s, ctx.rng.int(250000, 5000000));
         s.money.cash += prize;
+        if (!s.player.flags.includes('lottery_winner')) s.player.flags.push('lottery_winner');
         addStat(s, 'happiness', 20);
         ctx.log(
           'money',
@@ -128,6 +139,7 @@ export function runSpecial(
       if (w >= 40 && ctx.rng.chance(0.15 + w / 300)) {
         const advance = money(s, 2000 + w * 400, 'wage');
         s.money.cash += advance;
+        if (!s.player.flags.includes('published_novel')) s.player.flags.push('published_novel');
         addStat(s, 'fame', w > 70 ? 6 : 2);
         ctx.log(
           'fame',

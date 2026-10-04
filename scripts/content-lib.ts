@@ -437,3 +437,24 @@ export function validateActivities(
   }
   return f;
 }
+
+/** Every DONE §3 threshold is enforced. */
+export const ENFORCED = new Set([
+  'events80',
+  'events',
+  'stages',
+  'noticeShare',
+  'chains',
+  'countries',
+  'jobs',
+  'majors',
+  'military',
+  'interactions',
+  'activities',
+  'illnesses',
+  'traits',
+  'achievements',
+  'crimes',
+  'assets',
+  'cheats',
+]);

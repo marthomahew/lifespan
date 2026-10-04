@@ -54,3 +54,13 @@ describe('sim harness (M1.7)', () => {
     expect(checkState(deadBind, null).join()).toMatch(/dead npc/);
   });
 });
+
+import { ENFORCE_BANDS, BANDS } from '../../scripts/sim-lib';
+
+describe('balance bands (M10.6)', () => {
+  it('are enforced by npm run sim', () => {
+    expect(ENFORCE_BANDS).toBe(true);
+    expect(BANDS.medianAge).toEqual([60, 92]);
+    expect(BANDS.topEventShare).toEqual([0, 0.03]);
+  });
+});

@@ -8,6 +8,9 @@ import { SKILLS } from '../src/content/skills';
 import { ACHIEVEMENTS } from '../src/content/achievements';
 import { ILLNESSES } from '../src/content/illnesses';
 import { CRIMES } from '../src/content/crimes';
+import { LIFE_TITLES } from '../src/content/achievements';
+import { HOME_TYPES, POSSESSIONS, VEHICLES } from '../src/content/assets';
+import { CHEATS } from '../src/engine/cheats/registry';
 
 /** Catalogs beyond events that content:check validates and counts (DONE §3). */
 export type ExtraContent = {
@@ -54,6 +57,11 @@ export function extraContent(): ExtraContent {
       { key: 'traits', label: 'Skills', value: SKILLS.length, min: 6 },
       { key: 'achievements', label: 'Achievements', value: ACHIEVEMENTS.length, min: 30 },
       { key: 'crimes', label: 'Crimes', value: CRIMES.length, min: 10 },
+      { key: 'achievements', label: 'Life titles', value: LIFE_TITLES.length, min: 12 },
+      { key: 'assets', label: 'Vehicles', value: VEHICLES.length, min: 12 },
+      { key: 'assets', label: 'Possessions', value: POSSESSIONS.length, min: 10 },
+      { key: 'assets', label: 'Home types', value: HOME_TYPES.length, min: 6 },
+      { key: 'cheats', label: 'Cheat commands', value: CHEATS.length, min: 40 },
       {
         key: 'crimes',
         label: 'Prison activities',

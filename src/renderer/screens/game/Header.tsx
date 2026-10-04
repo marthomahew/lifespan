@@ -56,6 +56,15 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       <nav className="header-actions" aria-label="Game menu">
         <button
           className="ghost"
+          data-testid="btn-achievements"
+          aria-label="Achievements"
+          title="Achievements"
+          onClick={() => app.set({ overlay: 'achievements' })}
+        >
+          🏆
+        </button>
+        <button
+          className="ghost"
           data-testid="btn-save"
           aria-label="Save"
           title="Save (⌘S)"

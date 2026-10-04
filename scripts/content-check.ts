@@ -1,6 +1,7 @@
 /** npm run content:check (DONE §3). Fails on any finding or any enforced threshold. */
 import { EVENTS } from '../src/content/events';
 import {
+  ENFORCED,
   failedThresholds,
   thresholds,
   validateActivities,
@@ -12,17 +13,6 @@ import { INTERACTIONS } from '../src/content/interactions';
 import { ACTIVITIES } from '../src/content/activities';
 
 /** Thresholds enforced so far; M12.4 requires every one of them. */
-export const ENFORCED = new Set([
-  'events80',
-  'countries',
-  'jobs',
-  'majors',
-  'military',
-  'interactions',
-  'traits',
-  'illnesses',
-  'crimes',
-]);
 
 const findings = [
   ...validateEvents(EVENTS),

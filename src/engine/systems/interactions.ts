@@ -32,6 +32,8 @@ function targetOk(def: InteractionDef, n: Npc): string | null {
         (n.roles.includes('spouse') || n.romance?.stage === 'engaged')
       )
         return 'already engaged or married';
+      if (def.special === 'propose' && n.romance?.stage === 'dating')
+        return 'too soon: you are only dating';
       if (def.special === 'breakup' && n.roles.includes('spouse'))
         return 'married couples divorce instead';
       return null;
@@ -75,6 +77,7 @@ export function interactionReason(s: GameState, n: Npc, def: InteractionDef): st
   if (usedThisYear(s, `i:${n.id}:${def.id}`) >= def.limitPerYear) return 'done this year';
   if (def.special === 'baby') {
     if (s.family.pregnancy) return 'a baby is already on the way';
+    if (n.flags.includes('no_kids')) return `${n.first} doesn't want children`;
     if (p.gender !== 'female' && n.gender !== 'female')
       return 'try the fertility clinic or adoption';
   }
@@ -129,6 +132,9 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   if (cost) s.money.cash -= money(s, cost);
 
   let ok = ctx.roll(interactionOdds(s, n, def));
+  // Some people just aren't the marrying kind.
+  if (def.special === 'propose' && n.flags.includes('no_marriage') && !s.cheats.forceSuccess)
+    ok = false;
   if (def.special === 'baby') {
     const fert = (s.player.stats.fertility + n.fertility) / 200;
     ok = ctx.roll(Math.min(0.9, fert * 0.85));

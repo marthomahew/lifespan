@@ -162,7 +162,14 @@ export function hire(ctx: Ctx, jobId: string): void {
     rel: ctx.rng.int(40, 65),
   });
   boss.job = job.titles[Math.min(job.titles.length - 1, 2)] ?? 'Manager';
-  for (let i = 0; i < 2; i++) {
+  // One senior colleague, then a peer.
+  const senior = addNpc(ctx, {
+    role: 'coworker',
+    age: Math.min(70, s.player.age + ctx.rng.int(12, 30)),
+    rel: ctx.rng.int(45, 70),
+  });
+  senior.job = job.titles[Math.min(job.titles.length - 1, 1)] ?? null;
+  for (let i = 0; i < 1; i++) {
     const cw = addNpc(ctx, {
       role: 'coworker',
       age: Math.max(18, s.player.age + ctx.rng.int(-8, 10)),

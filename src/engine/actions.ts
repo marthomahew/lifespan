@@ -1,6 +1,7 @@
 import { Ctx, type Step } from './ctx';
 import { EngineError } from './errors';
 import { prunePending } from './events/select';
+import { checkAchievements } from './systems/achievements';
 import { applyLocks } from './stats';
 import { activitiesFor, doActivity } from './systems/activities';
 import { interact, interactionsFor, type InteractParams } from './systems/interactions';
@@ -112,6 +113,7 @@ export function act(input: GameState, action: PlayerAction): Step {
   }
   prunePending(ctx.s);
   applyLocks(ctx.s);
+  checkAchievements(ctx);
   return ctx.finish();
 }
 

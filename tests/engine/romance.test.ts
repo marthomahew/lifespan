@@ -67,6 +67,9 @@ describe('romance (M5.5)', () => {
       s = { ...s, cheats: { ...s.cheats, forceSuccess: false } };
       const p = partner(s) as Npc;
       s = runCheat(s, 'npc.rel', { id: String(p.id), value: 30 }).state;
+      s = clone(s);
+      const pp = s.npcs.find((n) => n.id === p.id);
+      if (pp?.romance) pp.romance.stage = 'serious';
       const r = act(s, { type: 'interact', npcId: p.id, id: 'propose' }).state;
       if (partner(r)?.romance?.stage !== 'engaged') fails++;
     }
@@ -220,5 +223,20 @@ describe('wills and inheritance (M5.7)', () => {
       1,
     );
     expect(old.death?.estate.length).toBeGreaterThan(0);
+  });
+});
+
+describe('romance pacing', () => {
+  it('you have to be serious before proposing', () => {
+    let s = act(
+      { ...adult(30), cheats: { ...adult(30).cheats, forceSuccess: true } },
+      { type: 'activity', id: 'find_date' },
+    ).state;
+    const p = s.npcs.find((n) => n.roles.includes('partner')) as Npc;
+    expect(() => act(s, { type: 'interact', npcId: p.id, id: 'propose' })).toThrow(/only dating/);
+    s = clone(s);
+    const q = s.npcs.find((n) => n.id === p.id) as Npc;
+    if (q.romance) q.romance.stage = 'serious';
+    expect(() => act(s, { type: 'interact', npcId: p.id, id: 'propose' })).not.toThrow();
   });
 });

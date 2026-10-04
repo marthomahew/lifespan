@@ -8,6 +8,7 @@ import { interactionsFor } from '../systems/interactions';
 import { partnerOf } from '../systems/partners';
 import type { GameState } from '../types';
 import { botCareer } from './career-bot';
+import { careerist, chaos, criminal, emigrant, family, military, musician } from './personas';
 
 export type PersonaId =
   'default' | 'careerist' | 'criminal' | 'family' | 'military' | 'musician' | 'emigrant' | 'chaos';
@@ -60,8 +61,20 @@ function romance(s: GameState, rng: Rng): GameState {
   return cur;
 }
 
-/** One year's worth of the default persona's own choices. */
+const PLANS: Partial<Record<PersonaId, (s: GameState, rng: Rng, t: typeof tryAct) => GameState>> = {
+  careerist,
+  criminal,
+  family,
+  military,
+  musician,
+  emigrant,
+  chaos,
+};
+
+/** One year's worth of a persona's own choices; the default persona follows DONE §4. */
 function planYear(s: GameState, persona: PersonaId, rng: Rng): GameState {
+  const plan = PLANS[persona];
+  if (plan) return plan(s, rng, tryAct);
   let cur = s;
   if (rng.chance(0.5)) {
     const n = rng.int(0, 2);

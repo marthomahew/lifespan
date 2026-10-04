@@ -1,7 +1,7 @@
+import { LIFE_TITLES } from '../content/achievements';
 import type { GameState } from './types';
 
-/** The life title shown on the obituary; the full catalog arrives with M10.3. */
+/** The life title shown on the obituary (SPEC §5.14): the first that fits the record. */
 export function lifeTitle(s: GameState): string {
-  if (s.player.age < 18) return 'Gone Too Soon';
-  return 'Ordinary, In The Best Way';
+  return LIFE_TITLES.find((t) => t.when(s))?.title ?? 'Ordinary, In The Best Way';
 }

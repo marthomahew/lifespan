@@ -10,8 +10,8 @@ import { checkState } from '../src/engine/bot/invariants';
 import { botStep, newBotMemory, type PersonaId } from '../src/engine/bot/persona';
 import { Rng, seedRng } from '../src/engine/rng';
 
-/** Bands are enforced once M10.6 (balance) lands; until then the report shows them. */
-export const ENFORCE_BANDS = false;
+/** DONE §4.2 balance bands fail the sim when out of range. */
+export const ENFORCE_BANDS = true;
 
 export type LifeResult = {
   seed: number;
