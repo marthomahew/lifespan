@@ -1,0 +1,10 @@
+export * from './types';
+export { newLife, type NewLifeOptions, WEALTH_TIERS } from './life';
+export { ageUp, EngineError } from './age';
+export type { Step } from './ctx';
+export { serialize, deserialize, SaveError } from './save';
+export { stateHash, lifeHash } from './hash';
+export { stageOf, STAGE_LABEL } from './stage';
+export { obituary, type Obituary } from './death';
+export { netWorth, netWorthRef } from './networth';
+export { formatMoney, formatMoneyShort, countryOf, money } from './economy';

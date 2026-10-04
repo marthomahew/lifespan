@@ -9,3 +9,7 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - Electron smoke: `xvfb-run -a playwright test -c playwright.electron.config.ts`; flags --no-sandbox --disable-gpu live in e2e/electron/launch.ts only.
 - Hygiene test strings are split (j('it', '.only', ...)) so hygiene doesn't flag its own test.
 - Typecheck uses three projects: tsconfig.engine.json (no DOM/Node libs), tsconfig.web.json, tsconfig.node.json.
+- Engine pattern: public fn clones (cloneState: deep copy except log/snapshots shallow), runs systems on a Ctx(draft), returns ctx.finish(). Never mutate log entries or snapshot objects in place.
+- Money: stored as local nominal currency. refToLocal(s, ref, 'price'|'wage') converts content reference dollars; localToRef for inflation-adjusted figures.
+- Bot decisions use their own Rng (player input), seeded from life seed; sim replays with save/load checkpoints and compares stateHash.
+- tests/helpers.ts advance()/playYears()/playToDeath() — update advance() when choose() exists.

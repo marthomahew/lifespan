@@ -46,43 +46,43 @@
   },
   "M1.1": {
     "title": "`GameState` is plain JSON data with a `schemaVersion`, and a test shows engine functions never mutate their input.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/state.test.ts (plain JSON, schemaVersion, deep-frozen input never mutated)"
   },
   "M1.2": {
     "title": "A seeded PRNG lives in state; the same seed and inputs give an identical state hash after 80 years, including across a save and load midway.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/determinism.test.ts (80-year hash, save/load midway); tests/engine/rng.test.ts"
   },
   "M1.3": {
     "title": "`newLife` supports random and custom creation (name, gender, attraction, country, city, birth year, appearance, traits, starting stats, family wealth tier).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/newlife.test.ts (random + every custom field)"
   },
   "M1.4": {
     "title": "Visible and hidden stats with clamping and yearly drift per SPEC §3.2.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/stats.test.ts (clamping, drift curves, debt stress, locks); sim invariants"
   },
   "M1.5": {
     "title": "`ageUp` follows the yearly order in SPEC §3.4, produces log entries, and switches life stages at the right ages.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/ageup.test.ts (age/year/inflation, log entries, stage switches, §3.4 order)"
   },
   "M1.6": {
     "title": "Mortality per SPEC §3.5 with a recorded cause; death ends the life and produces obituary data.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/mortality.test.ts (Gompertz, health multiplier, risk factors, cause + obituary)"
   },
   "M1.7": {
     "title": "`sim` plays 300 seeded lives to death with the default persona, checks every invariant in DONE §4.1, and writes `reports/balance-report.md`.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run sim (scripts/sim.ts, scripts/sim-lib.ts, src/engine/bot/invariants.ts); tests/integration/sim.test.ts"
   },
   "M1.8": {
     "title": "Save round trip: serialize then deserialize gives a deep-equal state, and continuing from a loaded save matches an uninterrupted run.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/save.test.ts (deep-equal round trip, resumed run hash, migrations); sim save/load checkpoints"
   },
   "M2.1": {
     "title": "Main screen layout per SPEC §6 (header, stats column, log, tabbed right panel, Age Up button) at 1280×820 and 1024×700.",
