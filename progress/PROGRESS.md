@@ -30,5 +30,5 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 ## 2026-10-04 · M12.5–M12.7, fresh-eyes audit
 - Done: README (M12.5), REPORT.md (M12.6), fresh-eyes audit (M12.7); all 96 PLAN items pass, none waived
 - Audit fixes: bankruptcy ends runaway debt (M7.4 re-opened and fixed); prison-only events + prison pack; work romance; money/item gifts; skill tooltips; flow 15 spec; absent NPCs unbound; obituary/article/acronym text
-- Verify: green in 70 s (unit 334, e2e 42, electron 3, sim 300/300, 0 violations); coverage 301/307 (98.0%)
+- Verify: green in 73 s (unit 334, e2e 42, electron 3, sim 300/300, 0 violations); coverage 301/307 (98.0%)
 - Next: DONE §8 final check

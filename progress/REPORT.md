@@ -108,7 +108,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Verification evidence
 
-- `npm run verify` passes every step in about 70 s:
+- `npm run verify` passes every step in about 73 s:
   - typecheck 5 s
   - lint 2 s
   - hygiene 0.3 s
@@ -119,7 +119,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
   - e2e 11 s
   - electron:smoke 2 s
 - Tests:
-  - 330 Vitest tests in 52 files.
+  - 334 Vitest tests in 53 files.
   - 42 Playwright e2e tests, covering DONE §5 flows 1–15 plus extras.
   - 3 Electron smoke tests.
   - The packaged smoke test against the `dist:linux` build.
@@ -131,12 +131,12 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
   | Reached 18 | 99.3% |
   | University degree | 48.7% |
   | Employed by 25 | 100% |
-  | Married by 30 | 76.0% |
-  | Children by 40 | 74.7% |
+  | Married by 30 | 82.1% |
+  | Children by 40 | 78.0% |
   | Ever imprisoned | 0% |
-  | Median net worth at death | $677k |
-  | Mean happiness | 66.3 |
-  | Most common popup share | 1.8% |
+  | Median net worth at death | $705k |
+  | Mean happiness | 66.7 |
+  | Most common popup share | 1.9% |
   | Runtime | about 34 s |
 
 - Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 301 of 307 events (98.0%) against an 85% target.
