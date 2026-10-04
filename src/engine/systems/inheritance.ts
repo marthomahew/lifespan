@@ -5,6 +5,7 @@ import { POSSESSION_BY_ID } from '../../content/assets';
 const HEIRLOOMS = ['gold_watch', 'diamond_ring', 'oil_painting', 'rare_stamps', 'violin'];
 import { netWorth } from '../networth';
 import type { GameState, Npc } from '../types';
+import { withArticle } from '../text';
 
 const isChildOf = (n: Npc, parentId: number): boolean => n.parentIds.includes(parentId);
 
@@ -55,7 +56,7 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
         condition: ctx.rng.int(50, 90),
         bought: s.year,
       });
-      ctx.log('family', `${dead.first} also leaves you a ${def.label.toLowerCase()}.`);
+      ctx.log('family', `${dead.first} also leaves you ${withArticle(def.label)}.`);
     }
   }
 }

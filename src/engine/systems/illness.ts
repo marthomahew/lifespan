@@ -1,5 +1,6 @@
 import { ILLNESS_BY_ID } from '../../content/illnesses';
 import type { Ctx } from '../ctx';
+import { lowerLabel } from '../text';
 
 export function addIllness(ctx: Ctx, id: string): void {
   const s = ctx.s;
@@ -25,5 +26,5 @@ export function cureIllness(ctx: Ctx, id: string): void {
   if (!had) return;
   s.health.illnesses = s.health.illnesses.filter((i) => i.id !== id);
   const def = ILLNESS_BY_ID[id];
-  if (def) ctx.log('health', `${def.emoji} Your ${def.label.toLowerCase()} is gone.`);
+  if (def) ctx.log('health', `${def.emoji} Your ${lowerLabel(def.label)} is gone.`);
 }

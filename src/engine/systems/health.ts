@@ -8,6 +8,7 @@ import { addStat } from '../stats';
 import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { addIllness } from './illness';
+import { lowerLabel } from '../text';
 
 /** Whether a parent had (or has) this illness: recorded on the NPC as a flag. */
 function familyHistory(s: GameState, id: string): boolean {
@@ -151,7 +152,7 @@ export function illnessRisks(s: GameState): RiskFactor[] {
     const managed = def.chronic && s.year - ill.treated <= 4 ? 0.5 : 1;
     const part = (def.deathFactor * ill.severity * managed * ILLNESS_RISK_SCALE) / 100;
     extra += part;
-    if (!worst || part > worst.part) worst = { label: def.label.toLowerCase(), part };
+    if (!worst || part > worst.part) worst = { label: lowerLabel(def.label), part };
   }
   return worst ? [{ cause: `Complications of ${worst.label}`, mult: 1 + extra }] : [];
 }

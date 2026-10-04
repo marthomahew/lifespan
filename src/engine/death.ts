@@ -3,6 +3,8 @@ import { netWorthRef } from './networth';
 import { lifeTitle } from './titles';
 import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
+import { withArticle } from './text';
+import { GRAD_BY_ID, MAJOR_BY_ID } from '../content/education';
 
 /** End the life with a recorded cause (SPEC §3.5). */
 export function die(ctx: Ctx, cause: string): void {
@@ -48,12 +50,12 @@ export function obituary(s: GameState): Obituary | null {
   const job = s.career.history.at(-1);
   if (job)
     summary.push(
-      `Worked as ${job.title}${s.career.history.length > 1 ? ` among ${s.career.history.length} jobs` : ''}.`,
+      `Worked as ${withArticle(job.title)}${s.career.history.length > 1 ? ` among ${s.career.history.length} jobs` : ''}.`,
     );
   const deg = s.education.degrees.filter((d) => d.level !== 'high_school');
   if (deg.length)
     summary.push(
-      `Earned ${deg.length === 1 ? 'a degree' : `${deg.length} degrees`} in ${deg.map((d) => d.field).join(', ')}.`,
+      `Earned ${deg.length === 1 ? 'a degree' : `${deg.length} degrees`} in ${deg.map((d) => MAJOR_BY_ID[d.field]?.label ?? GRAD_BY_ID[d.field]?.label ?? d.field).join(', ')}.`,
     );
   const spouses = s.npcs.filter(
     (n) => n.roles.includes('spouse') || n.flags.includes('was_spouse'),

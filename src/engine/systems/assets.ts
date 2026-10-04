@@ -8,6 +8,7 @@ import { clampStat } from '../util';
 import { hasAdultRecord } from './careers';
 import { addLoan } from './loans';
 import { addSkill } from './skills';
+import { withArticle } from '../text';
 
 const conditionMult = (c: number): number => 0.6 + c / 250;
 
@@ -182,7 +183,7 @@ export function buyPossession(ctx: Ctx, itemId: string): void {
     condition: 100,
     bought: s.year,
   });
-  ctx.log('money', `You buy a ${p.label.toLowerCase()}. ${p.description}`);
+  ctx.log('money', `You buy ${withArticle(p.label)}. ${p.description}`);
   addStat(s, 'happiness', 3);
 }
 

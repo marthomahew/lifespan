@@ -3,6 +3,7 @@ import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
 import type { GameState, Npc } from '../types';
+import { lowerLabel } from '../text';
 
 /** A gift is a small bought present by default, or money, or something you own (SPEC §5.1). */
 export type GiftParams = { money?: number; possessionId?: number };
@@ -40,7 +41,7 @@ export function handOver(ctx: Ctx, n: Npc, g: GiftParams | undefined): void {
     const p = s.assets.possessions.find((x) => x.id === g.possessionId);
     if (!p) return;
     s.assets.possessions = s.assets.possessions.filter((x) => x !== p);
-    const label = POSSESSION_BY_ID[p.item]?.label.toLowerCase() ?? 'a keepsake';
+    const label = lowerLabel(POSSESSION_BY_ID[p.item]?.label ?? 'keepsake');
     ctx.log('social', `You give ${n.first} your ${label}.`);
   } else if (g?.money !== undefined) {
     const amount = Math.round(g.money);
