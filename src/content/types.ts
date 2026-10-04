@@ -310,3 +310,31 @@ export type MilitarySpecialtyDef = {
   /** Civilian job fields this specialty helps you get into. */
   civilianFields: string[];
 };
+
+export type HomeTypeDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  /** Base price in reference dollars before condition and country. */ price: number;
+  names: string[];
+};
+export type VehicleDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  price: number;
+  /** Safety 0..100 lowers accident harm. */ safety: number;
+  description: string;
+};
+export type PossessionDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  kind: 'instrument' | 'jewelry' | 'art' | 'electronics' | 'collectible' | 'sport';
+  price: number;
+  /** Yearly value change as a fraction (negative depreciates). */
+  depreciation: number;
+  /** Skill practised for free while you own it. */
+  skill?: string;
+  description: string;
+};

@@ -53,3 +53,7 @@ export {
 export { enrollReason, tuitionFor, letterGrade } from './systems/education';
 export { enlistReason, rankTitle, militaryPay } from './systems/military';
 export { musicReason, MUSIC_STAGES, musicSkill, type MusicActionId } from './systems/music';
+export { INVESTMENTS } from './systems/finance';
+export { mortgageRate, homeLabel } from './systems/assets';
+export { annuityPayment } from './systems/loans';
+export type { MoneyAction } from './systems/banking';

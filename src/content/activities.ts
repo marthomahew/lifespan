@@ -229,6 +229,38 @@ export const ACTIVITIES: ActivityDef[] = [
     ],
   },
   {
+    id: 'driving_test',
+    label: 'Take the driving test',
+    emoji: '🚦',
+    group: 'admin',
+    ages: [15, 90],
+    cost: 120,
+    limitPerYear: 2,
+    special: 'driving_test',
+    description: 'Mirror, signal, manoeuvre, panic quietly.',
+    outcomes: [
+      {
+        chance: 0.6,
+        success: true,
+        text: 'The examiner says "well done" in the tone of someone who has seen things. You pass.',
+        effects: [{ stat: 'happiness', delta: 6 }],
+      },
+      {
+        chance: 0.25,
+        text: 'You fail for rolling through a stop sign that you maintain was barely a sign.',
+        effects: [{ stat: 'happiness', delta: -4 }],
+      },
+      {
+        chance: 0.15,
+        text: "You reverse into the examiner's own car. The test ends early.",
+        effects: [
+          { stat: 'happiness', delta: -6 },
+          { stat: 'stress', delta: 4 },
+        ],
+      },
+    ],
+  },
+  {
     id: 'volunteer',
     label: 'Volunteer',
     emoji: '🤲',

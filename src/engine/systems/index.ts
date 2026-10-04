@@ -7,6 +7,7 @@ import { schoolTick, universityTick } from './education';
 import { runFinances } from './finance';
 import { militaryPay, militaryTick } from './military';
 import { fameTick } from './music';
+import { assetsTick } from './assets';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
 
@@ -56,6 +57,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   careerTick(ctx);
   militaryTick(ctx);
   fameTick(ctx);
+  assetsTick(ctx);
   npcLifecycle(ctx);
   romanceTick(ctx);
   // 5. Chain steps due this year.

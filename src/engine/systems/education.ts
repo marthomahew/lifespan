@@ -244,7 +244,7 @@ export function universityTick(ctx: Ctx): void {
   en.gradeSum += perf;
   en.year += 1;
   addStat(s, 'smarts', 2);
-  if (perf < 30 && ctx.rng.chance(0.3)) {
+  if (perf < 25 && ctx.rng.chance(0.25)) {
     ctx.log('school', 'Your grades are bad enough that the university asks you to leave.', true);
     s.education.enrollment = null;
     startStudentRepayment(s);

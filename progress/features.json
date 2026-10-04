@@ -286,38 +286,38 @@
   },
   "M7.1": {
     "title": "Annual finances per SPEC §5.6, with a Finances view (last year's breakdown and a net worth graph).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts annual finances (salary→tax→living→loans→interest→returns, breakdown, history, negative cash→debt); e2e/assets.spec.ts (Finances view + net worth graph)"
   },
   "M7.2": {
     "title": "Inflation index and local-currency display.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts inflation (2.5% ±1.5, never <0, multiplier) and local-currency display; tests/engine/events-tokens.test.ts"
   },
   "M7.3": {
     "title": "Savings interest and at least 4 investment vehicles with seeded volatility; buying and selling.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts savings 1–4%, four vehicles with seeded volatility and coin crash, buy/sell; e2e/assets.spec.ts (invest)"
   },
   "M7.4": {
     "title": "Student, mortgage, and personal loans with correct amortization (tested against known values), missed-payment consequences, and early payoff.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts loans (amortization vs known values, missed payments + repossession, personal loans, early payoff)"
   },
   "M7.5": {
     "title": "Homes: generated listings, buying with cash or a mortgage, selling, appreciation, maintenance, condition.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts homes (listings by type/condition/country, cash and mortgage, sell, appreciation, maintenance, condition, renovate); e2e/assets.spec.ts flow 6"
   },
   "M7.6": {
     "title": "Vehicles and possessions with depreciation, condition, and accident events; a driving licence at the country's age.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts vehicles/possessions (depreciation, condition, instrument practice, accidents) and the driving test at the country age"
   },
   "M7.7": {
     "title": "The money and asset cheats from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/assets.test.ts (spawn asset, value, condition, investment values, salary); tests/engine/cheats/money.test.ts"
   },
   "M8.1": {
     "title": "An illness catalog meeting DONE §3, with onset, symptoms, treatments, progression, and death factors.",

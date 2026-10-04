@@ -304,3 +304,61 @@
   cursor: pointer;
   margin-top: 6px;
 }
+.asset-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.asset-row > .grow {
+  flex-basis: 100%;
+}
+.asset-row button {
+  font-size: 0.8em;
+  padding: 2px 8px;
+}
+.fin-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+.breakdown {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.breakdown th {
+  text-align: left;
+  font-weight: 500;
+  padding: 3px 0;
+}
+.breakdown td {
+  text-align: right;
+}
+.breakdown td.neg {
+  color: var(--red);
+}
+.breakdown tr.total th,
+.breakdown tr.total td {
+  border-top: 1px solid var(--border);
+  font-weight: 650;
+}
+.networth-chart {
+  width: 100%;
+  height: auto;
+}
+.networth-chart .line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+.networth-chart .axis {
+  stroke: var(--border);
+}
+.networth-chart .label {
+  fill: var(--text-2);
+  font-size: 11px;
+}

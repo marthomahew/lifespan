@@ -8,6 +8,16 @@ import { applyForJob, careerAction } from './systems/careers';
 import { dropOut, enroll } from './systems/education';
 import { discharge, enlist } from './systems/military';
 import { musicAction, type MusicActionId } from './systems/music';
+import { moneyAction, type MoneyAction } from './systems/banking';
+import {
+  buyHome,
+  buyPossession,
+  buyVehicle,
+  moveInto,
+  renovate,
+  sellAsset,
+  type Financing,
+} from './systems/assets';
 import type { GameState } from './types';
 import { cloneState } from './util';
 
@@ -20,7 +30,14 @@ export type PlayerAction =
   | { type: 'career'; id: string }
   | { type: 'enlist'; branch: string; specialty: string; officer: boolean }
   | { type: 'discharge' }
-  | { type: 'music'; id: MusicActionId };
+  | { type: 'music'; id: MusicActionId }
+  | { type: 'money'; action: MoneyAction }
+  | { type: 'buy_home'; index: number; financing: Financing }
+  | { type: 'sell_asset'; id: number }
+  | { type: 'move_home'; id: number }
+  | { type: 'renovate'; id: number }
+  | { type: 'buy_vehicle'; model: string; financed: boolean }
+  | { type: 'buy_item'; item: string };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -54,6 +71,27 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'music':
       musicAction(ctx, action.id);
+      break;
+    case 'money':
+      moneyAction(ctx, action.action);
+      break;
+    case 'buy_home':
+      buyHome(ctx, action.index, action.financing);
+      break;
+    case 'sell_asset':
+      sellAsset(ctx, action.id);
+      break;
+    case 'move_home':
+      moveInto(ctx, action.id);
+      break;
+    case 'renovate':
+      renovate(ctx, action.id);
+      break;
+    case 'buy_vehicle':
+      buyVehicle(ctx, action.model, action.financed);
+      break;
+    case 'buy_item':
+      buyPossession(ctx, action.item);
       break;
   }
   prunePending(ctx.s);

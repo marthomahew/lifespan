@@ -12,6 +12,7 @@ import { onKeyDown, toggleCheats } from './keys';
 import { onMenuCommand } from './menu';
 import { CheatPanel } from '../cheats/CheatPanel';
 import { FamilyTree } from '../screens/FamilyTree';
+import { FinancesView } from '../screens/FinancesView';
 import { NpcPanel } from '../screens/game/NpcPanel';
 
 export function App(): React.JSX.Element {
@@ -50,6 +51,7 @@ export function App(): React.JSX.Element {
       {cheatsOpen && game && <CheatPanel game={game} />}
       {overlay === 'help' && <HelpOverlay />}
       {overlay === 'tree' && game && <FamilyTree game={game} />}
+      {overlay === 'finances' && game && <FinancesView game={game} />}
       {npcId !== null && game && !overlay && <NpcPanel game={game} npcId={npcId} />}
       {error && (
         <div className="error-banner card" role="alert" data-testid="error-banner">

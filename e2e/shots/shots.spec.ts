@@ -73,6 +73,12 @@ for (const size of SIZES) {
       await page.getByTestId('job-listings').waitFor();
       await shot('14-job-listings');
       await page.keyboard.press('Escape');
+      await page.getByTestId('tab-assets').click();
+      await shot('15-assets');
+      await page.getByTestId('btn-finances').click();
+      await page.getByTestId('finances').waitFor();
+      await shot('16-finances');
+      await page.keyboard.press('Escape');
       await page.keyboard.press('?');
       await shot('07-help');
       await page.keyboard.press('Escape');

@@ -13,12 +13,14 @@ import { DEBUG_CHEATS } from './debug';
 import { HEALTH_CHEATS } from './health';
 import { RELATIONSHIP_CHEATS } from './relationships';
 import { CAREER_CHEATS } from './career';
+import { ASSET_CHEATS } from './assets';
 
 export class CheatError extends Error {}
 
 export const CHEATS: CheatDef[] = [
   ...CHARACTER_CHEATS,
   ...MONEY_CHEATS,
+  ...ASSET_CHEATS,
   ...RELATIONSHIP_CHEATS,
   ...CAREER_CHEATS,
   ...HEALTH_CHEATS,

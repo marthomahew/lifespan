@@ -223,7 +223,7 @@ export function careerTick(ctx: Ctx): void {
   c.yearsWorked += 1;
   const st = s.player.stats;
   const target =
-    35 +
+    25 +
     st.smarts * 0.25 +
     st.discipline * 0.3 +
     playerOdds(s, 'work') * 60 -
@@ -240,7 +240,7 @@ export function careerTick(ctx: Ctx): void {
   const canPromote =
     c.level < job.titles.length - 1 && !(job.id === 'doctor' && s.education.residency > 0);
   if (canPromote && c.performance >= 75 && yearsAtLevel >= 2 && r.chance(0.35)) promote(ctx, job);
-  else if (c.performance < 20 && r.chance(0.45)) {
+  else if (c.performance < 25 && r.chance(0.4)) {
     ctx.log(
       'work',
       `You're let go from your job as ${job.titles[c.level] ?? job.titles[0]}. HR is very sorry, apparently.`,

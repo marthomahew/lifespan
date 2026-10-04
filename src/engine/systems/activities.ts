@@ -1,7 +1,7 @@
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
 import type { ActivityDef } from '../../content/types';
 import type { Ctx } from '../ctx';
-import { formatMoney, money } from '../economy';
+import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
 import { applyEffect, pickOutcome } from '../events/apply';
 import { renderText } from '../events/tokens';
@@ -32,11 +32,17 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
   if (def.minYear && s.year < def.minYear) return `not invented until ${def.minYear}`;
   if (s.legal.prison && def.group !== 'admin') return 'not from prison';
   if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
-  if (def.cost && s.money.cash < money(s, def.cost))
-    return `costs ${formatMoney(s, money(s, def.cost))}`;
   if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
     return 'you are already seeing someone';
   if (def.special === 'fertility' && s.family.pregnancy) return 'a baby is already on the way';
+  if (def.special === 'driving_test') {
+    if (s.assets.licence) return 'you already have a licence';
+    const min = countryOf(s).ages.driving;
+    if (age < min) return `driving age here is ${min}`;
+  }
+  if (def.cost && s.money.cash < money(s, def.cost))
+    return `costs ${formatMoney(s, money(s, def.cost))}`;
+
   return null;
 }
 
@@ -80,6 +86,14 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
       clampOdds(0.5 + (s.player.stats.looks - 50) * 0.006 + playerOdds(s, 'romance')) / 0.5;
     outcomes = outcomes.map((o) => (o.success ? { ...o, chance: o.chance * boost } : o));
   }
+  if (def.special === 'driving_test') {
+    const tilt =
+      0.6 +
+      (s.player.stats.discipline - 50) * 0.008 +
+      (s.player.stats.smarts - 50) * 0.004 +
+      (s.player.traits.includes('reckless') ? -0.15 : 0);
+    outcomes = outcomes.map((o) => (o.success ? { ...o, chance: Math.max(0.1, tilt) } : o));
+  }
   const o = pickOutcome(ctx, outcomes);
   if (!o) return;
   ctx.log('activity', `${def.emoji} ${renderText(s, o.text)}`);
@@ -104,6 +118,10 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   }
   if (def.special === 'will') writeWill(ctx, (params as WillParams).heirs);
   if (def.special === 'study') s.education.studyYear = s.year;
+  if (def.special === 'driving_test' && o.success) {
+    s.assets.licence = true;
+    ctx.log('system', 'You have a driving licence.', true);
+  }
 }
 
 /** Record a will. Shares are normalised; with no heirs given, spouse and children share equally. */
