@@ -356,28 +356,28 @@
   },
   "M9.1": {
     "title": "Country data meeting DONE §3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/world.test.ts countries; npm run content:check (validateCountries: 12+ countries, names, cities, economy and law data)"
   },
   "M9.2": {
     "title": "Emigration with requirements, currency conversion, and language effects.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/world.test.ts emigration (requirements, costs, currency conversion, job loss, friendship strain, household, language penalty); e2e/emigrate.spec.ts flow 8"
   },
   "M9.3": {
     "title": "Traits meeting DONE §3 with explicit modifiers shown in tooltips, gained and lost through events.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/world.test.ts traits (15+, tooltip modifiers, gained/lost through events); e2e/settings.spec.ts (tooltip shows modifiers)"
   },
   "M9.4": {
     "title": "Skills meeting DONE §3 with practice, diminishing returns, decay, and effects; languages with fluency.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/world.test.ts skills (6+, diminishing returns, decay, job gates) and language fluency"
   },
   "M9.5": {
     "title": "The world and time cheats from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/world.test.ts (skip, rewind, emigrate instantly, inflation multiplier, seed, force success, no bad events)"
   },
   "M10.1": {
     "title": "Event totals and per-stage minimums from DONE §3.",

@@ -7,6 +7,8 @@ import { restoreSnapshot } from '../snapshots';
 import { catchUpSystems } from '../systems/catchup';
 import type { GameState } from '../types';
 import type { CheatDef } from './types';
+import { countryOptions } from './options';
+import { emigrate } from '../systems/emigration';
 
 /** Answer every pending popup with its first available choice. */
 export function autoResolve(ctx: Ctx): void {
@@ -136,6 +138,27 @@ export const WORLD_CHEATS: CheatDef[] = [
       Object.assign(draft, restored);
       ctx.rng.state = [...restored.rng];
       return `Rewound to age ${restored.player.age} (${restored.year})`;
+    },
+  },
+  {
+    id: 'emigrate.now',
+    group: 'world',
+    label: 'Emigrate instantly',
+    syntax: 'emigrate {country} {city}',
+    help: 'Move to any country now, no visa, no cost. Example: emigrate jp',
+    params: [
+      { name: 'country', type: 'enum', options: countryOptions },
+      { name: 'city', type: 'string', optional: true },
+    ],
+    run: (ctx, p) => {
+      if (String(p['country']) === ctx.s.player.country) return 'You already live there';
+      emigrate(
+        ctx,
+        String(p['country']),
+        p['city'] === undefined ? undefined : String(p['city']),
+        true,
+      );
+      return `You live in ${ctx.s.player.city} now`;
     },
   },
   {

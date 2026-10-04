@@ -11,6 +11,7 @@ import { musicAction, type MusicActionId } from './systems/music';
 import { moneyAction, type MoneyAction } from './systems/banking';
 import { commitCrime } from './systems/crime';
 import { treat } from './systems/health';
+import { emigrate } from './systems/emigration';
 import type { Treatment } from '../content/types';
 import {
   buyHome,
@@ -42,7 +43,8 @@ export type PlayerAction =
   | { type: 'buy_vehicle'; model: string; financed: boolean }
   | { type: 'buy_item'; item: string }
   | { type: 'crime'; id: string }
-  | { type: 'treat'; illness: string; method: Treatment };
+  | { type: 'treat'; illness: string; method: Treatment }
+  | { type: 'emigrate'; country: string; city?: string };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -103,6 +105,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'treat':
       treat(ctx, action.illness, action.method);
+      break;
+    case 'emigrate':
+      emigrate(ctx, action.country, action.city);
       break;
   }
   prunePending(ctx.s);

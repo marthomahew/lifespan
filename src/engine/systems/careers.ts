@@ -12,6 +12,7 @@ import { addStat } from '../stats';
 import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { clampOdds, playerOdds } from './odds';
+import { speaksLocal } from './emigration';
 
 const RANK: Record<EducationLevel, number> = {
   none: 0,
@@ -103,6 +104,7 @@ export function interviewOdds(s: GameState, job: JobDef): number {
   )
     o += 0.15;
   if (hasAdultRecord(s)) o -= 0.25;
+  if (s.player.age >= 18 && !speaksLocal(s)) o -= 0.15;
   if (s.career.jobId) o += 0.05;
   return clampOdds(o);
 }

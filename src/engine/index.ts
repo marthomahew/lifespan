@@ -60,3 +60,4 @@ export type { MoneyAction } from './systems/banking';
 export { crimeOdds, crimeReason, LAWYER_COST } from './systems/crime';
 export { treatmentsFor, type TreatmentView } from './systems/health';
 export { VICE_LABEL } from './systems/vices';
+export { emigrateReason, speaksLocal, MOVE_COST } from './systems/emigration';

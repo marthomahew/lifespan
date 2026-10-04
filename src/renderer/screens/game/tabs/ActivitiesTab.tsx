@@ -3,6 +3,7 @@ import { activitiesFor, formatMoney, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
 import { WillEditor } from './WillEditor';
 import { CrimeSection } from './CrimeSection';
+import { EmigrateSection } from './EmigrateSection';
 import { HealthSection } from './HealthSection';
 import { SKILLS, LANGUAGES } from '../../../../content/skills';
 
@@ -91,6 +92,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
           </ul>
         </section>
       ))}
+      <EmigrateSection game={game} onError={setError} />
       <CrimeSection game={game} onError={setError} />
       {visible.some((a) => a.id === 'practice_skill' || a.id === 'learn_language') && (
         <section className="panel-section row" aria-label="Practice options">

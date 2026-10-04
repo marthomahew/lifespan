@@ -70,3 +70,12 @@ describe('world and time cheats (M3.4, M3.5)', () => {
     expect(a.rng).not.toEqual(base.rng);
   });
 });
+
+describe('world cheats (M9.5)', () => {
+  it("'emigrate.now' moves anywhere instantly, skipping requirements", () => {
+    const kid = newLife({ country: 'us', birthYear: 2010 }, 77);
+    const s = runCheat(kid, 'emigrate.now', { country: 'br' }).state;
+    expect(s.player.country).toBe('br');
+    expect(runCheat(s, 'emigrate.now', { country: 'br' }).message).toMatch(/already/);
+  });
+});

@@ -275,7 +275,8 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
       p.traits.push(t);
     }
   }
-  for (const lang of c.languages.slice(0, 1)) p.languages[lang] = 0;
+  // Native language(s) at full fluency.
+  for (const lang of c.languages) p.languages[lang] = lang === c.languages[0] ? 100 : 40;
 
   p.genes = { looks: r.int(20, 95), smarts: r.int(25, 95), health: r.int(50, 100) };
   const st: Stats = p.stats;

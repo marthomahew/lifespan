@@ -9,6 +9,7 @@ import {
 import { TRAIT_BY_ID } from '../../../content/traits';
 import { StatBar } from '../../components/StatBar';
 import { quickFacts } from './facts';
+import { SkillsCard } from './SkillsCard';
 import { useApp } from '../../store/app';
 import { HIDDEN_STATS, VICES } from '../../../engine';
 
@@ -91,6 +92,7 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
           })}
         </div>
       </section>
+      <SkillsCard game={game} />
       <section className="card pad facts" aria-label="Quick facts" data-testid="quick-facts">
         <div>
           <span className="muted">Stage</span> {STAGE_LABEL[stageOf(p.age)]}

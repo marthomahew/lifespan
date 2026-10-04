@@ -11,6 +11,8 @@ import { assetsTick } from './assets';
 import { healthTick } from './health';
 import { legalTick } from './crime';
 import { vicesTick } from './vices';
+import { skillDecay } from './skills';
+import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
 
@@ -54,6 +56,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   hooks.drift();
   vicesTick(ctx);
   relationshipDecay(ctx);
+  skillDecay(s);
   // 4. System ticks.
   ctx.phase('systems');
   schoolTick(ctx);
@@ -63,6 +66,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   fameTick(ctx);
   healthTick(ctx);
   legalTick(ctx);
+  languageTick(ctx);
   assetsTick(ctx);
   npcLifecycle(ctx);
   romanceTick(ctx);
