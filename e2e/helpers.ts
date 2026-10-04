@@ -38,3 +38,19 @@ export async function ageTo(page: Page, age: number): Promise<void> {
   }
   throw new Error('ageTo did not converge');
 }
+
+/** Run console commands through the cheat panel, then close it. */
+export async function cheat(page: Page, ...cmds: string[]): Promise<void> {
+  await page.keyboard.press('`');
+  for (const cmd of cmds) {
+    await page.getByTestId('console-input').fill(cmd);
+    await page.getByTestId('console-input').press('Enter');
+  }
+  await page.getByTestId('cheat-close').click();
+}
+
+/** Answer every pending popup. */
+export async function clearPopups(page: Page): Promise<void> {
+  while (await page.getByTestId('event-modal').isVisible())
+    await page.locator('button.choice:not([disabled])').first().click();
+}

@@ -7,7 +7,7 @@ import {
   type GameState,
   type Npc,
 } from '../../src/engine';
-import { estatePlan } from '../../src/engine/systems/inheritance';
+import { estatePlan, settleEstate } from '../../src/engine/systems/inheritance';
 import { clone } from '../../src/engine/util';
 import { playYears } from '../helpers';
 
@@ -207,7 +207,18 @@ describe('wills and inheritance (M5.7)', () => {
       params: { heirs: [{ npcId: k0.id, share: 1 }] },
     }).state;
     expect(s.will.heirs).toEqual([{ npcId: k0.id, share: 100 }]);
-    const dead = runCheat(s, 'deathbot', {}).state;
-    expect(dead.death?.estate).toEqual([{ npcId: k0.id, amount: expect.any(Number) }]);
+    expect(estatePlan(s)).toEqual([{ npcId: k0.id, amount: expect.any(Number) }]);
+    // At death the estate goes to the heirs in the will.
+    const d = clone(s);
+    const before = d.npcs.find((n) => n.id === k0.id)?.money ?? 0;
+    const settled = settleEstate(d);
+    expect(settled.map((e) => e.npcId)).toEqual([k0.id]);
+    expect(d.npcs.find((n) => n.id === k0.id)?.money).toBe(before + (settled[0]?.amount ?? 0));
+    // And die() records it.
+    const old = playYears(
+      runCheat(runCheat(s, 'immortal', { on: false }).state, 'age.set', { age: 119 }).state,
+      1,
+    );
+    expect(old.death?.estate.length).toBeGreaterThan(0);
   });
 });

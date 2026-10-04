@@ -67,6 +67,12 @@ for (const size of SIZES) {
       await page.keyboard.press('Escape');
       await page.getByTestId('tab-activities').click();
       await shot('12-activities');
+      await page.getByTestId('tab-occupation').click();
+      await shot('13-occupation');
+      await page.getByTestId('btn-job-listings').click();
+      await page.getByTestId('job-listings').waitFor();
+      await shot('14-job-listings');
+      await page.keyboard.press('Escape');
       await page.keyboard.press('?');
       await shot('07-help');
       await page.keyboard.press('Escape');

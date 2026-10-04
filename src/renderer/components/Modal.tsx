@@ -1,5 +1,8 @@
 import { useEffect, useRef } from 'react';
 
+/** Open dialogs, bottom first; only the top one reacts to keys. */
+const stack: object[] = [];
+
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 type Props = {
@@ -21,6 +24,10 @@ export function Modal({
   hideTitle,
 }: Props): React.JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  useEffect(() => {
+    closeRef.current = onClose;
+  }, [onClose]);
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
     const root = ref.current;
@@ -33,8 +40,17 @@ export function Modal({
     const firstEnabled =
       focusables().find((el) => !el.classList.contains('close')) ?? focusables()[0];
     firstEnabled?.focus();
-    // Keep Tab inside the dialog.
+    const token = {};
+    stack.push(token);
+    // Keep Tab inside the dialog; Esc closes the topmost dialog only.
     const trap = (e: KeyboardEvent): void => {
+      if (stack[stack.length - 1] !== token) return;
+      if (e.key === 'Escape' && closeRef.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeRef.current();
+        return;
+      }
       if (e.key !== 'Tab') return;
       const els = focusables();
       if (!els.length) return;
@@ -52,6 +68,8 @@ export function Modal({
     document.addEventListener('keydown', trap);
     return () => {
       document.removeEventListener('keydown', trap);
+      const i = stack.indexOf(token);
+      if (i >= 0) stack.splice(i, 1);
       prev?.focus?.();
     };
   }, []);

@@ -6,6 +6,9 @@ import { ADULT_EVENTS } from './adult';
 import { MIDDLE_AGE_EVENTS } from './middle-age';
 import { SENIOR_EVENTS } from './senior';
 import { ROMANCE_EVENTS } from './romance';
+import { SYSTEM_EVENTS } from './systems';
+import { SCHOOL_EVENTS } from './school';
+import { WORK_EVENTS } from './work';
 
 export const EVENTS: EventDef[] = [
   ...CHILD_EVENTS,
@@ -15,6 +18,9 @@ export const EVENTS: EventDef[] = [
   ...MIDDLE_AGE_EVENTS,
   ...SENIOR_EVENTS,
   ...ROMANCE_EVENTS,
+  ...SCHOOL_EVENTS,
+  ...WORK_EVENTS,
+  ...SYSTEM_EVENTS,
 ];
 
 export const EVENT_BY_ID: Record<string, EventDef> = Object.fromEntries(

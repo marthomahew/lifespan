@@ -215,7 +215,7 @@ export function fireEvent(
     ctx.s.totals.popups += 1;
     ctx.s.events.popupsThisYear += 1;
   } else {
-    const outcome = pickOutcome(ctx, def.outcomes ?? []);
+    const outcome = pickOutcome(ctx, def.outcomes ?? [], payload);
     if (outcome) applyOutcome(ctx, def, outcome, bindings, payload, true);
     ctx.s.events.noticesThisYear += 1;
   }

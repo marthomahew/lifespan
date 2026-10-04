@@ -6,6 +6,7 @@ import { remember } from '../npc';
 import { addStat } from '../stats';
 import { awardAchievement } from '../systems/achievements';
 import { applyCareerEffect } from '../systems/career-effects';
+import { applySystemEffect } from '../systems/system-effects';
 import { addIllness, cureIllness } from '../systems/illness';
 import { applyCrimeEffect } from '../systems/legal-effects';
 import { applyStatusEffect } from '../systems/status-effects';
@@ -15,19 +16,23 @@ import { clampStat } from '../util';
 import { renderText } from './tokens';
 import type { Effect, EventDef, MoneyAmount, OutcomeDef } from './types';
 
-export function outcomeChance(ctx: Ctx, o: OutcomeDef): number {
-  const c = typeof o.chance === 'function' ? o.chance(ctx.s) : o.chance;
+export function outcomeChance(ctx: Ctx, o: OutcomeDef, payload: ChainPayload = {}): number {
+  const c = typeof o.chance === 'function' ? o.chance(ctx.s, payload) : o.chance;
   return Number.isFinite(c) ? Math.max(0, c) : 0;
 }
 
 /** Weighted outcome draw; the force-success cheat restricts it to success outcomes. */
-export function pickOutcome(ctx: Ctx, outcomes: OutcomeDef[]): OutcomeDef | undefined {
+export function pickOutcome(
+  ctx: Ctx,
+  outcomes: OutcomeDef[],
+  payload: ChainPayload = {},
+): OutcomeDef | undefined {
   let pool = outcomes;
   if (ctx.s.cheats.forceSuccess) {
     const ok = outcomes.filter((o) => o.success);
     if (ok.length) pool = ok;
   }
-  return ctx.rng.weighted(pool, (o) => outcomeChance(ctx, o)) ?? pool[0];
+  return ctx.rng.weighted(pool, (o) => outcomeChance(ctx, o, payload)) ?? pool[0];
 }
 
 export function resolveMoney(ctx: Ctx, amount: MoneyAmount, payload: ChainPayload): number {
@@ -96,7 +101,10 @@ export function applyEffect(
   } else if ('crime' in e) {
     applyCrimeEffect(ctx, e.crime, e.arrest === true);
   } else if ('job' in e) {
-    applyCareerEffect(ctx, e.job, e.jobId);
+    const fromPayload = typeof payload['jobId'] === 'string' ? payload['jobId'] : undefined;
+    applyCareerEffect(ctx, e.job, e.jobId ?? fromPayload);
+  } else if ('system' in e) {
+    applySystemEffect(ctx, e.system, e.arg, payload);
   } else if ('performance' in e) {
     s.career.performance = clampStat(s.career.performance + e.performance);
   } else if ('status' in e) {

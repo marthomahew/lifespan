@@ -51,6 +51,10 @@ export type Effect =
       role?: Role;
     }
   | { schedule: string; inYears: number | [number, number]; payload?: ChainPayload }
+  | {
+      system: 'hire' | 'conscript' | 'sign_label' | 'dishonorable' | 'injury_discharge' | 'therapy';
+      arg?: string;
+    }
   | { death: string }
   | { achievement: string }
   | { fame: number }
@@ -64,7 +68,7 @@ export type ChainStepDef = {
 
 export type OutcomeDef = {
   /** Relative weight; a function lets stats, traits, and skills shift the odds. */
-  chance: number | ((s: GameState) => number);
+  chance: number | ((s: GameState, payload: ChainPayload) => number);
   text: string;
   effects: Effect[];
   next?: ChainStepDef;

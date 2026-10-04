@@ -103,6 +103,7 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
     );
   }
   if (def.special === 'will') writeWill(ctx, (params as WillParams).heirs);
+  if (def.special === 'study') s.education.studyYear = s.year;
 }
 
 /** Record a will. Shares are normalised; with no heirs given, spouse and children share equally. */

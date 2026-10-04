@@ -4,12 +4,23 @@ import { prunePending } from './events/select';
 import { applyLocks } from './stats';
 import { activitiesFor, doActivity } from './systems/activities';
 import { interact, interactionsFor, type InteractParams } from './systems/interactions';
+import { applyForJob, careerAction } from './systems/careers';
+import { dropOut, enroll } from './systems/education';
+import { discharge, enlist } from './systems/military';
+import { musicAction, type MusicActionId } from './systems/music';
 import type { GameState } from './types';
 import { cloneState } from './util';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
-  | { type: 'activity'; id: string; params?: Record<string, unknown> };
+  | { type: 'activity'; id: string; params?: Record<string, unknown> }
+  | { type: 'enroll'; kind: 'university' | 'community' | 'grad'; programId: string }
+  | { type: 'drop_out' }
+  | { type: 'apply_job'; jobId: string }
+  | { type: 'career'; id: string }
+  | { type: 'enlist'; branch: string; specialty: string; officer: boolean }
+  | { type: 'discharge' }
+  | { type: 'music'; id: MusicActionId };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -22,6 +33,27 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'activity':
       doActivity(ctx, action.id, action.params);
+      break;
+    case 'enroll':
+      enroll(ctx, action.kind, action.programId);
+      break;
+    case 'drop_out':
+      dropOut(ctx);
+      break;
+    case 'apply_job':
+      applyForJob(ctx, action.jobId);
+      break;
+    case 'career':
+      careerAction(ctx, action.id);
+      break;
+    case 'enlist':
+      enlist(ctx, action.branch, action.specialty, action.officer);
+      break;
+    case 'discharge':
+      discharge(ctx);
+      break;
+    case 'music':
+      musicAction(ctx, action.id);
       break;
   }
   prunePending(ctx.s);

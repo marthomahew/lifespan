@@ -193,6 +193,42 @@ export const ACTIVITIES: ActivityDef[] = [
     ],
   },
   {
+    id: 'study',
+    label: 'Study at the library',
+    emoji: '📖',
+    group: 'mind_body',
+    ages: [6, 100],
+    limitPerYear: 1,
+    special: 'study',
+    description: 'Quiet, radiators, and the smell of old paper. Grades and smarts go up.',
+    outcomes: [
+      {
+        chance: 0.45,
+        text: 'You study for hours and something finally clicks.',
+        effects: [
+          { stat: 'smarts', delta: 3 },
+          { stat: 'discipline', delta: 2 },
+        ],
+      },
+      {
+        chance: 0.35,
+        text: 'You read the same page eleven times and then, on the twelfth, it makes sense.',
+        effects: [
+          { stat: 'smarts', delta: 2 },
+          { stat: 'discipline', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.2,
+        text: 'You fall asleep on a textbook and wake up with a diagram printed on your cheek.',
+        effects: [
+          { stat: 'smarts', delta: 1 },
+          { stat: 'happiness', delta: -1 },
+        ],
+      },
+    ],
+  },
+  {
     id: 'volunteer',
     label: 'Volunteer',
     emoji: '🤲',

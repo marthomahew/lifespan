@@ -98,6 +98,8 @@ function effectRefs(
   if ('schedule' in e && !ctx.events.has(e.schedule)) err(`schedules unknown event ${e.schedule}`);
   if ('crime' in e && !ctx.extra.crimes.has(e.crime)) err(`unknown crime ${e.crime}`);
   if ('job' in e && e.jobId && !ctx.extra.jobs.has(e.jobId)) err(`unknown job ${e.jobId}`);
+  if ('system' in e && e.system === 'hire' && e.arg && !ctx.extra.jobs.has(e.arg))
+    err(`unknown job ${e.arg}`);
   if ('rel' in e && !e.memory) err(`relationship effect on ${e.rel} needs a memory line`);
   if ('status' in e && e.role && !ROLE_SET.has(e.role)) err(`unknown role ${e.role}`);
   if ('money' in e && typeof e.money === 'number' && !Number.isFinite(e.money))

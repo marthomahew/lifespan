@@ -36,6 +36,7 @@ export function ageUpInPlace(ctx: Ctx): void {
   s.year += 1;
   stepInflation(ctx);
   s.events.popupsThisYear = 0;
+  s.career.appliedThisYear = [];
   s.events.noticesThisYear = 0;
   const stage = stageOf(s.player.age);
   if (stage !== prevStage)

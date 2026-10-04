@@ -43,3 +43,13 @@ export { interactionsFor, interactionOdds, type InteractionView } from './system
 export { activitiesFor, type ActivityView } from './systems/activities';
 export { estatePlan } from './systems/inheritance';
 export { familyTree, type TreeNode } from './family-tree';
+export {
+  jobListings,
+  unmetRequirements,
+  interviewOdds,
+  pensionFor,
+  type Listing,
+} from './systems/careers';
+export { enrollReason, tuitionFor, letterGrade } from './systems/education';
+export { enlistReason, rankTitle, militaryPay } from './systems/military';
+export { musicReason, MUSIC_STAGES, musicSkill, type MusicActionId } from './systems/music';

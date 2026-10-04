@@ -211,8 +211,8 @@
   },
   "M5.4": {
     "title": "Friends come from school, work, and activities, and fade without contact.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/family.test.ts (school classmates→friends, activity friends, 3–6/yr fade vs slower family); tests/engine/careers.test.ts (coworkers become friends)"
   },
   "M5.5": {
     "title": "Romance for adults: meeting, dating stages, proposals, weddings, prenups, divorce with asset split, and affairs through chains.",
@@ -241,48 +241,48 @@
   },
   "M6.1": {
     "title": "Primary and secondary school with grades, school events, and dropping out at the legal age.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/education.test.ts school (auto primary/secondary, grades from smarts/discipline/study, drop-out at leaving age); src/content/events/school.ts via content:check"
   },
   "M6.2": {
     "title": "University: majors, acceptance, costs by country, scholarships, student loans, graduation, and community college.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/education.test.ts university (majors, acceptance, country costs, scholarships, student loans, 4-year graduation with GPA, community college); e2e/careers.spec.ts (enroll)"
   },
   "M6.3": {
     "title": "Graduate programs (law, medicine with residency, business, PhD) with their requirements.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/education.test.ts graduate programs (law/medicine+residency/MBA/PhD requirements and degrees)"
   },
   "M6.4": {
     "title": "A job catalog meeting DONE §3, and a job listings view with filters.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/careers.test.ts catalog + listings; npm run content:check (jobs thresholds enforced); e2e/careers.spec.ts flow 4 (listings filters)"
   },
   "M6.5": {
     "title": "Applications with interview events; performance, raises, promotions, firing, quitting, retirement, and pensions.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/careers.test.ts (interview event, stats/traits odds, performance, raises, promotions, firing, quitting, retirement + pension); e2e/careers.spec.ts flow 4"
   },
   "M6.6": {
     "title": "Part-time jobs for ages 14–17 and freelance gigs.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/careers.test.ts (part-time for teens, freelance gigs)"
   },
   "M6.7": {
     "title": "Military per SPEC §5.4: enlistment and commission, branches, specialties, ranks, deployments, medals, discharge types, the veteran education benefit, and conscription.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/military.test.ts (branches, specialties, enlist/commission, ranks, deployments, medals, risk, discharge types, veteran benefit + perks, conscription); e2e/careers.spec.ts"
   },
   "M6.8": {
     "title": "Music and fame per SPEC §5.5.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/music.test.ts (skill gate, busk→open mic→gigs→act→release→record deal→tour, quality from skill+RNG, fame decay); e2e/careers.spec.ts"
   },
   "M6.9": {
     "title": "The career and education cheats from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/career.test.ts (grant degree, set job/level, promote/demote, performance, military rank/branch/specialty, discharge, retire now)"
   },
   "M7.1": {
     "title": "Annual finances per SPEC §5.6, with a Finances view (last year's breakdown and a net worth graph).",

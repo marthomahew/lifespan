@@ -224,3 +224,89 @@ export type ActivityDef = {
   /** Engine behaviour on top of the outcome (meeting people, wills, ...). */
   special?: string;
 };
+
+export type EducationLevel =
+  | 'none'
+  | 'high_school'
+  | 'associate'
+  | 'bachelor'
+  | 'master'
+  | 'doctorate'
+  | 'law'
+  | 'medicine'
+  | 'mba';
+
+export type JobRequirements = {
+  minAge: number;
+  /** Minimum education; 'bachelor' is met by any higher degree too. law/medicine/mba/doctorate are specific. */
+  education?: EducationLevel;
+  /** If set, the degree must be in one of these major ids. */
+  majors?: string[];
+  smarts?: number;
+  looks?: number;
+  health?: number;
+  /** Skill id -> minimum level. */
+  skills?: Record<string, number>;
+  /** No adult criminal record. */
+  cleanRecord?: boolean;
+  /** Needs a driving licence. */
+  licence?: boolean;
+  /** Veterans get priority (counts as met for veterans even without the education). */
+  veteranBonus?: boolean;
+};
+
+export type JobDef = {
+  id: string;
+  field: string;
+  /** One title per level, lowest first (3–5 levels). */
+  titles: string[];
+  /** Yearly salary range per level in reference dollars, same length as titles. */
+  salary: [number, number][];
+  req: JobRequirements;
+  /** 0..100 */
+  stress: number;
+  /** Extra yearly death risk while employed, as a fraction (0.3 = ×1.3). Most jobs 0. */
+  risk: number;
+  perks: string[];
+  description: string;
+  /** Part-time jobs for ages 14–17 (and anyone who wants one). */
+  partTime?: boolean;
+};
+
+export type MajorDef = {
+  id: string;
+  label: string;
+  field: string;
+  smarts: number;
+  description: string;
+};
+
+export type GradProgramDef = {
+  id: 'law' | 'medicine' | 'mba' | 'phd';
+  label: string;
+  degree: 'law' | 'medicine' | 'mba' | 'doctorate';
+  years: number;
+  /** Medicine adds residency years after graduating. */
+  residency: number;
+  smarts: number;
+  /** Bachelor majors accepted (empty = any). */
+  majors: string[];
+  /** Years of work experience needed (MBA). */
+  workYears: number;
+  /** Yearly tuition in reference dollars before the country's university model. */
+  tuition: number;
+  description: string;
+};
+
+export type MilitarySpecialtyDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  /** Extra death risk when deployed (fraction). */
+  risk: number;
+  /** Skills gained per year of service. */
+  skills: Record<string, number>;
+  /** Civilian job fields this specialty helps you get into. */
+  civilianFields: string[];
+};

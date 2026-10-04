@@ -3,7 +3,15 @@ import { EVENTS } from '../src/content/events';
 import { failedThresholds, thresholds, validateCountries, validateEvents } from './content-lib';
 
 /** Thresholds enforced so far; M12.4 requires every one of them. */
-export const ENFORCED = new Set(['events80', 'countries']);
+export const ENFORCED = new Set([
+  'events80',
+  'countries',
+  'jobs',
+  'majors',
+  'military',
+  'interactions',
+  'traits',
+]);
 
 const findings = [...validateEvents(EVENTS), ...validateCountries()];
 const ts = thresholds(ENFORCED);

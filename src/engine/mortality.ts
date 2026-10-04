@@ -2,6 +2,7 @@ import type { Ctx } from './ctx';
 import type { GameState } from './types';
 import { illnessRisks } from './systems/health-risk';
 import { jobRisk } from './systems/job-risk';
+import { militaryRisk } from './systems/military';
 
 /** Gompertz base hazard (SPEC §3.5). Tuned against the DONE §4.2 bands. */
 export const MORTALITY_A = 5e-5;
@@ -37,7 +38,8 @@ export function riskFactors(s: GameState): RiskFactor[] {
   if (v.party_drugs > 50)
     out.push({ cause: 'Heart failure at a party', mult: 1 + (v.party_drugs - 50) / 80 });
   if (s.legal.prison) out.push({ cause: 'A fight in the prison yard', mult: 1.6 });
-  if (s.military?.deployed) out.push({ cause: 'Killed in action while deployed', mult: 3 });
+  if (s.military?.deployed)
+    out.push({ cause: 'Killed in action while deployed', mult: 1 + militaryRisk(s) * 1.5 });
   const risk = jobRisk(s);
   if (risk > 0) out.push({ cause: 'An accident at work', mult: 1 + risk });
   if (s.player.stats.stress > 85) out.push({ cause: 'A stress-induced heart attack', mult: 1.3 });

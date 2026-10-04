@@ -239,3 +239,68 @@
   width: 3em;
   text-align: right;
 }
+.plain {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+.plain li {
+  padding: 2px 0;
+}
+.enroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.enroll select {
+  flex: 1;
+  min-width: 120px;
+}
+.enroll-note {
+  width: 100%;
+}
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.btn-row button {
+  font-size: 0.88em;
+  padding: 4px 10px;
+}
+.job-card {
+  margin-bottom: 8px;
+}
+.mini-bar.wide {
+  width: 120px;
+}
+.perf {
+  margin-top: 6px;
+}
+.listing-filters {
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.listings {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.listing {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.listing-title {
+  font-weight: 600;
+}
+.history summary {
+  cursor: pointer;
+  margin-top: 6px;
+}
