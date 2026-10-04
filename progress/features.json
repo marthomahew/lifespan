@@ -1,0 +1,482 @@
+{
+  "M0.1": {
+    "title": "Electron + electron-vite + React + TypeScript (strict) project builds, and the renderer also runs standalone in a browser through `dev:web` and the web build.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.2": {
+    "title": "Every npm script listed in CLAUDE.md exists under that name. `verify` runs its steps in order and stops at the first failure. Steps whose milestone hasn't arrived may print SKIPPED until then; M12.4 removes every skip.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.3": {
+    "title": "ESLint (zero warnings) and Prettier are configured, and lint forbids `Math.random`, `Date.now`, and `new Date` in `src/engine` and `src/content`.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.4": {
+    "title": "Vitest runs with at least one passing engine test.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.5": {
+    "title": "Playwright runs against the built web app (vite preview, port 4173, strictPort); a smoke spec passes; every spec fails on console errors and page errors.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.6": {
+    "title": "`electron:smoke` launches the built Electron app under xvfb through Playwright `_electron` and checks the window title. Waivable for container limitations only.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.7": {
+    "title": "The Electron security baseline from SPEC §9.6 is in place and a test checks it (webPreferences and CSP).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.8": {
+    "title": "`hygiene` implements every check in DONE §2.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M0.9": {
+    "title": "`.gitignore` covers build output and reports, and `verify` writes only to gitignored paths.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.1": {
+    "title": "`GameState` is plain JSON data with a `schemaVersion`, and a test shows engine functions never mutate their input.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.2": {
+    "title": "A seeded PRNG lives in state; the same seed and inputs give an identical state hash after 80 years, including across a save and load midway.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.3": {
+    "title": "`newLife` supports random and custom creation (name, gender, attraction, country, city, birth year, appearance, traits, starting stats, family wealth tier).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.4": {
+    "title": "Visible and hidden stats with clamping and yearly drift per SPEC §3.2.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.5": {
+    "title": "`ageUp` follows the yearly order in SPEC §3.4, produces log entries, and switches life stages at the right ages.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.6": {
+    "title": "Mortality per SPEC §3.5 with a recorded cause; death ends the life and produces obituary data.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.7": {
+    "title": "`sim` plays 300 seeded lives to death with the default persona, checks every invariant in DONE §4.1, and writes `reports/balance-report.md`.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M1.8": {
+    "title": "Save round trip: serialize then deserialize gives a deep-equal state, and continuing from a loaded save matches an uninterrupted run.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.1": {
+    "title": "Main screen layout per SPEC §6 (header, stats column, log, tabbed right panel, Age Up button) at 1280×820 and 1024×700.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.2": {
+    "title": "Age Up works by button and Space; the log groups by age with sticky headers; the header shows age, year, and cash.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.3": {
+    "title": "The event popup shows numbered choices, keys 1–4 choose, and Age Up is blocked while a decision is pending.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.4": {
+    "title": "Start screen and New Life screen (random and custom).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.5": {
+    "title": "Obituary screen with summary, cause of death, title, and a New Life action.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.6": {
+    "title": "Persistence through `SaveStore`: autosave each year; a Lives screen (load, rename, delete); export and import as JSON. Electron uses files over IPC; the web build uses localStorage.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.7": {
+    "title": "Settings screen per SPEC §6 (theme, text size, popups per year, cheat badge, autosave, reduced motion), with settings that persist.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.8": {
+    "title": "Stat sparklines (last 20 years) and trait chips with modifier tooltips.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M2.9": {
+    "title": "Light and dark themes through CSS custom properties, following the system by default.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.1": {
+    "title": "The cheat registry from SPEC §8.2 exists, the GUI and the console both use it, and every command has a unit test.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.2": {
+    "title": "The cheat panel opens and closes with backquote, ⇧⌘K (Ctrl+Shift+K in web tests), and the Electron Cheats menu, with the tabs from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.3": {
+    "title": "The console has autocomplete, history, and `help`.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.4": {
+    "title": "Core cheats work: set and lock stats, add and set cash, set age, skip years, immortality, force success, fire any event.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.5": {
+    "title": "Rewinding N years from the snapshot ring buffer restores the earlier state bit for bit (checked by hash).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.6": {
+    "title": "Debug tab: hidden-stats overlay and a JSON state viewer with validated editing.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M3.7": {
+    "title": "Cheat use marks the life (header badge and obituary note) unless switched off in settings.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.1": {
+    "title": "Event definitions are typed per SPEC §4.2, including choices, outcomes, effects, bindings, and chains.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.2": {
+    "title": "Selection and pacing per SPEC §4.3 (popup cap, notice cap, cooldowns, one-time events), with tests.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.3": {
+    "title": "Token rendering per SPEC §4.4, with currency formatted for the country and year.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.4": {
+    "title": "Chain steps live in state and survive save, load, and rewind (tested).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.5": {
+    "title": "`content:check` validates schema, unique ids, tokens, references, the adults-only rule, duplicate texts, and the DONE §3 thresholds.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M4.6": {
+    "title": "The first 80 events, spread across all life stages (they count toward the DONE §3 totals).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.1": {
+    "title": "Family generated at birth per SPEC §5.1.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.2": {
+    "title": "NPC records with traits, stats, relationship, and memory (30 lines max); NPCs age and die each year.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.3": {
+    "title": "At least 12 interactions whose outcomes depend on relationship, traits, memory, and RNG; each one writes a memory line.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.4": {
+    "title": "Friends come from school, work, and activities, and fade without contact.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.5": {
+    "title": "Romance for adults: meeting, dating stages, proposals, weddings, prenups, divorce with asset split, and affairs through chains.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.6": {
+    "title": "Children: pregnancy and adoption (adults only); children age, inherit traits, attend school, and have their own events.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.7": {
+    "title": "Wills and inheritance in both directions.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.8": {
+    "title": "Family tree view (three generations each way, clickable).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M5.9": {
+    "title": "The relationship cheats from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.1": {
+    "title": "Primary and secondary school with grades, school events, and dropping out at the legal age.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.2": {
+    "title": "University: majors, acceptance, costs by country, scholarships, student loans, graduation, and community college.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.3": {
+    "title": "Graduate programs (law, medicine with residency, business, PhD) with their requirements.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.4": {
+    "title": "A job catalog meeting DONE §3, and a job listings view with filters.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.5": {
+    "title": "Applications with interview events; performance, raises, promotions, firing, quitting, retirement, and pensions.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.6": {
+    "title": "Part-time jobs for ages 14–17 and freelance gigs.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.7": {
+    "title": "Military per SPEC §5.4: enlistment and commission, branches, specialties, ranks, deployments, medals, discharge types, the veteran education benefit, and conscription.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.8": {
+    "title": "Music and fame per SPEC §5.5.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M6.9": {
+    "title": "The career and education cheats from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.1": {
+    "title": "Annual finances per SPEC §5.6, with a Finances view (last year's breakdown and a net worth graph).",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.2": {
+    "title": "Inflation index and local-currency display.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.3": {
+    "title": "Savings interest and at least 4 investment vehicles with seeded volatility; buying and selling.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.4": {
+    "title": "Student, mortgage, and personal loans with correct amortization (tested against known values), missed-payment consequences, and early payoff.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.5": {
+    "title": "Homes: generated listings, buying with cash or a mortgage, selling, appreciation, maintenance, condition.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.6": {
+    "title": "Vehicles and possessions with depreciation, condition, and accident events; a driving licence at the country's age.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M7.7": {
+    "title": "The money and asset cheats from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.1": {
+    "title": "An illness catalog meeting DONE §3, with onset, symptoms, treatments, progression, and death factors.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.2": {
+    "title": "Health activities: doctor, gym, diet, meditation, therapy, plastic surgery.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.3": {
+    "title": "Vices with addiction meters, consequences, rehab, and support groups.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.4": {
+    "title": "Crimes meeting DONE §3, with odds, loot, and notoriety.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.5": {
+    "title": "Justice: arrest, bail, lawyers, plea, trial, sentencing, criminal records (juvenile records seal at 18), and their effects on jobs and travel.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.6": {
+    "title": "Prison life with at least 6 activities, parole, and release.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M8.7": {
+    "title": "The health and legal cheats from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M9.1": {
+    "title": "Country data meeting DONE §3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M9.2": {
+    "title": "Emigration with requirements, currency conversion, and language effects.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M9.3": {
+    "title": "Traits meeting DONE §3 with explicit modifiers shown in tooltips, gained and lost through events.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M9.4": {
+    "title": "Skills meeting DONE §3 with practice, diminishing returns, decay, and effects; languages with fluency.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M9.5": {
+    "title": "The world and time cheats from SPEC §8.3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.1": {
+    "title": "Event totals and per-stage minimums from DONE §3.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.2": {
+    "title": "At least 15 multi-year event chains.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.3": {
+    "title": "Achievements and life titles meeting DONE §3, with toasts and an Achievements screen.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.4": {
+    "title": "Activities meeting DONE §3, each with at least 3 outcome texts.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.5": {
+    "title": "`sim:coverage` across all personas fires at least 85% of events at least once, and its report lists the rest with reasons.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M10.6": {
+    "title": "The balance bands in DONE §4.2 hold for the default persona.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.1": {
+    "title": "Continue as a child: choosing the heir, inheritance, and history carried over.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.2": {
+    "title": "Dynasty view with legacy score.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.3": {
+    "title": "Milestone timeline, plus a searchable and filterable log.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.4": {
+    "title": "The full keyboard map from SPEC §6, listed in the Help overlay; the ⌘K palette finds any available action.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.5": {
+    "title": "Visual review: `npm run shots` covers at least 12 screens in both themes at both window sizes, problems found are fixed, and the review notes are in REPORT.md.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.6": {
+    "title": "Accessibility: axe reports no serious or critical violations on the main, event, cheat, settings, and obituary screens.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M11.7": {
+    "title": "The performance budgets in SPEC §9.9, with a benchmark test for `ageUp`.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.1": {
+    "title": "The Electron menu from SPEC §9.7.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.2": {
+    "title": "`dist:mac` builds an unsigned darwin-arm64 `Lifespan.app` in `release/`, and `scripts/check-mac-bundle` validates its Info.plist (name, bundle id, category), executable, and app.asar. Waivable for container limitations only.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.3": {
+    "title": "`dist:linux` builds the packaged app and `electron:smoke:packaged` passes against it, showing that packaging works apart from signing. Waivable for container limitations only.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.4": {
+    "title": "`verify` has no SKIPPED steps left.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.5": {
+    "title": "README.md covers what the game is, the controls, the full cheat list (generated from the registry), the dev commands, and how the Mac build gets installed.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.6": {
+    "title": "`progress/REPORT.md` meets DONE §6.",
+    "passes": false,
+    "evidence": ""
+  },
+  "M12.7": {
+    "title": "The fresh-eyes audit from DONE §7 is done and recorded in REPORT.md.",
+    "passes": false,
+    "evidence": ""
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+out/
+dist/
+dist-web/
+release/
+release-final/
+reports/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.vite/
+*.log
+.DS_Store
