@@ -11,18 +11,18 @@ export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | n
       <h3 className="section-title">Skills</h3>
       <dl className="kv small">
         {skills.map(([id, v]) => (
-          <span key={id} className="contents">
+          <div key={id} className="contents">
             <dt>
               {SKILL_BY_ID[id]?.emoji} {SKILL_BY_ID[id]?.label ?? id}
             </dt>
             <dd data-testid={`skill-${id}`}>{v}</dd>
-          </span>
+          </div>
         ))}
         {langs.map(([id, v]) => (
-          <span key={id} className="contents">
+          <div key={id} className="contents">
             <dt>🗣️ {LANGUAGE_BY_ID[id]?.label ?? id}</dt>
             <dd data-testid={`lang-${id}`}>{v}</dd>
-          </span>
+          </div>
         ))}
       </dl>
     </section>

@@ -1,4 +1,5 @@
 import {
+  continueAsChild,
   act as engineAct,
   type PlayerAction,
   runCheat,
@@ -232,5 +233,25 @@ export function doAct(action: PlayerAction): string | null {
     return null;
   } catch (e) {
     return (e as Error).message;
+  }
+}
+
+/** Carry the family on as one of the late player's children. */
+export function continueAs(heirId: number): void {
+  const g = app.get().game;
+  if (!g) return;
+  try {
+    const next = continueAsChild(g, heirId);
+    app.set({
+      game: next,
+      screen: 'game',
+      saveName: `${next.player.first} ${next.player.last}`,
+      overlay: null,
+      npcId: null,
+      tab: 'occupation',
+    });
+    void persist(next);
+  } catch (e) {
+    showError((e as Error).message);
   }
 }

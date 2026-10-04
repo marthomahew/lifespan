@@ -411,23 +411,23 @@
   },
   "M11.1": {
     "title": "Continue as a child: choosing the heir, inheritance, and history carried over.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/legacy.test.ts (heirs, inheritance, remapped family, tree, plays on); e2e/legacy.spec.ts flow 10"
   },
   "M11.2": {
     "title": "Dynasty view with legacy score.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/legacy.test.ts dynasty + legacyScore; e2e/legacy.spec.ts (Dynasty view rows and score)"
   },
   "M11.3": {
     "title": "Milestone timeline, plus a searchable and filterable log.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/keyboard.spec.ts (log search, category filter, milestone timeline)"
   },
   "M11.4": {
     "title": "The full keyboard map from SPEC §6, listed in the Help overlay; the ⌘K palette finds any available action.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/keyboard.spec.ts (⌘1–4, ?, Esc, ⌘S, ⌘L, ⌘, and the ⌘K palette finding and running actions); e2e/event-popup.spec.ts (1–4); e2e/cheats.spec.ts (backquote, ⇧⌘K)"
   },
   "M11.5": {
     "title": "Visual review: `npm run shots` covers at least 12 screens in both themes at both window sizes, problems found are fixed, and the review notes are in REPORT.md.",
@@ -436,13 +436,13 @@
   },
   "M11.6": {
     "title": "Accessibility: axe reports no serious or critical violations on the main, event, cheat, settings, and obituary screens.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/a11y.spec.ts flow 14 (axe: main, activities, cheats, event, settings, obituary in light and dark; no serious/critical)"
   },
   "M11.7": {
     "title": "The performance budgets in SPEC §9.9, with a benchmark test for `ageUp`.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/perf.test.ts (ageUp < 50 ms at 70 with 40 NPCs and a 5,000-line log); e2e/perf.spec.ts (first paint < 1.5 s, 5,000-entry log loads and scrolls)"
   },
   "M12.1": {
     "title": "The Electron menu from SPEC §9.7.",

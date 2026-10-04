@@ -17,7 +17,7 @@ export function AchievementsView({ game }: { game: GameState }): React.JSX.Eleme
         {ACHIEVEMENTS.map((a) => (
           <li
             key={a.id}
-            className={`achievement${earned.has(a.id) ? ' earned' : ''}`}
+            className={`ach-item${earned.has(a.id) ? ' earned' : ''}`}
             data-testid={`ach-${a.id}`}
             data-earned={earned.has(a.id)}
           >

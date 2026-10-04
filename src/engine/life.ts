@@ -48,7 +48,7 @@ export const WEALTH_TIERS: WealthTier[] = ['poor', 'working', 'middle', 'comfort
 export const MIN_BIRTH_YEAR = 1940;
 export const MAX_BIRTH_YEAR = 2030;
 
-function emptyState(seed: number): GameState {
+export function emptyState(seed: number): GameState {
   return {
     schemaVersion: SCHEMA_VERSION,
     lifeId: '',

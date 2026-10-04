@@ -74,7 +74,8 @@ test('activities: find a date, then propose and plan the wedding from the NPC pa
   for (let i = 0; i < 8; i++) {
     await partnerRow.click();
     if (await page.getByTestId('int-propose').isVisible()) break;
-    if (await page.getByTestId('int-date_night').isEnabled()) await page.getByTestId('int-date_night').click();
+    if (await page.getByTestId('int-date_night').isEnabled())
+      await page.getByTestId('int-date_night').click();
     await page.keyboard.press('Escape');
     await page.getByTestId('age-up').click();
     await clearPopups(page);

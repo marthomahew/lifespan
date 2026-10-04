@@ -61,3 +61,4 @@ export { crimeOdds, crimeReason, LAWYER_COST } from './systems/crime';
 export { treatmentsFor, type TreatmentView } from './systems/health';
 export { VICE_LABEL } from './systems/vices';
 export { emigrateReason, speaksLocal, MOVE_COST } from './systems/emigration';
+export { continueAsChild, heirOptions, legacyScore, type HeirOption } from './legacy';

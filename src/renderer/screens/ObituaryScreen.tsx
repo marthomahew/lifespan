@@ -1,6 +1,6 @@
 import { formatMoney, obituary, type GameState } from '../../engine';
 import { refToLocal } from '../../engine/economy';
-import { go, useApp } from '../store/app';
+import { app, go, useApp } from '../store/app';
 import { ContinueAsChild } from './ContinueAsChild';
 
 export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element {
@@ -53,6 +53,15 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
           </button>
           <button data-testid="btn-obit-lives" onClick={() => go('lives')}>
             Lives
+          </button>
+          <button data-testid="btn-obit-dynasty" onClick={() => app.set({ overlay: 'dynasty' })}>
+            Dynasty
+          </button>
+          <button
+            data-testid="btn-obit-achievements"
+            onClick={() => app.set({ overlay: 'achievements' })}
+          >
+            Achievements
           </button>
         </div>
       </article>

@@ -14,6 +14,9 @@ import { CheatPanel } from '../cheats/CheatPanel';
 import { FamilyTree } from '../screens/FamilyTree';
 import { FinancesView } from '../screens/FinancesView';
 import { AchievementsView } from '../screens/AchievementsView';
+import { DynastyView } from '../screens/DynastyView';
+import { Timeline } from '../screens/Timeline';
+import { CommandPalette } from '../screens/CommandPalette';
 import { NpcPanel } from '../screens/game/NpcPanel';
 
 export function App(): React.JSX.Element {
@@ -54,6 +57,9 @@ export function App(): React.JSX.Element {
       {overlay === 'tree' && game && <FamilyTree game={game} />}
       {overlay === 'finances' && game && <FinancesView game={game} />}
       {overlay === 'achievements' && game && <AchievementsView game={game} />}
+      {overlay === 'dynasty' && game && <DynastyView game={game} />}
+      {overlay === 'timeline' && game && <Timeline game={game} />}
+      {overlay === 'palette' && game && <CommandPalette game={game} />}
       {npcId !== null && game && !overlay && <NpcPanel game={game} npcId={npcId} />}
       {error && (
         <div className="error-banner card" role="alert" data-testid="error-banner">

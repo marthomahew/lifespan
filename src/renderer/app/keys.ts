@@ -60,6 +60,11 @@ export function onKeyDown(e: KeyboardEvent): void {
       if (tab) app.set({ tab });
       return;
     }
+    if (key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (s.game && !s.game.death) app.set({ overlay: s.overlay === 'palette' ? null : 'palette' });
+      return;
+    }
     if (key.toLowerCase() === 's') {
       e.preventDefault();
       if (s.game) void persist(s.game);
