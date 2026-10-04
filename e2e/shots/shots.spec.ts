@@ -82,12 +82,39 @@ for (const size of SIZES) {
       await page.keyboard.press('?');
       await shot('07-help');
       await page.keyboard.press('Escape');
+      await page.keyboard.press('`');
+      await page.getByTestId('cheat-panel').waitFor();
+      await shot('17-cheats');
+      await page.getByTestId('cheat-tab-events').click();
+      await shot('18-cheats-events');
+      await page.getByTestId('cheat-close').click();
+      await page.keyboard.press('Control+k');
+      await page.getByTestId('palette-input').fill('date');
+      await shot('19-palette');
+      await page.keyboard.press('Escape');
+      await page.getByTestId('btn-achievements').click();
+      await shot('20-achievements');
+      await page.keyboard.press('Escape');
+      await page.getByTestId('btn-timeline').click();
+      await shot('21-timeline');
+      await page.keyboard.press('Escape');
       await page.getByTestId('btn-settings').click();
       await shot('08-settings');
       await page.getByTestId('btn-back').click();
       await page.getByTestId('btn-lives').click();
       await page.getByTestId('lives-screen').waitFor();
       await shot('09-lives');
+      await page.getByTestId('btn-back').click();
+      await page.keyboard.press('`');
+      for (const cmd of ['baby now', 'deathbot']) {
+        await page.getByTestId('console-input').fill(cmd);
+        await page.getByTestId('console-input').press('Enter');
+      }
+      await page.getByTestId('obituary-screen').waitFor();
+      await page.getByTestId('cheat-close').click();
+      await shot('22-obituary');
+      await page.getByTestId('btn-obit-dynasty').click();
+      await shot('23-dynasty');
     });
   }
 }

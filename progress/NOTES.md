@@ -19,3 +19,4 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - content:check per pack: npx tsx scripts/check-pack.ts src/content/events/<file>.ts <EXPORT>. Writers guide: src/content/events/GUIDE.md. Chain follow-ups must declare bind for names they use (bindings carry over at runtime).
 - Activity specials live in src/engine/systems/activity-specials.ts (doctor, therapy, practice, language, vice:*, casino, lottery, novel, rehab, support, prison:*). The default bot skips crime/prison groups, vice:* and casino.
 - Kill stray preview servers with pkill -f "[v]ite preview" in its own command (broad patterns can match the Bash tool's own command line).
+- dist: npm run dist:mac → release/Lifespan-darwin-arm64/Lifespan.app (+ check-mac-bundle); npm run dist:linux → release/Lifespan-linux-arm64/lifespan; npm run electron:smoke:packaged runs the smoke specs against it.

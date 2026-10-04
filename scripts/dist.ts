@@ -1,2 +1,55 @@
-// Placeholder until M12 (PLAN M0.2 allows SKIPPED steps; M12.4 removes them).
-console.log(`dist ${process.argv[2] ?? ''}: SKIPPED (milestone not reached yet)`);
+/**
+ * npm run dist:mac | dist:linux — package the built app with @electron/packager (SPEC §9.8).
+ * mac: unsigned darwin-arm64 Lifespan.app in release/ (the owner signs it ad hoc on the Mac).
+ * linux: unpacked linux-arm64 build in release/ for the packaged smoke test.
+ */
+import { packager } from '@electron/packager';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const target = process.argv[2];
+if (target !== 'mac' && target !== 'linux') {
+  console.error('usage: tsx scripts/dist.ts mac|linux');
+  process.exit(2);
+}
+const run = (cmd: string, args: string[]): void => {
+  const r = spawnSync(cmd, args, { stdio: 'inherit' });
+  if (r.status !== 0) process.exit(r.status ?? 1);
+};
+
+run('npx', ['tsx', 'scripts/make-icon.ts']);
+run('npx', ['electron-vite', 'build']);
+
+const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as {
+  version: string;
+  devDependencies: Record<string, string>;
+};
+const electronVersion = pkg.devDependencies['electron'] ?? '44.5.1';
+const platform = target === 'mac' ? 'darwin' : 'linux';
+const outDir = resolve('release', `Lifespan-${platform}-arm64`);
+if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
+
+// Only the built app and production dependencies go into app.asar.
+const KEEP = /^\/(out|node_modules|package\.json)(\/|$)/;
+const paths = await packager({
+  dir: '.',
+  name: 'Lifespan',
+  executableName: target === 'linux' ? 'lifespan' : 'Lifespan',
+  platform,
+  arch: 'arm64',
+  electronVersion,
+  appVersion: pkg.version,
+  appBundleId: 'dev.local.lifespan',
+  appCategoryType: 'public.app-category.games',
+  appCopyright: 'Lifespan',
+  asar: true,
+  prune: true,
+  overwrite: true,
+  out: 'release',
+  icon: target === 'mac' ? 'build/icon.icns' : 'build/icon.png',
+  ignore: (p: string) => p !== '' && !KEEP.test(p),
+  quiet: true,
+});
+console.log(`dist:${target}: ${paths.join(', ')}`);
+if (target === 'mac') run('npx', ['tsx', 'scripts/check-mac-bundle.ts']);

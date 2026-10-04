@@ -69,7 +69,11 @@ export function App(): React.JSX.Element {
           </button>
         </div>
       )}
-      <div className="toasts" aria-live="polite" data-testid="toasts">
+      <div
+        className={`toasts${cheatsOpen ? ' beside-panel' : ''}`}
+        aria-live="polite"
+        data-testid="toasts"
+      >
         {toasts.map((t) => (
           <div
             key={t.id}

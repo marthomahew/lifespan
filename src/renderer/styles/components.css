@@ -69,6 +69,7 @@
   position: fixed;
   right: 16px;
   bottom: 16px;
+  transition: right var(--transition);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -254,8 +255,8 @@
   align-items: center;
 }
 .enroll select {
-  flex: 1;
-  min-width: 120px;
+  flex: 1 1 100%;
+  min-width: 0;
 }
 .enroll-note {
   width: 100%;
@@ -445,4 +446,9 @@
 }
 .palette-item.sel {
   background: var(--accent-soft);
+}
+
+/* Keep toasts clear of the cheat panel. */
+.toasts.beside-panel {
+  right: 496px;
 }

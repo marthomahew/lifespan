@@ -6,10 +6,12 @@ function send(cmd: string): void {
   win?.webContents.send(IPC.menu, cmd);
 }
 
-/** The application menu (SPEC §9.7). Dev tools only in development builds. */
-export function buildMenu(isDev: boolean): Menu {
-  const isMac = process.platform === 'darwin';
-  const template: MenuItemConstructorOptions[] = [
+/** The application menu template (SPEC §9.7). Dev tools only in development builds. */
+export function menuTemplate(
+  isDev: boolean,
+  isMac = process.platform === 'darwin',
+): MenuItemConstructorOptions[] {
+  return [
     {
       label: 'Lifespan',
       id: 'app',
@@ -113,7 +115,10 @@ export function buildMenu(isDev: boolean): Menu {
       ],
     },
   ];
-  return Menu.buildFromTemplate(template);
+}
+
+export function buildMenu(isDev: boolean): Menu {
+  return Menu.buildFromTemplate(menuTemplate(isDev));
 }
 
 export function installMenu(): void {

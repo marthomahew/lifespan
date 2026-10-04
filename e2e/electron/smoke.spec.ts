@@ -109,6 +109,13 @@ test('the Electron Cheats menu opens the cheat panel', async () => {
   expect(labels).toEqual(
     expect.arrayContaining(['Lifespan', 'File', 'Edit', 'View', 'Cheats', 'Window', 'Help']),
   );
+  // Built and packaged apps have no dev tools in the menu.
+  const roles = await app.evaluate(({ Menu }) => {
+    const walk = (items: Electron.MenuItem[]): string[] =>
+      items.flatMap((i) => [String(i.role ?? ''), ...walk(i.submenu?.items ?? [])]);
+    return walk(Menu.getApplicationMenu()?.items ?? []);
+  });
+  expect(roles.map((r) => r.toLowerCase())).not.toContain('toggledevtools');
   await app.evaluate(({ Menu }) =>
     Menu.getApplicationMenu()?.getMenuItemById('cheats-toggle')?.click(),
   );

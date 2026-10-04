@@ -11,7 +11,12 @@ export function addIllness(ctx: Ctx, id: string): void {
     severity: ctx.rng.int(def.severity[0], def.severity[1]),
     treated: -10,
   });
-  ctx.log('health', `${def.emoji} Diagnosed: ${def.label}. ${def.symptom}`, true);
+  // Only serious or lasting conditions are milestones; colds just go in the log.
+  ctx.log(
+    'health',
+    `${def.emoji} Diagnosed: ${def.label}. ${def.symptom}`,
+    def.chronic || def.deathFactor >= 1,
+  );
 }
 
 export function cureIllness(ctx: Ctx, id: string): void {

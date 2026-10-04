@@ -431,8 +431,8 @@
   },
   "M11.5": {
     "title": "Visual review: `npm run shots` covers at least 12 screens in both themes at both window sizes, problems found are fixed, and the review notes are in REPORT.md.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/scripts.test.ts (shots spec: 23 screens, both themes, both sizes); npm run shots (92 PNGs reviewed, notes in progress/visual-review.md and REPORT.md)"
   },
   "M11.6": {
     "title": "Accessibility: axe reports no serious or critical violations on the main, event, cheat, settings, and obituary screens.",
@@ -446,23 +446,23 @@
   },
   "M12.1": {
     "title": "The Electron menu from SPEC §9.7.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/menu.test.ts (App/File/Edit/View/Cheats/Window/Help items; dev tools only in dev); e2e/electron/smoke.spec.ts (live menu, no dev tools, Cheats menu opens panel)"
   },
   "M12.2": {
     "title": "`dist:mac` builds an unsigned darwin-arm64 `Lifespan.app` in `release/`, and `scripts/check-mac-bundle` validates its Info.plist (name, bundle id, category), executable, and app.asar. Waivable for container limitations only.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run dist:mac (scripts/dist.ts, @electron/packager darwin-arm64) then scripts/check-mac-bundle.ts: Info.plist name/bundle id/category, executable, app.asar, icon"
   },
   "M12.3": {
     "title": "`dist:linux` builds the packaged app and `electron:smoke:packaged` passes against it, showing that packaging works apart from signing. Waivable for container limitations only.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run dist:linux then npm run electron:smoke:packaged (scripts/smoke-packaged.ts runs e2e/electron/smoke.spec.ts against release/Lifespan-linux-arm64/lifespan): 3 passed"
   },
   "M12.4": {
     "title": "`verify` has no SKIPPED steps left.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/scripts.test.ts (no script prints SKIPPED; only the M0.6 waiver path remains; no waiver present)"
   },
   "M12.5": {
     "title": "README.md covers what the game is, the controls, the full cheat list (generated from the registry), the dev commands, and how the Mac build gets installed.",
