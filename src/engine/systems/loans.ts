@@ -79,8 +79,17 @@ export function serviceLoans(ctx: Ctx): number {
       continue;
     }
     const interest = l.balance * l.rate;
-    const due = Math.min(l.payment, Math.round(l.balance + interest));
-    if (s.money.cash >= due || l.kind === 'debt') {
+    // The last scheduled payment clears whatever rounding has left over.
+    const owed = Math.round(l.balance + interest);
+    const due = l.yearsPaid + 1 >= l.termYears ? owed : Math.min(l.payment, owed);
+    if (l.kind === 'debt') {
+      // Overdraft debt takes whatever cash there is; the rest rolls on with interest.
+      const pay = Math.min(due, Math.max(0, s.money.cash));
+      s.money.cash -= pay;
+      paid += pay;
+      l.balance = Math.max(0, Math.round(l.balance + interest - pay));
+      l.yearsPaid += 1;
+    } else if (s.money.cash >= due) {
       s.money.cash -= due;
       paid += due;
       l.balance = Math.max(0, Math.round(l.balance + interest - due));
@@ -88,6 +97,10 @@ export function serviceLoans(ctx: Ctx): number {
     } else {
       l.missed += 1;
       l.balance = Math.round((l.balance + interest) * 1.05);
+      // Re-spread what's owed over the remaining term so the loan still ends.
+      l.payment = Math.round(
+        annuityPayment(l.balance, l.rate, Math.max(1, l.termYears - l.yearsPaid)),
+      );
       addStat(s, 'stress', 10);
       addStat(s, 'happiness', -6);
       ctx.log(
@@ -105,6 +118,8 @@ function repossess(ctx: Ctx, l: Loan): void {
   const s = ctx.s;
   const home = s.assets.homes.find((h) => h.id === l.collateral);
   const car = s.assets.vehicles.find((v) => v.id === l.collateral);
+  // The bank sells at a discount, takes what it's owed, and hands back the rest.
+  const sale = Math.round((home?.value ?? car?.value ?? 0) * 0.8);
   if (home) {
     s.assets.homes = s.assets.homes.filter((h) => h.id !== home.id);
     if (home.livingIn) s.assets.housing = 'renting';
@@ -113,7 +128,16 @@ function repossess(ctx: Ctx, l: Loan): void {
     s.assets.vehicles = s.assets.vehicles.filter((v) => v.id !== car.id);
     ctx.log('money', `A tow truck takes the ${car.model} in the night.`, true);
   }
-  l.balance = 0;
+  const left = sale - l.balance;
+  if (left > 0) {
+    s.money.cash += left;
+    ctx.log('money', `After the sale, ${formatMoney(s, left)} of equity comes back to you.`);
+  }
+  l.balance = Math.max(0, -left);
+  if (l.balance > 0) {
+    delete l.collateral;
+    l.kind = 'debt';
+  }
   addStat(s, 'happiness', -12);
 }
 

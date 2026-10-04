@@ -43,6 +43,10 @@ export function hasEducation(s: GameState, need: EducationLevel, majors?: string
 
 export const hasAdultRecord = (s: GameState): boolean =>
   s.legal.record.some((r) => !r.juvenile && (r.verdict === 'convicted' || r.verdict === 'plea'));
+/** A juvenile record counts against you until it is sealed at 18. */
+export const hasOpenJuvenileRecord = (s: GameState): boolean =>
+  !s.legal.sealed &&
+  s.legal.record.some((r) => r.juvenile && (r.verdict === 'convicted' || r.verdict === 'plea'));
 export const isVeteran = (s: GameState): boolean =>
   s.military !== null &&
   !s.military.active &&
@@ -66,7 +70,7 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
   if (r.health && p.stats.health < r.health) out.push(`health ${r.health}`);
   for (const [k, v] of Object.entries(r.skills ?? {}))
     if ((p.skills[k] ?? 0) < v) out.push(`${k} ${v}`);
-  if (r.cleanRecord && hasAdultRecord(s)) out.push('clean record');
+  if (r.cleanRecord && (hasAdultRecord(s) || hasOpenJuvenileRecord(s))) out.push('clean record');
   if (r.licence && !s.assets.licence) out.push("driver's licence");
   if (r.countries?.length && !r.countries.includes(p.country))
     out.push('not available in this country');

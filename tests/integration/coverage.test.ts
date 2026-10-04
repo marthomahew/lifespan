@@ -12,6 +12,8 @@ describe('event coverage across personas (M10.5)', () => {
     expect(fired / EVENTS.length).toBeGreaterThanOrEqual(0.85);
     const parents = chainParents();
     for (const e of EVENTS.filter((x) => !r.fired.get(x.id)))
-      expect(reasonFor(e, r, parents).length).toBeGreaterThan(10);
+      expect(reasonFor(e, r, parents)).toMatch(
+        /^(follow-up of|fired only by a system|eligible in sampled years but never drawn|never eligible in sampled years)/,
+      );
   }, 120_000);
 });

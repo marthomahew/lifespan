@@ -2,7 +2,7 @@ import type { Ctx } from '../ctx';
 import { incomeTax, localToRef, money } from '../economy';
 import { netWorth } from '../networth';
 import type { FinanceReport, InvestKey } from '../types';
-import { serviceLoans, addLoan } from './loans';
+import { addLoan, annuityPayment, serviceLoans } from './loans';
 
 /** Investment vehicles (SPEC §5.6): mean and sd of yearly returns, plus a crash chance. */
 export const INVESTMENTS: Record<
@@ -81,7 +81,9 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     const debt = m.loans.find((l) => l.kind === 'debt');
     if (debt) {
       debt.balance += -m.cash;
-      debt.principal += -m.cash;
+      debt.principal = debt.balance;
+      debt.yearsPaid = 0;
+      debt.payment = Math.round(annuityPayment(debt.balance, debt.rate, 5));
     } else {
       const l = addLoan(s, 'debt', -m.cash, 0.19, 5);
       l.payment = Math.round(l.payment);

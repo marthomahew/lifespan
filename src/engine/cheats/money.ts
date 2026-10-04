@@ -1,4 +1,4 @@
-import { formatMoney } from '../economy';
+import { formatMoney, refToLocal } from '../economy';
 import type { CheatDef } from './types';
 
 const amount = { name: 'amount', type: 'number', min: -1e15, max: 1e15 } as const;
@@ -39,7 +39,7 @@ export const MONEY_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       const on = p['on'] === undefined ? !ctx.s.cheats.infiniteMoney : Boolean(p['on']);
       ctx.s.cheats.infiniteMoney = on;
-      if (on) ctx.s.money.cash = Math.max(ctx.s.money.cash, 1e9);
+      if (on) ctx.s.money.cash = Math.max(ctx.s.money.cash, Math.round(refToLocal(ctx.s, 1e9)));
       return `Infinite money ${on ? 'on' : 'off'}`;
     },
   },

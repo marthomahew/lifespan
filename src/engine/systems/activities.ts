@@ -122,7 +122,13 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   }
   if (def.special === 'will') writeWill(ctx, (params as WillParams).heirs);
   if (def.special === 'study') s.education.studyYear = s.year;
-  runSpecial(ctx, def, o.success === true, params);
+  runSpecial(
+    ctx,
+    def,
+    o.success === true,
+    params,
+    def.outcomes.findIndex((x) => x.text === o.text),
+  );
   if (def.special === 'driving_test' && o.success) {
     s.assets.licence = true;
     ctx.log('system', 'You have a driving licence.', true);

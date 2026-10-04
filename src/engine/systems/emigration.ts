@@ -59,8 +59,32 @@ function convertCurrency(s: GameState, ratio: number): void {
     h.value = r(h.value);
     h.paid = r(h.paid);
   }
-  for (const v of s.assets.vehicles) v.value = r(v.value);
-  for (const p of s.assets.possessions) p.value = r(p.value);
+  for (const v of s.assets.vehicles) {
+    v.value = r(v.value);
+    v.paid = r(v.paid);
+  }
+  for (const p of s.assets.possessions) {
+    p.value = r(p.value);
+    p.paid = r(p.paid);
+  }
+  s.assets.rent = r(s.assets.rent);
+  if (m.last) {
+    const l = m.last;
+    for (const k of [
+      'salary',
+      'otherIncome',
+      'tax',
+      'living',
+      'housing',
+      'loanPayments',
+      'interest',
+      'investReturn',
+      'maintenance',
+      'vices',
+      'net',
+    ] as const)
+      l[k] = r(l[k]);
+  }
   s.assets.listings = [];
   s.assets.listingsYear = -1;
   s.career.salary = r(s.career.salary);

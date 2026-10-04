@@ -79,6 +79,11 @@ export function resolveToken(
     }
     return formatMoney(s, money(s, ref));
   }
+  if (token.startsWith('cash:$')) {
+    // A payload amount already in local currency (bail, fines).
+    const v = payload[token.slice(6)];
+    return typeof v === 'number' ? formatMoney(s, v) : null;
+  }
   if (token.startsWith('$')) {
     const v = payload[token.slice(1)];
     return v === undefined ? null : String(v);

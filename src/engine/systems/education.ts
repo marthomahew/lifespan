@@ -10,6 +10,8 @@ import { hasEducation } from './careers';
 import { borrowForStudy, startStudentRepayment } from './loans';
 import { playerOdds } from './odds';
 
+export const UNIVERSITY_MIN_GRADE = 55;
+
 export const inSchoolAge = (s: GameState): boolean =>
   s.player.age >= 6 && s.player.age <= 17 && !s.education.droppedOut;
 
@@ -151,6 +153,9 @@ export function enrollReason(
   } else {
     const major = MAJOR_BY_ID[programId];
     if (!major) return 'unknown major';
+    // Universities want a passing high-school average; community colleges take anyone.
+    if (kind === 'university' && e.grade < UNIVERSITY_MIN_GRADE && !e.veteranBenefit)
+      return `needs a school average of ${UNIVERSITY_MIN_GRADE} (try community college)`;
     if (
       e.degrees.some(
         (d) =>

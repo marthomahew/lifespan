@@ -9,6 +9,7 @@ import {
 import { checkState } from '../src/engine/bot/invariants';
 import { botStep, newBotMemory, type PersonaId } from '../src/engine/bot/persona';
 import { Rng, seedRng } from '../src/engine/rng';
+import { EVENT_BY_ID } from '../src/content/events';
 
 /** DONE §4.2 balance bands fail the sim when out of range. */
 export const ENFORCE_BANDS = true;
@@ -76,7 +77,7 @@ function playLife(
   for (const v of v0) violations.push(`seed ${seed} birth: ${v}`);
   for (let i = 0; i < MAX_STEPS && !s.death; i++) {
     const prevAge = s.player.age;
-    const prevPending = s.pending.length;
+    const prevCounts = s.events.counts;
     const logFrom = s.log.length;
     try {
       s = botStep(s, persona, bot, mem);
@@ -85,10 +86,11 @@ function playLife(
       break;
     }
     const aged = s.player.age !== prevAge;
-    if (aged) for (const pe of s.pending) popups[pe.eventId] = (popups[pe.eventId] ?? 0) + 1;
-    else if (s.pending.length > prevPending)
-      for (const pe of s.pending.slice(prevPending))
-        popups[pe.eventId] = (popups[pe.eventId] ?? 0) + 1;
+    // Every popup fired this step, including follow-ups that replace the one just answered.
+    for (const [id, n] of Object.entries(s.events.counts)) {
+      const d = n - (prevCounts[id] ?? 0);
+      if (d > 0 && EVENT_BY_ID[id]?.kind === 'choice') popups[id] = (popups[id] ?? 0) + d;
+    }
     const vs = checkState(s, aged ? prevAge : null, logFrom);
     if (!aged && s.player.age !== prevAge) vs.push('age changed outside Age Up');
     for (const v of vs) violations.push(`seed ${seed} age ${s.player.age}: ${v}`);
@@ -130,7 +132,7 @@ export function runLife(
     seed,
     ageAtDeath: s.death?.age ?? p.age,
     reached18: reached(18),
-    degree: s.education.degrees.some((d) => d.level !== 'high_school'),
+    degree: s.education.degrees.some((d) => d.level !== 'high_school' && d.level !== 'associate'),
     reached25: reached(25),
     employed: p.flags.includes('ever_employed_ft'),
     reached30: reached(30),

@@ -8,7 +8,9 @@ import {
   validateCountries,
   validateEvents,
   validateInteractions,
+  validateIllnesses,
 } from './content-lib';
+import { ILLNESSES } from '../src/content/illnesses';
 import { INTERACTIONS } from '../src/content/interactions';
 import { ACTIVITIES } from '../src/content/activities';
 
@@ -19,6 +21,7 @@ const findings = [
   ...validateCountries(),
   ...validateInteractions(INTERACTIONS),
   ...validateActivities(ACTIVITIES),
+  ...validateIllnesses(ILLNESSES),
 ];
 const ts = thresholds(ENFORCED);
 for (const t of ts) {

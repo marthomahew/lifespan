@@ -2,6 +2,7 @@ import { TRAIT_BY_ID } from '../content/traits';
 import type { Ctx } from './ctx';
 import { ALL_STATS, VISIBLE_STATS, type GameState, type StatKey } from './types';
 import { clamp, clampStat } from './util';
+import { refToLocal } from './economy';
 
 /** Add a delta to a stat with clamping (locks are re-applied after every step). */
 export function addStat(s: GameState, key: StatKey, delta: number): void {
@@ -14,7 +15,7 @@ export function setStat(s: GameState, key: StatKey, value: number): void {
 
 /** Locked stats (cheat) snap back to their lock value. */
 export function applyLocks(s: GameState): void {
-  if (s.cheats.infiniteMoney && s.money.cash < 1e9) s.money.cash = 1e9;
+  if (s.cheats.infiniteMoney) s.money.cash = Math.max(s.money.cash, Math.round(refToLocal(s, 1e9)));
   for (const [k, v] of Object.entries(s.cheats.locks)) {
     if (v !== undefined) s.player.stats[k as StatKey] = clampStat(v);
   }

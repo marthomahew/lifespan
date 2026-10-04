@@ -75,13 +75,29 @@ describe('university (M6.2)', () => {
           .enrollment
       )
         smartIn++;
-      if (
-        act(dull, { type: 'enroll', kind: 'university', programId: 'physics' }).state.education
-          .enrollment
-      )
-        dullIn++;
+      try {
+        if (
+          act(dull, { type: 'enroll', kind: 'university', programId: 'physics' }).state.education
+            .enrollment
+        )
+          dullIn++;
+      } catch (e) {
+        expect((e as Error).message).toMatch(/school average/);
+      }
     }
     expect(smartIn).toBeGreaterThan(dullIn + 10);
+  });
+
+  it('universities want a passing school average; community colleges take anyone', () => {
+    const weak = clone(grad18(12));
+    weak.education.grade = 40;
+    expect(() => act(weak, { type: 'enroll', kind: 'university', programId: 'history' })).toThrow(
+      /school average/,
+    );
+    expect(
+      act(weak, { type: 'enroll', kind: 'community', programId: 'history' }).state.education
+        .enrollment?.kind,
+    ).toBe('community');
   });
 
   it('costs follow the country: free in Germany, expensive in the US', () => {

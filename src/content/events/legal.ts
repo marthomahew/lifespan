@@ -13,7 +13,7 @@ export const LEGAL_EVENTS: EventDef[] = [
     category: 'crime',
     weight: 0,
     chainOnly: true,
-    text: 'You are arrested for {$crime}. The custody sergeant reads you your rights in the voice of someone reading a bus timetable. Bail is set at {$bail} in local money.',
+    text: 'You are arrested for {$crime}. The custody sergeant reads you your rights in the voice of someone reading a bus timetable. Bail is set at {cash:$bail}.',
     choices: [
       {
         id: 'pay',

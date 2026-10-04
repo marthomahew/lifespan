@@ -147,7 +147,7 @@ export function illnessRisks(s: GameState): RiskFactor[] {
   let worst: { label: string; part: number } | null = null;
   for (const ill of s.health.illnesses) {
     const def = ILLNESS_BY_ID[ill.id];
-    if (!def) continue;
+    if (!def || def.mental) continue;
     const managed = def.chronic && s.year - ill.treated <= 4 ? 0.5 : 1;
     const part = (def.deathFactor * ill.severity * managed * ILLNESS_RISK_SCALE) / 100;
     extra += part;

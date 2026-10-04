@@ -34,7 +34,7 @@ export function shiftAge(ctx: Ctx, target: number): void {
   s.pending = [];
   s.player.age = target;
   s.year += d;
-  s.inflation = Math.max(0.01, s.inflation * Math.pow(1.025, d));
+  s.inflation = Math.max(0.01, s.inflation * Math.pow(1 + 0.025 * s.inflationMult, d));
   for (const n of s.npcs) {
     if (!n.alive) continue;
     n.age = Math.max(0, n.age + d);

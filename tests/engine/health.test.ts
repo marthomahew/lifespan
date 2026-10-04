@@ -24,7 +24,8 @@ describe('illness catalog (M8.1)', () => {
       expect(Object.keys(i.treatments).length).toBeGreaterThan(0);
       expect(i.treatments.alternative ?? 0).toBeLessThan(0.3);
       expect(Number.isFinite(i.progression)).toBe(true);
-      expect(i.deathFactor).toBeGreaterThan(0);
+      if (i.mental) expect(i.deathFactor).toBe(0);
+      else expect(i.deathFactor).toBeGreaterThan(0);
     }
     expect(ILLNESSES.some((i) => i.chronic)).toBe(true);
     expect(ILLNESSES.filter((i) => i.mental).length).toBeGreaterThanOrEqual(2);

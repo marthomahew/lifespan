@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newLife, runCheat } from '../../../src/engine';
 import { playYears } from '../../helpers';
+import { refToLocal } from '../../../src/engine/economy';
 
 const base = newLife({ country: 'us' }, 11);
 
@@ -14,7 +15,8 @@ describe('money cheats', () => {
   it("'money.infinite' keeps cash topped up", () => {
     const s = runCheat(base, 'money.infinite', {}).state;
     expect(s.cheats.infiniteMoney).toBe(true);
-    expect(playYears(s, 3).money.cash).toBeGreaterThanOrEqual(1e9);
+    const later = playYears(s, 3);
+    expect(later.money.cash).toBeGreaterThanOrEqual(Math.round(refToLocal(later, 1e9)));
     expect(runCheat(s, 'money.infinite', { on: false }).state.cheats.infiniteMoney).toBe(false);
   });
 

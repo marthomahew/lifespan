@@ -203,7 +203,8 @@ export function imprison(ctx: Ctx, crimeId: string, years: number, juvenile = fa
   s.legal.prison = { years, served: 0, crimeId, behaviour: 50 };
   s.assets.housing = 'prison';
   if (!s.player.flags.includes('ever_imprisoned')) s.player.flags.push('ever_imprisoned');
-  if (juvenile) s.player.flags.push('juvenile_detention');
+  if (juvenile && !s.player.flags.includes('juvenile_detention'))
+    s.player.flags.push('juvenile_detention');
   if (s.career.jobId) endJob(ctx, 'imprisoned');
   s.career.partTimeId = null;
   if (s.education.enrollment) leaveEnrollment(s);

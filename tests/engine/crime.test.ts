@@ -127,7 +127,15 @@ describe('justice (M8.5)', () => {
     expect(adultNow.legal.sealed).toBe(true);
     adultNow = runCheat(adultNow, 'degree.grant', { level: 'high_school' }).state;
     const police = JOB_BY_ID['police_officer'];
-    if (police) expect(unmetRequirements(adultNow, police).join()).not.toMatch(/clean record/);
+    if (!police) throw new Error('police_officer job missing');
+    expect(unmetRequirements(adultNow, police).join()).not.toMatch(/clean record/);
+    // Before sealing, the juvenile record does count against clean-record jobs.
+    const lifeguard =
+      Object.values(JOB_BY_ID).find((j) => j.partTime && j.req.cleanRecord) ?? police;
+    const unsealed = { ...done, legal: { ...done.legal, prison: null, sealed: false } };
+    expect(unmetRequirements(unsealed, lifeguard).join()).toMatch(/clean record/);
+    const sealed = { ...unsealed, legal: { ...unsealed.legal, sealed: true } };
+    expect(unmetRequirements(sealed, lifeguard).join()).not.toMatch(/clean record/);
   });
 
   it('an adult record blocks clean-record jobs and loans', () => {

@@ -21,6 +21,7 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
     const min = countryOf(s).ages.drinking;
     if (s.player.age < min) return `drinking age here is ${min}`;
   }
+  if (sp === 'vice:smoking' && s.player.age < 18) return 'from age 18';
   if (sp === 'rehab' || sp === 'support') {
     if (!VICES.some((v) => s.vices.levels[v] >= 15)) return 'nothing to recover from';
   }
@@ -45,6 +46,7 @@ export function runSpecial(
   def: ActivityDef,
   success: boolean,
   params: Record<string, unknown>,
+  outcomeIndex = -1,
 ): void {
   const s = ctx.s;
   const sp = def.special ?? '';
@@ -101,15 +103,16 @@ export function runSpecial(
       return;
     }
     case 'casino': {
+      // The money follows the outcome the player read: a win, a loss, or breaking even. Slightly negative odds overall.
       useVice(ctx, 'gambling');
-      const stake = money(s, 200 + Math.max(0, s.money.cash) * 0.02);
-      const r = ctx.rng.next();
-      const delta =
-        s.cheats.forceSuccess || r > 0.62
-          ? Math.round(stake * (r > 0.95 ? 8 : 1.5))
-          : r > 0.45
-            ? 0
-            : -stake;
+      const stake = money(s, 200) + Math.round(Math.max(0, s.money.cash) * 0.02);
+      const delta = success
+        ? ctx.rng.chance(0.1)
+          ? stake * 3
+          : stake
+        : outcomeIndex === 1
+          ? -stake
+          : 0;
       s.money.cash += delta;
       if (delta)
         ctx.log(
@@ -121,7 +124,8 @@ export function runSpecial(
       return;
     }
     case 'lottery': {
-      if (s.cheats.forceSuccess || ctx.rng.chance(0.0005)) {
+      // Real lottery odds: tickets lose money on average.
+      if (s.cheats.forceSuccess || ctx.rng.chance(0.000001)) {
         const prize = money(s, ctx.rng.int(250000, 5000000));
         s.money.cash += prize;
         if (!s.player.flags.includes('lottery_winner')) s.player.flags.push('lottery_winner');

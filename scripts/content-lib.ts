@@ -195,7 +195,11 @@ export function validateEvents(
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;
-        if (/^money:\$[a-z_]+$/.test(tok) || /^\$[a-z_]+$/.test(tok)) {
+        if (
+          /^money:\$[a-z_]+$/.test(tok) ||
+          /^cash:\$[a-z_]+$/.test(tok) ||
+          /^\$[a-z_]+$/.test(tok)
+        ) {
           if (!e.chainOnly) err(where, `payload token {${tok}} outside a chain-only event`);
           continue;
         }
@@ -357,7 +361,7 @@ export function thresholds(
   t(
     'noticeShare',
     'Notice-only share of events (%)',
-    random.length ? Math.round((100 * notices) / random.length) : 0,
+    random.length ? Math.round((1000 * notices) / random.length) / 10 : 0,
     0,
     25,
   );
@@ -458,3 +462,14 @@ export const ENFORCED = new Set([
   'assets',
   'cheats',
 ]);
+
+/** SPEC §5.8: mental illness is treated respectfully and is never a cause of death. */
+export function validateIllnesses(list: import('../src/content/types').IllnessDef[]): Finding[] {
+  return list
+    .filter((i) => i.mental && i.deathFactor !== 0)
+    .map((i) => ({
+      level: 'error' as const,
+      where: `illness ${i.id}`,
+      msg: 'mental illnesses must have deathFactor 0',
+    }));
+}
