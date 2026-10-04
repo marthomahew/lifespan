@@ -16,6 +16,7 @@ describe('ageUp (M1.5)', () => {
     let s = newLife({}, 2);
     let total = 0;
     for (let i = 0; i < 20; i++) {
+      s = { ...s, pending: [] };
       const step = ageUp(s);
       expect(step.state.log.slice(s.log.length)).toEqual(step.log);
       total += step.log.length;

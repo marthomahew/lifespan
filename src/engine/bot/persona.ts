@@ -1,4 +1,5 @@
 import { ageUp } from '../age';
+import { choose, currentPopup } from '../events/choose';
 import { Rng } from '../rng';
 import type { GameState } from '../types';
 
@@ -21,6 +22,11 @@ export const PERSONAS: PersonaId[] = [
  */
 export function botStep(s: GameState, persona: PersonaId, rng: Rng): GameState {
   void persona;
-  void rng;
+  const popup = currentPopup(s);
+  if (popup) {
+    const enabled = popup.choices.filter((c) => c.enabled);
+    if (!enabled.length) throw new Error(`popup ${popup.eventId} has no selectable choice`);
+    return choose(s, rng.pick(enabled).id).state;
+  }
   return ageUp(s).state;
 }

@@ -1,6 +1,8 @@
 export * from './types';
 export { newLife, type NewLifeOptions, WEALTH_TIERS } from './life';
-export { ageUp, EngineError } from './age';
+export { ageUp } from './age';
+export { EngineError } from './errors';
+export { choose, currentPopup, categoryEmoji, type PopupView } from './events/choose';
 export type { Step } from './ctx';
 export { serialize, deserialize, SaveError } from './save';
 export { stateHash, lifeHash } from './hash';
@@ -8,3 +10,7 @@ export { stageOf, STAGE_LABEL } from './stage';
 export { obituary, type Obituary } from './death';
 export { netWorth, netWorthRef } from './networth';
 export { formatMoney, formatMoneyShort, countryOf, money } from './economy';
+export { makeSaveFile, parseSaveFile, summarize, type SaveSummary } from './savefile';
+export { renderText } from './events/tokens';
+export { avatarEmoji } from './avatar';
+export { traitModifiers, statLabel } from './describe';

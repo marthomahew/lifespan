@@ -7,7 +7,7 @@ import {
   MORTALITY_A,
   MORTALITY_B,
 } from '../../src/engine/mortality';
-import { playToDeath } from '../helpers';
+import { playToDeath, playYears } from '../helpers';
 import { clone } from '../../src/engine/util';
 
 describe('mortality (M1.6)', () => {
@@ -63,8 +63,7 @@ describe('mortality (M1.6)', () => {
   it('immortality prevents death', () => {
     const s0 = newLife({}, 5);
     const s = { ...s0, cheats: { ...s0.cheats, immortal: true } };
-    let cur = s;
-    for (let i = 0; i < 130; i++) cur = playToDeath(cur, 1);
+    const cur = playYears(s, 130);
     expect(cur.death).toBeNull();
     expect(cur.player.age).toBe(130);
   });

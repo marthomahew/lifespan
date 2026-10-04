@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   ageUp,
+  choose,
+  currentPopup,
   newLife,
   serialize,
   deserialize,
@@ -18,10 +20,11 @@ describe('GameState (M1.1)', () => {
 
   it('engine functions never mutate their input', () => {
     let s = newLife({}, 5);
-    for (let i = 0; i < 60 && !s.death; i++) {
+    for (let i = 0; i < 120 && !s.death; i++) {
       const before = JSON.stringify(s);
       deepFreeze(s);
-      const next = ageUp(s).state;
+      const popup = currentPopup(s);
+      const next = popup ? choose(s, popup.choices[0]?.id ?? '').state : ageUp(s).state;
       expect(JSON.stringify(s)).toBe(before);
       expect(next).not.toBe(s);
       s = next;

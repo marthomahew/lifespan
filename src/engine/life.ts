@@ -245,7 +245,8 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
       'comfortable',
       'rich',
     ] as const);
-  p.traits = opts.traits ? validTraits(opts.traits) : randomTraits(ctx, r.int(2, 3));
+  const chosen = opts.traits ? validTraits(opts.traits) : [];
+  p.traits = chosen.length ? chosen : randomTraits(ctx, r.int(2, 3));
   for (const lang of c.languages.slice(0, 1)) p.languages[lang] = 0;
 
   p.genes = { looks: r.int(20, 95), smarts: r.int(25, 95), health: r.int(50, 100) };

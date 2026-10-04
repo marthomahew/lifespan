@@ -95,3 +95,48 @@ export type Trait = {
   /** Traits that can't coexist with this one. */
   excludes: string[];
 };
+
+export type AchievementDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+};
+
+export type Treatment =
+  'doctor' | 'specialist' | 'surgery' | 'alternative' | 'therapy' | 'medication';
+
+export type IllnessDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  /** What you notice: "A cough that won't quit." */
+  symptom: string;
+  /** Starting severity range 0..100. */
+  severity: [number, number];
+  chronic: boolean;
+  mental?: boolean;
+  onset: {
+    ages: [number, number];
+    /** Base yearly chance of onset. */
+    base: number;
+    /** Multipliers from vices, low health, stress, and family history. */
+    vice?: {
+      key: 'alcohol' | 'smoking' | 'gambling' | 'party_drugs' | 'pills' | 'hard_drugs';
+      mult: number;
+    };
+    lowHealth?: number;
+    stress?: number;
+    hereditary?: number;
+  };
+  /** Severity added each year untreated (negative means it fades on its own). */
+  progression: number;
+  /** Mortality multiplier at severity 100: hazard × (1 + deathFactor × severity / 100). */
+  deathFactor: number;
+  /** Success odds per treatment, 0..1; missing means it doesn't help. */
+  treatments: Partial<Record<Treatment, number>>;
+  /** Cost of a treatment in reference dollars (before the country's healthcare multiplier). */
+  cost: number;
+  /** Yearly stat effects while active. */
+  effects: { happiness?: number; health?: number; looks?: number; smarts?: number };
+};

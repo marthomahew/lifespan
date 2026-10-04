@@ -1,7 +1,65 @@
+import { useEffect } from 'react';
+import { app, dismissToast, showError, useApp } from '../store/app';
+import { applySettingsToDocument } from '../store/settings';
+import { GameScreen } from '../screens/GameScreen';
+import { HelpOverlay } from '../screens/HelpOverlay';
+import { LivesScreen } from '../screens/LivesScreen';
+import { NewLifeScreen } from '../screens/NewLifeScreen';
+import { ObituaryScreen } from '../screens/ObituaryScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { StartScreen } from '../screens/StartScreen';
+import { onKeyDown } from './keys';
+
 export function App(): React.JSX.Element {
+  const screen = useApp((s) => s.screen);
+  const game = useApp((s) => s.game);
+  const overlay = useApp((s) => s.overlay);
+  const toasts = useApp((s) => s.toasts);
+  const error = useApp((s) => s.error);
+  const settings = useApp((s) => s.settings);
+
+  useEffect(() => {
+    applySettingsToDocument(settings);
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (): void => applySettingsToDocument(app.get().settings);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [settings]);
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   return (
-    <main data-testid="app-root">
-      <h1>Lifespan</h1>
-    </main>
+    <div className="app" data-testid="app-root" data-screen={screen}>
+      {screen === 'start' && <StartScreen />}
+      {screen === 'new' && <NewLifeScreen />}
+      {screen === 'game' && game && <GameScreen game={game} />}
+      {screen === 'obituary' && game && <ObituaryScreen game={game} />}
+      {screen === 'lives' && <LivesScreen />}
+      {screen === 'settings' && <SettingsScreen />}
+      {overlay === 'help' && <HelpOverlay />}
+      {error && (
+        <div className="error-banner card" role="alert" data-testid="error-banner">
+          <span className="grow">{error}</span>
+          <button className="ghost" aria-label="Dismiss" onClick={() => showError(null)}>
+            ✕
+          </button>
+        </div>
+      )}
+      <div className="toasts" aria-live="polite" data-testid="toasts">
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className={`toast card ${t.kind}`}
+            data-testid="toast"
+            onClick={() => dismissToast(t.id)}
+          >
+            {t.text}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

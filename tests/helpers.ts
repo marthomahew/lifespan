@@ -1,4 +1,4 @@
-import { ageUp, type GameState } from '../src/engine';
+import { ageUp, choose, currentPopup, type GameState } from '../src/engine';
 
 /** Deep-freeze so any mutation of an engine input throws in strict mode. */
 export function deepFreeze<T>(v: T): T {
@@ -9,9 +9,14 @@ export function deepFreeze<T>(v: T): T {
   return v;
 }
 
-/** Advance one step: answer a pending popup with its first choice, or Age Up. */
+/** Advance one step: answer a pending popup with its first enabled choice, or Age Up. */
 export function advance(s: GameState): GameState {
-  if (s.pending.length > 0) throw new Error('pending events need a bot (added with M4)');
+  const popup = currentPopup(s);
+  if (popup) {
+    const c = popup.choices.find((x) => x.enabled);
+    if (!c) throw new Error(`no selectable choice for ${popup.eventId}`);
+    return choose(s, c.id).state;
+  }
   return ageUp(s).state;
 }
 

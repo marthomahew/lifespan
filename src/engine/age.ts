@@ -1,4 +1,5 @@
 import { Ctx, type Step } from './ctx';
+import { EngineError } from './errors';
 import { die } from './death';
 import { causeOfDeath, rollMortality } from './mortality';
 import { pushSnapshot } from './snapshots';
@@ -8,8 +9,6 @@ import { runYearSystems, yearCircumstances } from './systems';
 import { netWorthRef } from './networth';
 import type { GameState } from './types';
 import { cloneState } from './util';
-
-export class EngineError extends Error {}
 
 /** Inflation: default 2.5% a year with ±1.5 points of seeded noise, never below 0. */
 export function stepInflation(ctx: Ctx): void {

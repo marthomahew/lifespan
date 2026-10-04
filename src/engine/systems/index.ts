@@ -1,4 +1,5 @@
 import type { Ctx } from '../ctx';
+import { drawRandomEvents, runDueChains } from '../events/select';
 import type { Circumstances } from '../stats';
 import type { GameState } from '../types';
 
@@ -37,6 +38,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   hooks.drift();
   // 4. System ticks.
   // 5. Chain steps due this year.
+  if (!ctx.s.death) runDueChains(ctx);
   // 6. Random events.
-  void ctx;
+  if (!ctx.s.death) drawRandomEvents(ctx);
 }

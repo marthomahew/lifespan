@@ -2,6 +2,9 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/App';
 import './styles/global.css';
+import './styles/layout.css';
+import './styles/screens.css';
+import './styles/components.css';
 
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('missing #root');

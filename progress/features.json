@@ -86,48 +86,48 @@
   },
   "M2.1": {
     "title": "Main screen layout per SPEC §6 (header, stats column, log, tabbed right panel, Age Up button) at 1280×820 and 1024×700.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/layout.spec.ts (1280×820 and 1024×700 region geometry); npm run shots"
   },
   "M2.2": {
     "title": "Age Up works by button and Space; the log groups by age with sticky headers; the header shows age, year, and cash.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/new-life.spec.ts flow 1 (button + Space, sticky age headers, header age/year/cash)"
   },
   "M2.3": {
     "title": "The event popup shows numbered choices, keys 1–4 choose, and Age Up is blocked while a decision is pending.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/event-popup.spec.ts (numbered choices, mouse + number key, Age Up blocked); tests/engine/state.test.ts"
   },
   "M2.4": {
     "title": "Start screen and New Life screen (random and custom).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/new-life.spec.ts flows 1–2 (Start, New Life random + custom)"
   },
   "M2.5": {
     "title": "Obituary screen with summary, cause of death, title, and a New Life action.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/obituary.spec.ts; tests/engine/mortality.test.ts (obituary data)"
   },
   "M2.6": {
     "title": "Persistence through `SaveStore`: autosave each year; a Lives screen (load, rename, delete); export and import as JSON. Electron uses files over IPC; the web build uses localStorage.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/persistence.spec.ts (autosave, Lives load/rename/delete, export/import); e2e/electron/smoke.spec.ts (IPC save file); tests/integration/main-saves.test.ts; tests/engine/savefile.test.ts"
   },
   "M2.7": {
     "title": "Settings screen per SPEC §6 (theme, text size, popups per year, cheat badge, autosave, reduced motion), with settings that persist.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/settings.spec.ts (every setting persists)"
   },
   "M2.8": {
     "title": "Stat sparklines (last 20 years) and trait chips with modifier tooltips.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/settings.spec.ts (sparkline path, trait tooltip modifiers)"
   },
   "M2.9": {
     "title": "Light and dark themes through CSS custom properties, following the system by default.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/settings.spec.ts (system default via colorScheme, explicit theme persists); src/renderer/styles/global.css tokens"
   },
   "M3.1": {
     "title": "The cheat registry from SPEC §8.2 exists, the GUI and the console both use it, and every command has a unit test.",
