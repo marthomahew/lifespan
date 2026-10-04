@@ -34,11 +34,16 @@ export type YearHooks = { drift: () => void };
 /** Steps 2–6 of the year in SPEC §3.4 order. */
 export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   // 2. Finances.
+  ctx.phase('finances');
   // 3. Drift.
+  ctx.phase('drift');
   hooks.drift();
   // 4. System ticks.
+  ctx.phase('systems');
   // 5. Chain steps due this year.
+  ctx.phase('chains');
   if (!ctx.s.death) runDueChains(ctx);
   // 6. Random events.
+  ctx.phase('events');
   if (!ctx.s.death) drawRandomEvents(ctx);
 }

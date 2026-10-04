@@ -91,7 +91,7 @@ export type Eligibility = { ok: boolean; reason: string };
 export function eligibility(
   s: GameState,
   def: EventDef,
-  opts: { ignoreConditions?: boolean; chain?: boolean } = {},
+  opts: { ignoreConditions?: boolean; chain?: boolean; preset?: Record<string, number> } = {},
 ): Eligibility {
   const age = s.player.age;
   const adultsOnly = def.adultsOnly === true || def.category === 'romance';
@@ -114,6 +114,13 @@ export function eligibility(
     if (def.when && !def.when(s)) return { ok: false, reason: 'its conditions are not met' };
   }
   for (const [name, q] of Object.entries(bindingQueries(def))) {
+    const pre = opts.preset?.[name];
+    if (pre !== undefined) {
+      const n = s.npcs.find((x) => x.id === pre);
+      if (!n || !n.alive) return { ok: false, reason: `{${name}} is no longer around` };
+      if (adultsOnly && n.age < 18) return { ok: false, reason: 'adults only' };
+      continue;
+    }
     if (!s.npcs.some((n) => matches(s, n, q, adultsOnly)))
       return { ok: false, reason: `nobody fits {${name}} (${q.role})` };
   }
@@ -215,7 +222,7 @@ export function fireEvent(
   return true;
 }
 
-const POPUP_ATTEMPT = [0.8, 0.45, 0.3, 0.2, 0.15];
+const POPUP_ATTEMPT = [0.7, 0.5, 0.45, 0.4, 0.4];
 const NOTICE_ATTEMPT = [0.6, 0.35, 0.2, 0.12, 0.06, 0.04];
 export const NOTICE_CAP = 6;
 
@@ -227,7 +234,7 @@ export function runDueChains(ctx: Ctx): void {
   for (const step of due) {
     const def = EVENT_BY_ID[step.eventId];
     if (!def || s.death) continue;
-    if (!eligibility(s, def, { chain: true }).ok) continue;
+    if (!eligibility(s, def, { chain: true, preset: step.bindings }).ok) continue;
     fireEvent(ctx, def, 'chain', step.payload, step.bindings);
   }
 }
@@ -250,4 +257,11 @@ export function drawRandomEvents(ctx: Ctx): void {
       fireEvent(ctx, def, 'random');
     }
   }
+}
+
+/** Drop pending popups whose bound NPCs have died since they were drawn. */
+export function prunePending(s: GameState): void {
+  s.pending = s.pending.filter((p) =>
+    Object.values(p.bindings).every((id) => s.npcs.find((n) => n.id === id)?.alive === true),
+  );
 }

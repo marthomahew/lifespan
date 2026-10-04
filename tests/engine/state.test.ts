@@ -24,7 +24,9 @@ describe('GameState (M1.1)', () => {
       const before = JSON.stringify(s);
       deepFreeze(s);
       const popup = currentPopup(s);
-      const next = popup ? choose(s, popup.choices[0]?.id ?? '').state : ageUp(s).state;
+      const next = popup
+        ? choose(s, popup.choices.find((c) => c.enabled)?.id ?? '').state
+        : ageUp(s).state;
       expect(JSON.stringify(s)).toBe(before);
       expect(next).not.toBe(s);
       s = next;

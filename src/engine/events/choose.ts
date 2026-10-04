@@ -5,7 +5,7 @@ import { applyLocks } from '../stats';
 import { VISIBLE_STATS, type GameState, type PendingEvent } from '../types';
 import { cloneState } from '../util';
 import { applyOutcome, pickOutcome } from './apply';
-import { selectableChoices } from './select';
+import { prunePending, selectableChoices } from './select';
 import { renderText } from './tokens';
 import type { EventDef } from './types';
 
@@ -78,9 +78,7 @@ export function chooseInPlace(ctx: Ctx, choiceId: string): void {
   const outcome = pickOutcome(ctx, choice.outcomes);
   if (outcome) applyOutcome(ctx, def, outcome, pe.bindings, pe.payload, false);
   // Bindings of later popups may have died in the meantime.
-  s.pending = s.pending.filter((p) =>
-    Object.values(p.bindings).every((id) => s.npcs.find((n) => n.id === id)?.alive),
-  );
+  prunePending(s);
   applyLocks(s);
   // Keep the sparkline's latest point in step with the stat it follows.
   for (const k of VISIBLE_STATS) {

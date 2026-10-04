@@ -166,33 +166,33 @@
   },
   "M4.1": {
     "title": "Event definitions are typed per SPEC §4.2, including choices, outcomes, effects, bindings, and chains.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "src/engine/events/types.ts (EventDef/ChoiceDef/OutcomeDef/Effect/NpcQuery/ChainStepDef) checked by npm run typecheck + tests/content/content-check.test.ts; tests/engine/events-*.test.ts"
   },
   "M4.2": {
     "title": "Selection and pacing per SPEC §4.3 (popup cap, notice cap, cooldowns, one-time events), with tests.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/events-pacing.test.ts (popup cap 1/3/5, notice cap 6, cooldowns, once, weight modifiers, bindings, adults-only, requires)"
   },
   "M4.3": {
     "title": "Token rendering per SPEC §4.4, with currency formatted for the country and year.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/events-tokens.test.ts (player/NPC tokens, pronouns, memory, currency by country and inflation, payloads)"
   },
   "M4.4": {
     "title": "Chain steps live in state and survive save, load, and rewind (tested).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/events-chains.test.ts (state, save/load, rewind, dead bindings)"
   },
   "M4.5": {
     "title": "`content:check` validates schema, unique ids, tokens, references, the adults-only rule, duplicate texts, and the DONE §3 thresholds.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run content:check (scripts/content-check.ts, scripts/content-lib.ts); tests/content/content-check.test.ts"
   },
   "M4.6": {
     "title": "The first 80 events, spread across all life stages (they count toward the DONE §3 totals).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run content:check (82 events ≥ 80 enforced, all six stages); sim invariants over 300 lives"
   },
   "M5.1": {
     "title": "Family generated at birth per SPEC §5.1.",

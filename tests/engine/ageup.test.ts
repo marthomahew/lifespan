@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ageUp, newLife, stageOf, EngineError } from '../../src/engine';
-import { readFileSync } from 'node:fs';
+import { traceYear } from '../../src/engine/age';
 import { playYears } from '../helpers';
 
 describe('ageUp (M1.5)', () => {
@@ -55,20 +55,16 @@ describe('ageUp (M1.5)', () => {
   });
 
   it('runs the year in the SPEC §3.4 order', () => {
-    const src = readFileSync('src/engine/systems/index.ts', 'utf8');
-    const order = [
-      '// 2. Finances',
-      '// 3. Drift',
-      '// 4. System ticks',
-      '// 5. Chain steps',
-      '// 6. Random events',
-    ];
-    const idx = order.map((o) => src.indexOf(o));
-    for (const i of idx) expect(i).toBeGreaterThan(-1);
-    expect([...idx].sort((a, b) => a - b)).toEqual(idx);
-    const age = readFileSync('src/engine/age.ts', 'utf8');
-    expect(age.indexOf('// 1. Age')).toBeLessThan(age.indexOf('runYearSystems(ctx'));
-    expect(age.indexOf('runYearSystems(ctx')).toBeLessThan(age.indexOf('// 7. Mortality'));
-    expect(age.indexOf('// 7. Mortality')).toBeLessThan(age.indexOf('// 8. Records'));
+    const s = newLife({}, 6);
+    expect(traceYear(s)).toEqual([
+      'age',
+      'finances',
+      'drift',
+      'systems',
+      'chains',
+      'events',
+      'mortality',
+      'records',
+    ]);
   });
 });

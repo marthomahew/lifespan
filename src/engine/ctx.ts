@@ -10,6 +10,8 @@ export class Ctx {
   readonly rng: Rng;
   readonly newLog: LogEntry[] = [];
   readonly toasts: Toast[] = [];
+  /** When set, the year's phases are recorded in order (tests). */
+  trace: string[] | null = null;
 
   constructor(draft: GameState) {
     this.s = draft;
@@ -21,6 +23,10 @@ export class Ctx {
     if (milestone) entry.milestone = true;
     this.s.log.push(entry);
     this.newLog.push(entry);
+  }
+
+  phase(name: string): void {
+    this.trace?.push(name);
   }
 
   toast(t: Toast): void {

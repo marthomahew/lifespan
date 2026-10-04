@@ -16,3 +16,4 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - Cheats: registry in src/engine/cheats/*.ts; a meta-test fails if a cheat id isn't quoted ('id') in some tests/engine/cheats/*.test.ts. GUI forms are generated from params.
 - Prettier reformats multi-line code; python str.replace edits must match the prettier-formatted text (re-read before editing).
 - Save shape: deserialize checks keys against a fresh newLife template (set in src/engine/index.ts). New state sections must be added to emptyState in life.ts.
+- content:check per pack: npx tsx scripts/check-pack.ts src/content/events/<file>.ts <EXPORT>. Writers guide: src/content/events/GUIDE.md. Chain follow-ups must declare bind for names they use (bindings carry over at runtime).

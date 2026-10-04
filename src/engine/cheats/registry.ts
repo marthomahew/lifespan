@@ -1,6 +1,7 @@
 import { Ctx, type Step } from '../ctx';
 import { EngineError } from '../errors';
 import { applyLocks } from '../stats';
+import { prunePending } from '../events/select';
 import type { GameState } from '../types';
 import { cloneState } from '../util';
 import type { CheatDef, ParamDef, ParamValues } from './types';
@@ -97,6 +98,7 @@ export function runCheat(
     throw e;
   }
   ctx.s.cheats.used = true;
+  prunePending(ctx.s);
   applyLocks(ctx.s);
   return { ...ctx.finish(), message };
 }

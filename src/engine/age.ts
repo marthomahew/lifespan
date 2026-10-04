@@ -3,6 +3,7 @@ import { EngineError } from './errors';
 import { die } from './death';
 import { causeOfDeath, rollMortality } from './mortality';
 import { pushSnapshot } from './snapshots';
+import { prunePending } from './events/select';
 import { stageOf, STAGE_LABEL } from './stage';
 import { applyLocks, driftStats, recordStatHistory } from './stats';
 import { runYearSystems, yearCircumstances } from './systems';
@@ -30,6 +31,7 @@ export function ageUpInPlace(ctx: Ctx): void {
   const s = ctx.s;
   const prevStage = stageOf(s.player.age);
   // 1. Age, world year, inflation.
+  ctx.phase('age');
   s.player.age += 1;
   s.year += 1;
   stepInflation(ctx);
@@ -49,9 +51,12 @@ export function ageUpInPlace(ctx: Ctx): void {
   });
 
   // 7. Mortality.
+  ctx.phase('mortality');
   if (!s.death && rollMortality(ctx)) die(ctx, causeOfDeath(ctx));
 
   // 8. Records and snapshot (autosave is the platform's job).
+  ctx.phase('records');
+  prunePending(s);
   applyLocks(s);
   recordStatHistory(s);
   s.totals.happinessSum += s.player.stats.happiness;
@@ -59,4 +64,12 @@ export function ageUpInPlace(ctx: Ctx): void {
   s.totals.maxNetWorthRef = Math.max(s.totals.maxNetWorthRef, Math.round(netWorthRef(s)));
   s.rng = ctx.rng.state;
   pushSnapshot(s);
+}
+
+/** The order the year's phases ran in (for tests of SPEC §3.4). */
+export function traceYear(input: GameState): string[] {
+  const ctx = new Ctx(cloneState(input));
+  ctx.trace = [];
+  ageUpInPlace(ctx);
+  return ctx.trace;
 }
