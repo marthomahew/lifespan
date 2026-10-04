@@ -1,6 +1,7 @@
 import type { Ctx } from './ctx';
 import { netWorthRef } from './networth';
 import { lifeTitle } from './titles';
+import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
 
 /** End the life with a recorded cause (SPEC §3.5). */
@@ -9,7 +10,8 @@ export function die(ctx: Ctx, cause: string): void {
   if (s.death) return;
   s.pending = [];
   const title = lifeTitle(s);
-  s.death = { year: s.year, age: s.player.age, cause, title };
+  const estate = settleEstate(s);
+  s.death = { year: s.year, age: s.player.age, cause, title, estate };
   s.dynasty.push({
     first: s.player.first,
     last: s.player.last,

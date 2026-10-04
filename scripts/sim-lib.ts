@@ -7,7 +7,7 @@ import {
   type GameState,
 } from '../src/engine';
 import { checkState } from '../src/engine/bot/invariants';
-import { botStep, type PersonaId } from '../src/engine/bot/persona';
+import { botStep, newBotMemory, type PersonaId } from '../src/engine/bot/persona';
 import { Rng, seedRng } from '../src/engine/rng';
 
 /** Bands are enforced once M10.6 (balance) lands; until then the report shows them. */
@@ -69,6 +69,7 @@ function playLife(
 ): { s: GameState; popups: Record<string, number> } {
   let s = newLife({}, seed);
   const bot = new Rng(seedRng(seed * 7919 + 13));
+  const mem = newBotMemory();
   const popups: Record<string, number> = {};
   const checkedAges = new Set<number>();
   const v0 = checkState(s, null);
@@ -78,7 +79,7 @@ function playLife(
     const prevPending = s.pending.length;
     const logFrom = s.log.length;
     try {
-      s = botStep(s, persona, bot);
+      s = botStep(s, persona, bot, mem);
     } catch (e) {
       violations.push(`seed ${seed} age ${prevAge}: exception ${(e as Error).stack ?? String(e)}`);
       break;

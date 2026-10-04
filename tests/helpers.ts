@@ -23,7 +23,7 @@ export function advance(s: GameState): GameState {
 export function playYears(s: GameState, years: number): GameState {
   let cur = s;
   const target = cur.player.age + years;
-  while (!cur.death && cur.player.age < target) cur = advance(cur);
+  while (!cur.death && (cur.player.age < target || cur.pending.length > 0)) cur = advance(cur);
   return cur;
 }
 

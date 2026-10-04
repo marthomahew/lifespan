@@ -1,4 +1,4 @@
-import { botStep } from '../bot/persona';
+import { botStep, newBotMemory } from '../bot/persona';
 import { Rng, seedRng } from '../rng';
 import { deserialize, serialize } from '../save';
 import type { CheatDef } from './types';
@@ -42,7 +42,8 @@ export const DEBUG_CHEATS: CheatDef[] = [
       let s = { ...ctx.s, rng: ctx.rng.state };
       const immortal = s.cheats.immortal;
       if (immortal) s = { ...s, cheats: { ...s.cheats, immortal: false } };
-      for (let i = 0; i < 5000 && !s.death; i++) s = botStep(s, 'default', bot);
+      const mem = newBotMemory();
+      for (let i = 0; i < 10000 && !s.death; i++) s = botStep(s, 'default', bot, mem);
       if (immortal) s = { ...s, cheats: { ...s.cheats, immortal: true } };
       const draft = ctx.s as unknown as Record<string, unknown>;
       for (const k of Object.keys(draft)) delete draft[k];

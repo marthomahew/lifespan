@@ -1,32 +1,10 @@
 import type { Ctx } from '../ctx';
 import { addNpc, remember } from '../npc';
-import type { Gender, Npc, Role } from '../types';
+import type { Npc, Role } from '../types';
+import { currentPartner, killNpc, partnerGender } from './partners';
+import { addChild, breakUp, divorce, marry } from './romance';
 
-/** Gender of someone the player is attracted to. */
-export function partnerGender(ctx: Ctx): Gender {
-  const a = ctx.s.player.attraction;
-  if (a === 'men') return 'male';
-  if (a === 'women') return 'female';
-  return ctx.rng.chance(0.5) ? 'male' : 'female';
-}
-
-export function currentPartner(ctx: Ctx): Npc | undefined {
-  return ctx.s.npcs.find(
-    (n) => n.alive && (n.roles.includes('spouse') || n.roles.includes('partner')),
-  );
-}
-
-function setRole(n: Npc, from: Role[], to: Role): void {
-  n.roles = n.roles.filter((r) => !from.includes(r));
-  if (!n.roles.includes(to)) n.roles.unshift(to);
-}
-
-export function killNpc(ctx: Ctx, n: Npc, cause: string): void {
-  if (!n.alive) return;
-  n.alive = false;
-  n.deathYear = ctx.s.year;
-  n.deathCause = cause;
-}
+export { currentPartner, killNpc, partnerGender, partnerOf } from './partners';
 
 /** Relationship status changes from events. Romance is adults only. */
 export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, role?: Role): void {
@@ -47,27 +25,28 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
       ctx.log('romance', `You start seeing ${n.first} ${n.last}.`, true);
       return;
     }
-    case 'breakup':
-    case 'divorce': {
+    case 'breakup': {
       const n = npc ?? currentPartner(ctx);
       if (!n) return;
-      if (n.roles.includes('spouse')) n.flags.push('was_spouse');
-      setRole(n, ['partner', 'spouse'], 'ex');
-      delete n.romance;
-      remember(s, n, kind === 'divorce' ? 'the divorce' : 'the breakup', -30);
-      ctx.log(
-        'romance',
-        kind === 'divorce' ? `You and ${n.first} divorce.` : `You and ${n.first} break up.`,
-        true,
-      );
+      if (n.roles.includes('spouse')) {
+        divorce(ctx, n);
+        return;
+      }
+      breakUp(ctx, n);
+      remember(s, n, 'the breakup', -30);
+      ctx.log('romance', `You and ${n.first} break up.`, true);
+      return;
+    }
+    case 'divorce': {
+      const n = npc ?? s.npcs.find((x) => x.alive && x.roles.includes('spouse'));
+      if (!n || !n.roles.includes('spouse')) return;
+      divorce(ctx, n);
       return;
     }
     case 'marry': {
       const n = npc ?? currentPartner(ctx);
       if (!n || p.age < 18 || n.age < 18) return;
-      setRole(n, ['partner'], 'spouse');
-      n.romance = { stage: 'married', since: s.year, prenup: n.romance?.prenup ?? false };
-      if (!p.flags.includes('ever_married')) p.flags.push('ever_married');
+      marry(ctx, n, n.romance?.prenup ?? false);
       remember(s, n, 'your wedding', 15);
       ctx.log('romance', `You marry ${n.first}.`, true);
       return;
@@ -75,14 +54,12 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
     case 'birth':
     case 'adopt': {
       if (p.age < 18) return;
-      const partner = currentPartner(ctx);
-      const child = addNpc(ctx, {
-        role: 'child',
-        age: kind === 'adopt' ? ctx.rng.int(0, 8) : 0,
-        last: p.last,
-        rel: ctx.rng.int(75, 95),
-        parentIds: partner ? [0, partner.id] : [0],
-      });
+      const child = addChild(
+        ctx,
+        currentPartner(ctx),
+        kind === 'adopt',
+        kind === 'adopt' ? ctx.rng.int(0, 8) : 0,
+      );
       ctx.log(
         'family',
         kind === 'adopt' ? `You adopt ${child.first}.` : `${child.first} is born.`,

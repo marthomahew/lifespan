@@ -23,6 +23,11 @@ test('flow 3a: a popup answered by mouse; Age Up is blocked while it is pending'
   const lines = await page.getByTestId('log-line').count();
   await page.getByTestId('choice-1').click();
   await expect(page.getByTestId('log-line')).toHaveCount(lines + 1);
+  // Any further popups this year still block Age Up until answered.
+  while (await page.getByTestId('event-modal').isVisible()) {
+    await expect(page.getByTestId('age-up')).toBeDisabled();
+    await page.locator('button.choice:not([disabled])').first().click();
+  }
   await expect(page.getByTestId('age-up')).toBeEnabled();
 });
 

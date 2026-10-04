@@ -27,7 +27,7 @@ async function ageTo(page: Page, age: number): Promise<void> {
     const txt = (await page.getByTestId('header-age').textContent()) ?? '';
     if (Number(txt.replace(/\D/g, '')) >= age) return;
     if (await page.getByTestId('event-modal').isVisible())
-      await page.getByTestId('choice-1').click();
+      await page.locator('button.choice:not([disabled])').first().click();
     else await page.getByTestId('age-up').click();
   }
 }
@@ -40,7 +40,10 @@ for (const size of SIZES) {
       await setTheme(page, theme);
       await page.reload();
       const shot = (name: string): Promise<Buffer> =>
-        page.screenshot({ path: `${DIR}/${name}-${theme}-${size.name}.png` });
+        page.screenshot({
+          path: `${DIR}/${name}-${theme}-${size.name}.png`,
+          animations: 'disabled',
+        });
       await shot('01-start');
       await page.getByTestId('btn-new-life').click();
       await shot('02-new-life');
@@ -50,11 +53,20 @@ for (const size of SIZES) {
       await ageTo(page, 9);
       if (await page.getByTestId('event-modal').isVisible()) await shot('04-event');
       await ageTo(page, 24);
-      if (await page.getByTestId('event-modal').isVisible())
-        await page.getByTestId('choice-1').click();
+      while (await page.getByTestId('event-modal').isVisible())
+        await page.locator('button.choice:not([disabled])').first().click();
       await shot('05-main-adult');
       await page.getByTestId('tab-relationships').click();
       await shot('06-relationships');
+      await page.locator('[data-testid^="npc-"]').first().click();
+      await page.getByTestId('npc-panel').waitFor();
+      await shot('10-npc-panel');
+      await page.keyboard.press('Escape');
+      await page.getByTestId('btn-family-tree').click();
+      await shot('11-family-tree');
+      await page.keyboard.press('Escape');
+      await page.getByTestId('tab-activities').click();
+      await shot('12-activities');
       await page.keyboard.press('?');
       await shot('07-help');
       await page.keyboard.press('Escape');

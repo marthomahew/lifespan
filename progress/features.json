@@ -196,18 +196,18 @@
   },
   "M5.1": {
     "title": "Family generated at birth per SPEC §5.1.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/family.test.ts (parents' ages/jobs/wealth/relationship flag, 0–3 siblings, grandparents by age); tests/engine/newlife.test.ts"
   },
   "M5.2": {
     "title": "NPC records with traits, stats, relationship, and memory (30 lines max); NPCs age and die each year.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/family.test.ts (NPC record fields, 30-line memory cap, aging and deaths); sim invariants (ids, ages ≤120, rel 0–100)"
   },
   "M5.3": {
     "title": "At least 12 interactions whose outcomes depend on relationship, traits, memory, and RNG; each one writes a memory line.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/interactions.test.ts (≥12 interactions, memory lines, odds by rel/traits/memory, RNG, limits); e2e/relationships.spec.ts flow 5"
   },
   "M5.4": {
     "title": "Friends come from school, work, and activities, and fade without contact.",
@@ -216,28 +216,28 @@
   },
   "M5.5": {
     "title": "Romance for adults: meeting, dating stages, proposals, weddings, prenups, divorce with asset split, and affairs through chains.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/romance.test.ts (meeting via activities, app after 2012, stages, failing proposals, wedding cost, prenup-aware divorce split, affair chain); e2e/relationships.spec.ts (date→propose→wedding)"
   },
   "M5.6": {
     "title": "Children: pregnancy and adoption (adults only); children age, inherit traits, attend school, and have their own events.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/romance.test.ts children (pregnancy adults-only, birth next year, inherited traits, school, clinic, adoption, minors blocked); sim invariant (no under-18 romance/pregnancy)"
   },
   "M5.7": {
     "title": "Wills and inheritance in both directions.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/romance.test.ts wills (inherit from a parent, will vs default estate at death)"
   },
   "M5.8": {
     "title": "Family tree view (three generations each way, clickable).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/relationships.spec.ts flow 13 (tree opens, node opens NPC); src/engine/family-tree.ts"
   },
   "M5.9": {
     "title": "The relationship cheats from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/relationships.test.ts (list, rel, kill/revive, spawn by role+traits, force romance adults-only, instant marriage/divorce, baby now, NPC stats/traits)"
   },
   "M6.1": {
     "title": "Primary and secondary school with grades, school events, and dropping out at the legal age.",

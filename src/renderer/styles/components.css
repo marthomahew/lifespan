@@ -107,3 +107,135 @@
 .shortcuts td {
   padding: 4px 0;
 }
+.npc-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.npc-rel {
+  display: grid;
+  grid-template-columns: auto 140px auto;
+  align-items: center;
+  gap: 8px;
+}
+.npc-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.interactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.interaction {
+  font-size: 0.9em;
+  padding: 4px 10px;
+}
+.npc-last {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.92em;
+}
+.memories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.memories li {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+.delta {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85em;
+}
+.delta.up {
+  color: var(--green);
+}
+.delta.down {
+  color: var(--red);
+}
+.wedding {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tree-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tree-node {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 140px;
+  padding: 6px 10px;
+}
+.tree-node.me {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  opacity: 1;
+}
+.tree-node.dead {
+  opacity: 0.7;
+}
+.tree-name {
+  font-weight: 600;
+}
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.activity {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 6px 8px;
+}
+.activity-emoji {
+  font-size: 1.3em;
+}
+.activity-label {
+  display: block;
+  font-weight: 550;
+}
+.activity-desc {
+  display: block;
+}
+.will-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.will-list input {
+  width: 70px;
+}
+.will-pct {
+  width: 3em;
+  text-align: right;
+}

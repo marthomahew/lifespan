@@ -11,6 +11,8 @@ import { StartScreen } from '../screens/StartScreen';
 import { onKeyDown, toggleCheats } from './keys';
 import { onMenuCommand } from './menu';
 import { CheatPanel } from '../cheats/CheatPanel';
+import { FamilyTree } from '../screens/FamilyTree';
+import { NpcPanel } from '../screens/game/NpcPanel';
 
 export function App(): React.JSX.Element {
   const screen = useApp((s) => s.screen);
@@ -20,6 +22,7 @@ export function App(): React.JSX.Element {
   const error = useApp((s) => s.error);
   const settings = useApp((s) => s.settings);
   const cheatsOpen = useApp((s) => s.cheatsOpen);
+  const npcId = useApp((s) => s.npcId);
 
   useEffect(() => {
     applySettingsToDocument(settings);
@@ -46,6 +49,8 @@ export function App(): React.JSX.Element {
       {screen === 'settings' && <SettingsScreen />}
       {cheatsOpen && game && <CheatPanel game={game} />}
       {overlay === 'help' && <HelpOverlay />}
+      {overlay === 'tree' && game && <FamilyTree game={game} />}
+      {npcId !== null && game && !overlay && <NpcPanel game={game} npcId={npcId} />}
       {error && (
         <div className="error-banner card" role="alert" data-testid="error-banner">
           <span className="grow">{error}</span>

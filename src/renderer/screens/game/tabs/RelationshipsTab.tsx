@@ -37,6 +37,9 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
   const groups = groupNpcs(game);
   return (
     <div className="col" data-testid="relationships">
+      <button data-testid="btn-family-tree" onClick={() => app.set({ overlay: 'tree' })}>
+        🌳 Family tree
+      </button>
       {groups.map((g) => (
         <section key={g.label} className="panel-section">
           <h3 className="section-title">{g.label}</h3>

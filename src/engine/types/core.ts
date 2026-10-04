@@ -136,7 +136,14 @@ export type PendingEvent = {
 
 export type Snapshot = { year: number; age: number; logLength: number; json: string };
 
-export type DeathInfo = { year: number; age: number; cause: string; title: string };
+export type DeathInfo = {
+  year: number;
+  age: number;
+  cause: string;
+  title: string;
+  /** Who received the estate. */
+  estate: { npcId: number; amount: number }[];
+};
 
 export type GenerationRecord = {
   first: string;

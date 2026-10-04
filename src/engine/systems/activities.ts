@@ -1,0 +1,137 @@
+import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
+import type { ActivityDef } from '../../content/types';
+import type { Ctx } from '../ctx';
+import { formatMoney, money } from '../economy';
+import { EngineError } from '../errors';
+import { applyEffect, pickOutcome } from '../events/apply';
+import { renderText } from '../events/tokens';
+import type { GameState } from '../types';
+import { addChild } from './romance';
+import { currentPartner, partnerOf } from './partners';
+import { markUsed, usedThisYear } from './usage';
+import { clampOdds, playerOdds } from './odds';
+
+export type ActivityView = {
+  id: string;
+  label: string;
+  emoji: string;
+  group: string;
+  description: string;
+  enabled: boolean;
+  reason: string;
+  cost: number;
+};
+
+/** Why an activity can't be done now, or null. */
+export function activityReason(s: GameState, def: ActivityDef): string | null {
+  const age = s.player.age;
+  if (s.death) return 'the life is over';
+  if (age < def.ages[0]) return `from age ${def.ages[0]}`;
+  if (age > def.ages[1]) return `up to age ${def.ages[1]}`;
+  if (def.adultsOnly && age < 18) return 'adults only';
+  if (def.minYear && s.year < def.minYear) return `not invented until ${def.minYear}`;
+  if (s.legal.prison && def.group !== 'admin') return 'not from prison';
+  if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
+  if (def.cost && s.money.cash < money(s, def.cost))
+    return `costs ${formatMoney(s, money(s, def.cost))}`;
+  if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
+    return 'you are already seeing someone';
+  if (def.special === 'fertility' && s.family.pregnancy) return 'a baby is already on the way';
+  return null;
+}
+
+export function activitiesFor(s: GameState): ActivityView[] {
+  return ACTIVITIES.map((def) => {
+    const why = activityReason(s, def);
+    return {
+      id: def.id,
+      label: def.label,
+      emoji: def.emoji,
+      group: def.group,
+      description: def.description,
+      enabled: why === null,
+      reason: why ?? '',
+      cost: def.cost ? money(s, def.cost) : 0,
+    };
+  });
+}
+
+export type WillParams = { heirs?: { npcId: number; share: number }[] };
+
+export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown> = {}): void {
+  const s = ctx.s;
+  const def = ACTIVITY_BY_ID[id];
+  if (!def) throw new EngineError(`unknown activity ${id}`);
+  const why = activityReason(s, def);
+  if (why) throw new EngineError(`${def.label}: ${why}`);
+  markUsed(s, `a:${def.id}`);
+  if (def.cost) s.money.cash -= money(s, def.cost);
+
+  let outcomes = def.outcomes;
+  if (def.special === 'meet') {
+    const partnered = currentPartner(ctx) !== undefined;
+    // Partnered players don't meet new people (that's what affairs in events are for).
+    if (partnered)
+      outcomes = outcomes.filter(
+        (o) => !o.effects.some((e) => 'status' in e && e.status === 'meet'),
+      );
+    // Looks and romance odds tilt the dice.
+    const boost =
+      clampOdds(0.5 + (s.player.stats.looks - 50) * 0.006 + playerOdds(s, 'romance')) / 0.5;
+    outcomes = outcomes.map((o) => (o.success ? { ...o, chance: o.chance * boost } : o));
+  }
+  const o = pickOutcome(ctx, outcomes);
+  if (!o) return;
+  ctx.log('activity', `${def.emoji} ${renderText(s, o.text)}`);
+  for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id);
+
+  if (def.special === 'fertility' && o.success) {
+    const partner = currentPartner(ctx);
+    s.family.pregnancy = {
+      due: s.year + 1,
+      partnerId: partner?.id ?? 0,
+      carrier: s.player.gender === 'female' ? 'player' : 'partner',
+    };
+  }
+  if (def.special === 'adopt' && o.success) {
+    const kid = addChild(ctx, currentPartner(ctx), true, ctx.rng.int(0, 8));
+    s.family.adoptions += 1;
+    ctx.log(
+      'family',
+      `${kid.first}, ${kid.age === 0 ? 'a baby' : `aged ${kid.age}`}, is now part of your family.`,
+      true,
+    );
+  }
+  if (def.special === 'will') writeWill(ctx, (params as WillParams).heirs);
+}
+
+/** Record a will. Shares are normalised; with no heirs given, spouse and children share equally. */
+export function writeWill(ctx: Ctx, heirs?: { npcId: number; share: number }[]): void {
+  const s = ctx.s;
+  const valid = (heirs ?? []).filter(
+    (h) =>
+      s.npcs.some((n) => n.id === h.npcId && n.alive) && Number.isFinite(h.share) && h.share > 0,
+  );
+  let list = valid;
+  if (!list.length) {
+    const fam = s.npcs.filter(
+      (n) => n.alive && (n.roles.includes('spouse') || n.roles.includes('child')),
+    );
+    list = fam.map((n) => ({ npcId: n.id, share: 1 }));
+  }
+  const total = list.reduce((t, h) => t + h.share, 0) || 1;
+  s.will = {
+    heirs: list.map((h) => ({ npcId: h.npcId, share: Math.round((100 * h.share) / total) })),
+    written: s.year,
+  };
+  const names = s.will.heirs.map((h) => {
+    const n = s.npcs.find((x) => x.id === h.npcId);
+    return `${n?.first ?? '?'} ${h.share}%`;
+  });
+  ctx.log(
+    'money',
+    names.length
+      ? `Your will: ${names.join(', ')}.`
+      : 'Your will leaves everything to the state, by default.',
+  );
+}

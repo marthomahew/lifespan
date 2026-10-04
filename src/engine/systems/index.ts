@@ -1,5 +1,7 @@
 import type { Ctx } from '../ctx';
 import { drawRandomEvents, runDueChains } from '../events/select';
+import { npcLifecycle, relationshipDecay } from './npcs';
+import { romanceTick } from './romance';
 import type { Circumstances } from '../stats';
 import type { GameState } from '../types';
 
@@ -38,8 +40,11 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   // 3. Drift.
   ctx.phase('drift');
   hooks.drift();
+  relationshipDecay(ctx);
   // 4. System ticks.
   ctx.phase('systems');
+  npcLifecycle(ctx);
+  romanceTick(ctx);
   // 5. Chain steps due this year.
   ctx.phase('chains');
   if (!ctx.s.death) runDueChains(ctx);

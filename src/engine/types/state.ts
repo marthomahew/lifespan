@@ -20,6 +20,8 @@ import type {
   CareerState,
   EducationState,
   EventMeta,
+  FamilyState,
+  UsageState,
   HealthState,
   LegalState,
   MilitaryState,
@@ -81,6 +83,8 @@ export type GameState = {
   legal: LegalState;
   assets: AssetState;
   will: Will;
+  family: FamilyState;
+  usage: UsageState;
   statHistory: Record<VisibleStat, number[]>;
   /** Running totals used by achievements, titles, and the balance report. */
   totals: { happinessSum: number; years: number; popups: number; maxNetWorthRef: number };

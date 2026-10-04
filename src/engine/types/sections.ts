@@ -48,6 +48,8 @@ export type MoneyState = {
   last: FinanceReport | null;
   /** [year, net worth local, net worth in reference dollars]. */
   history: [number, number, number][];
+  /** Court-ordered yearly payments to an ex (local currency). */
+  alimony: { npcId: number; amount: number; years: number }[];
 };
 
 export type Degree = {
@@ -223,3 +225,15 @@ export type EventMeta = {
   popupsThisYear: number;
   noticesThisYear: number;
 };
+
+export type Pregnancy = { due: number; partnerId: number; carrier: 'player' | 'partner' };
+
+export type FamilyState = {
+  pregnancy: Pregnancy | null;
+  adoptions: number;
+  /** Children whose primary home is with an ex after a divorce. */
+  custodyLost: number[];
+};
+
+/** How often activities and interactions have been used this year (limits per year). */
+export type UsageState = { year: number; used: Record<string, number> };

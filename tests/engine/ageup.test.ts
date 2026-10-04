@@ -50,7 +50,7 @@ describe('ageUp (M1.5)', () => {
 
   it('refuses to age up a finished life', () => {
     const s = newLife({}, 4);
-    const dead = { ...s, death: { year: s.year, age: 0, cause: 'x', title: 'y' } };
+    const dead = { ...s, death: { year: s.year, age: 0, cause: 'x', title: 'y', estate: [] } };
     expect(() => ageUp(dead)).toThrow(EngineError);
   });
 

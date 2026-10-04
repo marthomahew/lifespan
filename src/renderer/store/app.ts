@@ -1,4 +1,6 @@
 import {
+  act as engineAct,
+  type PlayerAction,
   runCheat,
   runConsole,
   ageUp as engineAgeUp,
@@ -219,4 +221,16 @@ export async function importSave(text: string): Promise<string> {
   await saveStore.write(id, makeSaveFile({ ...state, lifeId: id }, name, Date.now()));
   app.set((s) => ({ savesVersion: s.savesVersion + 1 }));
   return id;
+}
+
+/** Run a player action (activity, interaction); returns an error message or null. */
+export function doAct(action: PlayerAction): string | null {
+  const g = app.get().game;
+  if (!g) return 'No life is loaded';
+  try {
+    applyStep(engineAct(g, action), { autosave: false });
+    return null;
+  } catch (e) {
+    return (e as Error).message;
+  }
 }

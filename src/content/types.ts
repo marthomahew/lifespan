@@ -151,3 +151,76 @@ export type SkillDef = {
 };
 
 export type LanguageDef = { id: string; label: string };
+
+export type InteractionOutcome = {
+  /** One is picked at random; {npc.*} tokens refer to the other person. */
+  texts: string[];
+  rel: [number, number];
+  memory: string;
+  happiness?: number;
+};
+
+export type InteractionDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  /** Who it applies to. */
+  target: 'anyone' | 'family' | 'partner' | 'spouse' | 'engaged' | 'not_partner';
+  minPlayerAge: number;
+  minNpcAge: number;
+  adultsOnly?: boolean;
+  /** Base success chance at relationship 50. */
+  base: number;
+  /** Added per relationship point above 50 (negative below). */
+  relWeight: number;
+  /** Trait/skill odds domain that shifts the chance. */
+  odds: 'social' | 'romance';
+  /** Cost in reference dollars. */
+  cost?: number;
+  limitPerYear: number;
+  success: InteractionOutcome;
+  failure: InteractionOutcome;
+  /** Engine behaviour beyond relationship and memory. */
+  special?:
+    | 'ask_money'
+    | 'advice'
+    | 'propose'
+    | 'wedding'
+    | 'therapy'
+    | 'baby'
+    | 'breakup'
+    | 'divorce'
+    | 'cut_off'
+    | 'reconnect';
+};
+
+export type ActivityGroup =
+  'mind_body' | 'social' | 'love' | 'money' | 'fun' | 'crime' | 'travel' | 'admin';
+
+/** An activity outcome: a weighted text plus event-style effects (see src/engine/events/types.ts Effect). */
+export type ActivityOutcome = {
+  chance: number;
+  text: string;
+  /** Effects in the same shape as event effects. */
+  effects: import('../engine/events/types').Effect[];
+  success?: boolean;
+};
+
+export type ActivityDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  group: ActivityGroup;
+  description: string;
+  ages: [number, number];
+  adultsOnly?: boolean;
+  /** Earliest world year (the dating app arrives in 2012). */
+  minYear?: number;
+  /** Cost in reference dollars. */
+  cost?: number;
+  limitPerYear: number;
+  /** At least three outcome texts. */
+  outcomes: ActivityOutcome[];
+  /** Engine behaviour on top of the outcome (meeting people, wills, ...). */
+  special?: string;
+};

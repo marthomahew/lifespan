@@ -32,3 +32,14 @@ export { eventTable, type EventRow } from './cheats/events';
 import { newLife as _newLife } from './life';
 import { setSaveTemplate as _setTemplate } from './save';
 _setTemplate(_newLife({ country: 'us', birthYear: 2000 }, 1));
+export {
+  act,
+  availableActions,
+  type PlayerAction,
+  type ActionGroup,
+  type ActionItem,
+} from './actions';
+export { interactionsFor, interactionOdds, type InteractionView } from './systems/interactions';
+export { activitiesFor, type ActivityView } from './systems/activities';
+export { estatePlan } from './systems/inheritance';
+export { familyTree, type TreeNode } from './family-tree';

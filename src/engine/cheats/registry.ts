@@ -11,12 +11,14 @@ import { WORLD_CHEATS } from './world';
 import { EVENT_CHEATS } from './events';
 import { DEBUG_CHEATS } from './debug';
 import { HEALTH_CHEATS } from './health';
+import { RELATIONSHIP_CHEATS } from './relationships';
 
 export class CheatError extends Error {}
 
 export const CHEATS: CheatDef[] = [
   ...CHARACTER_CHEATS,
   ...MONEY_CHEATS,
+  ...RELATIONSHIP_CHEATS,
   ...HEALTH_CHEATS,
   ...EVENT_CHEATS,
   ...WORLD_CHEATS,

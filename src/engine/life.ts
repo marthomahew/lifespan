@@ -96,6 +96,7 @@ function emptyState(seed: number): GameState {
       lifestyle: 'normal',
       last: null,
       history: [],
+      alimony: [],
     },
     education: {
       grade: 60,
@@ -160,6 +161,8 @@ function emptyState(seed: number): GameState {
       rent: 0,
     },
     will: { heirs: [], written: null },
+    family: { pregnancy: null, adoptions: 0, custodyLost: [] },
+    usage: { year: 0, used: {} },
     statHistory: { happiness: [], health: [], smarts: [], looks: [] },
     totals: { happinessSum: 0, years: 0, popups: 0, maxNetWorthRef: 0 },
     settings: { popupsPerYear: 3 },
