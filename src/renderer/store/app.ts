@@ -1,4 +1,6 @@
 import {
+  runCheat,
+  runConsole,
   ageUp as engineAgeUp,
   choose as engineChoose,
   makeSaveFile,
@@ -35,6 +37,8 @@ export type AppState = {
   npcId: number | null;
   /** Bumped when saves change so the Lives screen reloads. */
   savesVersion: number;
+  /** Debug overlay showing hidden stats. */
+  hiddenStats: boolean;
 };
 
 export const saveStore: SaveStore = createSaveStore();
@@ -52,6 +56,7 @@ export const app = createStore<AppState>({
   error: null,
   npcId: null,
   savesVersion: 0,
+  hiddenStats: false,
 });
 
 export function useApp<U>(sel: (s: AppState) => U): U {
@@ -74,10 +79,22 @@ export function showError(msg: string | null): void {
   app.set({ error: msg });
 }
 
-export async function persist(game: GameState, name?: string): Promise<void> {
+/** Save a life. If storage is full, retry with a shorter snapshot ring; report failure instead of throwing. */
+export async function persist(game: GameState, name?: string): Promise<boolean> {
   const saveName = name ?? (app.get().saveName || `${game.player.first} ${game.player.last}`);
-  await saveStore.write(game.lifeId, makeSaveFile(game, saveName, Date.now()));
+  try {
+    await saveStore.write(game.lifeId, makeSaveFile(game, saveName, Date.now()));
+  } catch {
+    try {
+      const slim = { ...game, snapshots: game.snapshots.slice(-3) };
+      await saveStore.write(game.lifeId, makeSaveFile(slim, saveName, Date.now()));
+    } catch (e) {
+      showError(`Couldn't save: ${(e as Error).message}`);
+      return false;
+    }
+  }
   app.set((s) => ({ savesVersion: s.savesVersion + 1 }));
+  return true;
 }
 
 /** Apply an engine step: new state, toasts, obituary on death, autosave on a new year. */
@@ -162,4 +179,44 @@ export function go(screen: Screen): void {
     overlay: null,
     cheatsOpen: false,
   });
+}
+
+/** Run a cheat from the GUI or console; returns the console message. */
+export function doCheat(
+  id: string,
+  params: Record<string, unknown>,
+): { ok: boolean; message: string } {
+  const g = app.get().game;
+  if (!g) return { ok: false, message: 'No life is loaded' };
+  try {
+    const step = runCheat(g, id, params);
+    applyStep(step);
+    return { ok: true, message: step.message };
+  } catch (e) {
+    return { ok: false, message: (e as Error).message };
+  }
+}
+
+export function doConsole(line: string): { ok: boolean; message: string } {
+  const g = app.get().game;
+  if (!g) return { ok: false, message: 'No life is loaded' };
+  try {
+    const step = runConsole(g, line);
+    if (step.state !== g) applyStep(step);
+    return { ok: true, message: step.message };
+  } catch (e) {
+    return { ok: false, message: (e as Error).message };
+  }
+}
+
+/** Import a save file; a life that already exists is imported as a copy rather than overwritten. */
+export async function importSave(text: string): Promise<string> {
+  const { summary, state } = parseSaveFile(text);
+  const existing = new Set((await saveStore.list()).map((m) => m.id));
+  let id = state.lifeId;
+  for (let n = 2; existing.has(id); n++) id = `${state.lifeId.slice(0, 50)}-copy${n}`;
+  const name = id === state.lifeId ? summary.name : `${summary.name} (copy)`;
+  await saveStore.write(id, makeSaveFile({ ...state, lifeId: id }, name, Date.now()));
+  app.set((s) => ({ savesVersion: s.savesVersion + 1 }));
+  return id;
 }

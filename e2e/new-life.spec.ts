@@ -12,7 +12,7 @@ test('flow 1: new random life, age to 5 with the button and Space', async ({ pag
   await expect(page.getByTestId('header-cash')).toBeVisible();
 
   await page.getByTestId('age-up').click();
-  expect(await headerAge(page)).toBe(1);
+  await expect(page.getByTestId('header-age')).toHaveText('Age 1');
   expect(Number(await page.getByTestId('header-year').textContent())).toBe(year0 + 1);
 
   for (let i = 0; i < 50 && (await headerAge(page)) < 5; i++) {
@@ -63,4 +63,7 @@ test('flow 2: custom life with every field set', async ({ page }) => {
   await expect(page.getByTestId('stat-smarts-value')).toHaveText('56');
   await expect(page.getByTestId('stat-looks-value')).toHaveText('78');
   await expect(page.getByTestId('header').locator('.avatar')).toContainText('🏾');
+  await expect(page.getByTestId('header')).toHaveAttribute('data-gender', 'nonbinary');
+  await expect(page.getByTestId('header')).toHaveAttribute('data-attraction', 'everyone');
+  await expect(page.getByTestId('header')).toHaveAttribute('data-wealth', 'rich');
 });

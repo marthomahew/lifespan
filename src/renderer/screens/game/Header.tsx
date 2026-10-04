@@ -13,7 +13,13 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
   const c = countryOf(game);
   const fame = p.stats.fame;
   return (
-    <header className="header" data-testid="header">
+    <header
+      className="header"
+      data-testid="header"
+      data-gender={p.gender}
+      data-attraction={p.attraction}
+      data-wealth={p.wealth}
+    >
       <div className="avatar" aria-hidden="true">
         {avatarEmoji(p.age, p.gender, p.appearance, game.death !== null)}
       </div>
@@ -51,6 +57,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         <button
           className="ghost"
           data-testid="btn-save"
+          aria-label="Save"
           title="Save (⌘S)"
           onClick={() => void persist(game)}
         >
@@ -59,6 +66,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         <button
           className="ghost"
           data-testid="btn-lives"
+          aria-label="Lives"
           title="Lives (⌘L)"
           onClick={() => go('lives')}
         >
@@ -67,6 +75,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         <button
           className="ghost"
           data-testid="btn-settings"
+          aria-label="Settings"
           title="Settings (⌘,)"
           onClick={() => go('settings')}
         >
@@ -75,6 +84,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         <button
           className="ghost"
           data-testid="btn-help"
+          aria-label="Help"
           title="Help (?)"
           onClick={() => app.set({ overlay: 'help' })}
         >

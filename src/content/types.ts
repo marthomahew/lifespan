@@ -140,3 +140,14 @@ export type IllnessDef = {
   /** Yearly stat effects while active. */
   effects: { happiness?: number; health?: number; looks?: number; smarts?: number };
 };
+
+export type SkillDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  /** Odds domains the skill boosts at 100 (scaled linearly). */
+  odds: Partial<Record<OddsKey, number>>;
+};
+
+export type LanguageDef = { id: string; label: string };

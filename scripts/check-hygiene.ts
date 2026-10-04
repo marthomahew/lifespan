@@ -95,7 +95,7 @@ eachLine(codeFiles, (f, line, n) => {
 
 // 4. Markers in src/.
 const MARKER_RE = new RegExp(
-  ['TO' + 'DO', 'FIX' + 'ME', 'X' + 'XX', 'T' + 'BD'].map((w) => `\\b${w}\\b`).join('|') +
+  ['TO' + 'DO', 'FIX' + 'ME', 'X' + 'XX', 'T' + 'BD'].map((w) => `\\b${w}S?\\b`).join('|') +
     '|' +
     'lo' +
     'rem',
@@ -173,6 +173,14 @@ if (hasBaseline) {
   } catch {
     findings.push('protected files differ from the baseline tag');
   }
+  // New untracked files under protected paths count as changes too.
+  const untracked = execFileSync(
+    'git',
+    ['ls-files', '--others', '--exclude-standard', '--', 'CLAUDE.md', 'docs/', 'overnight/'],
+    { cwd: root, encoding: 'utf8' },
+  ).trim();
+  if (untracked)
+    findings.push(`untracked files under protected paths: ${untracked.split('\n').join(', ')}`);
 } else {
   console.log('hygiene: no baseline tag; protected-file check skipped');
 }

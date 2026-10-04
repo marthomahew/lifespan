@@ -9,6 +9,8 @@ import {
 import { TRAIT_BY_ID } from '../../../content/traits';
 import { StatBar } from '../../components/StatBar';
 import { quickFacts } from './facts';
+import { useApp } from '../../store/app';
+import { HIDDEN_STATS, VICES } from '../../../engine';
 
 const STATS = [
   { id: 'happiness', label: 'Happiness', emoji: '😊' },
@@ -20,6 +22,7 @@ const STATS = [
 export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
   const p = game.player;
   const facts = quickFacts(game);
+  const hidden = useApp((x) => x.hiddenStats);
   return (
     <aside className="stats-col" aria-label="Stats">
       <section className="card pad">
@@ -34,6 +37,25 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
           />
         ))}
       </section>
+      {hidden && (
+        <section className="card pad" aria-label="Hidden stats" data-testid="hidden-stats">
+          <h3 className="section-title">Hidden stats</h3>
+          <div className="hidden-stats">
+            {HIDDEN_STATS.map((k) => (
+              <span key={k} className="contents">
+                <span>{k}</span>
+                <span data-testid={`hidden-${k}`}>{p.stats[k]}</span>
+              </span>
+            ))}
+            {VICES.map((v) => (
+              <span key={v} className="contents">
+                <span className="muted">{v.replace('_', ' ')}</span>
+                <span>{game.vices.levels[v]}</span>
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
       <section className="card pad" aria-label="Traits">
         <h3 className="section-title">Traits</h3>
         <div className="chips" data-testid="traits">

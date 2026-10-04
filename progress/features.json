@@ -131,38 +131,38 @@
   },
   "M3.1": {
     "title": "The cheat registry from SPEC §8.2 exists, the GUI and the console both use it, and every command has a unit test.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/registry.test.ts (registry, GUI=console, every command tested); tests/engine/cheats/*.test.ts"
   },
   "M3.2": {
     "title": "The cheat panel opens and closes with backquote, ⇧⌘K (Ctrl+Shift+K in web tests), and the Electron Cheats menu, with the tabs from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/cheats.spec.ts flow 11 (backquote, Ctrl+Shift+K, all tabs); e2e/electron/smoke.spec.ts (Cheats menu opens the panel)"
   },
   "M3.3": {
     "title": "The console has autocomplete, history, and `help`.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/cheats.spec.ts (Tab autocomplete, ArrowUp history, help); tests/engine/cheats/registry.test.ts (suggest, helpText)"
   },
   "M3.4": {
     "title": "Core cheats work: set and lock stats, add and set cash, set age, skip years, immortality, force success, fire any event.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/character.test.ts, money.test.ts, world.test.ts, events.test.ts; e2e/cheats.spec.ts (GUI forms)"
   },
   "M3.5": {
     "title": "Rewinding N years from the snapshot ring buffer restores the earlier state bit for bit (checked by hash).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/world.test.ts ('rewind' compares lifeHash to the original year); e2e/cheats.spec.ts flow 11"
   },
   "M3.6": {
     "title": "Debug tab: hidden-stats overlay and a JSON state viewer with validated editing.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/cheats.spec.ts (hidden-stats overlay, event odds, validated JSON edit + rejection); tests/engine/cheats/debug.test.ts"
   },
   "M3.7": {
     "title": "Cheat use marks the life (header badge and obituary note) unless switched off in settings.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/cheats.spec.ts (cheat badge appears); tests/engine/cheats/registry.test.ts (cheats.used); src/renderer/screens/ObituaryScreen.tsx obit-cheated"
   },
   "M4.1": {
     "title": "Event definitions are typed per SPEC §4.2, including choices, outcomes, effects, bindings, and chains.",

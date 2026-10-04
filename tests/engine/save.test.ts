@@ -47,3 +47,15 @@ describe('save round trip (M1.8)', () => {
     expect(() => migrate({ schemaVersion: 0 }, {}, 1)).toThrow(/no migration/);
   });
 });
+
+describe('save shape check', () => {
+  it('rejects saves missing keys a fresh life has', () => {
+    const s = newLife({}, 9);
+    const raw = JSON.parse(serialize(s)) as Record<string, Record<string, unknown>>;
+    delete raw['money']?.['holdings'];
+    expect(() => deserialize(JSON.stringify(raw))).toThrow(/missing \$\.money\.holdings/);
+    const raw2 = JSON.parse(serialize(s)) as Record<string, unknown>;
+    raw2['education'] = {};
+    expect(() => deserialize(JSON.stringify(raw2))).toThrow(/missing/);
+  });
+});

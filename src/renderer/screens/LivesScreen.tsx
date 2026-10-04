@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeSaveFile, parseSaveFile } from '../../engine';
-import { app, go, loadLife, saveStore, showError, useApp } from '../store/app';
+import { app, go, importSave, loadLife, saveStore, showError, useApp } from '../store/app';
 import { listLives, type LifeRow } from './StartScreen';
 
 export function LivesScreen(): React.JSX.Element {
@@ -44,9 +44,7 @@ export function LivesScreen(): React.JSX.Element {
     const text = await saveStore.importFile();
     if (!text) return;
     try {
-      const { summary, state } = parseSaveFile(text);
-      await saveStore.write(state.lifeId, makeSaveFile(state, summary.name, Date.now()));
-      bump();
+      await importSave(text);
     } catch (e) {
       showError(`Import failed: ${(e as Error).message}`);
     }

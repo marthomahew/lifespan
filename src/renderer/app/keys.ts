@@ -16,6 +16,15 @@ function typing(t: EventTarget | null): boolean {
   return false;
 }
 
+/** Space on a focused button or link should press it, not age up. */
+function pressable(t: EventTarget | null): boolean {
+  const el = t as HTMLElement | null;
+  const tag = el?.tagName?.toLowerCase();
+  return (
+    (tag === 'button' && el?.dataset['testid'] !== 'age-up') || tag === 'a' || tag === 'summary'
+  );
+}
+
 export function toggleCheats(): void {
   const s = app.get();
   if (!s.game) return;
@@ -49,11 +58,6 @@ export function onKeyDown(e: KeyboardEvent): void {
       e.preventDefault();
       const tab = TAB_ORDER[n - 1];
       if (tab) app.set({ tab });
-      return;
-    }
-    if (key.toLowerCase() === 'k') {
-      e.preventDefault();
-      if (s.game) app.set({ overlay: s.overlay === 'palette' ? null : 'palette' });
       return;
     }
     if (key.toLowerCase() === 's') {
@@ -97,7 +101,7 @@ export function onKeyDown(e: KeyboardEvent): void {
     if (key === ' ') e.preventDefault();
     return;
   }
-  if (key === ' ' && !s.cheatsOpen) {
+  if (key === ' ' && !s.cheatsOpen && !pressable(e.target)) {
     e.preventDefault();
     doAgeUp();
   }

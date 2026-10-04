@@ -2,7 +2,7 @@ import { EVENT_BY_ID } from '../../content/events';
 import { EngineError } from '../errors';
 import { Ctx, type Step } from '../ctx';
 import { applyLocks } from '../stats';
-import type { GameState, PendingEvent } from '../types';
+import { VISIBLE_STATS, type GameState, type PendingEvent } from '../types';
 import { cloneState } from '../util';
 import { applyOutcome, pickOutcome } from './apply';
 import { selectableChoices } from './select';
@@ -45,8 +45,13 @@ export function categoryEmoji(cat: string): string {
 /** What the popup shows for the first pending event. */
 export function currentPopup(s: GameState): PopupView | null {
   const pe = s.pending[0];
-  if (!pe) return null;
-  const def = pendingDef(s, pe);
+  return pe ? popupView(s, pe) : null;
+}
+
+/** Render any pending event (null if its id is unknown or it isn't a choice event). */
+export function popupView(s: GameState, pe: PendingEvent): PopupView | null {
+  const def = EVENT_BY_ID[pe.eventId];
+  if (!def || def.kind !== 'choice') return null;
   const selectable = new Set(selectableChoices(s, def).map((c) => c.id));
   return {
     eventId: def.id,
@@ -61,15 +66,14 @@ export function currentPopup(s: GameState): PopupView | null {
   };
 }
 
-/** Answer the first pending popup. */
-export function choose(input: GameState, choiceId: string): Step {
-  const pe = input.pending[0];
-  if (!pe) throw new EngineError('no decision is pending');
-  const def = pendingDef(input, pe);
-  const choice = selectableChoices(input, def).find((c) => c.id === choiceId);
-  if (!choice) throw new EngineError(`choice ${choiceId} is not available`);
-  const ctx = new Ctx(cloneState(input));
+/** Resolve the first pending popup on a working draft. */
+export function chooseInPlace(ctx: Ctx, choiceId: string): void {
   const s = ctx.s;
+  const pe = s.pending[0];
+  if (!pe) throw new EngineError('no decision is pending');
+  const def = pendingDef(s, pe);
+  const choice = selectableChoices(s, def).find((c) => c.id === choiceId);
+  if (!choice) throw new EngineError(`choice ${choiceId} is not available`);
   s.pending = s.pending.slice(1);
   const outcome = pickOutcome(ctx, choice.outcomes);
   if (outcome) applyOutcome(ctx, def, outcome, pe.bindings, pe.payload, false);
@@ -78,5 +82,17 @@ export function choose(input: GameState, choiceId: string): Step {
     Object.values(p.bindings).every((id) => s.npcs.find((n) => n.id === id)?.alive),
   );
   applyLocks(s);
+  // Keep the sparkline's latest point in step with the stat it follows.
+  for (const k of VISIBLE_STATS) {
+    const h = s.statHistory[k];
+    if (h.length) h[h.length - 1] = s.player.stats[k];
+  }
+}
+
+/** Answer the first pending popup. */
+export function choose(input: GameState, choiceId: string): Step {
+  if (!input.pending[0]) throw new EngineError('no decision is pending');
+  const ctx = new Ctx(cloneState(input));
+  chooseInPlace(ctx, choiceId);
   return ctx.finish();
 }

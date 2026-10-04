@@ -20,6 +20,22 @@ const impurity = [
     selector: "MemberExpression[object.name='Date'][property.name='now']",
     message: 'The engine is pure: no Date.now.',
   },
+  {
+    selector: "CallExpression[callee.name='Date']",
+    message: 'The engine is pure: no Date().',
+  },
+  {
+    selector: "MemberExpression[object.name='Math'][computed=true]",
+    message: 'Use the seeded RNG in game state, not Math.random (no computed Math access).',
+  },
+  {
+    selector: "VariableDeclarator[init.name='Math'] > ObjectPattern",
+    message: 'Use the seeded RNG in game state, not Math.random (no destructuring Math).',
+  },
+  {
+    selector: "MemberExpression[object.name='Date'][computed=true]",
+    message: 'The engine is pure: no Date access.',
+  },
 ];
 
 export default tseslint.config(
@@ -79,6 +95,10 @@ export default tseslint.config(
         { name: 'fetch', message: 'The engine is pure: no I/O.' },
         { name: 'performance', message: 'The engine is pure: no clocks.' },
         { name: 'setTimeout', message: 'The engine is pure: no timers.' },
+        { name: 'globalThis', message: 'The engine is pure: no global access.' },
+        { name: 'self', message: 'The engine is pure: no global access.' },
+        { name: 'crypto', message: 'Use the seeded RNG in game state.' },
+        { name: 'require', message: 'The engine is pure: no require.' },
       ],
       'no-restricted-imports': [
         'error',

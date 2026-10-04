@@ -17,8 +17,12 @@ export function secureWebPreferences(preloadPath: string): WebPreferences {
   };
 }
 
-/** Only our own bundled pages may load. */
-export function isAllowedUrl(url: string, devServerUrl: string | undefined): boolean {
+/** Only our own bundled pages may load: files under the app's own directory, or the dev server. */
+export function isAllowedUrl(
+  url: string,
+  devServerUrl: string | undefined,
+  appRoot: string,
+): boolean {
   if (devServerUrl && url.startsWith(devServerUrl)) return true;
-  return url.startsWith('file://');
+  return url.startsWith(appRoot);
 }

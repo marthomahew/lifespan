@@ -23,7 +23,16 @@ export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
             role="tab"
             id={`tab-${t.id}`}
             aria-selected={tab === t.id}
-            aria-controls={`panel-${t.id}`}
+            aria-controls={tab === t.id ? `panel-${t.id}` : undefined}
+            tabIndex={tab === t.id ? 0 : -1}
+            onKeyDown={(e) => {
+              if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+              const next = TABS[(i + (e.key === 'ArrowRight' ? 1 : TABS.length - 1)) % TABS.length];
+              if (next) {
+                app.set({ tab: next.id });
+                document.getElementById(`tab-${next.id}`)?.focus();
+              }
+            }}
             className={`tab${tab === t.id ? ' active' : ''}`}
             data-testid={`tab-${t.id}`}
             title={`${t.label} (⌘${i + 1})`}

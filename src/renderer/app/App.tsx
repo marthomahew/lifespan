@@ -8,7 +8,9 @@ import { NewLifeScreen } from '../screens/NewLifeScreen';
 import { ObituaryScreen } from '../screens/ObituaryScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { StartScreen } from '../screens/StartScreen';
-import { onKeyDown } from './keys';
+import { onKeyDown, toggleCheats } from './keys';
+import { onMenuCommand } from './menu';
+import { CheatPanel } from '../cheats/CheatPanel';
 
 export function App(): React.JSX.Element {
   const screen = useApp((s) => s.screen);
@@ -17,6 +19,7 @@ export function App(): React.JSX.Element {
   const toasts = useApp((s) => s.toasts);
   const error = useApp((s) => s.error);
   const settings = useApp((s) => s.settings);
+  const cheatsOpen = useApp((s) => s.cheatsOpen);
 
   useEffect(() => {
     applySettingsToDocument(settings);
@@ -25,6 +28,8 @@ export function App(): React.JSX.Element {
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
   }, [settings]);
+
+  useEffect(() => window.lifespan?.onMenu((cmd) => onMenuCommand(cmd, toggleCheats)), []);
 
   useEffect(() => {
     window.addEventListener('keydown', onKeyDown);
@@ -39,6 +44,7 @@ export function App(): React.JSX.Element {
       {screen === 'obituary' && game && <ObituaryScreen game={game} />}
       {screen === 'lives' && <LivesScreen />}
       {screen === 'settings' && <SettingsScreen />}
+      {cheatsOpen && game && <CheatPanel game={game} />}
       {overlay === 'help' && <HelpOverlay />}
       {error && (
         <div className="error-banner card" role="alert" data-testid="error-banner">

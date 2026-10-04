@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { startSeeded } from './helpers';
+import { answerPopup, startSeeded } from './helpers';
 
 test('flow 12: theme switch persists across a reload', async ({ page }) => {
   await page.goto('/');
@@ -54,6 +54,7 @@ test('stat sparklines and trait tooltips with modifiers', async ({ page }) => {
       await page.getByTestId('choice-1').click();
     await page.getByTestId('age-up').click();
   }
+  await answerPopup(page);
   await expect(page.getByTestId('stat-happiness').locator('svg.sparkline path')).toHaveCount(1);
   await page.getByTestId('trait-bookish').hover();
   await expect(page.getByTestId('trait-tip-bookish')).toBeVisible();

@@ -125,6 +125,45 @@ export function findNonFinite(v: unknown, path = '$'): string | null {
   return null;
 }
 
+/** Fixed-shape sections must carry every key a fresh life has (dynamic records are skipped). */
+const DYNAMIC = new Set([
+  'skills',
+  'skillPractice',
+  'languages',
+  'lastFired',
+  'counts',
+  'categoryLast',
+  'locks',
+]);
+export function missingKeys(
+  template: unknown,
+  value: unknown,
+  path = '$',
+  depth = 0,
+  out: string[] = [],
+): string[] {
+  if (depth > 2 || !template || typeof template !== 'object' || Array.isArray(template)) return out;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    out.push(path);
+    return out;
+  }
+  const v = value as Record<string, unknown>;
+  for (const [k, t] of Object.entries(template as Record<string, unknown>)) {
+    if (!(k in v)) {
+      out.push(`${path}.${k}`);
+      continue;
+    }
+    if (DYNAMIC.has(k) || t === null || v[k] === null) continue;
+    missingKeys(t, v[k], `${path}.${k}`, depth + 1, out);
+  }
+  return out;
+}
+
+let templateCache: GameState | null = null;
+export function setSaveTemplate(t: GameState): void {
+  templateCache = t;
+}
+
 export function serialize(s: GameState): string {
   return JSON.stringify(s);
 }
@@ -145,6 +184,11 @@ export function deserialize(json: string): GameState {
     throw new SaveError(
       `invalid save at ${issue?.path.join('.') ?? '?'}: ${issue?.message ?? 'unknown'}`,
     );
+  }
+  if (templateCache) {
+    const missing = missingKeys(templateCache, migrated);
+    if (missing.length)
+      throw new SaveError(`invalid save: missing ${missing.slice(0, 3).join(', ')}`);
   }
   // JSON cannot carry NaN, but keep the deep check for objects built in memory.
   const bad = findNonFinite(migrated);

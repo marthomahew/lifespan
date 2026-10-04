@@ -1,9 +1,15 @@
 import { app, BrowserWindow, session } from 'electron';
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { isAllowedUrl, secureWebPreferences } from './security';
 import { registerSaveHandlers } from './saves';
+import { installMenu } from './menu';
 
-const devServerUrl = process.env['ELECTRON_RENDERER_URL'];
+// The dev server URL is honoured only in unpackaged development runs.
+const devServerUrl = app.isPackaged ? undefined : process.env['ELECTRON_RENDERER_URL'];
+// out/ (or the asar root): the only files the app may load.
+const appRoot = pathToFileURL(join(__dirname, '..')).href;
+const rendererRoot = pathToFileURL(join(__dirname, '../renderer')).href;
 
 function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -20,7 +26,7 @@ function createWindow(): BrowserWindow {
 
   // No navigation away from the app and no new windows.
   win.webContents.on('will-navigate', (event, url) => {
-    if (!isAllowedUrl(url, devServerUrl)) event.preventDefault();
+    if (!isAllowedUrl(url, devServerUrl, rendererRoot)) event.preventDefault();
   });
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 
@@ -37,14 +43,15 @@ void app.whenReady().then(() => {
   // No remote content: refuse every request that isn't ours.
   session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
     const ok =
-      details.url.startsWith('file://') ||
+      details.url.startsWith(appRoot) ||
       details.url.startsWith('devtools://') ||
       details.url.startsWith('data:') ||
       (devServerUrl !== undefined && details.url.startsWith(devServerUrl.replace(/\/$/, '')));
     callback({ cancel: !ok });
   });
   session.defaultSession.setPermissionRequestHandler((_wc, _perm, cb) => cb(false));
-  registerSaveHandlers();
+  registerSaveHandlers(rendererRoot, devServerUrl);
+  installMenu();
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

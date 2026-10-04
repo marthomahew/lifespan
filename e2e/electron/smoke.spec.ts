@@ -42,6 +42,24 @@ test('electron app launches with the right title and security baseline', async (
     bridge: typeof (window as unknown as { lifespan?: unknown }).lifespan,
   }));
   expect(surface).toEqual({ require: 'undefined', process: 'undefined', bridge: 'object' });
+
+  // The strict CSP ships in the built page, and new windows are refused.
+  const csp = await win.evaluate(
+    () =>
+      document
+        .querySelector('meta[http-equiv="Content-Security-Policy"]')
+        ?.getAttribute('content') ?? '',
+  );
+  expect(csp).toContain("default-src 'none'");
+  expect(csp).not.toContain('unsafe-inline');
+  expect(await win.evaluate(() => window.open('https://example.com/') === null)).toBe(true);
+  expect(app.windows()).toHaveLength(1);
+  // Navigation away from the app is prevented.
+  await win.evaluate(() => {
+    window.location.href = 'https://example.com/';
+  });
+  await win.waitForTimeout(300);
+  expect(win.url()).toMatch(/^file:/);
   expect(errors).toEqual([]);
   await app.close();
 });
@@ -76,5 +94,24 @@ test('electron plays a year and writes a save file over IPC', async () => {
   await win.reload();
   await expect(win.getByTestId('btn-continue')).toBeVisible();
   expect(errors).toEqual([]);
+  await app.close();
+});
+
+test('the Electron Cheats menu opens the cheat panel', async () => {
+  const { app } = await launchApp();
+  const win = await app.firstWindow();
+  await win.getByTestId('btn-new-life').click();
+  await win.getByTestId('btn-random-life').click();
+  await expect(win.getByTestId('game-screen')).toBeVisible();
+  const labels = await app.evaluate(
+    ({ Menu }) => Menu.getApplicationMenu()?.items.map((i) => i.label) ?? [],
+  );
+  expect(labels).toEqual(
+    expect.arrayContaining(['Lifespan', 'File', 'Edit', 'View', 'Cheats', 'Window', 'Help']),
+  );
+  await app.evaluate(({ Menu }) =>
+    Menu.getApplicationMenu()?.getMenuItemById('cheats-toggle')?.click(),
+  );
+  await expect(win.getByTestId('cheat-panel')).toBeVisible();
   await app.close();
 });

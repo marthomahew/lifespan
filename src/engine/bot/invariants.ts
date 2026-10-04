@@ -1,36 +1,37 @@
 import { ALL_STATS, type GameState } from '../types';
+import { popupView } from '../events/choose';
 
-/** Fields whose type allows null (DONE §4.1 deep scan). */
-const NULLABLE = new Set([
-  'military',
-  'death',
-  'jobId',
-  'partTimeId',
-  'enrollment',
-  'case',
-  'prison',
-  'label',
-  'act',
-  'discharge',
-  'written',
-  'job',
-  'to',
-  'last',
-  'lawyer',
-  'upTo',
-]);
+/** Paths whose type allows null (DONE §4.1 deep scan). Array indices are written as []. */
+const NULLABLE: RegExp[] = [
+  /^\$\.military$/,
+  /^\$\.death$/,
+  /^\$\.career\.(jobId|partTimeId)$/,
+  /^\$\.career\.history\[\]\.to$/,
+  /^\$\.education\.enrollment$/,
+  /^\$\.legal\.(case|prison)$/,
+  /^\$\.legal\.case\.lawyer$/,
+  /^\$\.music\.(act|label)$/,
+  /^\$\.military\.discharge$/,
+  /^\$\.will\.written$/,
+  /^\$\.npcs\[\]\.job$/,
+  /^\$\.money\.last$/,
+];
+const nullable = (path: string): boolean => {
+  const p = path.replace(/\[\d+\]/g, '[]');
+  return NULLABLE.some((re) => re.test(p));
+};
 
 export const TOKEN_RE = /\{[^}]*\}/;
 
 /** Deep scan: finite numbers, no undefined, null only where the type allows. */
-export function scanValues(v: unknown, path: string, key: string, out: string[]): void {
+export function scanValues(v: unknown, path: string, _key: string, out: string[]): void {
   if (out.length > 5) return;
   if (v === undefined) {
     out.push(`${path} is undefined`);
     return;
   }
   if (v === null) {
-    if (!NULLABLE.has(key)) out.push(`${path} is null`);
+    if (!nullable(path)) out.push(`${path} is null`);
     return;
   }
   if (typeof v === 'number') {
@@ -38,7 +39,7 @@ export function scanValues(v: unknown, path: string, key: string, out: string[])
     return;
   }
   if (Array.isArray(v)) {
-    v.forEach((x, i) => scanValues(x, `${path}[${i}]`, key, out));
+    v.forEach((x, i) => scanValues(x, `${path}[${i}]`, _key, out));
     return;
   }
   if (typeof v === 'object') {
@@ -80,6 +81,18 @@ export function checkState(s: GameState, prevAge: number | null, logFrom = 0): s
     if (n.memory.length > 30) v.push(`npc ${n.id} memory ${n.memory.length}`);
   }
   for (const pe of s.pending) {
+    const view = popupView(s, pe);
+    if (!view) v.push(`pending ${pe.eventId} is not a known choice event`);
+    else {
+      if (!view.text.trim()) v.push(`pending ${pe.eventId} has empty text`);
+      if (TOKEN_RE.test(view.text)) v.push(`unresolved token in popup ${pe.eventId}: ${view.text}`);
+      if (!view.choices.some((c) => c.enabled))
+        v.push(`pending ${pe.eventId} has no selectable choice`);
+      for (const c of view.choices) {
+        if (!c.label.trim() || TOKEN_RE.test(c.label))
+          v.push(`bad choice label in ${pe.eventId}: ${c.label}`);
+      }
+    }
     for (const [b, id] of Object.entries(pe.bindings)) {
       const n = s.npcs.find((x) => x.id === id);
       if (!n) v.push(`pending ${pe.eventId} binds missing npc ${b}=${id}`);

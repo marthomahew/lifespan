@@ -13,3 +13,6 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - Money: stored as local nominal currency. refToLocal(s, ref, 'price'|'wage') converts content reference dollars; localToRef for inflation-adjusted figures.
 - Bot decisions use their own Rng (player input), seeded from life seed; sim replays with save/load checkpoints and compares stateHash.
 - tests/helpers.ts advance()/playYears()/playToDeath() — update advance() when choose() exists.
+- Cheats: registry in src/engine/cheats/*.ts; a meta-test fails if a cheat id isn't quoted ('id') in some tests/engine/cheats/*.test.ts. GUI forms are generated from params.
+- Prettier reformats multi-line code; python str.replace edits must match the prettier-formatted text (re-read before editing).
+- Save shape: deserialize checks keys against a fresh newLife template (set in src/engine/index.ts). New state sections must be added to emptyState in life.ts.

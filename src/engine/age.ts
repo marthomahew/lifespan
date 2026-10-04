@@ -57,5 +57,6 @@ export function ageUpInPlace(ctx: Ctx): void {
   s.totals.happinessSum += s.player.stats.happiness;
   s.totals.years += 1;
   s.totals.maxNetWorthRef = Math.max(s.totals.maxNetWorthRef, Math.round(netWorthRef(s)));
+  s.rng = ctx.rng.state;
   pushSnapshot(s);
 }

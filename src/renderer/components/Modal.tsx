@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 type Props = {
   title: string;
   onClose?: () => void;
@@ -21,11 +23,37 @@ export function Modal({
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const prev = document.activeElement as HTMLElement | null;
-    const first = ref.current?.querySelector<HTMLElement>(
-      'button, [href], input, select, textarea',
-    );
-    first?.focus();
-    return () => prev?.focus?.();
+    const root = ref.current;
+    const focusables = (): HTMLElement[] =>
+      root
+        ? [...root.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
+            (el) => !el.hasAttribute('disabled'),
+          )
+        : [];
+    const firstEnabled =
+      focusables().find((el) => !el.classList.contains('close')) ?? focusables()[0];
+    firstEnabled?.focus();
+    // Keep Tab inside the dialog.
+    const trap = (e: KeyboardEvent): void => {
+      if (e.key !== 'Tab') return;
+      const els = focusables();
+      if (!els.length) return;
+      const first = els[0] as HTMLElement;
+      const last = els[els.length - 1] as HTMLElement;
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !root?.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !root?.contains(active))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', trap);
+    return () => {
+      document.removeEventListener('keydown', trap);
+      prev?.focus?.();
+    };
   }, []);
   return (
     <div className="modal-backdrop" data-testid={`${testId}-backdrop`}>

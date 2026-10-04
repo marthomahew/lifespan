@@ -14,3 +14,21 @@ export { makeSaveFile, parseSaveFile, summarize, type SaveSummary } from './save
 export { renderText } from './events/tokens';
 export { avatarEmoji } from './avatar';
 export { traitModifiers, statLabel } from './describe';
+export {
+  runCheat,
+  runConsole,
+  suggest,
+  helpText,
+  CHEATS,
+  CHEAT_BY_ID,
+  CheatError,
+  parseCommand,
+  type CheatStep,
+} from './cheats/registry';
+export { CHEAT_GROUPS, type CheatDef, type CheatGroup, type ParamDef } from './cheats/types';
+export { eventTable, type EventRow } from './cheats/events';
+
+// Saves are checked against the shape of a fresh life.
+import { newLife as _newLife } from './life';
+import { setSaveTemplate as _setTemplate } from './save';
+_setTemplate(_newLife({ country: 'us', birthYear: 2000 }, 1));

@@ -4,8 +4,8 @@ import { join } from 'node:path';
 import { z } from 'zod';
 import { IPC, MAX_SAVE_BYTES, SAVE_ID_RE, type SaveMeta } from '../shared/api';
 
-const idSchema = z.string().regex(SAVE_ID_RE);
-const jsonSchema = z
+export const idSchema = z.string().regex(SAVE_ID_RE);
+export const jsonSchema = z
   .string()
   .max(MAX_SAVE_BYTES)
   .refine((s) => {
@@ -16,17 +16,32 @@ const jsonSchema = z
       return false;
     }
   }, 'not JSON');
-const nameSchema = z.string().max(120);
+export const nameSchema = z.string().max(120);
+
+let tmpSeq = 0;
+const queues = new Map<string, Promise<void>>();
 
 export function savesDir(): string {
   return join(app.getPath('userData'), 'saves');
 }
 
 /** Write atomically: temp file then rename, keeping one .bak of the previous version. */
-export async function atomicWrite(dir: string, id: string, json: string): Promise<void> {
+export function atomicWrite(dir: string, id: string, json: string): Promise<void> {
+  // Writes to the same save are serialized so overlapping autosaves can't race.
+  const key = join(dir, id);
+  const prev = queues.get(key) ?? Promise.resolve();
+  const next = prev.catch(() => undefined).then(() => writeOnce(dir, id, json));
+  queues.set(key, next);
+  void next.finally(() => {
+    if (queues.get(key) === next) queues.delete(key);
+  });
+  return next;
+}
+
+async function writeOnce(dir: string, id: string, json: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
   const target = join(dir, `${id}.json`);
-  const tmp = join(dir, `${id}.json.tmp`);
+  const tmp = join(dir, `${id}.json.${process.pid}.${++tmpSeq}.tmp`);
   await fs.writeFile(tmp, json, 'utf8');
   try {
     await fs.copyFile(target, join(dir, `${id}.json.bak`));
@@ -54,9 +69,29 @@ export async function listSaves(dir: string): Promise<SaveMeta[]> {
   return out;
 }
 
-export function registerSaveHandlers(): void {
-  ipcMain.handle(IPC.list, () => listSaves(savesDir()));
-  ipcMain.handle(IPC.read, async (_e, rawId: unknown) => {
+/** Only our own renderer may call the save API. */
+export function trustedSender(
+  url: string | undefined,
+  rendererRoot: string,
+  devServerUrl: string | undefined,
+): boolean {
+  if (!url) return false;
+  if (devServerUrl && url.startsWith(devServerUrl)) return true;
+  return url.startsWith(rendererRoot);
+}
+
+type Handler = (e: Electron.IpcMainInvokeEvent, ...args: unknown[]) => unknown;
+
+export function registerSaveHandlers(rendererRoot: string, devServerUrl: string | undefined): void {
+  const handle = (channel: string, fn: Handler): void => {
+    ipcMain.handle(channel, (e, ...args) => {
+      if (!trustedSender(e.senderFrame?.url, rendererRoot, devServerUrl))
+        throw new Error('untrusted sender');
+      return fn(e, ...args);
+    });
+  };
+  handle(IPC.list, () => listSaves(savesDir()));
+  handle(IPC.read, async (_e, rawId: unknown) => {
     const id = idSchema.parse(rawId);
     try {
       return await fs.readFile(join(savesDir(), `${id}.json`), 'utf8');
@@ -64,15 +99,15 @@ export function registerSaveHandlers(): void {
       return null;
     }
   });
-  ipcMain.handle(IPC.write, async (_e, rawId: unknown, rawJson: unknown) => {
+  handle(IPC.write, async (_e, rawId: unknown, rawJson: unknown) => {
     await atomicWrite(savesDir(), idSchema.parse(rawId), jsonSchema.parse(rawJson));
   });
-  ipcMain.handle(IPC.delete, async (_e, rawId: unknown) => {
+  handle(IPC.delete, async (_e, rawId: unknown) => {
     const id = idSchema.parse(rawId);
     await fs.rm(join(savesDir(), `${id}.json`), { force: true });
     await fs.rm(join(savesDir(), `${id}.json.bak`), { force: true });
   });
-  ipcMain.handle(IPC.exportDialog, async (e, rawName: unknown, rawJson: unknown) => {
+  handle(IPC.exportDialog, async (e, rawName: unknown, rawJson: unknown) => {
     const name = nameSchema.parse(rawName).replace(/[^\w .-]/g, '_');
     const json = jsonSchema.parse(rawJson);
     const win = BrowserWindow.fromWebContents(e.sender);
@@ -85,7 +120,7 @@ export function registerSaveHandlers(): void {
     await fs.writeFile(res.filePath, json, 'utf8');
     return true;
   });
-  ipcMain.handle(IPC.importDialog, async (e) => {
+  handle(IPC.importDialog, async (e) => {
     const win = BrowserWindow.fromWebContents(e.sender);
     const opts = {
       properties: ['openFile' as const],
@@ -98,5 +133,5 @@ export function registerSaveHandlers(): void {
     if (st.size > MAX_SAVE_BYTES) return null;
     return fs.readFile(file, 'utf8');
   });
-  ipcMain.handle(IPC.version, () => app.getVersion());
+  handle(IPC.version, () => app.getVersion());
 }

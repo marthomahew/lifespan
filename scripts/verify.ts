@@ -3,6 +3,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 const STEPS = [
   'typecheck',
@@ -23,11 +24,31 @@ function m06Waived(): boolean {
     .some((l) => l.startsWith('- M0.6:'));
 }
 
+/** Fingerprint of everything git can see outside ignored paths: tracked diffs plus untracked files' contents. */
 function gitStatus(): Set<string> {
-  const r = spawnSync('git', ['status', '--porcelain', '--untracked-files=all'], {
+  const out = new Set<string>();
+  const diff = spawnSync('git', ['diff', 'HEAD', '--binary'], {
+    encoding: 'utf8',
+    maxBuffer: 256 * 1024 * 1024,
+  });
+  out.add(
+    `tracked-diff ${createHash('sha256')
+      .update(diff.stdout ?? '')
+      .digest('hex')}`,
+  );
+  const others = spawnSync('git', ['ls-files', '--others', '--exclude-standard'], {
     encoding: 'utf8',
   });
-  return new Set((r.stdout ?? '').split('\n').filter(Boolean));
+  for (const f of (others.stdout ?? '').split('\n').filter(Boolean)) {
+    let h = 'unreadable';
+    try {
+      h = createHash('sha256').update(readFileSync(f)).digest('hex');
+    } catch {
+      // Vanished between listing and reading.
+    }
+    out.add(`untracked ${f} ${h}`);
+  }
+  return out;
 }
 
 const before = gitStatus();

@@ -34,9 +34,11 @@ describe('electron security baseline (SPEC §9.6)', () => {
   });
 
   it('blocks navigation to remote pages', () => {
-    expect(isAllowedUrl('file:///app/index.html', undefined)).toBe(true);
-    expect(isAllowedUrl('https://example.com/', undefined)).toBe(false);
-    expect(isAllowedUrl('http://localhost:5173/x', 'http://localhost:5173/')).toBe(true);
+    const root = 'file:///app/out/renderer';
+    expect(isAllowedUrl('file:///app/out/renderer/index.html', undefined, root)).toBe(true);
+    expect(isAllowedUrl('file:///etc/passwd', undefined, root)).toBe(false);
+    expect(isAllowedUrl('https://example.com/', undefined, root)).toBe(false);
+    expect(isAllowedUrl('http://localhost:5173/x', 'http://localhost:5173/', root)).toBe(true);
   });
 
   it('the main process denies new windows and webviews', () => {

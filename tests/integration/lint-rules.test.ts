@@ -22,6 +22,17 @@ describe('lint purity rules', () => {
       const msgs = await lint('export const d = new Date();\n', dir);
       expect(msgs.join('\n')).toMatch(/new Date/);
     });
+    it(`forbids sneaky clock and randomness access in ${dir}`, async () => {
+      for (const code of [
+        'export const d = Date();\n',
+        "export const r = Math['random']();\n",
+        'const { random } = Math;\nexport const r = random();\n',
+        'export const t = globalThis.Date.now();\n',
+        'export const u = crypto.getRandomValues(new Uint8Array(1));\n',
+      ]) {
+        expect((await lint(code, dir)).length, code).toBeGreaterThan(0);
+      }
+    });
     it(`forbids Node and DOM access in ${dir}`, async () => {
       const msgs = await lint(
         "import { readFileSync } from 'node:fs';\nexport const d = document.title + readFileSync;\n",

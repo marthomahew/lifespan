@@ -116,9 +116,9 @@ export function runLife(
   const { s, popups } = playLife(seed, persona, null, violations);
   if (checkpoints > 0) {
     const r = new Rng(seedRng(seed + 1000003));
-    const ages = new Set<number>();
-    const span = Math.max(1, s.player.age);
-    for (let i = 0; i < checkpoints; i++) ages.add(r.int(0, span));
+    // Distinct ages in [1, deathAge − 1] so every checkpoint actually reloads a living life.
+    const pool = Array.from({ length: Math.max(0, s.player.age - 1) }, (_, i) => i + 1);
+    const ages = new Set<number>(r.shuffle(pool).slice(0, checkpoints));
     const replay = playLife(seed, persona, ages, []);
     if (stateHash(replay.s) !== stateHash(s))
       violations.push(`seed ${seed}: save/load checkpoints changed the final state hash`);

@@ -79,6 +79,7 @@ describe('hygiene', () => {
       'without a rule name',
     ],
     ['marker', { 'src/engine/a.ts': j('// TO', 'DO later\n') }, 'work marker'],
+    ['plural marker', { 'src/engine/a.ts': j('// two TO', 'DOs here\n') }, 'work marker'],
     [
       'placeholder',
       { 'src/content/a.ts': j('export const t = "Lo', 'rem ipsum";\n') },

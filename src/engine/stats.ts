@@ -14,6 +14,7 @@ export function setStat(s: GameState, key: StatKey, value: number): void {
 
 /** Locked stats (cheat) snap back to their lock value. */
 export function applyLocks(s: GameState): void {
+  if (s.cheats.infiniteMoney && s.money.cash < 1e9) s.money.cash = 1e9;
   for (const [k, v] of Object.entries(s.cheats.locks)) {
     if (v !== undefined) s.player.stats[k as StatKey] = clampStat(v);
   }

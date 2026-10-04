@@ -247,6 +247,20 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
     ] as const);
   const chosen = opts.traits ? validTraits(opts.traits) : [];
   p.traits = chosen.length ? chosen : randomTraits(ctx, r.int(2, 3));
+  // SPEC §3.1: 2–3 traits at birth. Top up a single pick with a compatible random one.
+  if (p.traits.length < 2) {
+    for (const t of randomTraits(ctx, 6)) {
+      const tr = TRAIT_BY_ID[t];
+      if (p.traits.length >= 2) break;
+      if (
+        !tr ||
+        p.traits.includes(t) ||
+        p.traits.some((o) => tr.excludes.includes(o) || TRAIT_BY_ID[o]?.excludes.includes(t))
+      )
+        continue;
+      p.traits.push(t);
+    }
+  }
   for (const lang of c.languages.slice(0, 1)) p.languages[lang] = 0;
 
   p.genes = { looks: r.int(20, 95), smarts: r.int(25, 95), health: r.int(50, 100) };

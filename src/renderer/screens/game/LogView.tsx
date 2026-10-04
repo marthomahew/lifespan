@@ -72,7 +72,7 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
           ))}
         </select>
       </div>
-      <div className="log" ref={ref} data-testid="log" tabIndex={0} aria-live="polite">
+      <div className="log" ref={ref} data-testid="log" tabIndex={0}>
         {hidden > 0 && (
           <button
             className="ghost more"
