@@ -59,3 +59,13 @@ export const oddsBy =
   (k: keyof GameState['player']['stats'], base: number, slope = 0.006) =>
   (s: GameState): number =>
     Math.min(0.95, Math.max(0.05, base + (s.player.stats[k] - 50) * slope));
+export const serving = (s: GameState): boolean => s.military?.active === true;
+export const deployed = (s: GameState): boolean => s.military?.deployed === true;
+export const famous =
+  (min: number) =>
+  (s: GameState): boolean =>
+    s.player.stats.fame >= min;
+export const hasKidAged =
+  (lo: number, hi: number) =>
+  (s: GameState): boolean =>
+    s.npcs.some((n) => n.alive && n.roles.includes('child') && n.age >= lo && n.age <= hi);

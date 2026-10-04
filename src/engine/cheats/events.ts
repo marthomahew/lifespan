@@ -50,7 +50,10 @@ export const EVENT_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       const def = EVENT_BY_ID[String(p['event'])];
       if (!def) return 'No such event';
-      const e = eligibility(ctx.s, def, { ignoreConditions: p['force'] === true, chain: true });
+      const force = p['force'] === true;
+      if (!force && def.chainOnly)
+        return `${def.id} only fires as a follow-up; add "on" to force it`;
+      const e = eligibility(ctx.s, def, { ignoreConditions: force, chain: force });
       if (!e.ok) return `Can't fire ${def.id}: ${e.reason}`;
       const ok = fireEvent(ctx, def, 'cheat');
       return ok ? `Fired ${def.id}` : `Couldn't bind ${def.id}`;
@@ -103,6 +106,7 @@ export const EVENT_CHEATS: CheatDef[] = [
   },
   {
     id: 'chains.list',
+    readOnly: true,
     group: 'events',
     label: 'List pending chain steps',
     syntax: 'chains',
@@ -134,6 +138,7 @@ export const EVENT_CHEATS: CheatDef[] = [
   },
   {
     id: 'events.list',
+    readOnly: true,
     group: 'events',
     label: 'List eligible events',
     syntax: 'events {filter}',

@@ -1,6 +1,7 @@
 import { TRAITS } from '../../content/traits';
 import type { Ctx } from '../ctx';
-import { money } from '../economy';
+import { formatMoney, money } from '../economy';
+import { addLoan } from './loans';
 import { addNpc, remember } from '../npc';
 import { addStat } from '../stats';
 import type { Npc } from '../types';
@@ -49,13 +50,24 @@ export function divorce(ctx: Ctx, n: Npc): void {
   s.money.savings = take(s.money.savings);
   for (const k of ['bonds', 'index', 'growth', 'coin'] as const)
     s.money.holdings[k] = take(s.money.holdings[k]);
-  s.money.cash -= left;
+  const fromCash = Math.min(left, Math.max(0, s.money.cash));
+  s.money.cash -= fromCash;
+  left -= fromCash;
+  if (left > 0) {
+    addLoan(s, 'personal', left, 0.03, 10);
+    ctx.log(
+      'money',
+      `The court orders a property settlement of ${formatMoney(s, left)}, payable over ten years.`,
+    );
+  }
   n.money += owed;
-  const salaryGap = s.career.salary - money(s, 30000, 'wage');
-  if (!prenup && salaryGap > 0 && years >= 3) {
+  // Alimony flows from the higher earner (a negative amount is paid to the player).
+  const exIncome = n.job && n.job !== 'Unemployed' ? money(s, 45000, 'wage') : 0;
+  const gap = s.career.salary - exIncome;
+  if (!prenup && years >= 3 && Math.abs(gap) > money(s, 10000, 'wage')) {
     s.money.alimony.push({
       npcId: n.id,
-      amount: Math.round(salaryGap * 0.2),
+      amount: Math.round(gap * 0.2),
       years: Math.min(10, Math.ceil(years / 2)),
     });
   }
@@ -70,7 +82,9 @@ export function divorce(ctx: Ctx, n: Npc): void {
   n.flags.push('was_spouse');
   setRoles(n, ['spouse', 'partner'], 'ex');
   delete n.romance;
-  if (s.family.pregnancy?.partnerId === n.id) s.family.pregnancy = null;
+  // A baby the player is carrying still arrives; one the ex is carrying leaves with them.
+  if (s.family.pregnancy?.partnerId === n.id && s.family.pregnancy.carrier === 'partner')
+    s.family.pregnancy = null;
   ctx.log(
     'romance',
     `The divorce is final. ${n.first} walks away with ${prenup ? 'what the prenup allows' : 'half of what you built'}.`,
@@ -166,5 +180,14 @@ export function romanceTick(ctx: Ctx): void {
     s.money.cash -= a.amount;
     a.years -= 1;
   }
+  // Child support for children living with an ex; they also see you less.
+  const away = s.npcs.filter((k) => k.alive && s.family.custodyLost.includes(k.id) && k.age < 18);
+  if (away.length) {
+    s.money.cash -= money(s, 4000 * away.length, 'wage');
+    for (const k of away) k.rel = Math.max(0, k.rel - ctx.rng.int(1, 3));
+  }
+  s.family.custodyLost = s.family.custodyLost.filter((id) =>
+    s.npcs.some((k) => k.id === id && k.alive && k.age < 18),
+  );
   s.money.alimony = s.money.alimony.filter((a) => a.years > 0);
 }

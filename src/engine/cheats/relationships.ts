@@ -16,6 +16,17 @@ function npc(ctx: Ctx, id: unknown): Npc {
   return n;
 }
 
+const RELATIVES = [
+  'mother',
+  'father',
+  'sibling',
+  'grandparent',
+  'child',
+  'grandchild',
+  'stepparent',
+];
+const isRelative = (n: Npc): boolean => n.roles.some((r) => RELATIVES.includes(r));
+
 const SPAWN_ROLES = [
   'friend',
   'partner',
@@ -31,6 +42,7 @@ const SPAWN_ROLES = [
 export const RELATIONSHIP_CHEATS: CheatDef[] = [
   {
     id: 'npc.list',
+    readOnly: true,
     group: 'relationships',
     label: 'List NPCs',
     syntax: 'npcs',
@@ -156,6 +168,7 @@ export const RELATIONSHIP_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       const n = npc(ctx, p['id']);
       if (ctx.s.player.age < 18 || n.age < 18) return 'Adults only';
+      if (isRelative(n)) return 'Not with family';
       if (!n.alive) return `${n.first} is dead`;
       const cur = partnerOf(ctx.s);
       if (cur && cur.id !== n.id) return `You're with ${cur.first}`;
@@ -175,6 +188,7 @@ export const RELATIONSHIP_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       const n = npc(ctx, p['id']);
       if (ctx.s.player.age < 18 || n.age < 18) return 'Adults only';
+      if (isRelative(n)) return 'Not with family';
       const cur = partnerOf(ctx.s);
       if (cur && cur.id !== n.id) return `You're with ${cur.first}`;
       marry(ctx, n, false);

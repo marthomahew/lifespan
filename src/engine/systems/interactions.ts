@@ -121,9 +121,11 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   if (!def || !n) throw new EngineError('unknown interaction or person');
   const why = interactionReason(s, n, def);
   if (why) throw new EngineError(`${def.label}: ${why}`);
-  markUsed(s, `i:${n.id}:${def.id}`);
   const size = params.size ?? 'small';
   const cost = def.special === 'wedding' ? WEDDING_COST[size] : (def.cost ?? 0);
+  if (cost && s.money.cash < money(s, cost))
+    throw new EngineError(`${def.label}: costs ${formatMoney(s, money(s, cost))}`);
+  markUsed(s, `i:${n.id}:${def.id}`);
   if (cost) s.money.cash -= money(s, cost);
 
   let ok = ctx.roll(interactionOdds(s, n, def));
@@ -143,9 +145,11 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
 
   switch (def.special) {
     case 'ask_money':
-      if (ok) {
+      if (ok && n.money <= 0) {
+        ctx.log('money', `${n.first} turns out pockets that are genuinely empty.`);
+      } else if (ok) {
         const amount = Math.max(money(s, 50), Math.min(Math.round(n.money * 0.1), money(s, 2500)));
-        const paid = Math.min(amount, Math.max(0, n.money)) || money(s, 50);
+        const paid = Math.min(amount, n.money);
         n.money = Math.max(0, n.money - paid);
         s.money.cash += paid;
         ctx.log('money', `${n.first} gives you ${formatMoney(s, paid)}.`);

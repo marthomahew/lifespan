@@ -9,6 +9,7 @@ import {
   SCHEMA_VERSION,
   type Attraction,
   type Gender,
+  type Npc,
   type GameState,
   type Stats,
   type VisibleStat,
@@ -361,7 +362,6 @@ function generateFamily(ctx: Ctx): void {
             : age < 85
               ? r.chance(0.55)
               : r.chance(0.2);
-      if (!alive) continue;
       const gp = addNpc(ctx, {
         role: 'grandparent',
         gender: g,
@@ -369,9 +369,38 @@ function generateFamily(ctx: Ctx): void {
         last:
           g === 'male' ? parent.last : r.chance(0.6) ? parent.last : randomSurname(ctx, p.country),
         rel: r.int(50, 90),
-        money: familyMoney * r.next() * 0.3,
+        money: alive ? familyMoney * r.next() * 0.3 : 0,
       });
       parent.parentIds.push(gp.id);
+      if (!alive)
+        markDeadBefore(
+          gp,
+          s.year - r.int(1, 15),
+          r.pick(['Old age', 'Heart failure', 'A long illness']),
+        );
+      // Great-grandparents: remembered names in the family tree (SPEC §5.1: three generations up).
+      for (const gg of ['female', 'male'] as const) {
+        const ggp = addNpc(ctx, {
+          role: 'great_grandparent',
+          gender: gg,
+          age: age + r.int(20, 34),
+          last: gg === 'male' ? gp.last : randomSurname(ctx, p.country),
+          rel: 50,
+        });
+        markDeadBefore(
+          ggp,
+          s.year - r.int(1, 30),
+          r.pick(['Old age', 'Heart failure', 'Pneumonia', 'A long illness']),
+        );
+        gp.parentIds.push(ggp.id);
+      }
     }
   }
+}
+
+function markDeadBefore(n: Npc, year: number, cause: string): void {
+  n.alive = false;
+  n.deathYear = year;
+  n.deathCause = cause;
+  n.age = Math.max(0, year - n.birthYear);
 }

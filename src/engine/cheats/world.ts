@@ -1,5 +1,6 @@
 import { ageUpInPlace } from '../age';
 import type { Ctx } from '../ctx';
+import { EngineError } from '../errors';
 import { chooseInPlace, currentPopup } from '../events/choose';
 import { Rng, seedRng } from '../rng';
 import { restoreSnapshot } from '../snapshots';
@@ -26,6 +27,8 @@ export function shiftAge(ctx: Ctx, target: number): void {
   const from = s.player.age;
   const d = target - from;
   if (d === 0) return;
+  // Going back in time is what rewind is for; a backwards jump would strand adult relationships on a minor.
+  if (d < 0) throw new EngineError('age set only moves forward; use rewind to go back');
   s.pending = [];
   s.player.age = target;
   s.year += d;

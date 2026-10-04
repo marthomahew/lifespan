@@ -68,6 +68,7 @@ export type Role =
   | 'father'
   | 'sibling'
   | 'grandparent'
+  | 'great_grandparent'
   | 'child'
   | 'partner'
   | 'spouse'

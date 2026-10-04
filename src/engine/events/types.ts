@@ -58,7 +58,9 @@ export type Effect =
   | { death: string }
   | { achievement: string }
   | { fame: number }
-  | { notoriety: number };
+  | { notoriety: number }
+  /** Military conduct (affects promotion and discharge type). */
+  | { conduct: number };
 
 export type ChainStepDef = {
   eventId: string;

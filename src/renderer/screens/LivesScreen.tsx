@@ -11,6 +11,7 @@ export function LivesScreen(): React.JSX.Element {
   const version = useApp((s) => s.savesVersion);
   const back = useApp((s) => s.back);
   const game = useApp((s) => s.game);
+  const settings = useApp((s) => s.settings);
 
   useEffect(() => {
     let live = true;
@@ -102,7 +103,9 @@ export function LivesScreen(): React.JSX.Element {
                 <>
                   <div className="life-name" data-testid="life-name">
                     {r.summary.dead ? '🪦' : '🌱'} {r.summary.name}
-                    {r.summary.cheated && <span className="badge cheat small">🃏</span>}
+                    {r.summary.cheated && settings.cheatBadge && (
+                      <span className="badge cheat small">🃏</span>
+                    )}
                   </div>
                   <div className="muted small">
                     {r.summary.first} {r.summary.last},{' '}

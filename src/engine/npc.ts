@@ -136,6 +136,8 @@ export function relLabel(n: Npc): string {
       return pick('your brother', 'your sister', 'your sibling');
     case 'grandparent':
       return pick('your grandfather', 'your grandmother', 'your grandparent');
+    case 'great_grandparent':
+      return pick('your great-grandfather', 'your great-grandmother', 'your great-grandparent');
     case 'child':
       return pick('your son', 'your daughter', 'your child');
     case 'grandchild':

@@ -225,12 +225,10 @@ export function universityTick(ctx: Ctx): void {
   const en = s.education.enrollment;
   if (!en || s.legal.prison) return;
   if (en.tuition > 0) {
-    if (s.money.cash >= en.tuition) s.money.cash -= en.tuition;
-    else {
-      const short = en.tuition - Math.max(0, s.money.cash);
-      s.money.cash = Math.max(0, s.money.cash - (en.tuition - short));
-      borrowForStudy(s, short);
-    }
+    // Pay what cash covers; borrow the rest. Existing debt (negative cash) is left alone.
+    const pay = Math.max(0, Math.min(s.money.cash, en.tuition));
+    s.money.cash -= pay;
+    if (en.tuition - pay > 0) borrowForStudy(s, en.tuition - pay);
   }
   const st = s.player.stats;
   const studied = s.education.studyYear >= s.year - 1;
@@ -313,4 +311,10 @@ export function parentalHelp(s: GameState, total: number, dryRun = false): numbe
     paid += give;
   }
   return Math.round(paid);
+}
+
+/** Leave university or graduate school (any reason): student loans start repaying. */
+export function leaveEnrollment(s: GameState): void {
+  s.education.enrollment = null;
+  startStudentRepayment(s);
 }

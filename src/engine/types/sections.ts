@@ -118,6 +118,8 @@ export type MilitaryState = {
   conduct: number;
   discharge: string | null;
   active: boolean;
+  /** Years served (frozen at discharge). */
+  years: number;
 };
 
 export type MusicState = {

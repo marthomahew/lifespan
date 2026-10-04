@@ -103,7 +103,7 @@ export function runCheat(
     if (e instanceof EngineError) throw new CheatError(e.message);
     throw e;
   }
-  ctx.s.cheats.used = true;
+  if (!def.readOnly) ctx.s.cheats.used = true;
   prunePending(ctx.s);
   applyLocks(ctx.s);
   return { ...ctx.finish(), message };

@@ -253,6 +253,8 @@ export type JobRequirements = {
   licence?: boolean;
   /** Veterans get priority (counts as met for veterans even without the education). */
   veteranBonus?: boolean;
+  /** Only available in these countries (ids). */
+  countries?: string[];
 };
 
 export type JobDef = {

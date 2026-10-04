@@ -106,11 +106,40 @@ function effectRefs(
     err('money must be finite');
 }
 
+/** Follow-ups inherit their bindings, so a name must keep the same role across a chain. */
+function chainRoleFindings(events: EventDef[]): Finding[] {
+  const byId = new Map(events.map((e) => [e.id, e]));
+  const out: Finding[] = [];
+  for (const e of events) {
+    const from = bindingQueries(e);
+    for (const o of allOutcomes(e)) {
+      const targets = [
+        o.next?.eventId,
+        ...o.effects.map((x) => ('schedule' in x ? x.schedule : undefined)),
+      ].filter((x): x is string => !!x);
+      for (const t of targets) {
+        const next = byId.get(t);
+        if (!next) continue;
+        for (const [name, q] of Object.entries(bindingQueries(next))) {
+          const orig = from[name];
+          if (orig && orig.role !== q.role)
+            out.push({
+              level: 'error',
+              where: `${e.id} -> ${t}`,
+              msg: `binding ${name} is a ${orig.role} here but a ${q.role} in the follow-up`,
+            });
+        }
+      }
+    }
+  }
+  return out;
+}
+
 export function validateEvents(
   events: EventDef[],
   extra: ExtraContent = extraContent(),
 ): Finding[] {
-  const f: Finding[] = [];
+  const f: Finding[] = [...chainRoleFindings(events)];
   const ids = new Set<string>();
   const texts = new Map<string, string>();
   const eventIds = new Set(events.map((e) => e.id));
@@ -340,4 +369,71 @@ export function thresholds(
 
 export function failedThresholds(ts: Threshold[]): Threshold[] {
   return ts.filter((x) => x.value < x.min || (x.max !== undefined && x.value > x.max));
+}
+
+const ROMANCE_SPECIALS = new Set(['propose', 'wedding', 'therapy', 'baby', 'breakup', 'divorce']);
+
+/** DONE §3: interactions are token-checked, de-duplicated, and romance ones need everyone 18+. */
+export function validateInteractions(
+  list: import('../src/content/types').InteractionDef[],
+): Finding[] {
+  const f: Finding[] = [];
+  const seen = new Map<string, string>();
+  for (const d of list) {
+    const err = (msg: string): void => {
+      f.push({ level: 'error', where: `interaction ${d.id}`, msg });
+    };
+    const romance =
+      (d.special && ROMANCE_SPECIALS.has(d.special)) ||
+      ['partner', 'spouse', 'engaged'].includes(d.target);
+    if (romance && (!d.adultsOnly || d.minPlayerAge < 18 || d.minNpcAge < 18))
+      err('romance interactions need adultsOnly with player and NPC 18+');
+    for (const t of [...d.success.texts, ...d.failure.texts]) {
+      for (const tok of tokensIn(t)) {
+        const dot = tok.indexOf('.');
+        if (dot < 0 || tok.slice(0, dot) !== 'npc' || !NPC_FIELDS.has(tok.slice(dot + 1)))
+          err(`unresolved token {${tok}}`);
+      }
+      const norm = t.toLowerCase().trim();
+      const prev = seen.get(norm);
+      if (prev) err(`duplicate text (also in ${prev})`);
+      seen.set(norm, d.id);
+    }
+    if (!d.success.memory || !d.failure.memory) err('needs memory lines');
+  }
+  return f;
+}
+
+/** Activities: 3+ outcome texts, tokens, duplicates, and the adults-only rule for love and meeting people. */
+export function validateActivities(
+  list: import('../src/content/types').ActivityDef[],
+  extra: ExtraContent = extraContent(),
+): Finding[] {
+  const f: Finding[] = [];
+  const seen = new Map<string, string>();
+  const ctx = { events: new Set(EVENTS.map((e) => e.id)), extra };
+  for (const a of list) {
+    const err = (msg: string): void => {
+      f.push({ level: 'error', where: `activity ${a.id}`, msg });
+    };
+    if (a.outcomes.length < 3) err('needs at least 3 outcome texts');
+    const meets = a.outcomes.some((o) =>
+      o.effects.some(
+        (e) => 'status' in e && ['meet', 'marry', 'birth', 'adopt'].includes(e.status),
+      ),
+    );
+    const romance = a.group === 'love' || meets || ['fertility', 'adopt'].includes(a.special ?? '');
+    if (romance && (!a.adultsOnly || a.ages[0] < 18))
+      err('love activities need adultsOnly and ages from 18');
+    for (const o of a.outcomes) {
+      for (const tok of tokensIn(o.text))
+        if (!PLAYER_TOKENS.has(tok) && !/^money:\d+$/.test(tok)) err(`unresolved token {${tok}}`);
+      const norm = o.text.toLowerCase().trim();
+      const prev = seen.get(norm);
+      if (prev) err(`duplicate text (also in ${prev})`);
+      seen.set(norm, a.id);
+      for (const e of o.effects) effectRefs(e, `activity ${a.id}`, f, ctx);
+    }
+  }
+  return f;
 }

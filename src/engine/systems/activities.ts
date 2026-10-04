@@ -103,7 +103,7 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
     const partner = currentPartner(ctx);
     s.family.pregnancy = {
       due: s.year + 1,
-      partnerId: partner?.id ?? 0,
+      partnerId: partner?.id ?? -1,
       carrier: s.player.gender === 'female' ? 'player' : 'partner',
     };
   }

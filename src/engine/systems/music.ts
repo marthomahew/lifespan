@@ -225,5 +225,18 @@ export function fameTick(ctx: Ctx): void {
     );
     s.money.cash += royalties;
   }
+  // Fame lifts happiness up to a point, then the attention starts to press (SPEC §5.5).
+  if (fame > 0)
+    addStat(s, 'happiness', fame <= 60 ? Math.round(fame / 20) : -Math.round((fame - 60) / 10));
   if (fame > 70) addStat(s, 'stress', 2);
+  // Endorsements and appearances pay famous people even without a release.
+  if (fame >= 40 && !s.legal.prison) {
+    const deal = money(s, (fame - 30) * 1500, 'wage');
+    s.money.cash += deal;
+    if (ctx.rng.chance(0.25))
+      ctx.log(
+        'fame',
+        `A brand pays you ${formatMoney(s, deal)} this year to be photographed near its product.`,
+      );
+  }
 }

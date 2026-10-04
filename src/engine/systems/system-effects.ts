@@ -31,7 +31,7 @@ export function applySystemEffect(
     case 'conscript': {
       const branch =
         arg && (BRANCHES as readonly string[]).includes(arg) ? arg : ctx.rng.pick(BRANCHES);
-      enlist(ctx, branch, ctx.rng.pick(SPECIALTIES).id, false, true);
+      enlist(ctx, branch, ctx.rng.pick(SPECIALTIES).id, false, 'conscript');
       return;
     }
     case 'sign_label':

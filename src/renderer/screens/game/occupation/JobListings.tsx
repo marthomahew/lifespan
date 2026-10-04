@@ -77,6 +77,9 @@ export function JobListings({
                 <span className="muted small">· {l.job.field.replace('_', ' ')}</span>
               </div>
               <div className="muted small">{l.job.description}</div>
+              {l.job.perks.length > 0 && (
+                <div className="small perks">Perks: {l.job.perks.join(', ')}</div>
+              )}
               <div className="small">
                 {formatMoney(game, l.salary)} a year
                 {l.unmet.length > 0 && <span className="error"> · needs {l.unmet.join(', ')}</span>}

@@ -190,3 +190,41 @@ describe('content:check (M4.5)', () => {
     expect(countChains([start, ok('c_end', { chainOnly: true })])).toBe(1);
   });
 });
+
+import { validateActivities, validateInteractions } from '../../scripts/content-lib';
+import { INTERACTIONS } from '../../src/content/interactions';
+import { ACTIVITIES } from '../../src/content/activities';
+
+describe('interaction and activity rules (DONE §3)', () => {
+  it('passes the shipped catalogs', () => {
+    expect(validateInteractions(INTERACTIONS)).toEqual([]);
+    expect(validateActivities(ACTIVITIES)).toEqual([]);
+  });
+
+  it('enforces adults-only romance and resolvable tokens', () => {
+    const base = INTERACTIONS.find((i) => i.id === 'date_night');
+    if (!base) throw new Error('date_night');
+    expect(
+      validateInteractions([{ ...base, minNpcAge: 16 }])
+        .map((f) => f.msg)
+        .join(),
+    ).toMatch(/18\+/);
+    expect(
+      validateInteractions([{ ...base, success: { ...base.success, texts: ['Hi {pal.first}'] } }])
+        .map((f) => f.msg)
+        .join(),
+    ).toMatch(/unresolved/);
+    const act = ACTIVITIES.find((a) => a.id === 'find_date');
+    if (!act) throw new Error('find_date');
+    expect(
+      validateActivities([{ ...act, ages: [16, 90] }])
+        .map((f) => f.msg)
+        .join(),
+    ).toMatch(/18/);
+    expect(
+      validateActivities([{ ...act, outcomes: act.outcomes.slice(0, 2) }])
+        .map((f) => f.msg)
+        .join(),
+    ).toMatch(/3 outcome/);
+  });
+});

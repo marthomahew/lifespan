@@ -132,6 +132,7 @@ export const FIXTURE_EVENTS: EventDef[] = [
     category: 'money',
     weight: 0,
     chainOnly: true,
+    bind: { friend: { role: 'mother' } },
     text: '{friend.first} pays back {money:$amount}.',
     choices: [
       {

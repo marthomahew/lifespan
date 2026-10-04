@@ -125,6 +125,8 @@ export function applyEffect(
     addStat(s, 'fame', e.fame);
   } else if ('notoriety' in e) {
     addStat(s, 'notoriety', e.notoriety);
+  } else if ('conduct' in e) {
+    if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
   }
 }
 

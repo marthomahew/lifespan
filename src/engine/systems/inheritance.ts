@@ -1,5 +1,8 @@
 import type { Ctx } from '../ctx';
-import { formatMoney } from '../economy';
+import { formatMoney, money } from '../economy';
+import { POSSESSION_BY_ID } from '../../content/assets';
+
+const HEIRLOOMS = ['gold_watch', 'diamond_ring', 'oil_painting', 'rare_stamps', 'violin'];
 import { netWorth } from '../networth';
 import type { GameState, Npc } from '../types';
 
@@ -34,6 +37,27 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
   dead.money -= amount;
   s.money.cash += amount;
   ctx.log('money', `${dead.first}'s will leaves you ${formatMoney(s, amount)}.`, true);
+  // Older relatives sometimes leave an heirloom too.
+  if (
+    (dead.roles.includes('grandparent') ||
+      dead.roles.includes('mother') ||
+      dead.roles.includes('father')) &&
+    ctx.rng.chance(0.3)
+  ) {
+    const item = ctx.rng.pick(HEIRLOOMS);
+    const def = POSSESSION_BY_ID[item];
+    if (def) {
+      s.assets.possessions.push({
+        id: s.assets.nextAssetId++,
+        item,
+        value: money(s, def.price),
+        paid: 0,
+        condition: ctx.rng.int(50, 90),
+        bought: s.year,
+      });
+      ctx.log('family', `${dead.first} also leaves you a ${def.label.toLowerCase()}.`);
+    }
+  }
 }
 
 export type EstateShare = { npcId: number; amount: number };

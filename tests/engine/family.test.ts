@@ -29,12 +29,17 @@ describe('family at birth (M5.1)', () => {
         for (const gpId of p.parentIds) {
           const gp = s.npcs.find((n) => n.id === gpId) as Npc;
           expect(gp.roles).toContain('grandparent');
-          expect(gp.age).toBeGreaterThan(p.age + 15);
-          gpAlive++;
+          expect(gp.birthYear).toBeLessThan(p.birthYear - 15);
+          if (gp.alive) gpAlive++;
+          // Three generations up: every grandparent has two great-grandparents on record.
+          expect(gp.parentIds.map((id) => s.npcs.find((x) => x.id === id)?.roles[0])).toEqual([
+            'great_grandparent',
+            'great_grandparent',
+          ]);
         }
       }
       // Older parents mean fewer living grandparents.
-      const n = mom.parentIds.length;
+      const n = mom.parentIds.filter((id) => s.npcs.find((x) => x.id === id)?.alive).length;
       if (mom.age < 25) {
         gpYoung += 2;
         gpYoungAlive += n;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { interactionsFor, type GameState } from '../../../engine';
+import { formatMoney, interactionsFor, money, type GameState } from '../../../engine';
+import { WEDDING_COST } from '../../../engine/systems/romance';
 import { relLabel } from '../../../engine/npc';
 import { TRAIT_BY_ID } from '../../../content/traits';
 import { Modal } from '../../components/Modal';
@@ -48,6 +49,7 @@ export function NpcPanel({
                 ? `age ${n.age}`
                 : `died ${n.deathYear ?? ''}${n.deathCause ? `, ${n.deathCause}` : ''}`}
               {n.job ? ` · ${n.job}` : ''}
+              {game.family.custodyLost.includes(n.id) ? ' · lives with your ex' : ''}
             </div>
             <div className="chips">
               {n.traits.map((t) => (
@@ -121,9 +123,15 @@ export function NpcPanel({
                     value={size}
                     onChange={(e) => setSize(e.target.value as 'small' | 'medium' | 'large')}
                   >
-                    <option value="small">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
+                    <option value="small">
+                      Small · {formatMoney(game, money(game, WEDDING_COST.small))}
+                    </option>
+                    <option value="medium">
+                      Medium · {formatMoney(game, money(game, WEDDING_COST.medium))}
+                    </option>
+                    <option value="large">
+                      Large · {formatMoney(game, money(game, WEDDING_COST.large))}
+                    </option>
                   </select>
                 </label>
                 <label className="row">

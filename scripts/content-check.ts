@@ -1,6 +1,15 @@
 /** npm run content:check (DONE §3). Fails on any finding or any enforced threshold. */
 import { EVENTS } from '../src/content/events';
-import { failedThresholds, thresholds, validateCountries, validateEvents } from './content-lib';
+import {
+  failedThresholds,
+  thresholds,
+  validateActivities,
+  validateCountries,
+  validateEvents,
+  validateInteractions,
+} from './content-lib';
+import { INTERACTIONS } from '../src/content/interactions';
+import { ACTIVITIES } from '../src/content/activities';
 
 /** Thresholds enforced so far; M12.4 requires every one of them. */
 export const ENFORCED = new Set([
@@ -13,7 +22,12 @@ export const ENFORCED = new Set([
   'traits',
 ]);
 
-const findings = [...validateEvents(EVENTS), ...validateCountries()];
+const findings = [
+  ...validateEvents(EVENTS),
+  ...validateCountries(),
+  ...validateInteractions(INTERACTIONS),
+  ...validateActivities(ACTIVITIES),
+];
 const ts = thresholds(ENFORCED);
 for (const t of ts) {
   const ok = t.value >= t.min && (t.max === undefined || t.value <= t.max);

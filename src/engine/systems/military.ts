@@ -16,6 +16,7 @@ import { addStat } from '../stats';
 import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { endJob, hasEducation } from './careers';
+import { leaveEnrollment } from './education';
 import { addSkill } from './skills';
 
 export function rankTitle(s: GameState): string {
@@ -54,16 +55,17 @@ export function enlist(
   branch: string,
   specialty: string,
   officer: boolean,
-  conscript = false,
+  how: 'volunteer' | 'conscript' | 'cheat' = 'volunteer',
 ): void {
+  const conscript = how === 'conscript';
   const s = ctx.s;
   const why = enlistReason(s, officer);
-  if (why && !conscript) throw new EngineError(why);
+  if (why && how === 'volunteer') throw new EngineError(why);
   if (!(BRANCHES as readonly string[]).includes(branch))
     throw new EngineError(`unknown branch ${branch}`);
   if (!SPECIALTY_BY_ID[specialty]) throw new EngineError(`unknown specialty ${specialty}`);
   if (s.career.jobId) endJob(ctx, 'enlisted');
-  if (s.education.enrollment) s.education.enrollment = null;
+  if (s.education.enrollment) leaveEnrollment(s);
   s.military = {
     branch,
     specialty,
@@ -76,13 +78,14 @@ export function enlist(
     conduct: 65,
     discharge: null,
     active: true,
+    years: 0,
   };
   if (conscript) s.player.flags.push('conscript');
   if (!s.player.flags.includes('ever_served')) s.player.flags.push('ever_served');
   s.assets.housing = 'barracks';
   ctx.log(
     'military',
-    `You ${conscript ? 'report for national service' : officer ? 'take your commission' : 'enlist'} in the ${branch} as ${officer ? 'a Second Lieutenant' : 'a Private'}, specialty ${SPECIALTY_BY_ID[specialty]?.label}. Your hair is gone by lunch.`,
+    `You ${conscript ? 'report for national service' : how === 'cheat' ? 'appear in uniform' : officer ? 'take your commission' : 'enlist'} in the ${branch} as ${officer ? 'a Second Lieutenant' : 'a Private'}, specialty ${SPECIALTY_BY_ID[specialty]?.label}. Your hair is gone by lunch.`,
     true,
   );
 }
@@ -137,6 +140,7 @@ export function militaryTick(ctx: Ctx): void {
     if (def) fireEvent(ctx, def, 'system', { years: c.conscription.years });
   }
   if (!m?.active || s.legal.prison) return;
+  m.years += 1;
   const served = s.year - m.since;
   if (m.deployed) {
     m.deployed = false;

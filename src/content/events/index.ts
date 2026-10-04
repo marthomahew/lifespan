@@ -9,6 +9,9 @@ import { ROMANCE_EVENTS } from './romance';
 import { SYSTEM_EVENTS } from './systems';
 import { SCHOOL_EVENTS } from './school';
 import { WORK_EVENTS } from './work';
+import { FAME_EVENTS } from './fame';
+import { SERVICE_EVENTS } from './service';
+import { PARENTING_EVENTS } from './parenting';
 
 export const EVENTS: EventDef[] = [
   ...CHILD_EVENTS,
@@ -20,6 +23,9 @@ export const EVENTS: EventDef[] = [
   ...ROMANCE_EVENTS,
   ...SCHOOL_EVENTS,
   ...WORK_EVENTS,
+  ...FAME_EVENTS,
+  ...SERVICE_EVENTS,
+  ...PARENTING_EVENTS,
   ...SYSTEM_EVENTS,
 ];
 

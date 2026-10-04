@@ -8,6 +8,7 @@ import {
   SPECIALTIES,
 } from '../../content/military';
 import type { Degree } from '../types';
+import { formatMoney } from '../economy';
 import { clampStat } from '../util';
 import { endJob, hire, promote, retire } from '../systems/careers';
 import { discharge, enlist, rankTitle } from '../systems/military';
@@ -168,8 +169,7 @@ export const CAREER_CHEATS: CheatDef[] = [
       const officer = rank >= ENLISTED_RANKS.length;
       if (!s.military?.active) {
         if (s.player.age < 16) return 'Too young to serve';
-        enlist(ctx, String(p['branch']), String(p['specialty']), officer, true);
-        s.player.flags = s.player.flags.filter((f) => f !== 'conscript');
+        enlist(ctx, String(p['branch']), String(p['specialty']), officer, 'cheat');
       }
       const m = s.military;
       if (!m) return 'Could not enlist';
@@ -219,7 +219,7 @@ export const CAREER_CHEATS: CheatDef[] = [
         retire(ctx);
         ctx.s.player.age = age;
       } else retire(ctx);
-      return `Retired on ${ctx.s.career.pension}`;
+      return `Retired on ${formatMoney(ctx.s, ctx.s.career.pension)} a year`;
     },
   },
   {

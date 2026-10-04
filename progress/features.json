@@ -277,7 +277,7 @@
   "M6.8": {
     "title": "Music and fame per SPEC §5.5.",
     "passes": true,
-    "evidence": "tests/engine/music.test.ts (skill gate, busk→open mic→gigs→act→release→record deal→tour, quality from skill+RNG, fame decay); e2e/careers.spec.ts"
+    "evidence": "tests/engine/music.test.ts (skill gate, busk→open mic→gigs→act→release→record deal→tour, quality from skill+RNG, fame decay); e2e/careers.spec.ts; tests/engine/regressions.test.ts (fame happiness/endorsements); src/content/events/fame.ts via content:check; tests/engine/music.test.ts"
   },
   "M6.9": {
     "title": "The career and education cheats from SPEC §8.3.",

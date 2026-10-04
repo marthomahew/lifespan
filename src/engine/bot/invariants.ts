@@ -100,6 +100,12 @@ export function checkState(s: GameState, prevAge: number | null, logFrom = 0): s
       else if (!n.alive) v.push(`pending ${pe.eventId} binds dead npc ${b}=${id}`);
     }
   }
-  if (p.flags.includes('pregnant') && p.age < 18) v.push('pregnant under 18');
+  const preg = s.family.pregnancy;
+  if (preg) {
+    if (p.age < 18) v.push('pregnancy with a player under 18');
+    const other = s.npcs.find((n) => n.id === preg.partnerId);
+    if (preg.partnerId > 0 && (!other || other.age < 18))
+      v.push(`pregnancy partner missing or under 18 (${preg.partnerId})`);
+  }
   return v;
 }

@@ -220,6 +220,29 @@ export const SYSTEM_EVENTS: EventDef[] = [
           },
         ],
       },
+      {
+        id: 'object',
+        label: 'Object and do civilian service',
+        outcomes: [
+          {
+            chance: 0.7,
+            text: 'The tribunal accepts your objection. You spend the time in a care home, where you are adored by everyone over ninety.',
+            effects: [
+              { flag: 'civilian_service' },
+              { stat: 'karma', delta: 6 },
+              { stat: 'stress', delta: 4 },
+            ],
+          },
+          {
+            chance: 0.3,
+            text: 'The tribunal does not accept your objection. You report to the Army after all, with a reputation.',
+            effects: [
+              { system: 'conscript', arg: 'Army' },
+              { stat: 'stress', delta: 8 },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
@@ -299,8 +322,12 @@ export const SYSTEM_EVENTS: EventDef[] = [
           },
           {
             chance: 0.25,
-            text: 'The blast throws the truck sideways. You wake up in a field hospital with ringing ears.',
-            effects: [{ injury: 30 }, { stat: 'stress', delta: 18 }],
+            text: 'The blast throws the truck sideways. You wake up in a field hospital with ringing ears, and the doctors say your service is over.',
+            effects: [
+              { injury: 30 },
+              { stat: 'stress', delta: 18 },
+              { system: 'injury_discharge' },
+            ],
           },
         ],
       },

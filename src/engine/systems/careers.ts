@@ -1,5 +1,6 @@
 import { JOB_BY_ID, JOBS } from '../../content/jobs';
 import { SPECIALTY_BY_ID } from '../../content/military';
+import { GRAD_BY_ID } from '../../content/education';
 import type { EducationLevel, JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
@@ -32,10 +33,11 @@ export function hasEducation(s: GameState, need: EducationLevel, majors?: string
     if (need === 'master') return ['master', 'mba', 'doctorate'].includes(lvl);
     return (RANK[lvl as EducationLevel] ?? 0) >= RANK[need];
   };
-  if (!degs.some((d) => ok(d.level))) return false;
-  if (majors?.length && RANK[need] >= 2)
-    return degs.some((d) => majors.includes(d.field) && RANK[d.level as EducationLevel] >= 2);
-  return true;
+  // Level and major must be satisfied by the same degree.
+  const needsMajor = Boolean(majors?.length) && RANK[need] >= 2;
+  if (needsMajor && RANK[need] >= 5)
+    return degs.some((d) => ok(d.level)) && degs.some((d) => (majors ?? []).includes(d.field));
+  return degs.some((d) => ok(d.level) && (!needsMajor || (majors ?? []).includes(d.field)));
 }
 
 export const hasAdultRecord = (s: GameState): boolean =>
@@ -65,6 +67,8 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
     if ((p.skills[k] ?? 0) < v) out.push(`${k} ${v}`);
   if (r.cleanRecord && hasAdultRecord(s)) out.push('clean record');
   if (r.licence && !s.assets.licence) out.push("driver's licence");
+  if (r.countries?.length && !r.countries.includes(p.country))
+    out.push('not available in this country');
   if (s.legal.prison) out.push('not from prison');
   if (s.military?.active) out.push('not while serving');
   return out;
@@ -148,7 +152,8 @@ export function hire(ctx: Ctx, jobId: string): void {
     reason: '',
   });
   if (!s.player.flags.includes('ever_employed_ft')) s.player.flags.push('ever_employed_ft');
-  if (job.id === 'doctor') s.education.residency = 3;
+  if (job.id === 'doctor' && !s.player.flags.includes('residency_done'))
+    s.education.residency = GRAD_BY_ID['medicine']?.residency ?? 3;
   const boss = addNpc(ctx, {
     role: 'boss',
     age: Math.max(25, s.player.age + ctx.rng.int(3, 20)),
@@ -217,7 +222,19 @@ export function careerTick(ctx: Ctx): void {
   const s = ctx.s;
   const c = s.career;
   const r = ctx.rng;
-  if (!c.jobId) return;
+  if (!c.jobId) {
+    // Out of work at retirement age with a working life behind you: the pension starts anyway.
+    if (!c.retired && c.yearsWorked > 0 && s.player.age >= countryOf(s).ages.retirement) {
+      c.retired = true;
+      c.pension = pensionFor(s);
+      ctx.log(
+        'work',
+        `You reach retirement age and your pension starts: ${formatMoney(s, c.pension)} a year.`,
+        true,
+      );
+    }
+    return;
+  }
   const job = JOB_BY_ID[c.jobId];
   if (!job) return;
   c.yearsWorked += 1;
@@ -233,8 +250,10 @@ export function careerTick(ctx: Ctx): void {
   c.salary = Math.round(c.salary * (1 + Math.max(0, r.normal(0.025, 0.01))));
   if (s.education.residency > 0 && job.id === 'doctor') {
     s.education.residency -= 1;
-    if (s.education.residency === 0)
+    if (s.education.residency === 0) {
+      s.player.flags.push('residency_done');
       ctx.log('work', 'Residency is over. You sleep for a whole weekend.', true);
+    }
   }
   const yearsAtLevel = s.year - c.since;
   const canPromote =
@@ -267,7 +286,7 @@ export function promote(ctx: Ctx, job: JobDef): void {
 /** Pension per year in local currency: years worked × the country's rate, plus a slice of final salary. */
 export function pensionFor(s: GameState): number {
   const c = countryOf(s);
-  const years = s.career.yearsWorked + (s.military ? s.military.rank : 0);
+  const years = s.career.yearsWorked + (s.military?.years ?? 0);
   return Math.round(
     money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01),
   );

@@ -11,6 +11,7 @@ export const ROLES: Role[] = [
   'father',
   'sibling',
   'grandparent',
+  'great_grandparent',
   'child',
   'partner',
   'spouse',
@@ -119,6 +120,8 @@ export function eligibility(
       const n = s.npcs.find((x) => x.id === pre);
       if (!n || !n.alive) return { ok: false, reason: `{${name}} is no longer around` };
       if (adultsOnly && n.age < 18) return { ok: false, reason: 'adults only' };
+      if (!n.roles.includes(q.role))
+        return { ok: false, reason: `{${name}} is no longer your ${q.role}` };
       continue;
     }
     if (!s.npcs.some((n) => matches(s, n, q, adultsOnly)))
@@ -142,7 +145,13 @@ export function bindNpcs(
   for (const [name, q] of Object.entries(bindingQueries(def))) {
     const pre = preset[name];
     const preNpc = pre === undefined ? undefined : s.npcs.find((n) => n.id === pre);
-    if (preNpc && preNpc.alive && (!adultsOnly || preNpc.age >= 18)) {
+    const roleQ: NpcQuery = { role: q.role, ...(q.gender ? { gender: q.gender } : {}) };
+    if (
+      preNpc &&
+      preNpc.alive &&
+      (!adultsOnly || preNpc.age >= 18) &&
+      matches(s, preNpc, roleQ, adultsOnly)
+    ) {
       out[name] = preNpc.id;
       used.add(preNpc.id);
       continue;

@@ -2,6 +2,7 @@ import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { baseHazard, healthMultiplier } from '../mortality';
 import { addNpc, remember } from '../npc';
+import { money } from '../economy';
 import { addStat } from '../stats';
 import type { Npc } from '../types';
 import { clampStat } from '../util';
@@ -13,6 +14,7 @@ const FAMILY = [
   'father',
   'sibling',
   'grandparent',
+  'great_grandparent',
   'child',
   'grandchild',
   'spouse',
@@ -150,6 +152,13 @@ function npcAging(ctx: Ctx): void {
     }
     if (n.age === 66 && n.job && !['At school', 'At university'].includes(n.job)) n.job = 'Retired';
     n.fertility = clampStat(n.age > 45 ? n.fertility - 4 : n.fertility);
+    // Savings keep pace with prices, and working adults put a little away.
+    n.money = Math.round(
+      n.money * 1.025 +
+        (n.age >= 22 && n.age < 66 && n.job && !['At school', 'At university'].includes(n.job)
+          ? money(s, 1500, 'wage')
+          : 0),
+    );
   }
 }
 

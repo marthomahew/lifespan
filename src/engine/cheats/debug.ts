@@ -22,6 +22,7 @@ export const DEBUG_CHEATS: CheatDef[] = [
   },
   {
     id: 'state.size',
+    readOnly: true,
     group: 'debug',
     label: 'State size',
     syntax: 'state size',
