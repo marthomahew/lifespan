@@ -22,3 +22,5 @@ One line each: `- [HH:MM] <decision>. Why: <reason>. Alternatives: <what else yo
 - [19:50] Smoking is 18+ everywhere; drinking follows the country's drinking age. Why: no smoking age in country data. Alternatives: add a field.
 - [19:50] Vices drop only after a full year without use (lastUse < year − 1 at the start of the next year). Why: use during the previous year shouldn't count as abstinence.
 - [19:55] Universities require a school average of 55 (community colleges take anyone; the veteran benefit waives it). Why: with the DONE §4 persona applying every eligible year, almost everyone eventually got a degree (98%). Alternatives: age-limiting admissions.
+- 2026-10-04 Fresh-eyes audit: unsecured debt now ends in bankruptcy (savings and investments to creditors, rest wiped, Stress/Happiness hit) once it passes max($40k ref, 2× salary). SPEC §5.6 has debt compound with no end, and the audit saw a -$24.8M criminal estate.
+- 2026-10-04 Custom new life: gender and attraction default to 'Surprise me' (engine rolls them), not female/men.

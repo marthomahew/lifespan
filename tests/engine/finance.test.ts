@@ -13,6 +13,7 @@ import {
   balanceAfter,
   addLoan,
   serviceLoans,
+  debtCeiling,
 } from '../../src/engine/systems/loans';
 import { INVESTMENTS, runFinances } from '../../src/engine/systems/finance';
 import { Ctx } from '../../src/engine/ctx';
@@ -185,6 +186,39 @@ describe('loans (M7.4)', () => {
     s = runCheat(s, 'money.add', { amount: 10000 }).state;
     s = act(s, { type: 'money', action: { op: 'payoff', loanId: loan?.id ?? 0 } }).state;
     expect(s.money.loans.find((l) => l.kind === 'personal')).toBeUndefined();
+  });
+
+  it('debt past what you could ever repay ends in bankruptcy, after liquid assets go to creditors', () => {
+    const s = clone(adult(11));
+    s.assets.housing = 'parents';
+    s.money.savings = 3000;
+    s.money.holdings.index = 2000;
+    addLoan(s, 'debt', debtCeiling(s, 0) + 10000, 0.19, 5);
+    const ctx = new Ctx(s);
+    runFinances(ctx, { salary: 0, other: 0 });
+    expect(s.money.loans.filter((l) => l.kind === 'debt')).toEqual([]);
+    expect(s.money.savings).toBe(0);
+    expect(s.money.holdings.index).toBe(0);
+    expect(s.player.flags).toContain('bankrupt');
+    expect(ctx.finish().log.some((e) => /bankruptcy/i.test(e.text))).toBe(true);
+  });
+
+  it('debt stays bounded across a long broke life', () => {
+    let s = clone(adult(12));
+    s.assets.housing = 'renting';
+    s.money.lifestyle = 'lavish';
+    for (let y = 0; y < 50; y++) {
+      const ctx = new Ctx(s);
+      runFinances(ctx, { salary: 0, other: 0 });
+      s = ctx.finish().state;
+      const debt = s.money.loans.find((l) => l.kind === 'debt')?.balance ?? 0;
+      expect(debt).toBeLessThanOrEqual(debtCeiling(s, 0));
+    }
+    // A mid-size debt with a salary to match is not bankruptcy.
+    const t = clone(adult(13));
+    addLoan(t, 'debt', money(t, 20000), 0.19, 5);
+    runFinances(new Ctx(t), { salary: money(t, 60000, 'wage'), other: 0 });
+    expect(t.player.flags).not.toContain('bankrupt');
   });
 });
 

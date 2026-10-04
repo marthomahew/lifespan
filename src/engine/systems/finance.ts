@@ -2,7 +2,7 @@ import type { Ctx } from '../ctx';
 import { incomeTax, localToRef, money } from '../economy';
 import { netWorth } from '../networth';
 import type { FinanceReport, InvestKey } from '../types';
-import { addLoan, annuityPayment, serviceLoans } from './loans';
+import { addLoan, annuityPayment, bankruptcyCheck, serviceLoans } from './loans';
 
 /** Investment vehicles (SPEC §5.6): mean and sd of yearly returns, plus a crash chance. */
 export const INVESTMENTS: Record<
@@ -90,6 +90,7 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     }
     m.cash = 0;
   }
+  bankruptcyCheck(ctx, report.salary);
   report.net = netWorth(s) - start;
   m.last = report;
   const nw = netWorth(s);

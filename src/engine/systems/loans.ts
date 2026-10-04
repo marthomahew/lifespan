@@ -1,7 +1,7 @@
 import type { Ctx } from '../ctx';
-import { formatMoney } from '../economy';
+import { formatMoney, money } from '../economy';
 import { addStat } from '../stats';
-import type { GameState, Loan, LoanKind } from '../types';
+import type { GameState, InvestKey, Loan, LoanKind } from '../types';
 
 /** Standard amortized yearly payment: P·r / (1 − (1 + r)^−n). Zero-rate loans split evenly. */
 export function annuityPayment(principal: number, rate: number, years: number): number {
@@ -150,4 +150,40 @@ export function payOffLoan(s: GameState, id: number): number {
   l.balance -= pay;
   if (l.balance <= 0) s.money.loans = s.money.loans.filter((x) => x.id !== id);
   return pay;
+}
+
+/** Unsecured debt past this can never realistically be repaid: a floor, or two years' pay. */
+export function debtCeiling(s: GameState, salary: number): number {
+  return Math.max(money(s, 40000), Math.round(salary * 2));
+}
+
+/**
+ * Bankruptcy (DECISIONS: SPEC §5.6 debt needs an end). When overdraft debt passes the
+ * ceiling, savings and investments go to creditors and the court wipes the rest.
+ * Secured loans (mortgages, car loans) are untouched.
+ */
+export function bankruptcyCheck(ctx: Ctx, salary: number): void {
+  const s = ctx.s;
+  const m = s.money;
+  const debt = m.loans.find((l) => l.kind === 'debt');
+  if (!debt || debt.balance <= debtCeiling(s, salary)) return;
+  let seized = m.savings;
+  m.savings = 0;
+  for (const k of Object.keys(m.holdings) as InvestKey[]) {
+    seized += m.holdings[k];
+    m.holdings[k] = 0;
+  }
+  const wiped = debt.balance - seized;
+  m.loans = m.loans.filter((l) => l !== debt);
+  if (wiped < 0) m.cash += -wiped;
+  if (!s.player.flags.includes('bankrupt')) s.player.flags.push('bankrupt');
+  addStat(s, 'stress', 20);
+  addStat(s, 'happiness', -15);
+  ctx.log(
+    'money',
+    wiped > 0
+      ? `You file for bankruptcy. Creditors take ${formatMoney(s, seized)} and the court wipes ${formatMoney(s, wiped)}. Your credit rating will take years to crawl back.`
+      : `Creditors force a bankruptcy sale of your savings and investments to clear the debt.`,
+    true,
+  );
 }

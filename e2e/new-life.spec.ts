@@ -81,3 +81,12 @@ test('achievements: a toast when earned and an Achievements screen', async ({ pa
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('achievements')).toHaveCount(0);
 });
+
+test('custom life leaves gender and attraction to chance unless chosen', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await expect(page.getByTestId('f-gender')).toHaveValue('');
+  await expect(page.getByTestId('f-attraction')).toHaveValue('');
+  await page.getByTestId('btn-begin').click();
+  await expect(page.getByTestId('game-screen')).toBeVisible();
+});

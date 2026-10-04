@@ -31,7 +31,7 @@ export function EducationSection({
   const reason = enrollReason(game, kind, prog);
   const inSchool = age >= 6 && age <= 17 && !e.droppedOut;
   const leave = countryOf(game).ages.schoolLeaving;
-  if (age < 5) return null;
+  if (age < 6) return null;
   return (
     <section className="panel-section" data-testid="education-section">
       <h3 className="section-title">Education</h3>

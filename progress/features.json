@@ -302,7 +302,8 @@
   "M7.4": {
     "title": "Student, mortgage, and personal loans with correct amortization (tested against known values), missed-payment consequences, and early payoff.",
     "passes": true,
-    "evidence": "tests/engine/finance.test.ts loans (amortization vs known values, missed payments + repossession, personal loans, early payoff)"
+    "evidence": "tests/engine/finance.test.ts loans (amortization vs known values, missed payments + repossession, personal loans, early payoff, bankruptcy ends runaway debt); sim invariant runaway debt (src/engine/bot/invariants.ts)",
+    "auditNote": "Fresh-eyes audit found overdraft debt compounding without bound; fixed with bankruptcy + invariant"
   },
   "M7.5": {
     "title": "Homes: generated listings, buying with cash or a mortgage, selling, appreciation, maintenance, condition.",

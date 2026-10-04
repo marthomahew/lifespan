@@ -337,7 +337,7 @@ export const ILLNESSES: IllnessDef[] = [
   },
   {
     id: 'stroke_aftermath',
-    label: 'Stroke aftermath',
+    label: 'Stroke damage',
     emoji: '⚡',
     symptom: 'Since the stroke, one side of your body is weaker and some words come slowly.',
     severity: [35, 65],

@@ -16,8 +16,8 @@ const STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export function NewLifeScreen(): React.JSX.Element {
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
-  const [gender, setGender] = useState<Gender>('female');
-  const [attraction, setAttraction] = useState<Attraction>('men');
+  const [gender, setGender] = useState<Gender | ''>('');
+  const [attraction, setAttraction] = useState<Attraction | ''>('');
   const [country, setCountry] = useState('us');
   const [city, setCity] = useState('');
   const [birthYear, setBirthYear] = useState(2000);
@@ -45,8 +45,9 @@ export function NewLifeScreen(): React.JSX.Element {
   const submit = (e: React.FormEvent): void => {
     e.preventDefault();
     const opts: NewLifeOptions = {
-      gender,
-      attraction,
+      // Left on "Surprise me", the engine rolls them the way it does for random lives.
+      ...(gender ? { gender } : {}),
+      ...(attraction ? { attraction } : {}),
       country,
       birthYear,
       appearance: tone,
@@ -114,8 +115,9 @@ export function NewLifeScreen(): React.JSX.Element {
               <select
                 data-testid="f-gender"
                 value={gender}
-                onChange={(e) => setGender(e.target.value as Gender)}
+                onChange={(e) => setGender(e.target.value as Gender | '')}
               >
+                <option value="">Surprise me</option>
                 <option value="female">Female</option>
                 <option value="male">Male</option>
                 <option value="nonbinary">Nonbinary</option>
@@ -126,8 +128,9 @@ export function NewLifeScreen(): React.JSX.Element {
               <select
                 data-testid="f-attraction"
                 value={attraction}
-                onChange={(e) => setAttraction(e.target.value as Attraction)}
+                onChange={(e) => setAttraction(e.target.value as Attraction | '')}
               >
+                <option value="">Surprise me</option>
                 <option value="men">Men</option>
                 <option value="women">Women</option>
                 <option value="everyone">Everyone</option>

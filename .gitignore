@@ -12,3 +12,4 @@ coverage/
 .vite/
 *.log
 .DS_Store
+.scratch/
