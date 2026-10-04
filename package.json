@@ -26,7 +26,8 @@
     "shots": "tsx scripts/shots.ts",
     "dist:mac": "tsx scripts/dist.ts mac",
     "dist:linux": "tsx scripts/dist.ts linux",
-    "verify": "tsx scripts/verify.ts"
+    "verify": "tsx scripts/verify.ts",
+    "docs:cheats": "tsx scripts/docs-cheats.ts"
   },
   "dependencies": {
     "react": "19.3.0",

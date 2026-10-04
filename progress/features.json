@@ -466,8 +466,8 @@
   },
   "M12.5": {
     "title": "README.md covers what the game is, the controls, the full cheat list (generated from the registry), the dev commands, and how the Mac build gets installed.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/readme.test.ts (generated cheat list in sync with the registry; game, controls, dev commands, Mac install); npm run docs:cheats"
   },
   "M12.6": {
     "title": "`progress/REPORT.md` meets DONE §6.",
