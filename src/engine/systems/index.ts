@@ -8,6 +8,9 @@ import { runFinances } from './finance';
 import { militaryPay, militaryTick } from './military';
 import { fameTick } from './music';
 import { assetsTick } from './assets';
+import { healthTick } from './health';
+import { legalTick } from './crime';
+import { vicesTick } from './vices';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
 
@@ -49,6 +52,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   // 3. Drift.
   ctx.phase('drift');
   hooks.drift();
+  vicesTick(ctx);
   relationshipDecay(ctx);
   // 4. System ticks.
   ctx.phase('systems');
@@ -57,6 +61,8 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   careerTick(ctx);
   militaryTick(ctx);
   fameTick(ctx);
+  healthTick(ctx);
+  legalTick(ctx);
   assetsTick(ctx);
   npcLifecycle(ctx);
   romanceTick(ctx);

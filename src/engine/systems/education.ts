@@ -184,7 +184,8 @@ export function enroll(
     kind === 'grad'
       ? (GRAD_BY_ID[programId]?.label ?? programId)
       : `${MAJOR_BY_ID[programId]?.label ?? programId}${kind === 'community' ? ' at community college' : ''}`;
-  if (!ctx.roll(Math.min(0.97, Math.max(0.03, odds)))) {
+  // Community colleges take everyone with a diploma.
+  if (kind !== 'community' && !ctx.roll(Math.min(0.97, Math.max(0.03, odds)))) {
     ctx.log('school', `The rejection letter for ${name} is polite and very brief.`, true);
     addStat(s, 'happiness', -5);
     return { accepted: false, scholarship: false, tuition: 0 };

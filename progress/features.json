@@ -321,38 +321,38 @@
   },
   "M8.1": {
     "title": "An illness catalog meeting DONE §3, with onset, symptoms, treatments, progression, and death factors.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/health.test.ts catalog (20+, onset by age/vice/stress/family, progression, death risk, treatment and costs, mental health); npm run content:check"
   },
   "M8.2": {
     "title": "Health activities: doctor, gym, diet, meditation, therapy, plastic surgery.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/health.test.ts health activities (doctor, gym, diet, meditation, therapy, plastic surgery going wrong)"
   },
   "M8.3": {
     "title": "Vices with addiction meters, consequences, rehab, and support groups.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/vices.test.ts (meters, traits, abstinence, drinking age, health/money/job/relationship damage, rehab, support groups); src/content/events/health.ts via content:check"
   },
   "M8.4": {
     "title": "Crimes meeting DONE §3, with odds, loot, and notoriety.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/crime.test.ts crimes (10+, odds by traits/notoriety, loot, notoriety, job-only embezzlement)"
   },
   "M8.5": {
     "title": "Justice: arrest, bail, lawyers, plea, trial, sentencing, criminal records (juvenile records seal at 18), and their effects on jobs and travel.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/crime.test.ts justice (arrest→bail→lawyer→plea/trial, country sentencing, acquittals by lawyer, juvenile sealing, record blocks jobs and loans); e2e/crime.spec.ts flow 7"
   },
   "M8.6": {
     "title": "Prison life with at least 6 activities, parole, and release.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/crime.test.ts prison (6+ activities, appeal, escape, parole, release)"
   },
   "M8.7": {
     "title": "The health and legal cheats from SPEC §8.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/cheats/health.test.ts (cure everything, add illness, addiction, clear record, release, sentence, probation); tests/engine/cheats/world.test.ts (immortality)"
   },
   "M9.1": {
     "title": "Country data meeting DONE §3.",

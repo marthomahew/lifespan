@@ -34,6 +34,16 @@ export type NewLifeOptions = {
   popupsPerYear?: number;
 };
 
+const HEREDITARY = [
+  'heart_disease',
+  'type_2_diabetes',
+  'high_blood_pressure',
+  'asthma',
+  'migraines',
+  'depression',
+  'arthritis',
+];
+
 export const WEALTH_TIERS: WealthTier[] = ['poor', 'working', 'middle', 'comfortable', 'rich'];
 export const MIN_BIRTH_YEAR = 1940;
 export const MAX_BIRTH_YEAR = 2030;
@@ -336,6 +346,10 @@ function generateFamily(ctx: Ctx): void {
   mother.flags.push(relFlag);
   father.flags.push(relFlag);
   p.parentIds = [mother.id, father.id];
+  // Family history: some parents carry a condition that runs in families.
+  for (const parent of [mother, father]) {
+    if (r.chance(0.35)) parent.flags.push(`had_${r.pick(HEREDITARY)}`);
+  }
 
   const siblings = r.weighted([0, 1, 2, 3], (n) => [30, 40, 20, 10][n] ?? 0) ?? 0;
   for (let i = 0; i < siblings; i++) {

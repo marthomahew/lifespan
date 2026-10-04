@@ -26,7 +26,10 @@ export const PERSONAS: PersonaId[] = [
 export type BotMemory = { plannedYear: number };
 export const newBotMemory = (): BotMemory => ({ plannedYear: -1 });
 
-const VICE_OR_CRIME = new Set(['crime', 'vice']);
+const VICE_OR_CRIME = new Set(['crime', 'prison']);
+/** Vices are off the menu for the default persona (DONE §4); casinos count as gambling. */
+const isVice = (special: string | undefined): boolean =>
+  !!special && (special.startsWith('vice:') || special === 'casino');
 
 function tryAct(s: GameState, a: Parameters<typeof act>[1]): GameState {
   try {
@@ -67,6 +70,7 @@ function planYear(s: GameState, persona: PersonaId, rng: Rng): GameState {
         (a) =>
           a.enabled &&
           !VICE_OR_CRIME.has(ACTIVITY_BY_ID[a.id]?.group ?? '') &&
+          !isVice(ACTIVITY_BY_ID[a.id]?.special) &&
           a.id !== 'write_will',
       );
       if (!options.length) break;

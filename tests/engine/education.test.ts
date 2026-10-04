@@ -126,7 +126,11 @@ describe('university (M6.2)', () => {
     expect(deg?.field).toBe('economics');
     expect(deg?.gpa).toBeGreaterThan(0);
     expect(deg?.gpa).toBeLessThanOrEqual(4);
-    let c = act(grad18(9), { type: 'enroll', kind: 'community', programId: 'business' }).state;
+    let c = act(runCheat(grad18(9), 'stat.set', { stat: 'smarts', value: 70 }).state, {
+      type: 'enroll',
+      kind: 'community',
+      programId: 'business',
+    }).state;
     c = playYears(c, 2);
     expect(c.education.degrees.some((d) => d.level === 'associate')).toBe(true);
   });

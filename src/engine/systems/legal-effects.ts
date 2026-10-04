@@ -1,20 +1,16 @@
+import { CRIME_BY_ID } from '../../content/crimes';
 import type { Ctx } from '../ctx';
+import { addStat } from '../stats';
+import { openCase } from './crime';
 
-/** A crime from an event: a record entry, or an arrest that opens a case (M8.5 runs the trial). */
+/** A crime from an event: notoriety and karma, and with `arrest` a case that goes to court. */
 export function applyCrimeEffect(ctx: Ctx, crimeId: string, arrest: boolean): void {
   const s = ctx.s;
-  if (arrest) {
-    if (!s.legal.case && !s.legal.prison)
-      s.legal.case = { crimeId, bail: 0, stage: 'arrested', lawyer: null };
-    if (!s.player.flags.includes('ever_arrested')) s.player.flags.push('ever_arrested');
-    return;
+  const def = CRIME_BY_ID[crimeId];
+  if (!s.player.flags.includes('ever_crime')) s.player.flags.push('ever_crime');
+  if (def) {
+    addStat(s, 'notoriety', Math.ceil(def.notoriety / 2));
+    addStat(s, 'karma', Math.ceil(def.karma / 2));
   }
-  s.legal.record.push({
-    crimeId,
-    year: s.year,
-    age: s.player.age,
-    verdict: 'convicted',
-    sentenceYears: 0,
-    juvenile: s.player.age < 18,
-  });
+  if (arrest) openCase(ctx, crimeId);
 }

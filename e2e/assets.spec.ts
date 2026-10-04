@@ -5,7 +5,7 @@ test('flow 6: cheat money, buy a home with a mortgage, see the loan under Assets
   page,
 }) => {
   await startSeeded(page, 606);
-  await cheat(page, 'age set 30', 'money add 2000000', 'job set lawyer');
+  await cheat(page, 'age set 30', 'money add 5000000', 'job set lawyer');
   await clearPopups(page);
   // Listings arrive with the year.
   await page.getByTestId('age-up').click();

@@ -12,6 +12,8 @@ import { WORK_EVENTS } from './work';
 import { FAME_EVENTS } from './fame';
 import { SERVICE_EVENTS } from './service';
 import { PARENTING_EVENTS } from './parenting';
+import { LEGAL_EVENTS } from './legal';
+import { HEALTH_EVENTS } from './health';
 
 export const EVENTS: EventDef[] = [
   ...CHILD_EVENTS,
@@ -26,6 +28,8 @@ export const EVENTS: EventDef[] = [
   ...FAME_EVENTS,
   ...SERVICE_EVENTS,
   ...PARENTING_EVENTS,
+  ...LEGAL_EVENTS,
+  ...HEALTH_EVENTS,
   ...SYSTEM_EVENTS,
 ];
 

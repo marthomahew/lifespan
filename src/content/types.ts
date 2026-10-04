@@ -195,7 +195,7 @@ export type InteractionDef = {
 };
 
 export type ActivityGroup =
-  'mind_body' | 'social' | 'love' | 'money' | 'fun' | 'crime' | 'travel' | 'admin';
+  'mind_body' | 'social' | 'love' | 'money' | 'fun' | 'crime' | 'travel' | 'admin' | 'prison';
 
 /** An activity outcome: a weighted text plus event-style effects (see src/engine/events/types.ts Effect). */
 export type ActivityOutcome = {
@@ -339,4 +339,29 @@ export type PossessionDef = {
   /** Skill practised for free while you own it. */
   skill?: string;
   description: string;
+};
+
+/** Crimes stay abstract: consequences, never methods (SPEC §5.10, §11). */
+export type CrimeDef = {
+  id: string;
+  label: string;
+  emoji: string;
+  /** One abstract sentence about what it is, no method. */
+  description: string;
+  minAge: number;
+  /** Needs a job (embezzlement). */
+  needsJob?: boolean;
+  /** Base success chance before stats, traits, skills, and notoriety. */
+  base: number;
+  /** Loot in reference dollars on success. */
+  loot: [number, number];
+  /** Chance of arrest after a failure, and after a success. */
+  arrest: { fail: number; success: number };
+  /** Sentence range in years for an adult conviction (scaled by country). */
+  sentence: [number, number];
+  notoriety: number;
+  karma: number;
+  violent: boolean;
+  /** Outcome texts: success, failure without arrest, and arrest. At least two each. */
+  texts: { success: string[]; fail: string[]; caught: string[] };
 };

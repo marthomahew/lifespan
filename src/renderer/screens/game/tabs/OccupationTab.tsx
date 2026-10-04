@@ -4,6 +4,7 @@ import { occupationLabel } from '../../../../engine/occupation';
 import { CareerSection } from '../occupation/CareerSection';
 import { EducationSection } from '../occupation/EducationSection';
 import { MilitarySection, MusicSection } from '../occupation/ServiceSection';
+import { LegalSection } from '../occupation/LegalSection';
 
 export function OccupationTab({ game }: { game: GameState }): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +23,7 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       <CareerSection game={game} onError={setError} />
       <MilitarySection game={game} onError={setError} />
       <MusicSection game={game} onError={setError} />
+      <LegalSection game={game} />
     </div>
   );
 }

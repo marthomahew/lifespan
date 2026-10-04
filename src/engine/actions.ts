@@ -9,6 +9,9 @@ import { dropOut, enroll } from './systems/education';
 import { discharge, enlist } from './systems/military';
 import { musicAction, type MusicActionId } from './systems/music';
 import { moneyAction, type MoneyAction } from './systems/banking';
+import { commitCrime } from './systems/crime';
+import { treat } from './systems/health';
+import type { Treatment } from '../content/types';
 import {
   buyHome,
   buyPossession,
@@ -37,7 +40,9 @@ export type PlayerAction =
   | { type: 'move_home'; id: number }
   | { type: 'renovate'; id: number }
   | { type: 'buy_vehicle'; model: string; financed: boolean }
-  | { type: 'buy_item'; item: string };
+  | { type: 'buy_item'; item: string }
+  | { type: 'crime'; id: string }
+  | { type: 'treat'; illness: string; method: Treatment };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -92,6 +97,12 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'buy_item':
       buyPossession(ctx, action.item);
+      break;
+    case 'crime':
+      commitCrime(ctx, action.id);
+      break;
+    case 'treat':
+      treat(ctx, action.illness, action.method);
       break;
   }
   prunePending(ctx.s);

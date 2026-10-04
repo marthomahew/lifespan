@@ -57,3 +57,6 @@ export { INVESTMENTS } from './systems/finance';
 export { mortgageRate, homeLabel } from './systems/assets';
 export { annuityPayment } from './systems/loans';
 export type { MoneyAction } from './systems/banking';
+export { crimeOdds, crimeReason, LAWYER_COST } from './systems/crime';
+export { treatmentsFor, type TreatmentView } from './systems/health';
+export { VICE_LABEL } from './systems/vices';

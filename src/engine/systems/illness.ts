@@ -9,7 +9,7 @@ export function addIllness(ctx: Ctx, id: string): void {
     id,
     since: s.year,
     severity: ctx.rng.int(def.severity[0], def.severity[1]),
-    treated: 0,
+    treated: -10,
   });
   ctx.log('health', `${def.emoji} Diagnosed: ${def.label}. ${def.symptom}`, true);
 }

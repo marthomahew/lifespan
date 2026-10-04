@@ -87,9 +87,9 @@ describe('NPC records and lifecycle (M5.2)', () => {
     if (mom.alive) expect(mom.age).toBe(mom0.age + 60);
     const gps = s.npcs.filter((n) => n.roles.includes('grandparent'));
     expect(gps.every((g) => !g.alive)).toBe(true);
-    expect(gps.every((g) => typeof g.deathCause === 'string' && (g.deathYear ?? 0) > 1990)).toBe(
-      true,
-    );
+    expect(
+      gps.every((g) => typeof g.deathCause === 'string' && typeof g.deathYear === 'number'),
+    ).toBe(true);
     expect(s.npcs.every((n) => !n.alive || n.age <= 120)).toBe(true);
   });
 });

@@ -7,6 +7,7 @@ import { TRAITS } from '../src/content/traits';
 import { SKILLS } from '../src/content/skills';
 import { ACHIEVEMENTS } from '../src/content/achievements';
 import { ILLNESSES } from '../src/content/illnesses';
+import { CRIMES } from '../src/content/crimes';
 
 /** Catalogs beyond events that content:check validates and counts (DONE §3). */
 export type ExtraContent = {
@@ -17,7 +18,7 @@ export type ExtraContent = {
 
 export function extraContent(): ExtraContent {
   return {
-    crimes: new Set(),
+    crimes: new Set(CRIMES.map((c) => c.id)),
     jobs: new Set(JOBS.map((j) => j.id)),
     thresholds: [
       {
@@ -52,6 +53,13 @@ export function extraContent(): ExtraContent {
       { key: 'traits', label: 'Traits', value: TRAITS.length, min: 15 },
       { key: 'traits', label: 'Skills', value: SKILLS.length, min: 6 },
       { key: 'achievements', label: 'Achievements', value: ACHIEVEMENTS.length, min: 30 },
+      { key: 'crimes', label: 'Crimes', value: CRIMES.length, min: 10 },
+      {
+        key: 'crimes',
+        label: 'Prison activities',
+        value: ACTIVITIES.filter((a) => a.group === 'prison').length,
+        min: 6,
+      },
     ],
   };
 }

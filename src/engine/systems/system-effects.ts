@@ -5,6 +5,7 @@ import type { ChainPayload } from '../types';
 import { hire } from './careers';
 import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
+import { caseStep } from './crime';
 
 const LABELS = [
   'Gravel Hill Records',
@@ -42,6 +43,11 @@ export function applySystemEffect(
       return;
     case 'injury_discharge':
       if (s.military?.active) discharge(ctx, 'honorable');
+      return;
+    case 'case_bail':
+    case 'case_lawyer':
+    case 'case_plea':
+      caseStep(ctx, kind, arg);
       return;
     case 'therapy':
       addStat(s, 'stress', -12);

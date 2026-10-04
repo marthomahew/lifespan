@@ -9,6 +9,7 @@ import type { GameState } from '../types';
 import { addChild } from './romance';
 import { currentPartner, partnerOf } from './partners';
 import { markUsed, usedThisYear } from './usage';
+import { runSpecial, specialReason } from './activity-specials';
 import { clampOdds, playerOdds } from './odds';
 
 export type ActivityView = {
@@ -30,7 +31,10 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
   if (age > def.ages[1]) return `up to age ${def.ages[1]}`;
   if (def.adultsOnly && age < 18) return 'adults only';
   if (def.minYear && s.year < def.minYear) return `not invented until ${def.minYear}`;
-  if (s.legal.prison && def.group !== 'admin') return 'not from prison';
+  if (def.group === 'prison' && !s.legal.prison) return 'only in prison';
+  if (s.legal.prison && def.group !== 'admin' && def.group !== 'prison') return 'not from prison';
+  const special = specialReason(s, def);
+  if (special) return special;
   if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
   if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
     return 'you are already seeing someone';
@@ -118,6 +122,7 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   }
   if (def.special === 'will') writeWill(ctx, (params as WillParams).heirs);
   if (def.special === 'study') s.education.studyYear = s.year;
+  runSpecial(ctx, def, o.success === true, params);
   if (def.special === 'driving_test' && o.success) {
     s.assets.licence = true;
     ctx.log('system', 'You have a driving licence.', true);

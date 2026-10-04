@@ -52,7 +52,16 @@ export type Effect =
     }
   | { schedule: string; inYears: number | [number, number]; payload?: ChainPayload }
   | {
-      system: 'hire' | 'conscript' | 'sign_label' | 'dishonorable' | 'injury_discharge' | 'therapy';
+      system:
+        | 'hire'
+        | 'conscript'
+        | 'sign_label'
+        | 'dishonorable'
+        | 'injury_discharge'
+        | 'therapy'
+        | 'case_bail'
+        | 'case_lawyer'
+        | 'case_plea';
       arg?: string;
     }
   | { death: string }
