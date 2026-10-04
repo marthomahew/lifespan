@@ -1,48 +1,48 @@
 {
   "M0.1": {
     "title": "Electron + electron-vite + React + TypeScript (strict) project builds, and the renderer also runs standalone in a browser through `dev:web` and the web build.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run build (electron-vite + vite web build); e2e/smoke.spec.ts; e2e/electron/smoke.spec.ts"
   },
   "M0.2": {
     "title": "Every npm script listed in CLAUDE.md exists under that name. `verify` runs its steps in order and stops at the first failure. Steps whose milestone hasn't arrived may print SKIPPED until then; M12.4 removes every skip.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/scripts.test.ts; npm run verify (scripts/verify.ts)"
   },
   "M0.3": {
     "title": "ESLint (zero warnings) and Prettier are configured, and lint forbids `Math.random`, `Date.now`, and `new Date` in `src/engine` and `src/content`.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "npm run lint; tests/integration/lint-rules.test.ts"
   },
   "M0.4": {
     "title": "Vitest runs with at least one passing engine test.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/engine/rng.test.ts (npm run test)"
   },
   "M0.5": {
     "title": "Playwright runs against the built web app (vite preview, port 4173, strictPort); a smoke spec passes; every spec fails on console errors and page errors.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/smoke.spec.ts; e2e/fixtures.ts (auto fixture fails on console/page errors); playwright.config.ts"
   },
   "M0.6": {
     "title": "`electron:smoke` launches the built Electron app under xvfb through Playwright `_electron` and checks the window title. Waivable for container limitations only.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "e2e/electron/smoke.spec.ts via npm run electron:smoke (xvfb-run)"
   },
   "M0.7": {
     "title": "The Electron security baseline from SPEC §9.6 is in place and a test checks it (webPreferences and CSP).",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/security.test.ts; e2e/electron/smoke.spec.ts (live webPreferences + no Node in renderer)"
   },
   "M0.8": {
     "title": "`hygiene` implements every check in DONE §2.3.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/hygiene.test.ts; npm run hygiene"
   },
   "M0.9": {
     "title": "`.gitignore` covers build output and reports, and `verify` writes only to gitignored paths.",
-    "passes": false,
-    "evidence": ""
+    "passes": true,
+    "evidence": "tests/integration/gitignore.test.ts; scripts/verify.ts fails if any step leaves non-ignored changes"
   },
   "M1.1": {
     "title": "`GameState` is plain JSON data with a `schemaVersion`, and a test shows engine functions never mutate their input.",

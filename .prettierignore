@@ -1,0 +1,11 @@
+node_modules
+out
+dist
+dist-web
+release
+release-final
+reports
+docs
+overnight
+progress
+CLAUDE.md
