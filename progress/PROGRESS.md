@@ -19,3 +19,10 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Review M0–M2 done; fixed save races, IPC sender checks, file:// scope, modal focus trap, invariants (popup text, null paths, checkpoints)
 - Next: M4 events engine tests + first 80 events, then M5
 - Notes: balance bands report-only until M10.6 (ENFORCE_BANDS)
+
+## 2026-10-04 17:40 · M4–M8
+- Done: M4.1–M4.6, M5.1–M5.9, M6.1–M6.9, M7.1–M7.7, M8.1–M8.7; M3–M6 review fixes
+- Verify: green in 59 s (unit 276, e2e 28, electron 3, sim 300/300, 0 violations, 30 s)
+- Content: 230 events, 51 jobs, 25 illnesses, 12 crimes, 37 activities, 20 interactions, 13 countries
+- Bands failing (report-only until M10.6): children 94%; median death age 66 (low side)
+- Next: M9 world/traits/skills, M10 content+balance, M11 legacy/polish, M12 packaging

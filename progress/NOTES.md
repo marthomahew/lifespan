@@ -17,3 +17,4 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - Prettier reformats multi-line code; python str.replace edits must match the prettier-formatted text (re-read before editing).
 - Save shape: deserialize checks keys against a fresh newLife template (set in src/engine/index.ts). New state sections must be added to emptyState in life.ts.
 - content:check per pack: npx tsx scripts/check-pack.ts src/content/events/<file>.ts <EXPORT>. Writers guide: src/content/events/GUIDE.md. Chain follow-ups must declare bind for names they use (bindings carry over at runtime).
+- Activity specials live in src/engine/systems/activity-specials.ts (doctor, therapy, practice, language, vice:*, casino, lottery, novel, rehab, support, prison:*). The default bot skips crime/prison groups, vice:* and casino.
