@@ -20,6 +20,8 @@ export const ENFORCED = new Set([
   'military',
   'interactions',
   'traits',
+  'illnesses',
+  'crimes',
 ]);
 
 const findings = [
