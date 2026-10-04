@@ -10,6 +10,8 @@ import {
 } from '../../src/engine';
 import { INTERACTIONS, INTERACTION_BY_ID } from '../../src/content/interactions';
 import { clone } from '../../src/engine/util';
+import { money } from '../../src/engine/economy';
+import { giftBonus } from '../../src/engine/systems/gifts';
 
 function adult(seed = 1): GameState {
   let s = newLife({ country: 'us', birthYear: 1990 }, seed);
@@ -22,6 +24,50 @@ const friendOf = (s: GameState): Npc =>
   s.npcs.filter((n) => n.roles.includes('friend')).at(-1) as Npc;
 
 describe('relationship interactions (M5.3)', () => {
+  it('a gift can be money or one of your possessions', () => {
+    const base = adult(41);
+    const n = friendOf(base);
+    // Money: the amount leaves your cash and arrives in theirs.
+    const cash0 = base.money.cash;
+    const m = act(base, {
+      type: 'interact',
+      npcId: n.id,
+      id: 'gift',
+      params: { gift: { money: 1000 } },
+    }).state;
+    expect(m.money.cash).toBe(cash0 - 1000);
+    expect(m.npcs.find((x) => x.id === n.id)?.money).toBe(n.money + 1000);
+    expect(m.log.some((e) => e.text.includes('1,000'))).toBe(true);
+    // An item: it leaves your possessions; a pricier gift lands better.
+    let withItem = runCheat(base, 'asset.spawn', { asset: 'item:gold_watch' }).state;
+    const item = withItem.assets.possessions.at(-1);
+    expect(item).toBeDefined();
+    withItem = act(withItem, {
+      type: 'interact',
+      npcId: n.id,
+      id: 'gift',
+      params: { gift: { possessionId: item?.id ?? -1 } },
+    }).state;
+    expect(withItem.assets.possessions.some((p) => p.id === item?.id)).toBe(false);
+    expect(giftBonus(base, money(base, 5000))).toBeGreaterThan(giftBonus(base, money(base, 60)));
+    expect(() =>
+      act(base, {
+        type: 'interact',
+        npcId: n.id,
+        id: 'gift',
+        params: { gift: { possessionId: 999 } },
+      }),
+    ).toThrow(/not yours/);
+    expect(() =>
+      act(base, {
+        type: 'interact',
+        npcId: n.id,
+        id: 'gift',
+        params: { gift: { money: base.money.cash + 1 } },
+      }),
+    ).toThrow(/afford/);
+  });
+
   it('has at least 12 interactions, each with texts for success and failure', () => {
     expect(INTERACTIONS.length).toBeGreaterThanOrEqual(12);
     for (const i of INTERACTIONS) {

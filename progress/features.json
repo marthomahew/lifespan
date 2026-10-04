@@ -207,7 +207,7 @@
   "M5.3": {
     "title": "At least 12 interactions whose outcomes depend on relationship, traits, memory, and RNG; each one writes a memory line.",
     "passes": true,
-    "evidence": "tests/engine/interactions.test.ts (≥12 interactions, memory lines, odds by rel/traits/memory, RNG, limits); e2e/relationships.spec.ts flow 5"
+    "evidence": "tests/engine/interactions.test.ts (≥12 interactions, memory lines, odds by rel/traits/memory, RNG, limits); e2e/relationships.spec.ts flow 5; tests/engine/interactions.test.ts gift as money or a possession; e2e/relationships.spec.ts gift form"
   },
   "M5.4": {
     "title": "Friends come from school, work, and activities, and fade without contact.",
@@ -217,7 +217,7 @@
   "M5.5": {
     "title": "Romance for adults: meeting, dating stages, proposals, weddings, prenups, divorce with asset split, and affairs through chains.",
     "passes": true,
-    "evidence": "tests/engine/romance.test.ts (meeting via activities, app after 2012, stages, failing proposals, wedding cost, prenup-aware divorce split, affair chain); e2e/relationships.spec.ts (date→propose→wedding)"
+    "evidence": "tests/engine/romance.test.ts (meeting via activities, app after 2012, stages, failing proposals, wedding cost, prenup-aware divorce split, affair chain); e2e/relationships.spec.ts (date→propose→wedding); tests/engine/romance.test.ts meeting through work (coworker becomes partner, fitsAttraction), alimony"
   },
   "M5.6": {
     "title": "Children: pregnancy and adoption (adults only); children age, inherit traits, attend school, and have their own events.",
@@ -287,7 +287,7 @@
   "M7.1": {
     "title": "Annual finances per SPEC §5.6, with a Finances view (last year's breakdown and a net worth graph).",
     "passes": true,
-    "evidence": "tests/engine/finance.test.ts annual finances (salary→tax→living→loans→interest→returns, breakdown, history, negative cash→debt); e2e/assets.spec.ts (Finances view + net worth graph)"
+    "evidence": "tests/engine/finance.test.ts annual finances (salary→tax→living→loans→interest→returns, breakdown, history, negative cash→debt); e2e/assets.spec.ts (Finances view + net worth graph); tests/engine/finance.test.ts income tax bands"
   },
   "M7.2": {
     "title": "Inflation index and local-currency display.",
@@ -348,7 +348,7 @@
   "M8.6": {
     "title": "Prison life with at least 6 activities, parole, and release.",
     "passes": true,
-    "evidence": "tests/engine/crime.test.ts prison (6+ activities, appeal, escape, parole, release)"
+    "evidence": "tests/engine/crime.test.ts prison (6+ activities, appeal, escape, parole, release); tests/engine/crime.test.ts only prison-compatible events fire inside, outside chain steps wait for release (src/content/events/prison.ts)"
   },
   "M8.7": {
     "title": "The health and legal cheats from SPEC §8.3.",
@@ -373,7 +373,7 @@
   "M9.4": {
     "title": "Skills meeting DONE §3 with practice, diminishing returns, decay, and effects; languages with fluency.",
     "passes": true,
-    "evidence": "tests/engine/world.test.ts skills (6+, diminishing returns, decay, job gates) and language fluency"
+    "evidence": "tests/engine/world.test.ts skills (6+, diminishing returns, decay, job gates) and language fluency; tests/engine/world.test.ts skillModifiers; e2e/settings.spec.ts skill tooltips"
   },
   "M9.5": {
     "title": "The world and time cheats from SPEC §8.3.",

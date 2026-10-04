@@ -11,6 +11,7 @@ import { clampStat } from '../util';
 import { clampOdds, memorySentiment, npcOdds, playerOdds } from './odds';
 import { breakUp, divorce, marry, WEDDING_COST } from './romance';
 import { markUsed, usedThisYear } from './usage';
+import { giftBonus, giftValue, handOver, type GiftParams } from './gifts';
 
 export type InteractionView = {
   id: string;
@@ -115,7 +116,11 @@ export function interactionOdds(s: GameState, n: Npc, def: InteractionDef): numb
   return clampOdds(p);
 }
 
-export type InteractParams = { size?: 'small' | 'medium' | 'large'; prenup?: boolean };
+export type InteractParams = {
+  size?: 'small' | 'medium' | 'large';
+  prenup?: boolean;
+  gift?: GiftParams;
+};
 
 export function interact(ctx: Ctx, npcId: number, id: string, params: InteractParams = {}): void {
   const s = ctx.s;
@@ -125,13 +130,16 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   const why = interactionReason(s, n, def);
   if (why) throw new EngineError(`${def.label}: ${why}`);
   const size = params.size ?? 'small';
-  const cost = def.special === 'wedding' ? WEDDING_COST[size] : (def.cost ?? 0);
+  const gift = def.special === 'gift' ? giftValue(s, params.gift) : 0;
+  const cost =
+    def.special === 'wedding' ? WEDDING_COST[size] : def.special === 'gift' ? 0 : (def.cost ?? 0);
   if (cost && s.money.cash < money(s, cost))
     throw new EngineError(`${def.label}: costs ${formatMoney(s, money(s, cost))}`);
   markUsed(s, `i:${n.id}:${def.id}`);
   if (cost) s.money.cash -= money(s, cost);
+  if (def.special === 'gift') handOver(ctx, n, params.gift);
 
-  let ok = ctx.roll(interactionOdds(s, n, def));
+  let ok = ctx.roll(clampOdds(interactionOdds(s, n, def) + giftBonus(s, gift)));
   // Some people just aren't the marrying kind.
   if (def.special === 'propose' && n.flags.includes('no_marriage') && !s.cheats.forceSuccess)
     ok = false;

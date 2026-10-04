@@ -5,6 +5,7 @@ import type { Category, ChainPayload, GameState, Npc, PendingEvent, Role } from 
 import { tokenNames } from './tokens';
 import type { ChoiceDef, Effect, EventDef, NpcQuery } from './types';
 import { applyOutcome, pickOutcome } from './apply';
+import { fitsAttraction } from '../systems/partners';
 
 export const ROLES: Role[] = [
   'mother',
@@ -78,6 +79,10 @@ export function matches(s: GameState, n: Npc, q: NpcQuery, adultsOnly: boolean):
   if (q.gender && n.gender !== q.gender) return false;
   if (q.hasMemory && n.memory.length === 0) return false;
   if (q.flag && !n.flags.includes(q.flag)) return false;
+  // Cut-off relatives and children lost in a custody fight are out of your life (SPEC §4.3).
+  if (q.flag !== 'cut_off' && (n.flags.includes('cut_off') || s.family.custodyLost.includes(n.id)))
+    return false;
+  if (q.fitsAttraction && !fitsAttraction(s.player.attraction, n.gender)) return false;
   if (q.notFlag && n.flags.includes(q.notFlag)) return false;
   return true;
 }
@@ -112,6 +117,7 @@ export function eligibility(
       if (s.cheats.disabledCategories.includes(def.category))
         return { ok: false, reason: 'category switched off' };
     }
+    if (s.legal.prison && !def.inPrison) return { ok: false, reason: 'not while in prison' };
     if (def.when && !def.when(s)) return { ok: false, reason: 'its conditions are not met' };
   }
   for (const [name, q] of Object.entries(bindingQueries(def))) {
@@ -243,6 +249,11 @@ export function runDueChains(ctx: Ctx): void {
   for (const step of due) {
     const def = EVENT_BY_ID[step.eventId];
     if (!def || s.death) continue;
+    // The outside world waits for you: a step due in prison comes up the year after release.
+    if (s.legal.prison && !def.inPrison) {
+      s.chains.push({ ...step, dueYear: s.year + 1 });
+      continue;
+    }
     if (!eligibility(s, def, { chain: true, preset: step.bindings }).ok) continue;
     fireEvent(ctx, def, 'chain', step.payload, step.bindings);
   }

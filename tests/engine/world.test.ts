@@ -6,7 +6,7 @@ import { SKILLS } from '../../src/content/skills';
 import { EVENTS } from '../../src/content/events';
 import { JOB_BY_ID } from '../../src/content/jobs';
 import { validateCountries } from '../../scripts/content-lib';
-import { traitModifiers } from '../../src/engine/describe';
+import { skillModifiers, traitModifiers } from '../../src/engine/describe';
 import { applyEffect } from '../../src/engine/events/apply';
 import { Ctx } from '../../src/engine/ctx';
 import { clone } from '../../src/engine/util';
@@ -114,6 +114,16 @@ describe('traits (M9.3)', () => {
 });
 
 describe('skills and languages (M9.4)', () => {
+  it('skill tooltips show the actual modifier at the current level', () => {
+    const music = SKILLS.find((k) => k.id === 'instrument');
+    expect(music).toBeDefined();
+    if (!music) return;
+    // instrument gives creative +25% at 100, so +12% at 48.
+    expect(skillModifiers(music, 48)).toContain('Creative success +12% (up to +25% at 100)');
+    expect(skillModifiers(music, 48).join(' ')).toMatch(/fades/);
+    for (const k of SKILLS) expect(skillModifiers(k, 50).length).toBeGreaterThan(1);
+  });
+
   it('has 6+ skills; practice has diminishing returns', () => {
     expect(SKILLS.length).toBeGreaterThanOrEqual(6);
     const gain = (start: number): number => {

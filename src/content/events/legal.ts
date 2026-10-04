@@ -13,6 +13,7 @@ export const LEGAL_EVENTS: EventDef[] = [
     category: 'crime',
     weight: 0,
     chainOnly: true,
+    inPrison: true,
     text: 'You are arrested for {$crime}. The custody sergeant reads you your rights in the voice of someone reading a bus timetable. Bail is set at {cash:$bail}.',
     choices: [
       {
@@ -46,6 +47,7 @@ export const LEGAL_EVENTS: EventDef[] = [
     category: 'crime',
     weight: 0,
     chainOnly: true,
+    inPrison: true,
     text: 'You are charged with {$crime}. You need a lawyer, and lawyers come in three sizes.',
     choices: [
       {
@@ -91,6 +93,7 @@ export const LEGAL_EVENTS: EventDef[] = [
     category: 'crime',
     weight: 0,
     chainOnly: true,
+    inPrison: true,
     text: 'The prosecution offers a plea deal on the {$crime} charge: plead guilty for a lighter sentence, or take your chances at trial.',
     choices: [
       {

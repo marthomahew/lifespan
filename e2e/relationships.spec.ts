@@ -88,3 +88,28 @@ test('activities: find a date, then propose and plan the wedding from the NPC pa
   await page.getByTestId('wedding-go').click();
   await expect(page.getByTestId('fact-relationship')).toContainText('Married');
 });
+
+test('a gift can be money or something you own', async ({ page }) => {
+  await startSeeded(page, 506);
+  await consoleCmd(page, 'age set 25');
+  await clearPopups(page);
+  await consoleCmd(page, 'money add 5000');
+  await consoleCmd(page, 'asset spawn item:gold_watch');
+  await page.getByTestId('tab-relationships').click();
+  await page.locator('[data-testid^="npc-"]').filter({ hasText: 'mother' }).first().click();
+  await page.getByTestId('int-gift').click();
+  await expect(page.getByTestId('gift-form')).toBeVisible();
+  await page.getByTestId('gift-kind').selectOption('money');
+  await page.getByTestId('gift-amount').fill('1200');
+  await page.getByTestId('gift-go').click();
+  await expect(page.getByTestId('gift-form')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('log-line').filter({ hasText: /You give .*1,200/ })).toHaveCount(1);
+  // The watch goes to someone else.
+  await page.locator('[data-testid^="npc-"]').filter({ hasText: 'father' }).first().click();
+  await page.getByTestId('int-gift').click();
+  await page.getByTestId('gift-kind').selectOption({ index: 2 });
+  await page.getByTestId('gift-go').click();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('log-line').filter({ hasText: /your gold watch/i })).toHaveCount(1);
+});

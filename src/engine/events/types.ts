@@ -14,6 +14,8 @@ export type NpcQuery = {
   /** NPC must (not) carry this flag. */
   flag?: string;
   notFlag?: string;
+  /** The NPC's gender fits who the player is attracted to (romance with someone you know). */
+  fitsAttraction?: boolean;
 };
 
 export type MoneyAmount = number | { payload: string; mult?: number };
@@ -111,6 +113,8 @@ export type EventDef = {
   adultsOnly?: boolean;
   /** Only reachable as a chain step or from code (interviews, trials, ...). */
   chainOnly?: boolean;
+  /** Can fire while the player is in prison. Everything else waits until release (SPEC §5.10). */
+  inPrison?: boolean;
   text: string;
   choices?: ChoiceDef[];
   outcomes?: OutcomeDef[];

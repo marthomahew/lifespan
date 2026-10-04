@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { newLife, ALL_STATS, type GameState } from '../../src/engine';
-import { addStat, healthBaseline, looksBaseline } from '../../src/engine/stats';
+import {
+  addStat,
+  driftStats,
+  healthBaseline,
+  looksBaseline,
+  type Circumstances,
+} from '../../src/engine/stats';
+import { Ctx } from '../../src/engine/ctx';
 import { playYears } from '../helpers';
 import { clone } from '../../src/engine/util';
 
@@ -88,6 +95,31 @@ describe('stats (M1.4)', () => {
       stressed += playYears(indebted, 3).player.stats.stress;
     }
     expect(stressed).toBeGreaterThan(calm);
+  });
+
+  it('prison raises Stress and lowers Happiness; close relationships lift Happiness', () => {
+    const c: Circumstances = {
+      debtLoad: 0,
+      inPrison: false,
+      closeRel: 50,
+      jobStress: 0,
+      lifestyle: 0,
+      studied: false,
+      inEducation: false,
+    };
+    const drift = (over: Partial<Circumstances>): GameState => {
+      const s = clone(immortal(21));
+      s.player.age = 35;
+      driftStats(new Ctx(s), { ...c, ...over });
+      return s;
+    };
+    const free = drift({});
+    const jailed = drift({ inPrison: true });
+    expect(jailed.player.stats.stress).toBeGreaterThan(free.player.stats.stress);
+    expect(jailed.player.stats.happiness).toBeLessThan(free.player.stats.happiness);
+    expect(drift({ closeRel: 95 }).player.stats.happiness).toBeGreaterThan(
+      drift({ closeRel: 10 }).player.stats.happiness,
+    );
   });
 
   it('locked stats stay at their lock', () => {

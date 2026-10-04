@@ -19,7 +19,7 @@ import { INVESTMENTS, runFinances } from '../../src/engine/systems/finance';
 import { Ctx } from '../../src/engine/ctx';
 import { Rng, seedRng } from '../../src/engine/rng';
 import { stepInflation } from '../../src/engine/age';
-import { refToLocal } from '../../src/engine/economy';
+import { incomeTax, refToLocal } from '../../src/engine/economy';
 import { clone } from '../../src/engine/util';
 import { COUNTRY_BY_ID } from '../../src/content/countries';
 import { playYears } from '../helpers';
@@ -71,6 +71,20 @@ describe('annual finances (M7.1)', () => {
     const debt = s.money.loans.find((l) => l.kind === 'debt');
     expect(debt?.balance).toBe(5000);
     expect(debt?.rate).toBeGreaterThan(0.15);
+  });
+});
+
+describe('income tax (SPEC §5.6, §10)', () => {
+  it('applies progressive bands, scaled by wages and inflation', () => {
+    const s = clone(adult(14));
+    s.inflation = 1;
+    // US bands: 0% to 12k, 12% to 48k, 22% to 105k, 30% to 250k, then 37%.
+    expect(incomeTax(s, 0)).toBe(0);
+    expect(incomeTax(s, 12000)).toBe(0);
+    expect(incomeTax(s, 100000)).toBe(36000 * 0.12 + 52000 * 0.22);
+    expect(incomeTax(s, 300000)).toBe(36000 * 0.12 + 57000 * 0.22 + 145000 * 0.3 + 50000 * 0.37);
+    s.inflation = 2;
+    expect(incomeTax(s, 200000)).toBe(2 * (36000 * 0.12 + 52000 * 0.22));
   });
 });
 

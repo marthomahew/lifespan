@@ -1,5 +1,5 @@
 import type { Ctx } from '../ctx';
-import type { GameState, Gender, Npc } from '../types';
+import type { Attraction, GameState, Gender, Npc } from '../types';
 
 /** Gender of someone the player is attracted to. */
 export function partnerGender(ctx: Ctx): Gender {
@@ -7,6 +7,12 @@ export function partnerGender(ctx: Ctx): Gender {
   if (a === 'men') return 'male';
   if (a === 'women') return 'female';
   return ctx.rng.chance(0.5) ? 'male' : 'female';
+}
+
+/** Whether someone of gender g fits who the player is attracted to. */
+export function fitsAttraction(a: Attraction, g: Gender): boolean {
+  if (a === 'everyone') return true;
+  return a === 'men' ? g === 'male' : g === 'female';
 }
 
 export function partnerOf(s: GameState): Npc | undefined {

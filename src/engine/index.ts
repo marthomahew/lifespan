@@ -13,7 +13,7 @@ export { formatMoney, formatMoneyShort, countryOf, money } from './economy';
 export { makeSaveFile, parseSaveFile, summarize, type SaveSummary } from './savefile';
 export { renderText } from './events/tokens';
 export { avatarEmoji } from './avatar';
-export { traitModifiers, statLabel } from './describe';
+export { skillModifiers, traitModifiers, statLabel } from './describe';
 export {
   runCheat,
   runConsole,

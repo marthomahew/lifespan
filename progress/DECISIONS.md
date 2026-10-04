@@ -24,3 +24,7 @@ One line each: `- [HH:MM] <decision>. Why: <reason>. Alternatives: <what else yo
 - [19:55] Universities require a school average of 55 (community colleges take anyone; the veteran benefit waives it). Why: with the DONE §4 persona applying every eligible year, almost everyone eventually got a degree (98%). Alternatives: age-limiting admissions.
 - 2026-10-04 Fresh-eyes audit: unsecured debt now ends in bankruptcy (savings and investments to creditors, rest wiped, Stress/Happiness hit) once it passes max($40k ref, 2× salary). SPEC §5.6 has debt compound with no end, and the audit saw a -$24.8M criminal estate.
 - 2026-10-04 Custom new life: gender and attraction default to 'Surprise me' (engine rolls them), not female/men.
+- 2026-10-04 Audit: in prison only events marked `inPrison` can fire (court events plus a new prison pack); chain steps due inside are pushed a year at a time until release. Why: outside-world events were firing in a cell.
+- 2026-10-04 Audit: events can't bind cut-off NPCs or children lost in custody unless they ask for flag cut_off (SPEC §4.3 "absent NPCs").
+- 2026-10-04 Audit: `meet` with a bound NPC turns that person (e.g. a coworker who fits the player's attraction) into a partner; work_coworker_spark covers SPEC §5.1 "meet people through work".
+- 2026-10-04 Audit: gifts are a small present, an amount of money, or a possession; more generous gifts add up to +10 points of odds.

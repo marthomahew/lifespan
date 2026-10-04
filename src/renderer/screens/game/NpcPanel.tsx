@@ -6,6 +6,8 @@ import { TRAIT_BY_ID } from '../../../content/traits';
 import { Modal } from '../../components/Modal';
 import { barColour } from '../../components/StatBar';
 import { app, doAct } from '../../store/app';
+import { GiftForm } from './GiftForm';
+import type { GiftParams } from '../../../engine/systems/gifts';
 
 /** Someone in your life: who they are, what they remember, and what you can do together. */
 export function NpcPanel({
@@ -20,12 +22,17 @@ export function NpcPanel({
   const [wedding, setWedding] = useState(false);
   const [size, setSize] = useState<'small' | 'medium' | 'large'>('small');
   const [prenup, setPrenup] = useState(false);
+  const [gifting, setGifting] = useState(false);
   if (!n) return null;
   const close = (): void => app.set({ npcId: null });
   const views = interactionsFor(game, n);
-  const run = (id: string): void => {
+  const run = (id: string, gift?: GiftParams): void => {
     if (id === 'plan_wedding' && !wedding) {
       setWedding(true);
+      return;
+    }
+    if (id === 'gift' && !gifting) {
+      setGifting(true);
       return;
     }
     const err = doAct({
@@ -33,9 +40,11 @@ export function NpcPanel({
       npcId: n.id,
       id,
       ...(id === 'plan_wedding' ? { params: { size, prenup } } : {}),
+      ...(id === 'gift' && gift ? { params: { gift } } : {}),
     });
     setError(err);
     setWedding(false);
+    setGifting(false);
   };
   const lastLog = game.log.at(-1);
   return (
@@ -107,6 +116,7 @@ export function NpcPanel({
             ) : (
               <p className="muted">Gone, but remembered.</p>
             )}
+            {gifting && <GiftForm game={game} onGive={(g) => run('gift', g)} />}
             {wedding && (
               <form
                 className="card pad wedding"

@@ -4,6 +4,8 @@ import { CRIMES } from '../../src/content/crimes';
 import { ACTIVITIES } from '../../src/content/activities';
 import { JOB_BY_ID } from '../../src/content/jobs';
 import { crimeOdds } from '../../src/engine/systems/crime';
+import { EVENTS } from '../../src/content/events';
+import { eligibility } from '../../src/engine/events/select';
 import { unmetRequirements } from '../../src/engine/systems/careers';
 import { clone } from '../../src/engine/util';
 import { playYears } from '../helpers';
@@ -181,6 +183,35 @@ describe('prison (M8.6)', () => {
     expect(() => act(s, { type: 'activity', id: 'gym' })).toThrow(/not from prison/);
   });
 
+  it('inside, only prison-compatible events fire; outside chain steps wait for release', () => {
+    const s = clone(jailed());
+    s.cheats.immortal = true;
+    const outside = EVENTS.filter((d) => !d.inPrison);
+    const inside = EVENTS.filter((d) => d.inPrison && !d.chainOnly);
+    expect(inside.length).toBeGreaterThanOrEqual(6);
+    for (const d of outside) expect(eligibility(s, d).ok, d.id).toBe(false);
+    expect(inside.some((d) => eligibility(s, d).ok)).toBe(true);
+    // Free people never see prison events.
+    const free = adult(9);
+    for (const d of inside) expect(eligibility(free, d).ok, d.id).toBe(false);
+    // A chain step due inside is kept for later, not lost.
+    const step = {
+      eventId: outside.find((d) => d.chainOnly && !d.bind)?.id ?? '',
+      dueYear: s.year + 1,
+      payload: {},
+      bindings: {},
+    };
+    s.chains.push(step);
+    if (s.legal.prison) s.legal.prison.years = s.legal.prison.served + 5;
+    let t: GameState = s;
+    const logStart = s.log.length;
+    for (let i = 0; i < 3; i++) t = playYears(t, 1);
+    expect(t.legal.prison).not.toBeNull();
+    expect(t.chains.some((c) => c.eventId === step.eventId)).toBe(true);
+    for (const e of t.log.slice(logStart))
+      expect(e.text).not.toMatch(/commute|office party|email/i);
+  });
+
   it('appeals, escapes, parole and release', () => {
     const s = jailed();
     const appeal = act(
@@ -197,7 +228,9 @@ describe('prison (M8.6)', () => {
     const good = clone(s);
     if (good.legal.prison) good.legal.prison.behaviour = 95;
     let released = good;
-    for (let i = 0; i < 8 && released.legal.prison; i++) released = playYears(released, 1);
+    // Parole is a yearly roll from the halfway point; the full term is the latest release.
+    const term = good.legal.prison?.years ?? 0;
+    for (let i = 0; i < term && released.legal.prison; i++) released = playYears(released, 1);
     expect(released.legal.prison).toBeNull();
     expect(released.player.flags).toContain('ex_con');
     expect(released.assets.housing).not.toBe('prison');

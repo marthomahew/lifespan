@@ -11,4 +11,12 @@ describe('e2e specs (M0.5)', () => {
       expect(src, f).not.toMatch(/import \{[^}]*\btest\b[^}]*\} from '@playwright\/test'/);
     }
   });
+
+  it('every DONE §5 flow has its own spec', () => {
+    const src = readdirSync('e2e')
+      .filter((f) => f.endsWith('.spec.ts'))
+      .map((f) => readFileSync(`e2e/${f}`, 'utf8'))
+      .join('\n');
+    for (let n = 1; n <= 15; n++) expect(src, `flow ${n}`).toMatch(new RegExp(`flow ${n}[ab]?:`));
+  });
 });

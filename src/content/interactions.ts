@@ -166,6 +166,7 @@ export const INTERACTIONS: InteractionDef[] = [
     relWeight: 0.002,
     odds: 'social',
     cost: 60,
+    special: 'gift',
     limitPerYear: 1,
     success: {
       texts: [

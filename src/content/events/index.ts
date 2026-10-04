@@ -18,8 +18,10 @@ import { TEEN_YA_EVENTS_2 } from './teen-ya-2';
 import { CHILD_EVENTS_2 } from './child-2';
 import { MIDDLE_AGE_EVENTS_2 } from './middle-age-2';
 import { SENIOR_EVENTS_2 } from './senior-2';
+import { PRISON_EVENTS } from './prison';
 
 export const EVENTS: EventDef[] = [
+  ...PRISON_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

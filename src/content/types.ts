@@ -198,7 +198,8 @@ export type InteractionDef = {
     | 'breakup'
     | 'divorce'
     | 'cut_off'
-    | 'reconnect';
+    | 'reconnect'
+    | 'gift';
 };
 
 export type ActivityGroup =

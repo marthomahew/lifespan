@@ -1,5 +1,5 @@
 import { TRAIT_BY_ID } from '../content/traits';
-import type { Trait } from '../content/types';
+import type { SkillDef, Trait } from '../content/types';
 
 const STAT_LABEL: Record<string, string> = {
   happiness: 'Happiness',
@@ -39,6 +39,21 @@ export function traitModifiers(t: Trait): string[] {
     out.push(
       `Can't be combined with: ${t.excludes.map((x) => TRAIT_BY_ID[x]?.label ?? x).join(', ')}`,
     );
+  return out;
+}
+
+/** What a skill does at its current level (SPEC §2 visible mechanics, §5.12). */
+export function skillModifiers(k: SkillDef, level: number): string[] {
+  const out: string[] = [];
+  for (const [d, v] of Object.entries(k.odds)) {
+    if (!v) continue;
+    const label = ODDS_LABEL[d] ?? d;
+    const cap = Math.round(v * 100);
+    out.push(
+      `${label[0]?.toUpperCase()}${label.slice(1)} success ${signed(Math.round(v * level))}% (up to ${signed(cap)}% at 100)`,
+    );
+  }
+  out.push('Practice gains shrink as you improve; it fades after two years without practice.');
   return out;
 }
 

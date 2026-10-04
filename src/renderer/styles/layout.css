@@ -189,9 +189,15 @@
   font-size: 0.85em;
   cursor: default;
 }
+.has-tip {
+  position: relative;
+  cursor: default;
+}
 .chip:hover .tooltip,
 .chip:focus .tooltip,
-.chip:focus-within .tooltip {
+.chip:focus-within .tooltip,
+.has-tip:hover .tooltip,
+.has-tip:focus .tooltip {
   display: flex;
 }
 .tip-desc {

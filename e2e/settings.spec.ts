@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { ageTo, clearPopups, startSeeded } from './helpers';
+import { ageTo, cheat, clearPopups, startSeeded } from './helpers';
 
 test('flow 12: theme switch persists across a reload', async ({ page }) => {
   await page.goto('/');
@@ -55,4 +55,14 @@ test('stat sparklines and trait tooltips with modifiers', async ({ page }) => {
   await page.getByTestId('trait-bookish').hover();
   await expect(page.getByTestId('trait-tip-bookish')).toBeVisible();
   await expect(page.getByTestId('trait-tip-bookish')).toContainText('Smarts drift +2 a year');
+});
+
+test('skill tooltips show the modifier at the current level', async ({ page }) => {
+  await startSeeded(page, 45);
+  await ageTo(page, 8);
+  await clearPopups(page);
+  await cheat(page, 'skill athletics 40');
+  await page.getByTestId('skill-name-athletics').hover();
+  await expect(page.getByTestId('skill-tip-athletics')).toBeVisible();
+  await expect(page.getByTestId('skill-tip-athletics')).toContainText('Athletic success +12%');
 });

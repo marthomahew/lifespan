@@ -1,5 +1,5 @@
 import { SKILL_BY_ID, LANGUAGE_BY_ID } from '../../../content/skills';
-import type { GameState } from '../../../engine';
+import { skillModifiers, type GameState } from '../../../engine';
 
 /** Skills and languages above zero. */
 export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | null {
@@ -13,7 +13,30 @@ export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | n
         {skills.map(([id, v]) => (
           <div key={id} className="contents">
             <dt>
-              {SKILL_BY_ID[id]?.emoji} {SKILL_BY_ID[id]?.label ?? id}
+              <span
+                className="has-tip"
+                tabIndex={0}
+                data-testid={`skill-name-${id}`}
+                aria-describedby={`skill-tip-${id}`}
+              >
+                {SKILL_BY_ID[id]?.emoji} {SKILL_BY_ID[id]?.label ?? id}
+                {SKILL_BY_ID[id] && (
+                  <span
+                    className="tooltip"
+                    role="tooltip"
+                    id={`skill-tip-${id}`}
+                    data-testid={`skill-tip-${id}`}
+                  >
+                    <strong>{SKILL_BY_ID[id].label}</strong>
+                    <span className="tip-desc">{SKILL_BY_ID[id].description}</span>
+                    {skillModifiers(SKILL_BY_ID[id], v).map((m) => (
+                      <span key={m} className="tip-mod">
+                        {m}
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </span>
             </dt>
             <dd data-testid={`skill-${id}`}>{v}</dd>
           </div>

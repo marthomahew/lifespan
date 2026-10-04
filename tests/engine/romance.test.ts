@@ -10,6 +10,13 @@ import {
 import { estatePlan, settleEstate } from '../../src/engine/systems/inheritance';
 import { clone } from '../../src/engine/util';
 import { playYears } from '../helpers';
+import { Ctx } from '../../src/engine/ctx';
+import { addNpc } from '../../src/engine/npc';
+import { applyStatusEffect } from '../../src/engine/systems/status-effects';
+import { matches } from '../../src/engine/events/select';
+import { EVENT_BY_ID } from '../../src/content/events';
+import { divorce } from '../../src/engine/systems/romance';
+import { money } from '../../src/engine/economy';
 
 function adult(seed = 1, extra: Partial<Parameters<typeof newLife>[0]> = {}): GameState {
   let s = newLife(
@@ -25,6 +32,35 @@ const partner = (s: GameState): Npc | undefined =>
   s.npcs.find((n) => n.alive && (n.roles.includes('partner') || n.roles.includes('spouse')));
 
 describe('romance (M5.5)', () => {
+  it('meets people through work: a coworker can become a partner', () => {
+    const s = clone(adult(31));
+    const ctx = new Ctx(s);
+    const mate = addNpc(ctx, { role: 'coworker', gender: 'male', age: 30, rel: 60 });
+    const other = addNpc(ctx, { role: 'coworker', gender: 'female', age: 30, rel: 60 });
+    // Only coworkers who fit the player's attraction can be bound by a work-romance event.
+    expect(matches(s, mate, { role: 'coworker', fitsAttraction: true }, true)).toBe(true);
+    expect(matches(s, other, { role: 'coworker', fitsAttraction: true }, true)).toBe(false);
+    applyStatusEffect(ctx, 'meet', mate);
+    expect(mate.roles).toEqual(expect.arrayContaining(['coworker', 'partner']));
+    expect(mate.romance?.stage).toBe('dating');
+    expect(s.npcs.filter((n) => n.roles.includes('partner'))).toHaveLength(1);
+    const ev = EVENT_BY_ID['work_coworker_spark'];
+    expect(ev?.bind?.['colleague']?.fitsAttraction).toBe(true);
+  });
+
+  it('cut-off NPCs are absent: events cannot bind them unless they ask for that flag', () => {
+    const s = clone(adult(32));
+    const ctx = new Ctx(s);
+    const pal = addNpc(ctx, { role: 'friend', age: 28, rel: 60 });
+    expect(matches(s, pal, { role: 'friend' }, false)).toBe(true);
+    pal.flags.push('cut_off');
+    expect(matches(s, pal, { role: 'friend' }, false)).toBe(false);
+    expect(matches(s, pal, { role: 'friend', flag: 'cut_off' }, false)).toBe(true);
+    s.family.custodyLost.push(pal.id);
+    pal.flags = [];
+    expect(matches(s, pal, { role: 'friend' }, false)).toBe(false);
+  });
+
   it('meets people through activities; the dating app only exists from 2012', () => {
     const s = act(forced(adult(1)), { type: 'activity', id: 'find_date' }).state;
     expect(partner(s)?.romance?.stage).toBe('dating');
@@ -135,6 +171,30 @@ function playYearsUntilPending(s: GameState, id: string): GameState {
     cur = engineChoose(cur, p.choices.find((c) => c.enabled)?.id ?? '').state;
   return cur;
 }
+
+describe('alimony (SPEC §5.1)', () => {
+  const divorceAfter = (prenup: boolean): GameState => {
+    const s = clone(adult(33));
+    const ctx = new Ctx(s);
+    const ex = addNpc(ctx, { role: 'spouse', gender: 'male', age: 30, rel: 60 });
+    ex.job = null;
+    ex.romance = { stage: 'married', since: s.year - 6, prenup };
+    s.career.salary = money(s, 120000, 'wage');
+    divorce(ctx, ex);
+    return s;
+  };
+  it('the higher earner pays for a few years after a long marriage, unless there was a prenup', () => {
+    const s = divorceAfter(false);
+    expect(s.money.alimony).toHaveLength(1);
+    const a = s.money.alimony[0];
+    expect(a?.amount).toBe(Math.round(money(s, 120000, 'wage') * 0.2));
+    expect(a?.years).toBe(3);
+    expect(divorceAfter(true).money.alimony).toEqual([]);
+    // Each year it is paid and counts down.
+    const later = playYears({ ...s, pending: [] }, 1);
+    expect(later.money.alimony[0]?.years ?? 0).toBe(2);
+  });
+});
 
 describe('children (M5.6)', () => {
   it('pregnancy by trying (adults only) gives a birth the next year, with inherited traits', () => {

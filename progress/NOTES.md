@@ -20,3 +20,4 @@ One line each: gotchas, commands that work, conventions. Every session reads thi
 - Activity specials live in src/engine/systems/activity-specials.ts (doctor, therapy, practice, language, vice:*, casino, lottery, novel, rehab, support, prison:*). The default bot skips crime/prison groups, vice:* and casino.
 - Kill stray preview servers with pkill -f "[v]ite preview" in its own command (broad patterns can match the Bash tool's own command line).
 - dist: npm run dist:mac → release/Lifespan-darwin-arm64/Lifespan.app (+ check-mac-bundle); npm run dist:linux → release/Lifespan-linux-arm64/lifespan; npm run electron:smoke:packaged runs the smoke specs against it.
+- pkill: use `pkill -f "[v]ite prev"` alone in its own Bash call; any command line containing the literal pattern kills its own shell (exit 144).

@@ -13,6 +13,14 @@ describe('achievements and life titles (M10.3)', () => {
     expect(new Set(LIFE_TITLES.map((t) => t.title)).size).toBe(LIFE_TITLES.length);
   });
 
+  it('achievements still count in a cheated life (SPEC §8.4)', () => {
+    let s = runCheat(newLife({ country: 'us', birthYear: 1990 }, 3), 'age.set', { age: 30 }).state;
+    s = runCheat(s, 'money.add', { amount: 2_000_000 }).state;
+    expect(s.cheats.used).toBe(true);
+    s = playYears({ ...s, cheats: { ...s.cheats, immortal: true } }, 1);
+    expect(s.player.achievements).toContain('millionaire');
+  });
+
   it('awards once, with a toast and a log line', () => {
     const s = { ...newLife({}, 1), pending: [] };
     const step = ageUp(s);

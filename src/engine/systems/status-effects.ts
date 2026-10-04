@@ -1,7 +1,7 @@
 import type { Ctx } from '../ctx';
 import { addNpc, remember } from '../npc';
 import type { Npc, Role } from '../types';
-import { currentPartner, killNpc, partnerGender } from './partners';
+import { currentPartner, fitsAttraction, killNpc, partnerGender } from './partners';
 import { addChild, breakUp, divorce, marry } from './romance';
 
 export { currentPartner, killNpc, partnerGender, partnerOf } from './partners';
@@ -13,6 +13,16 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
   switch (kind) {
     case 'meet': {
       if (p.age < 18 || currentPartner(ctx)) return;
+      // Someone you already know (a coworker, a friend) becomes more than that.
+      if (npc && npc.alive && npc.age >= 18 && fitsAttraction(p.attraction, npc.gender)) {
+        if (!npc.roles.includes('partner')) npc.roles.push('partner');
+        npc.romance = { stage: 'dating', since: s.year, prenup: false };
+        if (ctx.rng.chance(0.4)) npc.flags.push('no_kids');
+        if (ctx.rng.chance(0.2)) npc.flags.push('no_marriage');
+        remember(s, npc, 'how it all started', 5);
+        ctx.log('romance', `You start seeing ${npc.first} ${npc.last}.`, true);
+        return;
+      }
       const age = Math.max(18, p.age + ctx.rng.int(-5, 5));
       const n = addNpc(ctx, {
         role: 'partner',
