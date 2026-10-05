@@ -16,6 +16,7 @@ import { applyStatusEffect } from '../../src/engine/systems/status-effects';
 import { matches } from '../../src/engine/events/select';
 import { EVENT_BY_ID } from '../../src/content/events';
 import { divorce } from '../../src/engine/systems/romance';
+import { applySystemEffect } from '../../src/engine/systems/system-effects';
 import { money } from '../../src/engine/economy';
 
 function adult(seed = 1, extra: Partial<Parameters<typeof newLife>[0]> = {}): GameState {
@@ -298,5 +299,21 @@ describe('romance pacing', () => {
     const q = s.npcs.find((n) => n.id === p.id) as Npc;
     if (q.romance) q.romance.stage = 'serious';
     expect(() => act(s, { type: 'interact', npcId: p.id, id: 'propose' })).not.toThrow();
+  });
+});
+
+describe('moving abroad together', () => {
+  it('the move_abroad effect takes you and your partner to another country', () => {
+    const s = clone(adult(41));
+    const ctx = new Ctx(s);
+    const love = addNpc(ctx, { role: 'partner', gender: 'male', age: 30, rel: 70 });
+    applySystemEffect(ctx, 'move_abroad', 'jp', {});
+    expect(s.player.country).toBe('jp');
+    expect(love.country).toBe('jp');
+    // Not while on probation.
+    const held = clone(adult(42));
+    held.legal.probation = 2;
+    applySystemEffect(new Ctx(held), 'move_abroad', 'jp', {});
+    expect(held.player.country).toBe('us');
   });
 });

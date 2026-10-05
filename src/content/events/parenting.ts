@@ -870,6 +870,7 @@ export const PARENTING_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You cry at the airport and pretend it is hay fever. The video calls are every Sunday, and {kid.first} sounds happier than {kid.they} {kid.has} in years.',
             effects: [
+              { npcFlag: 'kid', flag: 'moved_away' },
               { stat: 'happiness', delta: -2 },
               { rel: 'kid', delta: 8, memory: 'you telling them to take the job abroad' },
               { npcStat: 'kid', stat: 'happiness', delta: 7 },
@@ -894,6 +895,7 @@ export const PARENTING_EVENTS: EventDef[] = [
             chance: 0.5,
             text: '{kid.first} goes anyway, a little stiffly. The first few calls are short.',
             effects: [
+              { npcFlag: 'kid', flag: 'moved_away' },
               { stat: 'happiness', delta: -4 },
               { rel: 'kid', delta: -4, memory: 'the guilt trip before they emigrated' },
             ],
@@ -909,6 +911,7 @@ export const PARENTING_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You fly out with two suitcases of tea bags and assemble a wardrobe with instructions in a language neither of you reads. It stands, mostly.',
             effects: [
+              { npcFlag: 'kid', flag: 'moved_away' },
               { money: -2000 },
               { stat: 'happiness', delta: 5 },
               { rel: 'kid', delta: 9, memory: 'the wardrobe you built together abroad' },

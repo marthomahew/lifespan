@@ -58,6 +58,18 @@ export function obituary(s: GameState): Obituary | null {
     summary.push(
       `Earned ${deg.length === 1 ? 'a degree' : `${deg.length} degrees`} in ${deg.map((d) => MAJOR_BY_ID[d.field]?.label ?? GRAD_BY_ID[d.field]?.label ?? d.field).join(', ')}.`,
     );
+  const mil = s.military;
+  if (mil && mil.years > 0) {
+    const how =
+      mil.discharge === 'dishonorable'
+        ? ', leaving under a cloud'
+        : mil.medals.length
+          ? `, with ${mil.medals.length === 1 ? 'a medal' : `${mil.medals.length} medals`}`
+          : '';
+    summary.push(
+      `Served ${mil.years} year${mil.years === 1 ? '' : 's'} in the ${mil.branch}${how}.`,
+    );
+  }
   const spouses = s.npcs.filter(
     (n) => n.roles.includes('spouse') || n.flags.includes('was_spouse'),
   );

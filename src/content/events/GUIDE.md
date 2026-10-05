@@ -87,7 +87,7 @@ Role names usable without a `bind` (the first living NPC with that role is used,
 - `{ status: 'friend' }` (a new friend NPC), `{ status: 'enemy' }`, `{ status: 'npc_dies', with: 'grandparent' }` (serious, brief)
 - Adults-only events only: `{ status: 'meet' }` (start dating someone new), `{ status: 'breakup', with: 'partner' }`
 - `{ performance: n }` work performance (only in events with `when: hasJob`)
-- `{ conduct: n }` military conduct (only with `when: serving`); `{ system: 'dishonorable' }` ends service with a dishonorable discharge; `{ system: 'injury_discharge' }` ends it honorably after a serious injury; `{ system: 'therapy' }` (counselling: less stress)
+- `{ conduct: n }` military conduct (only with `when: serving`); `{ system: 'dishonorable' }` ends service with a dishonorable discharge; `{ system: 'injury_discharge' }` ends it honorably after a serious injury; `{ system: 'move_abroad', arg?: countryId }` (move abroad with your partner; gate the choice with `requires: canMoveAbroad`); `{ system: 'therapy' }` (counselling: less stress)
 - `{ fame: n }` fame up or down
 - `{ death: 'cause text' }` — very rare, only for genuinely dangerous choices, never for self-harm.
 - Chains: on an outcome, `next: { eventId: 'your_followup_id', inYears: [1, 4], payload: { amount: 3000 } }`. The follow-up has `chainOnly: true`, and reuses the same binding names (they are carried over).

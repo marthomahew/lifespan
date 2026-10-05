@@ -185,7 +185,7 @@ export function resolveCase(ctx: Ctx, plea: boolean): void {
     s.money.cash -= fine;
     ctx.log(
       'crime',
-      `${plea ? 'You take the plea.' : 'Guilty.'} The judge gives you ${s.legal.probation} years' probation and a ${formatMoney(s, fine)} fine.`,
+      `${plea ? 'You take the plea.' : 'Guilty.'} The judge gives you ${s.legal.probation} year${s.legal.probation === 1 ? '' : 's'} of probation and a ${formatMoney(s, fine)} fine.`,
       true,
     );
     return;

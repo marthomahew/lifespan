@@ -6,6 +6,9 @@ import { hire } from './careers';
 import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
 import { caseStep } from './crime';
+import { COUNTRIES } from '../../content/countries';
+import { emigrate } from './emigration';
+import { canMoveAbroad } from '../../content/events/conditions';
 
 const LABELS = [
   'Gravel Hill Records',
@@ -49,6 +52,17 @@ export function applySystemEffect(
     case 'case_plea':
       caseStep(ctx, kind, arg);
       return;
+    case 'move_abroad': {
+      // Move with your partner: to the country in arg, or anywhere else at random.
+      if (!canMoveAbroad(s)) return;
+      const options = COUNTRIES.filter((c) => c.id !== s.player.country);
+      const to = options.find((c) => c.id === arg) ?? ctx.rng.pick(options);
+      emigrate(ctx, to.id, undefined, true);
+      for (const n of s.npcs)
+        if (n.alive && (n.roles.includes('partner') || n.roles.includes('spouse')))
+          n.country = to.id;
+      return;
+    }
     case 'therapy':
       addStat(s, 'stress', -12);
       addStat(s, 'happiness', 5);

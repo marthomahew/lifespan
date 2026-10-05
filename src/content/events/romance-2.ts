@@ -1,6 +1,14 @@
 import type { EventDef } from '../../engine/events/types';
 import type { GameState } from '../../engine/types';
-import { canAfford, hasChildren, hasJob, hasPartner, isMarried, single } from './conditions';
+import {
+  canAfford,
+  canMoveAbroad,
+  hasChildren,
+  hasJob,
+  hasPartner,
+  isMarried,
+  single,
+} from './conditions';
 
 const partnerNoKids = (s: GameState): boolean => hasPartner(s) && !hasChildren(s);
 
@@ -232,12 +240,14 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
       {
         id: 'go',
         label: 'Pack up and go together',
+        requires: canMoveAbroad,
         outcomes: [
           {
             chance: 1,
             text: 'You sell half your things and learn the word for "receipt" in a new language. It is hard and it is yours, together.',
             effects: [
               { rel: 'love', delta: 10, memory: 'the move abroad together' },
+              { system: 'move_abroad' },
               { money: -3000 },
               { stat: 'stress', delta: 6 },
               { stat: 'happiness', delta: 4 },

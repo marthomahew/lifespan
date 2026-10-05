@@ -59,6 +59,9 @@ export const ownsVehicle = (s: GameState): boolean => s.assets.vehicles.length >
 export const notInPrison = (s: GameState): boolean => s.legal.prison === null;
 /** Living somewhere other than the country you were born in. */
 export const livesAbroad = (s: GameState): boolean => s.player.country !== s.player.birthCountry;
+/** Free to relocate: an adult with no prison, case, or probation holding you here. */
+export const canMoveAbroad = (s: GameState): boolean =>
+  s.player.age >= 18 && s.legal.prison === null && s.legal.case === null && s.legal.probation === 0;
 /** Out of prison after serving time. */
 export const exCon = (s: GameState): boolean =>
   s.legal.prison === null && s.player.flags.includes('ex_con');

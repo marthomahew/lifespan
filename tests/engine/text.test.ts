@@ -31,5 +31,20 @@ describe('generated text', () => {
     const ob = obituary(s);
     expect(ob?.summary).toContain('Worked as a laborer.');
     expect(ob?.summary).toContain('Earned a degree in Computer Science.');
+    s.military = {
+      branch: 'Navy',
+      specialty: 'medical',
+      officer: false,
+      rank: 3,
+      since: 1990,
+      deployed: false,
+      deployments: 2,
+      medals: ['service'],
+      conduct: 70,
+      discharge: 'honorable',
+      active: false,
+      years: 8,
+    };
+    expect(obituary(s)?.summary).toContain('Served 8 years in the Navy, with a medal.');
   });
 });

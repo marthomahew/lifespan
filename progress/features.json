@@ -529,5 +529,10 @@
     "title": "Crime, life after prison, travel and life abroad, and community/world event packs (51 events, 8 chains); former cellmates can find you after release.",
     "passes": true,
     "evidence": "npm run content:check (434 events, 42 chains); tests/engine/crime.test.ts former cellmate; tests/content/conditions.test.ts; npm run sim:coverage 97.9%"
+  },
+  "S11": {
+    "title": "Story and state agree: moving abroad with a partner really moves you; children who emigrate are flagged as moved away; the obituary records military service; probation wording.",
+    "passes": true,
+    "evidence": "tests/engine/romance.test.ts moving abroad together; tests/engine/text.test.ts obituary service line"
   }
 }
