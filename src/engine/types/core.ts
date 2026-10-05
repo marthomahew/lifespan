@@ -1,6 +1,6 @@
 import type { RngState } from '../rng';
 
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const VISIBLE_STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export const HIDDEN_STATS = [
@@ -27,6 +27,8 @@ export const VICES = [
 export type ViceKey = (typeof VICES)[number];
 
 export type Gender = 'male' | 'female' | 'nonbinary';
+export type HairStyle = 'default' | 'blond' | 'red' | 'curly' | 'white' | 'bald';
+export type ParentSetup = 'together' | 'apart' | 'mother' | 'father';
 export type Attraction = 'men' | 'women' | 'everyone';
 export type WealthTier = 'poor' | 'working' | 'middle' | 'comfortable' | 'rich';
 

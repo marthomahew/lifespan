@@ -14,9 +14,13 @@ import {
   type Stats,
   type VisibleStat,
   type WealthTier,
+  type HairStyle,
+  type ParentSetup,
 } from './types';
 import { clampStat } from './util';
 import { refToLocal } from './economy';
+import { HAIR_STYLES } from './avatar';
+import { SKILL_BY_ID } from '../content/skills';
 
 export type NewLifeOptions = {
   first?: string;
@@ -32,6 +36,13 @@ export type NewLifeOptions = {
   stats?: Partial<Record<VisibleStat, number>>;
   wealth?: WealthTier;
   popupsPerYear?: number;
+  hair?: HairStyle;
+  /** A skill you were born with a gift for. */
+  talent?: string;
+  /** Who raised you. */
+  parents?: ParentSetup;
+  /** 0–4 older siblings and younger ones still to come are rolled as usual. */
+  siblings?: number;
 };
 
 const HEREDITARY = [
@@ -63,6 +74,8 @@ export function emptyState(seed: number): GameState {
       gender: 'female',
       attraction: 'men',
       appearance: '',
+      hair: 'default',
+      talent: null,
       age: 0,
       birthYear: 2000,
       birthCountry: 'us',
@@ -261,6 +274,14 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
       'comfortable',
       'rich',
     ] as const);
+  p.hair =
+    opts.hair && HAIR_STYLES.some((h) => h.id === opts.hair)
+      ? opts.hair
+      : r.pick(['default', 'default', 'default', 'blond', 'red', 'curly'] as const);
+  if (opts.talent && SKILL_BY_ID[opts.talent]) {
+    p.talent = opts.talent;
+    p.skills[opts.talent] = 8;
+  }
   const chosen = opts.traits ? validTraits(opts.traits) : [];
   p.traits = chosen.length ? chosen : randomTraits(ctx, r.int(2, 3));
   // SPEC §3.1: 2–3 traits at birth. Top up a single pick with a compatible random one.
@@ -295,16 +316,27 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   if (opts.popupsPerYear !== undefined)
     s.settings.popupsPerYear = Math.min(5, Math.max(1, Math.round(opts.popupsPerYear)));
 
-  generateFamily(ctx);
+  generateFamily(ctx, opts);
   s.lifeId = `${p.first.toLowerCase().replace(/[^a-z0-9]/g, '') || 'life'}-${(seed >>> 0).toString(36)}-${r.int(0, 1679615).toString(36)}`;
 
   const parents = s.npcs.filter((n) => n.roles.includes('mother') || n.roles.includes('father'));
   const parentText = parents.map((n) => `${n.first} (${n.job ?? 'unemployed'})`).join(' and ');
+  const solo = parents.find(
+    (n) =>
+      !n.flags.includes('absent_parent') && parents.some((o) => o.flags.includes('absent_parent')),
+  );
   ctx.log(
     'family',
-    `You are born in ${p.city}, ${c.name}, to ${parentText || 'a family that loves you'}.`,
+    solo
+      ? `You are born in ${p.city}, ${c.name}, and raised by your ${solo.roles.includes('mother') ? 'mother' : 'father'}, ${solo.first} (${solo.job ?? 'unemployed'}).`
+      : `You are born in ${p.city}, ${c.name}, to ${parentText || 'a family that loves you'}.`,
     true,
   );
+  if (p.talent && SKILL_BY_ID[p.talent])
+    ctx.log(
+      'system',
+      `⭐ You have a gift for ${SKILL_BY_ID[p.talent]?.label.toLowerCase()}. It will come easily, with practice.`,
+    );
   for (const t of p.traits) {
     const tr = TRAIT_BY_ID[t];
     if (tr)
@@ -316,7 +348,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
 }
 
 /** Parents, 0–3 siblings and grandparents alive by their ages (SPEC §5.1). */
-function generateFamily(ctx: Ctx): void {
+function generateFamily(ctx: Ctx, opts: NewLifeOptions = {}): void {
   const s = ctx.s;
   const r = ctx.rng;
   const p = s.player;
@@ -326,7 +358,9 @@ function generateFamily(ctx: Ctx): void {
 
   const motherAge = r.int(19, 40);
   const fatherAge = Math.max(18, motherAge + r.int(-4, 8));
-  const together = r.chance(tier === 'poor' ? 0.6 : 0.8);
+  const setup = opts.parents;
+  const together =
+    setup === undefined ? r.chance(tier === 'poor' ? 0.6 : 0.8) : setup === 'together';
   const mother = addNpc(ctx, {
     role: 'mother',
     gender: 'female',
@@ -348,13 +382,22 @@ function generateFamily(ctx: Ctx): void {
   const relFlag = together ? (r.chance(0.75) ? 'parents_happy' : 'parents_rocky') : 'parents_split';
   mother.flags.push(relFlag);
   father.flags.push(relFlag);
+  // A single parent: the other one is around in name only.
+  const absent = setup === 'mother' ? father : setup === 'father' ? mother : null;
+  if (absent) {
+    absent.flags.push('absent_parent');
+    absent.rel = r.int(10, 30);
+  }
   p.parentIds = [mother.id, father.id];
   // Family history: some parents carry a condition that runs in families.
   for (const parent of [mother, father]) {
     if (r.chance(0.35)) parent.flags.push(`had_${r.pick(HEREDITARY)}`);
   }
 
-  const siblings = r.weighted([0, 1, 2, 3], (n) => [30, 40, 20, 10][n] ?? 0) ?? 0;
+  const siblings =
+    opts.siblings !== undefined
+      ? Math.max(0, Math.min(4, Math.round(opts.siblings)))
+      : (r.weighted([0, 1, 2, 3], (n) => [30, 40, 20, 10][n] ?? 0) ?? 0);
   for (let i = 0; i < siblings; i++) {
     const age = r.int(1, Math.max(1, Math.min(14, motherAge - 18)));
     addNpc(ctx, {

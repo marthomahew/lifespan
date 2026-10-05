@@ -21,7 +21,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       data-wealth={p.wealth}
     >
       <div className="avatar" aria-hidden="true">
-        {avatarEmoji(p.age, p.gender, p.appearance, game.death !== null)}
+        {avatarEmoji(p.age, p.gender, p.appearance, game.death !== null, p.hair)}
       </div>
       <div className="who">
         <div className="name" data-testid="player-name">

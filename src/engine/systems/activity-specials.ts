@@ -13,6 +13,8 @@ import { ILLNESS_BY_ID } from '../../content/illnesses';
 import { addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
+import { HAIR_STYLES } from '../avatar';
+import { EngineError } from '../errors';
 
 /** Extra gates for special activities (drinking age, nothing to treat...). */
 export function specialReason(s: GameState, def: ActivityDef): string | null {
@@ -85,8 +87,30 @@ export function runSpecial(
     case 'practice': {
       const skill = typeof params['skill'] === 'string' ? params['skill'] : 'instrument';
       const cur = s.player.skills[skill] ?? 0;
-      // Diminishing returns: the better you are, the slower it goes (SPEC §5.12).
-      addSkill(s, skill, Math.max(1, Math.round((100 - cur) / 12) + ctx.rng.int(0, 2)));
+      // Diminishing returns: the better you are, the slower it goes (SPEC §5.12); a talent goes further.
+      const gain = Math.max(1, Math.round((100 - cur) / 12) + ctx.rng.int(0, 2));
+      addSkill(s, skill, s.player.talent === skill ? Math.round(gain * 1.5) : gain);
+      return;
+    }
+    case 'new_look': {
+      const hair = String(params['hair'] ?? '');
+      const style = HAIR_STYLES.find((h) => h.id === hair);
+      if (!style) throw new EngineError('pick a look');
+      s.player.hair = style.id;
+      return;
+    }
+    case 'change_name': {
+      const first = String(params['first'] ?? '')
+        .trim()
+        .slice(0, 40);
+      const last = String(params['last'] ?? '')
+        .trim()
+        .slice(0, 40);
+      if (!first || !last) throw new EngineError('a name needs a first and a last part');
+      const was = `${s.player.first} ${s.player.last}`;
+      s.player.first = first;
+      s.player.last = last;
+      ctx.log('system', `You sign the form. ${was} is now officially ${first} ${last}.`, true);
       return;
     }
     case 'language': {

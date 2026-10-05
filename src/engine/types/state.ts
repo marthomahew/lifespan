@@ -4,6 +4,7 @@ import type {
   ChainStep,
   DeathInfo,
   Gender,
+  HairStyle,
   GenerationRecord,
   LogEntry,
   Npc,
@@ -37,6 +38,9 @@ export type Player = {
   gender: Gender;
   attraction: Attraction;
   appearance: string;
+  hair: HairStyle;
+  /** A skill you were born with a gift for: it grows faster with practice. */
+  talent: string | null;
   age: number;
   birthYear: number;
   birthCountry: string;

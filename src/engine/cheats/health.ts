@@ -4,6 +4,7 @@ import { clampStat } from '../util';
 import type { CheatDef } from './types';
 import { illnessOptions, viceOptions } from './options';
 import { addInjury } from '../systems/injuries';
+import { release } from '../systems/crime';
 
 export const HEALTH_CHEATS: CheatDef[] = [
   {
@@ -85,8 +86,8 @@ export const HEALTH_CHEATS: CheatDef[] = [
     params: [],
     run: (ctx) => {
       if (!ctx.s.legal.prison) return 'You are not in prison';
-      ctx.s.legal.prison = null;
-      if (ctx.s.assets.housing === 'prison') ctx.s.assets.housing = 'renting';
+      // The real release: housing, the ex-con record, cellmates who might look you up.
+      release(ctx, false);
       ctx.log('crime', '🃏 The gates open. Nobody asks questions.');
       return 'Released';
     },

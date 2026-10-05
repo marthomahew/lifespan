@@ -559,5 +559,10 @@
     "title": "Late life, a third act: a doctor warns you when your yearly risk of dying turns serious (take it seriously, write a bucket list, or carry on), at most every six years; a bucket-list activity from 55 with an achievement and an obituary line. Plus a late-life pack (18 events, 2 chains): grandchildren, retirement, reunions, memoirs, the driving keys, downsizing, a last adventure.",
     "passes": true,
     "evidence": "tests/engine/late-life.test.ts"
+  },
+  "S17": {
+    "title": "Character customization: hair shown on the avatar (with skin tone), family background (parents together, apart, single mother or father) and siblings, a starting talent that grows faster; a New Life screen with sections, per-section dice, roll everything, and a live preview with Begin always visible; in life, pick-what dialogs for practice and languages, a new look, and a name change; save format v4.",
+    "passes": true,
+    "evidence": "tests/engine/customization.test.ts; e2e/new-life.spec.ts full customization, roll everything; e2e/customize.spec.ts"
   }
 }

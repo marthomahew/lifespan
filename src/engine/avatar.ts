@@ -1,12 +1,39 @@
-import type { Gender } from './types';
+import type { Gender, HairStyle } from './types';
 
-/** Emoji avatar by age and gender, with an optional skin-tone modifier. */
-export function avatarEmoji(age: number, gender: Gender, tone: string, dead = false): string {
+export const HAIR_STYLES: { id: HairStyle; label: string }[] = [
+  { id: 'default', label: 'Dark' },
+  { id: 'blond', label: 'Blond' },
+  { id: 'red', label: 'Red' },
+  { id: 'curly', label: 'Curly' },
+  { id: 'white', label: 'White' },
+  { id: 'bald', label: 'Bald' },
+];
+
+const ZWJ = '\u200d';
+const HAIR_MARK: Record<HairStyle, string> = {
+  default: '',
+  blond: '',
+  red: '🦰',
+  curly: '🦱',
+  white: '🦳',
+  bald: '🦲',
+};
+
+/** Emoji avatar by age and gender, with a skin-tone modifier and (teens and adults) a hairstyle. */
+export function avatarEmoji(
+  age: number,
+  gender: Gender,
+  tone: string,
+  dead = false,
+  hair: HairStyle = 'default',
+): string {
   if (dead) return '🪦';
-  let base: string;
-  if (age <= 2) base = '👶';
-  else if (age <= 12) base = gender === 'male' ? '👦' : gender === 'female' ? '👧' : '🧒';
-  else if (age < 65) base = gender === 'male' ? '👨' : gender === 'female' ? '👩' : '🧑';
-  else base = gender === 'male' ? '👴' : gender === 'female' ? '👵' : '🧓';
-  return base + tone;
+  if (age <= 2) return '👶' + tone;
+  if (age <= 12) return (gender === 'male' ? '👦' : gender === 'female' ? '👧' : '🧒') + tone;
+  if (age >= 65) return (gender === 'male' ? '👴' : gender === 'female' ? '👵' : '🧓') + tone;
+  if (hair === 'blond')
+    return '👱' + tone + (gender === 'male' ? ZWJ + '♂️' : gender === 'female' ? ZWJ + '♀️' : '');
+  const base = gender === 'male' ? '👨' : gender === 'female' ? '👩' : '🧑';
+  const mark = HAIR_MARK[hair];
+  return base + tone + (mark ? ZWJ + mark : '');
 }

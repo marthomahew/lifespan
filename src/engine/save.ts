@@ -100,6 +100,14 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
     const player = (raw['player'] ?? {}) as Record<string, unknown>;
     return { ...raw, player: { ...player, aspirations: player['aspirations'] ?? [] } };
   },
+  // v4: character customization (hair, a starting talent).
+  3: (raw) => {
+    const player = (raw['player'] ?? {}) as Record<string, unknown>;
+    return {
+      ...raw,
+      player: { ...player, hair: player['hair'] ?? 'default', talent: player['talent'] ?? null },
+    };
+  },
 };
 
 export class SaveError extends Error {}

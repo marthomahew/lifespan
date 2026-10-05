@@ -195,3 +195,26 @@
   font-style: italic;
   color: var(--text-2);
 }
+.talent-star {
+  color: var(--amber);
+}
+
+/* Option dialogs for activities (which skill, which look...). */
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  padding: 8px 10px;
+}
+.option-emoji {
+  font-size: 1.4em;
+}
+.option.current {
+  border-color: var(--accent);
+}

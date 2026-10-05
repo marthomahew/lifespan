@@ -20,6 +20,16 @@ export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | n
                 aria-describedby={`skill-tip-${id}`}
               >
                 {SKILL_BY_ID[id]?.emoji} {SKILL_BY_ID[id]?.label ?? id}
+                {game.player.talent === id && (
+                  <span
+                    className="talent-star"
+                    title="Your talent: it grows faster"
+                    data-testid={`talent-${id}`}
+                  >
+                    {' '}
+                    ★
+                  </span>
+                )}
                 {SKILL_BY_ID[id] && (
                   <span
                     className="tooltip"

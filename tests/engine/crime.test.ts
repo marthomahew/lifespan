@@ -215,8 +215,7 @@ describe('prison (M8.6)', () => {
   it('after release your old cellmate can find you', () => {
     const s = clone(jailed());
     s.cheats.immortal = true;
-    if (s.legal.prison) s.legal.prison.years = s.legal.prison.served + 1;
-    const out = playYears(s, 1);
+    const out = runCheat(s, 'prison.release', {}).state;
     expect(out.legal.prison).toBeNull();
     const mate = out.npcs.find((n) => n.flags.includes('former_cellmate'));
     expect(mate?.roles).toContain('acquaintance');

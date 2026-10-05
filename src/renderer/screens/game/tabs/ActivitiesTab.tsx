@@ -5,7 +5,7 @@ import { WillEditor } from './WillEditor';
 import { CrimeSection } from './CrimeSection';
 import { EmigrateSection } from './EmigrateSection';
 import { HealthSection } from './HealthSection';
-import { SKILLS, LANGUAGES } from '../../../../content/skills';
+import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
 
 const GROUP_LABEL: Record<string, string> = {
   mind_body: 'Mind and body',
@@ -25,8 +25,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
   const [q, setQ] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [will, setWill] = useState(false);
-  const [skill, setSkill] = useState(SKILLS[0]?.id ?? 'instrument');
-  const [lang, setLang] = useState('spanish');
+  const [picking, setPicking] = useState<string | null>(null);
   const all = activitiesFor(game);
   const query = q.trim().toLowerCase();
   const visible = all.filter(
@@ -39,13 +38,17 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
       setWill(true);
       return;
     }
-    const params =
-      id === 'practice_skill'
-        ? { skill }
-        : id === 'learn_language'
-          ? { language: lang }
-          : undefined;
-    setError(doAct({ type: 'activity', id, ...(params ? { params } : {}) }));
+    // Some activities ask what first (which skill, which look...).
+    if (OPTION_ACTIVITIES.includes(id)) {
+      setPicking(id);
+      return;
+    }
+    setError(doAct({ type: 'activity', id }));
+  };
+  const runWith = (params: Record<string, string>): void => {
+    if (!picking) return;
+    setError(doAct({ type: 'activity', id: picking, params }));
+    setPicking(null);
   };
   return (
     <div className="col" data-testid="activities">
@@ -94,37 +97,13 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
       ))}
       <EmigrateSection game={game} onError={setError} />
       <CrimeSection game={game} onError={setError} />
-      {visible.some((a) => a.id === 'practice_skill' || a.id === 'learn_language') && (
-        <section className="panel-section row" aria-label="Practice options">
-          <label className="small row">
-            Skill
-            <select
-              data-testid="practice-skill"
-              value={skill}
-              onChange={(e) => setSkill(e.target.value)}
-            >
-              {SKILLS.map((k) => (
-                <option key={k.id} value={k.id}>
-                  {k.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="small row">
-            Language
-            <select
-              data-testid="practice-language"
-              value={lang}
-              onChange={(e) => setLang(e.target.value)}
-            >
-              {LANGUAGES.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </section>
+      {picking && (
+        <OptionDialog
+          game={game}
+          activity={picking}
+          onRun={runWith}
+          onClose={() => setPicking(null)}
+        />
       )}
       {!visible.length && (
         <p className="muted">{game.player.age < 3 ? 'Babies mostly nap.' : 'Nothing matches.'}</p>

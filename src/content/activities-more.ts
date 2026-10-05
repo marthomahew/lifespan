@@ -1017,4 +1017,68 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
+  {
+    id: 'new_look',
+    label: 'Get a new look',
+    emoji: '💇',
+    group: 'mind_body',
+    ages: [13, 110],
+    cost: 90,
+    limitPerYear: 2,
+    description: 'A new cut, a new colour, a new you, or the same you with better hair.',
+    special: 'new_look',
+    outcomes: [
+      {
+        chance: 0.5,
+        success: true,
+        text: 'You catch your reflection in a shop window and do a double take. In a good way.',
+        effects: [
+          { stat: 'happiness', delta: 4 },
+          { stat: 'looks', delta: 2 },
+        ],
+      },
+      {
+        chance: 0.3,
+        success: true,
+        text: 'The stylist talks the whole time about her ex. The result is excellent, and so is the gossip.',
+        effects: [{ stat: 'happiness', delta: 3 }],
+      },
+      {
+        chance: 0.2,
+        text: 'It is not quite what you asked for. Three people at work say "oh!" in the same careful voice.',
+        effects: [
+          { stat: 'happiness', delta: -2 },
+          { stat: 'looks', delta: -1 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'change_name',
+    label: 'Change your name',
+    emoji: '📝',
+    group: 'admin',
+    ages: [18, 110],
+    cost: 150,
+    limitPerYear: 1,
+    description: 'A form, a fee and a signature, and you are somebody new on paper.',
+    special: 'change_name',
+    outcomes: [
+      {
+        chance: 0.5,
+        text: 'The clerk stamps it without looking up. It takes eleven minutes to become someone else.',
+        effects: [{ stat: 'happiness', delta: 3 }],
+      },
+      {
+        chance: 0.3,
+        text: 'Your bank needs four forms of identification to believe you. You get there in the end.',
+        effects: [{ stat: 'stress', delta: 3 }],
+      },
+      {
+        chance: 0.2,
+        text: 'Your gran refuses to use the new name for a year, then switches overnight as if she always had.',
+        effects: [{ stat: 'happiness', delta: 4 }],
+      },
+    ],
+  },
 ];

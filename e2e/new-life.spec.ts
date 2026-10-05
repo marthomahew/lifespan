@@ -91,3 +91,47 @@ test('custom life leaves gender and attraction to chance unless chosen', async (
   await page.getByTestId('btn-begin').click();
   await expect(page.getByTestId('game-screen')).toBeVisible();
 });
+
+test('full customization: look, family, talent, preview, and the life that follows', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await page.getByTestId('f-first').fill('Isolde');
+  await page.getByTestId('f-last').fill('Marchetti');
+  await page.getByTestId('f-gender').selectOption('female');
+  await page.getByTestId('f-tone-3').click();
+  await page.getByTestId('f-hair-red').click();
+  await page.getByTestId('f-country').selectOption('fr');
+  await page.getByTestId('f-parents').selectOption('mother');
+  await page.getByTestId('f-siblings').selectOption('2');
+  await page.getByTestId('f-talent').selectOption('instrument');
+  await page.getByTestId('f-trait-creative').click();
+  await expect(page.getByTestId('preview-name')).toHaveText('Isolde Marchetti');
+  await expect(page.getByTestId('preview-summary')).toContainText('a single mother');
+  await expect(page.getByTestId('preview-summary')).toContainText('2 siblings');
+  await expect(page.getByTestId('preview-summary')).toContainText('A gift for instrument');
+  await expect(page.getByTestId('life-preview')).toContainText('👩🏽‍🦰');
+  // A section's dice changes that section only.
+  await page.getByTestId('dice-stats').click();
+  await expect(page.getByTestId('preview-name')).toHaveText('Isolde Marchetti');
+  await page.getByTestId('f-seed').fill('8080');
+  await page.getByTestId('btn-begin').click();
+  await expect(page.getByTestId('game-screen')).toBeVisible();
+  await expect(page.getByTestId('log-line').first()).toContainText('raised by your mother');
+  await expect(page.getByTestId('talent-instrument')).toBeVisible();
+  await page.getByTestId('tab-relationships').click();
+  await expect(
+    page.locator('[data-testid^="npc-"]').filter({ hasText: /brother|sister|sibling/ }),
+  ).toHaveCount(2);
+});
+
+test('roll everything fills every section', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await page.getByTestId('btn-roll-all').click();
+  await expect(page.getByTestId('f-gender')).not.toHaveValue('');
+  await expect(page.getByTestId('f-parents')).not.toHaveValue('');
+  await page.getByTestId('btn-begin').click();
+  await expect(page.getByTestId('game-screen')).toBeVisible();
+});
