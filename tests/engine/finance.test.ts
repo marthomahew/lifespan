@@ -218,6 +218,22 @@ describe('loans (M7.4)', () => {
     expect(ctx.finish().log.some((e) => /bankruptcy/i.test(e.text))).toBe(true);
   });
 
+  it('bankruptcy counts every unsecured debt, including several debts and defaulted personal loans', () => {
+    const s = clone(adult(16));
+    s.assets.housing = 'parents';
+    const half = Math.round(debtCeiling(s, 0) * 0.6);
+    addLoan(s, 'debt', half, 0.19, 5);
+    addLoan(s, 'debt', half, 0.19, 5);
+    const personal = addLoan(s, 'personal', half, 0.09, 5);
+    personal.missed = 3;
+    const student = addLoan(s, 'student', half, 0.05, 10);
+    runFinances(new Ctx(s), { salary: 0, other: 0 });
+    expect(s.money.loans.filter((l) => l.kind === 'debt' || l.kind === 'personal')).toEqual([]);
+    // Student loans survive bankruptcy.
+    expect(s.money.loans.some((l) => l.id === student.id)).toBe(true);
+    expect(s.player.flags).toContain('bankrupt');
+  });
+
   it('debt stays bounded across a long broke life', () => {
     let s = clone(adult(12));
     s.assets.housing = 'renting';

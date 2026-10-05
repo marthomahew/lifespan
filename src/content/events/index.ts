@@ -24,6 +24,10 @@ import { CAREER_OFFICE_EVENTS } from './careers-office';
 import { CAREER_HANDS_EVENTS } from './careers-hands';
 import { CAREER_FIELD_EVENTS } from './careers-field';
 import { ROMANCE_EVENTS_2 } from './romance-2';
+import { CRIME_EVENTS_2 } from './crime-2';
+import { RELEASE_EVENTS } from './release';
+import { TRAVEL_EVENTS_2 } from './travel-2';
+import { WORLD_EVENTS_2 } from './world-2';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -32,6 +36,10 @@ export const EVENTS: EventDef[] = [
   ...CAREER_HANDS_EVENTS,
   ...CAREER_FIELD_EVENTS,
   ...ROMANCE_EVENTS_2,
+  ...CRIME_EVENTS_2,
+  ...RELEASE_EVENTS,
+  ...TRAVEL_EVENTS_2,
+  ...WORLD_EVENTS_2,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

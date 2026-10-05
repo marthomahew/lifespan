@@ -1,6 +1,6 @@
 import { ALL_STATS, type GameState } from '../types';
 import { popupView } from '../events/choose';
-import { debtCeiling } from '../systems/loans';
+import { debtCeiling, isUnsecuredDebt } from '../systems/loans';
 
 /** Paths whose type allows null (DONE §4.1 deep scan). Array indices are written as []. */
 const NULLABLE: RegExp[] = [
@@ -71,9 +71,9 @@ export function checkState(s: GameState, prevAge: number | null, logFrom = 0): s
     else if (TOKEN_RE.test(e.text)) v.push(`unresolved token in log: ${e.text}`);
   }
   // Unsecured debt ends in bankruptcy rather than compounding forever (slack for mid-year inflation).
-  const debt = s.money.loans.find((l) => l.kind === 'debt');
-  if (prevAge !== null && debt && debt.balance > 1.5 * debtCeiling(s, s.money.last?.salary ?? 0))
-    v.push(`runaway debt ${debt.balance}`);
+  const debt = s.money.loans.filter(isUnsecuredDebt).reduce((t, l) => t + l.balance, 0);
+  if (prevAge !== null && debt > 1.5 * debtCeiling(s, s.money.last?.salary ?? 0))
+    v.push(`runaway debt ${debt}`);
   const ids = new Set<number>();
   for (const n of s.npcs) {
     if (ids.has(n.id)) v.push(`duplicate npc id ${n.id}`);

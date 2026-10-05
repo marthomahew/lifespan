@@ -410,7 +410,7 @@ export const CAREER_OFFICE_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'It takes ninety minutes and comes to just over four hundred dollars. He shakes your hand with a palm that smells of copper and tells your manager you are a credit to banking.',
+            text: 'It takes ninety minutes and comes to just over {money:400}. He shakes your hand with a palm that smells of copper and tells your manager you are a credit to banking.',
             effects: [
               { performance: 6 },
               { stat: 'stress', delta: 3 },

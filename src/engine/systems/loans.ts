@@ -152,6 +152,11 @@ export function payOffLoan(s: GameState, id: number): number {
   return pay;
 }
 
+/** Overdraft debt, and personal loans three payments in default: what bankruptcy can wipe. */
+export function isUnsecuredDebt(l: Loan): boolean {
+  return l.kind === 'debt' || (l.kind === 'personal' && l.missed >= 3);
+}
+
 /** Unsecured debt past this can never realistically be repaid: a floor, or two years' pay. */
 export function debtCeiling(s: GameState, salary: number): number {
   return Math.max(money(s, 40000), Math.round(salary * 2));
@@ -165,16 +170,17 @@ export function debtCeiling(s: GameState, salary: number): number {
 export function bankruptcyCheck(ctx: Ctx, salary: number): void {
   const s = ctx.s;
   const m = s.money;
-  const debt = m.loans.find((l) => l.kind === 'debt');
-  if (!debt || debt.balance <= debtCeiling(s, salary)) return;
+  const unsecured = m.loans.filter(isUnsecuredDebt);
+  const total = unsecured.reduce((t, l) => t + l.balance, 0);
+  if (!unsecured.length || total <= debtCeiling(s, salary)) return;
   let seized = m.savings;
   m.savings = 0;
   for (const k of Object.keys(m.holdings) as InvestKey[]) {
     seized += m.holdings[k];
     m.holdings[k] = 0;
   }
-  const wiped = debt.balance - seized;
-  m.loans = m.loans.filter((l) => l !== debt);
+  const wiped = total - seized;
+  m.loans = m.loans.filter((l) => !unsecured.includes(l));
   if (wiped < 0) m.cash += -wiped;
   if (!s.player.flags.includes('bankrupt')) s.player.flags.push('bankrupt');
   addStat(s, 'stress', 20);

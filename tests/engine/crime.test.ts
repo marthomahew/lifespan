@@ -212,6 +212,18 @@ describe('prison (M8.6)', () => {
       expect(e.text).not.toMatch(/commute|office party|email/i);
   });
 
+  it('after release your old cellmate can find you', () => {
+    const s = clone(jailed());
+    s.cheats.immortal = true;
+    if (s.legal.prison) s.legal.prison.years = s.legal.prison.served + 1;
+    const out = playYears(s, 1);
+    expect(out.legal.prison).toBeNull();
+    const mate = out.npcs.find((n) => n.flags.includes('former_cellmate'));
+    expect(mate?.roles).toContain('acquaintance');
+    const knock = EVENTS.find((e) => e.id === 'rel_cellmate_knock');
+    expect(knock && eligibility({ ...out, pending: [] }, knock).ok).toBe(true);
+  });
+
   it('appeals, escapes, parole and release', () => {
     const s = jailed();
     const appeal = act(

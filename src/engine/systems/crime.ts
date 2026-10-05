@@ -236,8 +236,11 @@ export function release(ctx: Ctx, parole: boolean): void {
   if (parole) s.legal.probation = 2;
   if (!s.player.flags.includes('ex_con')) s.player.flags.push('ex_con');
   for (const n of s.npcs)
-    if (n.roles.includes('cellmate'))
+    if (n.roles.includes('cellmate')) {
       n.roles = n.roles.map((r) => (r === 'cellmate' ? 'acquaintance' : r));
+      // Outside, they're someone you used to share a cell with.
+      if (!n.flags.includes('former_cellmate')) n.flags.push('former_cellmate');
+    }
   ctx.log(
     'crime',
     parole

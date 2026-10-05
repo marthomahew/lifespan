@@ -48,7 +48,7 @@ describe('aspirations', () => {
       s = act(s, { type: 'aspiration', op: 'choose', id }).state;
     expect(s.player.aspirations).toHaveLength(4);
     const dead = clone(runCheat(s, 'deathbot', {}).state);
-    expect(obituary(dead)?.summary.some((l) => /Fulfilled 1 of 4 life goals/.test(l))).toBe(true);
+    expect(obituary(dead)?.summary.some((l) => /Fulfilled [1-4] of 4 life goals: make a life abroad/.test(l))).toBe(true);
   });
 
   it('old saves load with no aspirations', () => {
