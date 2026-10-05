@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { EVENTS } from '../../src/content/events';
+import { countChains } from '../../scripts/content-lib';
 import { CHEATS } from '../../src/engine/cheats/registry';
 
 describe('REPORT.md (M12.6, M12.7)', () => {
@@ -39,8 +40,8 @@ describe('REPORT.md (M12.6, M12.7)', () => {
     const waived = items.filter((k) => features[k]?.waived === true);
     if (waived.length === 0) expect(section('Item status')).toMatch(/none are waived/);
     else for (const k of waived) expect(section('Item status')).toContain(k);
-    expect(report).toContain(`${EVENTS.length} original events`);
-    expect(report).toContain(`| Events (in 24 chains) | ${EVENTS.length} |`);
+    expect(report).toContain(`${EVENTS.length} original events (${countChains(EVENTS)} chains)`);
+    expect(report).toContain(`| Events (in ${countChains(EVENTS)} chains) | ${EVENTS.length} |`);
     expect(report).toContain(`| Cheat commands | ${CHEATS.length} |`);
     for (const t of ['verify', 'Vitest', 'e2e', 'Coverage', 'invariant'])
       expect(section('Verification evidence')).toContain(t);

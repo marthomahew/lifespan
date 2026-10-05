@@ -514,5 +514,10 @@
     "title": "Injuries are records (SPEC §5.8): minor, major or serious from accidents, fights, sports and deployments; they heal over years or linger; physio and surgery treat them; save format v2 migrates old saves.",
     "passes": true,
     "evidence": "tests/engine/injuries.test.ts; tests/engine/cheats/health.test.ts injury.add; e2e/cheats.spec.ts injuries"
+  },
+  "S8": {
+    "title": "Career-specific events for all 14 job fields plus career-arc moments, and a second romance pack (76 events, 10 chains); bots chase a dream field so careers vary in the sims.",
+    "passes": true,
+    "evidence": "npm run content:check (383 events, 34 chains); npm run sim:coverage 98.4%; tests/content/conditions.test.ts"
   }
 }

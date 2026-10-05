@@ -35,7 +35,11 @@ function bestJob(s: GameState): string | undefined {
   const ok = FULL_TIME_JOBS.filter(
     (j) => unmetRequirements(s, j).length === 0 && !s.career.appliedThisYear.includes(j.id),
   );
-  return ok.sort((a, b) => (b.salary[0]?.[1] ?? 0) - (a.salary[0]?.[1] ?? 0))[0]?.id;
+  const ranked = ok.sort((a, b) => (b.salary[0]?.[1] ?? 0) - (a.salary[0]?.[1] ?? 0));
+  // Each life has a dream field (by seed) and takes the best job there when it can.
+  const fields = [...new Set(FULL_TIME_JOBS.map((j) => j.field))].sort();
+  const dream = fields[s.seed % fields.length];
+  return (ranked.find((j) => j.field === dream) ?? ranked[0])?.id;
 }
 
 /** Settle down: buy the cheapest listed home on a 30-year mortgage once the bank says yes. */

@@ -19,9 +19,19 @@ import { CHILD_EVENTS_2 } from './child-2';
 import { MIDDLE_AGE_EVENTS_2 } from './middle-age-2';
 import { SENIOR_EVENTS_2 } from './senior-2';
 import { PRISON_EVENTS } from './prison';
+import { CAREER_CARE_EVENTS } from './careers-care';
+import { CAREER_OFFICE_EVENTS } from './careers-office';
+import { CAREER_HANDS_EVENTS } from './careers-hands';
+import { CAREER_FIELD_EVENTS } from './careers-field';
+import { ROMANCE_EVENTS_2 } from './romance-2';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
+  ...CAREER_CARE_EVENTS,
+  ...CAREER_OFFICE_EVENTS,
+  ...CAREER_HANDS_EVENTS,
+  ...CAREER_FIELD_EVENTS,
+  ...ROMANCE_EVENTS_2,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,
