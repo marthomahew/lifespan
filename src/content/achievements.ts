@@ -300,6 +300,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Athletics skill of 90.',
     check: (s) => skill(s, 'athletics') >= 90,
   },
+  {
+    id: 'bucket_list',
+    label: 'Bucket List',
+    emoji: '🪂',
+    description: 'Ticked off five things from the bucket list.',
+    check: (s) => s.player.flags.filter((f) => f === 'bucket_item').length >= 5,
+  },
 ];
 
 export const ACHIEVEMENT_BY_ID: Record<string, AchievementDef> = Object.fromEntries(

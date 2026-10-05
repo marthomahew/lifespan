@@ -76,6 +76,9 @@ export function runSpecial(
       }
       return;
     }
+    case 'bucket_list':
+      s.player.flags.push('bucket_item');
+      return;
     case 'plastic_surgery':
       s.health.surgeryCount += 1;
       return;

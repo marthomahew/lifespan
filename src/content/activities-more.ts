@@ -969,4 +969,52 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
+  {
+    id: 'bucket_list',
+    label: 'Tick off the bucket list',
+    emoji: '🪂',
+    group: 'travel',
+    ages: [55, 110],
+    cost: 3000,
+    limitPerYear: 1,
+    description: 'The thing you always said you would do one day. Today is one day.',
+    special: 'bucket_list',
+    outcomes: [
+      {
+        chance: 0.3,
+        success: true,
+        text: 'You stand at the top of a mountain you have looked at in photographs for forty years. The view is better, and the sandwich is the best of your life.',
+        effects: [
+          { stat: 'happiness', delta: 14 },
+          { stat: 'stress', delta: -8 },
+        ],
+      },
+      {
+        chance: 0.25,
+        success: true,
+        text: 'You finally learn to swim, at a public pool, beside a class of seven-year-olds who are kind about it. By the end of the summer you can do a length.',
+        effects: [
+          { stat: 'happiness', delta: 12 },
+          { stat: 'health', delta: 3 },
+        ],
+      },
+      {
+        chance: 0.25,
+        success: true,
+        text: 'You drive the coast road you always talked about, stopping at every lighthouse. There are nineteen. You photograph all of them badly and love every one.',
+        effects: [
+          { stat: 'happiness', delta: 15 },
+          { stat: 'stress', delta: -6 },
+        ],
+      },
+      {
+        chance: 0.2,
+        text: 'The hot-air balloon is grounded by wind three days running. You drink a lot of tea in a field and decide that counts as an adventure anyway.',
+        effects: [
+          { stat: 'happiness', delta: 6 },
+          { stat: 'stress', delta: -3 },
+        ],
+      },
+    ],
+  },
 ];

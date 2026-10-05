@@ -12,6 +12,7 @@ import { netWorthRef } from './networth';
 import type { GameState } from './types';
 import { cloneState } from './util';
 import { checkAspirations } from './systems/aspirations';
+import { healthWarning } from './systems/health-warning';
 
 /** Inflation: default 2.5% a year with ±1.5 points of seeded noise, never below 0. */
 export function stepInflation(ctx: Ctx): void {
@@ -56,6 +57,7 @@ export function ageUpInPlace(ctx: Ctx): void {
   // 7. Mortality.
   ctx.phase('mortality');
   if (!s.death && rollMortality(ctx)) die(ctx, causeOfDeath(ctx));
+  healthWarning(ctx);
 
   // 8. Records and snapshot (autosave is the platform's job).
   ctx.phase('records');

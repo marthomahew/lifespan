@@ -30,6 +30,8 @@ import { TRAVEL_EVENTS_2 } from './travel-2';
 import { WORLD_EVENTS_2 } from './world-2';
 import { JOB_LEAD_EVENTS } from './job-leads';
 import { BABY_EVENTS } from './baby';
+import { HEALTH_WARNING_EVENTS } from './health-warning';
+import { LATE_LIFE_EVENTS } from './late-life';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -44,6 +46,8 @@ export const EVENTS: EventDef[] = [
   ...WORLD_EVENTS_2,
   ...JOB_LEAD_EVENTS,
   ...BABY_EVENTS,
+  ...HEALTH_WARNING_EVENTS,
+  ...LATE_LIFE_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

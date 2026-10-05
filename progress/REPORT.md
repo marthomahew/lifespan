@@ -4,7 +4,7 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 454 original events (43 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 473 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
 - **Cheats:** a full cheat menu (69 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
@@ -33,6 +33,14 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **S9 Life goals:** from 14 you choose up to three of 20 aspirations. Reaching one is celebrated and the obituary records it. Save format v3.
 - **S10 More packs:** crime, life after prison, travel and life abroad, and community/world events (51 events). Old cellmates can find you after release. Bankruptcy now covers every unsecured debt; the new persona sweep found that bug.
 - **S11 Story matches state:** moving abroad with a partner really moves you, the obituary records military service, and service counts as a career in life titles.
+
+## Late life (S16)
+
+Many lives ended abruptly ("You died at 63."), and the senior years were the thinnest part of the game.
+- **A warning before the end:** when your yearly risk of dying passes 7%, a doctor says so and names the main worry. You can take it seriously (a real health boost), write a bucket list, or carry on. This happens at most every six years. About 55% of lives get a warning, a median of five years before death.
+- **The bucket list:** an activity from 55, once a year, with an achievement for five ticks and a line in the obituary.
+- **A late-life pack (18 events):** grandchildren (lessons, babysitting, a teenager who needs a bed, their graduation), retirement (the first free Monday, a hobby that takes over, being called back as a consultant, volunteering), reunions, memoirs, an old flame's parcel, a friend's funeral, a new hip, the driving keys, downsizing, and one last adventure.
+- **Balance headroom:** fewer partners want children (45%) or marriage (25%), and the happiness baseline is lower. Married, children and happiness now sit 6–8 points under their ceilings.
 
 ## Fun pass (S12–S15)
 
@@ -140,7 +148,7 @@ What changed:
 
 ## Verification evidence
 
-- `npm run verify` passes every step in about 88 s:
+- `npm run verify` passes every step in about 97 s:
   - typecheck 5 s
   - lint 2 s
   - hygiene 0.3 s
@@ -163,20 +171,20 @@ What changed:
   | Reached 18 | 99.7% |
   | University degree | 57.3% |
   | Employed by 25 | 100% |
-  | Married by 30 | 78.3% |
+  | Married by 30 | 79.3% |
   | Children by 40 | 76.8% |
   | Ever imprisoned | 0% |
-  | Median net worth at death | $421k |
+  | Median net worth at death | $415k |
   | Mean happiness | 67.5 |
   | Most common popup share | 2.0% |
-  | Runtime | about 38 s |
+  | Runtime | about 42 s |
 
 - Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 444 of 454 events (97.8%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
   |---|---|
-  | Events (in 43 chains) | 454 |
+  | Events (in 45 chains) | 473 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |
@@ -185,7 +193,7 @@ What changed:
   | Activities | 37 |
   | Illnesses | 25 |
   | Traits / skills | 22 / 7 |
-  | Achievements / life titles | 40 / 20 |
+  | Achievements / life titles | 41 / 20 |
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |

@@ -554,5 +554,10 @@
     "title": "Fun pass, economy: housing costs follow income so entry-level lives can make ends meet (passive-life bankruptcies 2.95 to 0.18 per life); adults move out when both parents have died; a once-only prompt at 14 points to life goals; This year summary counts choices too.",
     "passes": true,
     "evidence": "tests/engine/finance.test.ts housing you can afford, the empty nest; tests/engine/aspirations.test.ts prompt; e2e/event-popup.spec.ts this year"
+  },
+  "S16": {
+    "title": "Late life, a third act: a doctor warns you when your yearly risk of dying turns serious (take it seriously, write a bucket list, or carry on), at most every six years; a bucket-list activity from 55 with an achievement and an obituary line. Plus a late-life pack (18 events, 2 chains): grandchildren, retirement, reunions, memoirs, the driving keys, downsizing, a last adventure.",
+    "passes": true,
+    "evidence": "tests/engine/late-life.test.ts"
   }
 }

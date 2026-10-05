@@ -88,6 +88,9 @@ export function obituary(s: GameState): Obituary | null {
       `Fulfilled ${done.length} of ${p.aspirations.length} life goals${names.length ? `: ${names.join(', ')}` : ''}.`,
     );
   }
+  const ticks = p.flags.filter((f) => f === 'bucket_item').length;
+  if (ticks)
+    summary.push(`Ticked ${ticks === 1 ? 'one thing' : `${ticks} things`} off the bucket list.`);
   if (p.achievements.length) summary.push(`Earned ${p.achievements.length} achievements.`);
   if (!summary.length) summary.push('Lived quietly and left the world about how they found it.');
   const survivors = s.npcs
