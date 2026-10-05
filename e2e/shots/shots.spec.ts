@@ -75,6 +75,12 @@ for (const size of SIZES) {
       await page.keyboard.press('Escape');
       await page.getByTestId('tab-assets').click();
       await shot('15-assets');
+      if (await page.getByTestId('buy-0').count()) {
+        await page.getByTestId('buy-0').click();
+        await page.getByTestId('buy-dialog').waitFor();
+        await shot('24-buy-home');
+        await page.keyboard.press('Escape');
+      }
       await page.getByTestId('btn-finances').click();
       await page.getByTestId('finances').waitFor();
       await shot('16-finances');

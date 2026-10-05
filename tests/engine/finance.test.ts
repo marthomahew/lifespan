@@ -16,6 +16,7 @@ import {
   debtCeiling,
 } from '../../src/engine/systems/loans';
 import { INVESTMENTS, runFinances } from '../../src/engine/systems/finance';
+import { mortgageQuote, mortgageRate } from '../../src/engine/systems/assets';
 import { Ctx } from '../../src/engine/ctx';
 import { Rng, seedRng } from '../../src/engine/rng';
 import { stepInflation } from '../../src/engine/age';
@@ -237,6 +238,29 @@ describe('loans (M7.4)', () => {
 });
 
 describe('homes (M7.5)', () => {
+  it('a mortgage quote previews exactly what buying will do', () => {
+    const s = clone(runCheat(adult(15), 'job.set', { job: 'lawyer' }).state);
+    s.money.cash = money(s, 200000);
+    const price = money(s, 400000);
+    const q = mortgageQuote(s, price, { kind: 'mortgage', years: 30, down: 0.2 });
+    expect(q.down).toBe(Math.round(price * 0.2));
+    expect(q.principal).toBe(price - q.down);
+    expect(q.rate).toBe(mortgageRate(s));
+    expect(q.yearly).toBe(Math.round(annuityPayment(q.principal, q.rate, 30)));
+    expect(q.problem).toBeNull();
+    // Too little cash for the deposit, or too little income for the payments.
+    s.money.cash = 0;
+    expect(mortgageQuote(s, price, { kind: 'mortgage', years: 30, down: 0.2 }).problem).toMatch(
+      /deposit/,
+    );
+    s.money.cash = money(s, 200000);
+    s.career.salary = 0;
+    expect(mortgageQuote(s, price, { kind: 'mortgage', years: 15, down: 0.05 }).problem).toMatch(
+      /income/,
+    );
+    expect(mortgageQuote(s, price, { kind: 'cash' }).problem).toMatch(/cash/);
+  });
+
   it('generates listings by type, condition, and country price level', () => {
     const us = playYears(adult(11, 'us'), 1);
     const ng = playYears(adult(11, 'ng'), 1);

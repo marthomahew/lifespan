@@ -6,7 +6,7 @@ import { addStat } from '../stats';
 import type { GameState, Home } from '../types';
 import { clampStat } from '../util';
 import { hasAdultRecord } from './careers';
-import { addLoan } from './loans';
+import { addLoan, annuityPayment } from './loans';
 import { addSkill } from './skills';
 import { withArticle } from '../text';
 
@@ -42,6 +42,40 @@ export function mortgageRate(s: GameState): number {
 
 export type Financing = { kind: 'cash' } | { kind: 'mortgage'; years: 15 | 30; down: number };
 
+export type MortgageQuote = {
+  /** Cash paid now: the deposit, or the full price. */
+  down: number;
+  principal: number;
+  rate: number;
+  yearly: number;
+  /** Why the purchase would be refused, or null. */
+  problem: string | null;
+};
+
+/** What buying a home at this price would cost now and each year (the buy dialog's preview). */
+export function mortgageQuote(s: GameState, price: number, financing: Financing): MortgageQuote {
+  if (financing.kind === 'cash')
+    return {
+      down: price,
+      principal: 0,
+      rate: 0,
+      yearly: 0,
+      problem: s.money.cash < price ? `you need ${formatMoney(s, price)} in cash` : null,
+    };
+  const down = Math.round(price * Math.min(0.9, Math.max(0.05, financing.down)));
+  const principal = price - down;
+  const rate = mortgageRate(s);
+  const yearly = Math.round(annuityPayment(principal, rate, financing.years));
+  const income = s.career.salary + (s.military?.active ? 1 : 0) + s.career.pension;
+  let problem: string | null = null;
+  if (s.money.cash < down) problem = `the deposit is ${formatMoney(s, down)}`;
+  else if (hasAdultRecord(s) && s.legal.record.some((r) => s.year - r.year < 7))
+    problem = 'the bank declines: recent criminal record';
+  else if (income * 0.5 < yearly && s.money.cash < price)
+    problem = 'the bank says your income is too low for that mortgage';
+  return { down, principal, rate, yearly, problem };
+}
+
 export function buyHome(ctx: Ctx, index: number, financing: Financing): Home {
   const s = ctx.s;
   if (s.player.age < 18) throw new EngineError('adults only');
@@ -50,25 +84,12 @@ export function buyHome(ctx: Ctx, index: number, financing: Financing): Home {
   if (!l) throw new EngineError('that listing is gone');
   let loanId: number | undefined;
   const id = s.assets.nextAssetId++;
-  if (financing.kind === 'cash') {
-    if (s.money.cash < l.price)
-      throw new EngineError(`you need ${formatMoney(s, l.price)} in cash`);
-    s.money.cash -= l.price;
-  } else {
-    const down = Math.round(l.price * Math.min(0.9, Math.max(0.05, financing.down)));
-    if (s.money.cash < down) throw new EngineError(`the deposit is ${formatMoney(s, down)}`);
-    if (hasAdultRecord(s) && s.legal.record.some((r) => s.year - r.year < 7))
-      throw new EngineError('the bank declines: recent criminal record');
-    const income = s.career.salary + (s.military?.active ? 1 : 0) + s.career.pension;
-    const rate = mortgageRate(s);
-    const yearly = Math.round(
-      ((l.price - down) * rate) / (1 - Math.pow(1 + rate, -financing.years)),
-    );
-    if (income * 0.5 < yearly && !s.cheats.forceSuccess && s.money.cash < l.price)
-      throw new EngineError('the bank says your income is too low for that mortgage');
-    s.money.cash -= down;
-    loanId = addLoan(s, 'mortgage', l.price - down, rate, financing.years, id).id;
-  }
+  const q = mortgageQuote(s, l.price, financing);
+  if (q.problem && !(s.cheats.forceSuccess && q.problem.includes('income')))
+    throw new EngineError(q.problem);
+  s.money.cash -= q.down;
+  if (financing.kind === 'mortgage')
+    loanId = addLoan(s, 'mortgage', q.principal, q.rate, financing.years, id).id;
   const home: Home = {
     id,
     type: l.type,

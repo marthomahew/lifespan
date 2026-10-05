@@ -479,5 +479,10 @@
     "title": "The fresh-eyes audit from DONE §7 is done and recorded in REPORT.md.",
     "passes": true,
     "evidence": "tests/integration/report.test.ts (audit section: SPEC table covers every section, three lives recorded); e2e/audit/three-lives.spec.ts (npx playwright test -c playwright.audit.config.ts); fixes covered by finance/crime/romance/interactions/world/text tests and e2e/playthrough.spec.ts"
+  },
+  "S1": {
+    "title": "Buy forms are modal dialogs (SPEC §6) with a live mortgage quote: term, deposit, rate, yearly and total cost.",
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts mortgage quote; e2e/assets.spec.ts flow 6 and buy dialog; e2e/a11y.spec.ts buy dialog"
   }
 }

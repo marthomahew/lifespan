@@ -32,6 +32,10 @@ for (const theme of ['light', 'dark'] as const) {
     await scan(page, 'main');
     await page.getByTestId('tab-activities').click();
     await scan(page, 'main/activities');
+    await page.getByTestId('tab-assets').click();
+    await page.getByTestId('btn-shop-vehicle').click();
+    await scan(page, 'buy dialog');
+    await page.keyboard.press('Escape');
     await page.keyboard.press('`');
     await page.getByTestId('console-input').fill('event fire child_crayon_wall on');
     await page.getByTestId('console-input').press('Enter');

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { POSSESSIONS, POSSESSION_BY_ID, VEHICLES, VEHICLE_BY_ID } from '../../../../content/assets';
+import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
+import { BuyDialog, type BuyTarget } from './BuyDialog';
 import {
   formatMoney,
   homeLabel,
-  money,
   netWorth,
   type GameState,
   type PlayerAction,
@@ -20,8 +20,7 @@ const HOUSING_LABEL: Record<string, string> = {
 
 export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
-  const [model, setModel] = useState(VEHICLES[0]?.id ?? '');
-  const [item, setItem] = useState(POSSESSIONS[0]?.id ?? '');
+  const [buying, setBuying] = useState<BuyTarget | null>(null);
   const m = game.money;
   const adult = game.player.age >= 18;
   const run = (a: PlayerAction): void => setError(doAct(a));
@@ -162,35 +161,10 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
                   </span>
                 </span>
                 <button
-                  data-testid={`buy-cash-${i}`}
-                  disabled={m.cash < l.price}
-                  onClick={() => run({ type: 'buy_home', index: i, financing: { kind: 'cash' } })}
+                  data-testid={`buy-${i}`}
+                  onClick={() => setBuying({ kind: 'home', index: i })}
                 >
-                  Cash
-                </button>
-                <button
-                  data-testid={`buy-mortgage-${i}`}
-                  onClick={() =>
-                    run({
-                      type: 'buy_home',
-                      index: i,
-                      financing: { kind: 'mortgage', years: 30, down: 0.1 },
-                    })
-                  }
-                >
-                  30-yr mortgage
-                </button>
-                <button
-                  data-testid={`buy-mortgage15-${i}`}
-                  onClick={() =>
-                    run({
-                      type: 'buy_home',
-                      index: i,
-                      financing: { kind: 'mortgage', years: 15, down: 0.2 },
-                    })
-                  }
-                >
-                  15-yr
+                  Buy…
                 </button>
               </li>
             ))}
@@ -219,31 +193,9 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
               </li>
             ))}
           </ul>
-          <div className="enroll">
-            <select
-              aria-label="Vehicle model"
-              data-testid="vehicle-model"
-              value={model}
-              onChange={(e) => setModel(e.target.value)}
-            >
-              {VEHICLES.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.label} · {formatMoney(game, money(game, v.price))}
-                </option>
-              ))}
-            </select>
-            <button
-              data-testid="btn-buy-vehicle"
-              onClick={() => run({ type: 'buy_vehicle', model, financed: false })}
-            >
-              Buy
-            </button>
-            {adult && (
-              <button onClick={() => run({ type: 'buy_vehicle', model, financed: true })}>
-                Finance
-              </button>
-            )}
-          </div>
+          <button data-testid="btn-shop-vehicle" onClick={() => setBuying({ kind: 'vehicle' })}>
+            Shop for a vehicle…
+          </button>
         </section>
       )}
       {game.player.age >= 8 && (
@@ -260,25 +212,12 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
               </li>
             ))}
           </ul>
-          <div className="enroll">
-            <select
-              aria-label="Item"
-              data-testid="item-select"
-              value={item}
-              onChange={(e) => setItem(e.target.value)}
-            >
-              {POSSESSIONS.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.label} · {formatMoney(game, money(game, p.price))}
-                </option>
-              ))}
-            </select>
-            <button data-testid="btn-buy-item" onClick={() => run({ type: 'buy_item', item })}>
-              Buy
-            </button>
-          </div>
+          <button data-testid="btn-shop-item" onClick={() => setBuying({ kind: 'item' })}>
+            Shop…
+          </button>
         </section>
       )}
+      {buying && <BuyDialog game={game} target={buying} onClose={() => setBuying(null)} />}
     </div>
   );
 }

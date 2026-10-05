@@ -74,7 +74,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | §5.14 Achievements | `achievements.ts`, `titles.ts` | `achievements.test.ts` | none |
 | §5.15 Generations | `legacy.ts`, `ContinueAsChild.tsx`, `DynastyView.tsx` | `legacy.test.ts`, e2e flow 10 | none |
 | §5.16 Saves | `save.ts`, `savefile.ts`, `platform/saveStore.ts` | `save`, `savefile` tests, e2e flow 9 | none |
-| §6 Screens and controls | `screens/**`, `app/keys.ts` | e2e `layout`, `keyboard`, `settings`, `obituary` | buy and invest are inline panels, not modals |
+| §6 Screens and controls | `screens/**`, `app/keys.ts` | e2e `layout`, `keyboard`, `settings`, `obituary`, `assets` | buy dialog added after the audit (S1) |
 | §7 Visual style | `styles/*.css`, `StatBar.tsx` | shots, e2e a11y (flow 14) | none |
 | §8 Cheats | `engine/cheats/*`, `renderer/cheats/*`, `main/menu.ts` | `cheats/*.test.ts` (one per command), e2e flow 11 | none |
 | §9 Architecture | `main/*`, `preload/*`, `scripts/dist.ts` | `security.test.ts`, `menu.test.ts`, electron smoke, packaged smoke, perf tests | none |
@@ -84,7 +84,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Known issues and limitations
 
-- Buy (homes, vehicles, items) and invest happen in inline panels in the side column, not modal forms. Job applications do use a modal. SPEC §6 lists all of them as modal forms.
 - Job perks are descriptive text only, with no mechanical effect.
 - Injuries are a counter plus a Health hit, not individual injury records.
 - NPCs' own lives are fairly simple: school, work, retirement, children, death.
@@ -188,6 +187,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | `21-timeline` | Milestone timeline |
 | `22-obituary` | Obituary |
 | `23-dynasty` | Dynasty |
+| `24-buy-home` | Buy dialog with the mortgage quote |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.
@@ -202,7 +202,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Suggested next steps
 
-- Turn buy and invest into modal forms to match SPEC §6, or update SPEC to bless the inline panels.
 - Give job perks real effects (a gym membership lifts Health, a company car saves on transport).
 - Deepen NPC lives: their own careers, moves, marriages and crises, shown as notices.
 - Draw connecting lines in the family tree.

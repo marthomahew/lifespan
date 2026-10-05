@@ -452,3 +452,31 @@
 .toasts.beside-panel {
   right: 496px;
 }
+
+/* Buy dialog: stacked fields with the quote below. */
+.buy-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.buy-form > p {
+  margin: 0;
+}
+.buy-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 500;
+}
+.buy-form label.check {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 400;
+}
+.buy-form input[type='range'] {
+  width: 100%;
+}
+.buy-form .primary {
+  align-self: stretch;
+}
