@@ -149,15 +149,16 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
               </li>
             ))}
           </ul>
-          <h4 className="section-title">For sale</h4>
+          <h4 className="section-title for-sale">For sale</h4>
           <ul className="plain" data-testid="listings-homes">
             {(game.assets.listingsYear === game.year ? game.assets.listings : []).map((l, i) => (
-              <li key={`${l.name}-${i}`} className="asset-row" data-testid={`listing-${i}`}>
+              <li key={`${l.name}-${i}`} className="listing-row" data-testid={`listing-${i}`}>
                 <span className="grow">
-                  {l.name}
-                  <span className="muted small">
-                    {' '}
-                    · {formatMoney(game, l.price)} · condition {l.condition}
+                  <span className="listing-name">
+                    {l.name.charAt(0).toUpperCase() + l.name.slice(1)}
+                  </span>
+                  <span className="muted small listing-meta">
+                    {formatMoney(game, l.price)} · condition {l.condition}
                   </span>
                 </span>
                 <button

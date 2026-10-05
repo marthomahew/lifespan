@@ -118,6 +118,8 @@ test('military life', async ({ page }) => {
   await live(page, 'military', async (a) => {
     if (a === 18) {
       await page.getByTestId('tab-occupation').click();
+      if (await page.getByTestId('enlist-open').count())
+        await page.getByTestId('enlist-open').click();
       const enlist = page.getByTestId('btn-enlist');
       if (await enlist.isEnabled()) await enlist.click();
       await popups(page);

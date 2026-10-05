@@ -284,3 +284,103 @@ select {
 .modal:focus {
   outline: none;
 }
+
+/* Occupation: one primary action per area; leaving a job looks like what it is (P2 #15, #16). */
+button.danger {
+  color: var(--red);
+}
+.enlist-details summary {
+  cursor: pointer;
+  color: var(--text-2);
+  padding: 4px 0;
+}
+.enlist-details[open] summary {
+  margin-bottom: 8px;
+}
+
+/* Homes for sale: name over price, Buy on the same row (P2 #17). */
+.listing-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.listing-name,
+.listing-meta {
+  display: block;
+}
+.listing-row button {
+  flex: none;
+}
+.section-title.for-sale {
+  margin-top: 16px;
+}
+
+/* Relationships: room under the tree button, a number by each bar (P2 #18). */
+.tree-button {
+  margin-bottom: 12px;
+}
+.rel-num {
+  width: 2em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Settings and Lives sit in the middle of the window, like the start screen (P2 #21, #22). */
+.settings,
+.lives-list {
+  margin-inline: auto;
+  width: min(720px, 100%);
+}
+.settings {
+  max-width: 560px;
+}
+.lives-empty {
+  text-align: center;
+}
+.settings-help {
+  align-self: flex-start;
+}
+
+/* Obituary: stats as tiles, heirs as rows with one clear first choice (P2 #23). */
+.obit-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 8px;
+}
+.obit-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.obit-tile .mini-bar {
+  width: 100%;
+}
+.obit-tile-label {
+  font-size: 0.82em;
+  color: var(--text-2);
+}
+.obit-networth {
+  margin: 4px 0 10px;
+}
+.heir-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+/* Dynasty columns that should never wrap (P2 #25). */
+.dynasty-table td:nth-child(n + 2) {
+  white-space: nowrap;
+}
+.dynasty-table td:last-child,
+.dynasty-table th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

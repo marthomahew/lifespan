@@ -2,6 +2,7 @@ import { formatMoney, obituary, type GameState } from '../../engine';
 import { refToLocal } from '../../engine/economy';
 import { app, go, useApp } from '../store/app';
 import { ContinueAsChild } from './ContinueAsChild';
+import { barColour } from '../components/StatBar';
 
 export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element {
   const settings = useApp((s) => s.settings);
@@ -28,22 +29,36 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
             <li key={l}>{l}</li>
           ))}
         </ul>
-        <dl className="kv obit-stats">
-          <dt>Happiness</dt>
-          <dd>{ob.stats.happiness}</dd>
-          <dt>Health</dt>
-          <dd>{ob.stats.health}</dd>
-          <dt>Smarts</dt>
-          <dd>{ob.stats.smarts}</dd>
-          <dt>Looks</dt>
-          <dd>{ob.stats.looks}</dd>
-          <dt>Net worth</dt>
-          <dd data-testid="obit-networth">{formatMoney(game, refToLocal(game, ob.netWorthRef))}</dd>
-        </dl>
+        <div className="obit-tiles" data-testid="obit-stats">
+          {(
+            [
+              ['😊', 'Happiness', ob.stats.happiness],
+              ['❤️', 'Health', ob.stats.health],
+              ['🧠', 'Smarts', ob.stats.smarts],
+              ['✨', 'Looks', ob.stats.looks],
+            ] as const
+          ).map(([icon, label, v]) => (
+            <div key={label} className="obit-tile">
+              <span className="obit-tile-label">
+                {icon} {label}
+              </span>
+              <strong>{v}</strong>
+              <span className="mini-bar">
+                <span className={`bar-fill ${barColour(v)}`} style={{ width: `${v}%` }} />
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="obit-networth">
+          Net worth at the end:{' '}
+          <strong data-testid="obit-networth">
+            {formatMoney(game, refToLocal(game, ob.netWorthRef))}
+          </strong>
+        </p>
         {ob.survivors.length > 0 && <p className="muted">Survived by {ob.survivors.join(', ')}.</p>}
         {ob.cheated && settings.cheatBadge && (
           <p className="cheat-note" data-testid="obit-cheated">
-            🃏 This life was lived with a little help from the cheat menu.
+            🎩 This life was lived with a little help from the cheat menu.
           </p>
         )}
         <ContinueAsChild game={game} />

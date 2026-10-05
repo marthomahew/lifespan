@@ -5,6 +5,14 @@ export function lowerLabel(label: string): string {
   return /^[A-Z]{2}/.test(label) ? label : label.charAt(0).toLowerCase() + label.slice(1);
 }
 
+/** A job title mid-sentence: every word lower-case except acronyms (CEO, EMT, IT). */
+export function lowerTitle(title: string): string {
+  return title
+    .split(' ')
+    .map((w) => (/^[A-Z]{2,}$/.test(w) ? w : w.toLowerCase()))
+    .join(' ');
+}
+
 /** "a" or "an" for the word that follows (by its first letter, with the usual u/eu exceptions). */
 export function article(word: string): 'a' | 'an' {
   const w = word.trim().toLowerCase();

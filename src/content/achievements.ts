@@ -57,7 +57,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   {
     id: 'doctor_of_something',
-    label: 'Doctor Of Something',
+    label: 'Doctor of Something',
     emoji: '🔬',
     description: 'Earned a doctorate, a law degree, or a medical degree.',
     check: (s) => hasDegree(s, ['doctorate', 'law', 'medicine']),
@@ -113,7 +113,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   {
     id: 'married',
-    label: 'Tied The Knot',
+    label: 'Tied the Knot',
     emoji: '💍',
     description: 'Got married.',
     check: (s) => flag(s, 'ever_married'),
@@ -127,7 +127,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   {
     id: 'big_family',
-    label: 'Head Of A Small Nation',
+    label: 'Head of a Small Nation',
     emoji: '👨‍👩‍👧‍👦',
     description: 'Raised four or more children.',
     check: (s) => kids(s) >= 4,
@@ -267,7 +267,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
   {
     id: 'sober',
-    label: 'One Day At A Time',
+    label: 'One Day at a Time',
     emoji: '🌅',
     description: 'Went to rehab and got clean.',
     check: (s) => s.vices.rehab > 0 && Object.values(s.vices.levels).every((v) => v < 15),
@@ -317,15 +317,15 @@ export const ACHIEVEMENT_BY_ID: Record<string, AchievementDef> = Object.fromEntr
 export const LIFE_TITLES: LifeTitleDef[] = [
   { title: 'Gone Too Soon', when: (s) => s.player.age < 18 },
   {
-    title: 'Lifer With Excellent Penmanship',
+    title: 'Lifer with Excellent Penmanship',
     when: (s) => s.legal.record.reduce((t, r) => t + r.sentenceYears, 0) >= 15,
   },
-  { title: 'The Getaway Driver Of Their Own Life', when: (s) => flag(s, 'fugitive') },
+  { title: 'The Getaway Driver of Their Own Life', when: (s) => flag(s, 'fugitive') },
   {
     title: 'Crime Paid, Mostly',
     when: (s) => flag(s, 'ever_crime') && !flag(s, 'ever_imprisoned') && nw(s) >= 1_000_000,
   },
-  { title: 'Famous For Being Famous, Eventually', when: (s) => s.player.stats.fame >= 70 },
+  { title: 'Famous for Being Famous, Eventually', when: (s) => s.player.stats.fame >= 70 },
   {
     title: 'One Hit, Several Misses',
     when: (s) =>
@@ -334,13 +334,13 @@ export const LIFE_TITLES: LifeTitleDef[] = [
       s.music.releases.some((r) => r.quality >= 60),
   },
   { title: 'Decorated, Twice Over', when: (s) => (s.military?.medals.length ?? 0) >= 2 },
-  { title: 'A Life In Uniform', when: (s) => (s.military?.years ?? 0) >= 12 },
+  { title: 'A Life in Uniform', when: (s) => (s.military?.years ?? 0) >= 12 },
   {
-    title: 'The Smartest Person In Most Rooms',
+    title: 'The Smartest Person in Most Rooms',
     when: (s) => hasDegree(s, ['doctorate', 'law', 'medicine']) && s.player.stats.smarts >= 80,
   },
   { title: 'Rich Beyond Reason', when: (s) => nw(s) >= 10_000_000 },
-  { title: 'Head Of A Small Nation', when: (s) => kids(s) >= 5 },
+  { title: 'Head of a Small Nation', when: (s) => kids(s) >= 5 },
   {
     title: 'Hopelessly Romantic, Repeatedly',
     when: (s) =>
@@ -348,7 +348,7 @@ export const LIFE_TITLES: LifeTitleDef[] = [
       3,
   },
   { title: 'Stubbornly Alive', when: (s) => s.player.age >= 100 },
-  { title: 'Citizen Of Somewhere Else', when: (s) => flag(s, 'emigrated') },
+  { title: 'Citizen of Somewhere Else', when: (s) => flag(s, 'emigrated') },
   { title: 'Genuinely Lovely Human', when: (s) => s.player.stats.karma >= 85 },
   { title: "Nobody's Favourite", when: (s) => s.player.stats.karma <= 15 },
   { title: 'Comfortably Off, Loudly', when: (s) => nw(s) >= 1_000_000 },
@@ -356,6 +356,6 @@ export const LIFE_TITLES: LifeTitleDef[] = [
     title: 'Gainfully Unemployed',
     when: (s) => s.player.age >= 30 && !flag(s, 'ever_employed_ft') && (s.military?.years ?? 0) < 4,
   },
-  { title: 'Married To The Job', when: (s) => s.career.yearsWorked >= 40 },
-  { title: 'Ordinary, In The Best Way', when: () => true },
+  { title: 'Married to the Job', when: (s) => s.career.yearsWorked >= 40 },
+  { title: 'Ordinary, in the Best Way', when: () => true },
 ];

@@ -88,7 +88,7 @@ export const HEALTH_CHEATS: CheatDef[] = [
       if (!ctx.s.legal.prison) return 'You are not in prison';
       // The real release: housing, the ex-con record, cellmates who might look you up.
       release(ctx, false);
-      ctx.log('crime', '🃏 The gates open. Nobody asks questions.');
+      ctx.log('crime', '🎩 The gates open. Nobody asks questions.');
       return 'Released';
     },
   },

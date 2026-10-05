@@ -52,12 +52,12 @@ describe('achievements and life titles (M10.3)', () => {
     const star = clone(kid);
     star.player.age = 60;
     star.player.stats.fame = 85;
-    expect(lifeTitle(star)).toBe('Famous For Being Famous, Eventually');
+    expect(lifeTitle(star)).toBe('Famous for Being Famous, Eventually');
     const plain = clone(kid);
     plain.player.age = 70;
     plain.player.flags.push('ever_employed_ft');
     plain.player.stats.karma = 50;
-    expect(lifeTitle(plain)).toBe('Ordinary, In The Best Way');
+    expect(lifeTitle(plain)).toBe('Ordinary, in the Best Way');
     // A career in the forces is a career, not unemployment.
     const vet = clone(kid);
     vet.player.age = 65;
@@ -76,7 +76,7 @@ describe('achievements and life titles (M10.3)', () => {
       active: false,
       years: 20,
     };
-    expect(lifeTitle(vet)).toBe('A Life In Uniform');
+    expect(lifeTitle(vet)).toBe('A Life in Uniform');
     vet.military.years = 6;
     expect(lifeTitle(vet)).not.toBe('Gainfully Unemployed');
     const titles = new Set<string>();

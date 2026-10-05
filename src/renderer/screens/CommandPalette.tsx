@@ -22,6 +22,7 @@ export function CommandPalette({ game }: { game: GameState }): React.JSX.Element
       testId="palette"
       onClose={() => app.set({ overlay: null })}
       hideTitle
+      hideClose
     >
       <input
         className="palette-input"

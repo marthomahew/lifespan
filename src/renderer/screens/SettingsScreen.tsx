@@ -88,16 +88,15 @@ export function SettingsScreen(): React.JSX.Element {
           />
           <span>Reduce motion</span>
         </label>
-      </form>
-      <p className="muted pad small">
         <button
-          className="ghost small"
+          type="button"
+          className="settings-help"
           data-testid="btn-open-help"
           onClick={() => app.set({ overlay: 'help' })}
         >
-          Keyboard shortcuts
+          ⌨️ Keyboard shortcuts
         </button>
-      </p>
+      </form>
     </div>
   );
 }

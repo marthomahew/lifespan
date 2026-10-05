@@ -1,5 +1,6 @@
 import { deserialize, SaveError } from './save';
 import type { GameState } from './types';
+import { JOB_BY_ID } from '../content/jobs';
 
 export const SAVE_FORMAT = 'lifespan-save';
 
@@ -13,6 +14,9 @@ export type SaveSummary = {
   cheated: boolean;
   generation: number;
   savedAt: number;
+  /** For the Lives list; absent in older saves. */
+  job?: string;
+  place?: string;
 };
 
 export type SaveFile = { format: typeof SAVE_FORMAT; summary: SaveSummary; state: GameState };
@@ -28,6 +32,12 @@ export function summarize(s: GameState, name: string, savedAt: number): SaveSumm
     cheated: s.cheats.used,
     generation: s.generation,
     savedAt,
+    job: s.career.jobId
+      ? (JOB_BY_ID[s.career.jobId]?.titles[s.career.level] ?? '')
+      : s.career.retired
+        ? 'Retired'
+        : '',
+    place: s.player.city,
   };
 }
 

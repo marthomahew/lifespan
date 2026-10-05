@@ -14,6 +14,8 @@ type Props = {
   /** Nearly the whole window (the family tree). */
   full?: boolean;
   hideTitle?: boolean;
+  /** Esc still closes it; no visible ✕ (the command palette). */
+  hideClose?: boolean;
 };
 
 /** Accessible modal dialog. Esc closes it when it has an onClose. */
@@ -25,6 +27,7 @@ export function Modal({
   wide,
   full,
   hideTitle,
+  hideClose,
 }: Props): React.JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
   const closeRef = useRef(onClose);
@@ -89,7 +92,7 @@ export function Modal({
       >
         <div className="modal-head">
           <h2 className={hideTitle ? 'sr-only' : ''}>{title}</h2>
-          {onClose && (
+          {onClose && !hideClose && (
             <button
               className="ghost close"
               aria-label="Close"

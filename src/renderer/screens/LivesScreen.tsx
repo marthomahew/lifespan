@@ -75,7 +75,11 @@ export function LivesScreen(): React.JSX.Element {
         </button>
       </div>
       {rows === null && <p className="muted pad">Loading…</p>}
-      {rows && rows.length === 0 && <p className="muted pad">No lives yet. Start one.</p>}
+      {rows && rows.length === 0 && (
+        <p className="muted pad lives-empty">
+          No lives yet. Every story starts with a first one: press New life.
+        </p>
+      )}
       <ul className="lives-list">
         {rows?.map((r) => (
           <li key={r.id} className="card life-row" data-testid={`life-${r.id}`}>
@@ -104,14 +108,22 @@ export function LivesScreen(): React.JSX.Element {
                   <div className="life-name" data-testid="life-name">
                     {r.summary.dead ? '🪦' : '🌱'} {r.summary.name}
                     {r.summary.cheated && settings.cheatBadge && (
-                      <span className="badge cheat small">🃏</span>
+                      <span className="badge cheat small">🎩</span>
                     )}
                   </div>
                   <div className="muted small">
-                    {r.summary.first} {r.summary.last},{' '}
-                    {r.summary.dead ? `died at ${r.summary.age}` : `age ${r.summary.age}`} ·{' '}
-                    {r.summary.year}
-                    {r.summary.generation > 1 ? ` · generation ${r.summary.generation}` : ''}
+                    {[
+                      r.summary.name !== `${r.summary.first} ${r.summary.last}`
+                        ? `${r.summary.first} ${r.summary.last}`
+                        : '',
+                      r.summary.dead ? `died at ${r.summary.age}` : `age ${r.summary.age}`,
+                      r.summary.job ?? '',
+                      r.summary.place ?? '',
+                      String(r.summary.year),
+                      r.summary.generation > 1 ? `generation ${r.summary.generation}` : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </div>
                 </>
               )}

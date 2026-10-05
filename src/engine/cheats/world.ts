@@ -46,7 +46,7 @@ export function shiftAge(ctx: Ctx, target: number): void {
   }
   for (const c of s.chains) c.dueYear += d;
   catchUpSystems(ctx, from, target);
-  ctx.log('system', `🃏 Time jumps to age ${target}.`);
+  ctx.log('system', `🎩 Time jumps to age ${target}.`);
 }
 
 const toggle = (

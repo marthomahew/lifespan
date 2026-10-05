@@ -143,11 +143,16 @@ function HomeForm({ game, index, onBuy }: FormProps & { index: number }): React.
         </tbody>
       </table>
       {q.problem && (
-        <p className="muted small" data-testid="buy-problem">
+        <p className="error small" role="alert" data-testid="buy-problem">
           {q.problem.charAt(0).toUpperCase() + q.problem.slice(1)}.
         </p>
       )}
-      <button className="primary" type="submit" data-testid="buy-confirm">
+      <button
+        className="primary"
+        type="submit"
+        data-testid="buy-confirm"
+        disabled={q.problem !== null && !(game.cheats.forceSuccess && /income/.test(q.problem))}
+      >
         Buy it
       </button>
     </form>

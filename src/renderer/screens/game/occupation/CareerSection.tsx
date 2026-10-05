@@ -58,7 +58,7 @@ export function CareerSection({
             <button data-testid="btn-ask-promotion" onClick={() => act('ask_promotion')}>
               Ask for a promotion
             </button>
-            <button data-testid="btn-quit" onClick={() => act('quit')}>
+            <button className="danger" data-testid="btn-quit" onClick={() => act('quit')}>
               Quit
             </button>
             {age >= 50 && (
@@ -80,7 +80,6 @@ export function CareerSection({
       )}
       <div className="btn-row">
         <button
-          className="primary"
           data-testid="btn-job-listings"
           onClick={() => setListings(true)}
           disabled={!!game.legal.prison}

@@ -45,7 +45,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         )}
         {game.cheats.used && settings.cheatBadge && (
           <span className="badge cheat" data-testid="cheat-badge" title="This life has used cheats">
-            🃏 Cheated
+            🎩 Cheated
           </span>
         )}
       </div>

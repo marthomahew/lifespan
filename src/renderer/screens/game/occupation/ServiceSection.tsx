@@ -46,54 +46,57 @@ export function MilitarySection({
               Veteran of the {m.branch} · {m.discharge} discharge
             </p>
           )}
-          <form
-            className="enroll"
-            data-testid="enlist-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onError(doAct({ type: 'enlist', branch, specialty: spec, officer }));
-            }}
-          >
-            <select
-              aria-label="Branch"
-              data-testid="enlist-branch"
-              value={branch}
-              onChange={(e) => setBranch(e.target.value)}
+          <details className="enlist-details" data-testid="enlist-details">
+            <summary data-testid="enlist-open">Join the military…</summary>
+            <form
+              className="enroll"
+              data-testid="enlist-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onError(doAct({ type: 'enlist', branch, specialty: spec, officer }));
+              }}
             >
-              {BRANCHES.map((b) => (
-                <option key={b}>{b}</option>
-              ))}
-            </select>
-            <select
-              aria-label="Specialty"
-              data-testid="enlist-specialty"
-              value={spec}
-              onChange={(e) => setSpec(e.target.value)}
-            >
-              {SPECIALTIES.map((x) => (
-                <option key={x.id} value={x.id}>
-                  {x.label}
-                </option>
-              ))}
-            </select>
-            <label className="row small">
-              <input
-                type="checkbox"
-                checked={officer}
-                onChange={(e) => setOfficer(e.target.checked)}
-              />{' '}
-              Officer
-            </label>
-            <button
-              type="submit"
-              data-testid="btn-enlist"
-              disabled={reason !== null}
-              title={reason ?? undefined}
-            >
-              Enlist
-            </button>
-            {reason && <span className="muted small enroll-note">{reason}</span>}
-          </form>
+              <select
+                aria-label="Branch"
+                data-testid="enlist-branch"
+                value={branch}
+                onChange={(e) => setBranch(e.target.value)}
+              >
+                {BRANCHES.map((b) => (
+                  <option key={b}>{b}</option>
+                ))}
+              </select>
+              <select
+                aria-label="Specialty"
+                data-testid="enlist-specialty"
+                value={spec}
+                onChange={(e) => setSpec(e.target.value)}
+              >
+                {SPECIALTIES.map((x) => (
+                  <option key={x.id} value={x.id}>
+                    {x.label}
+                  </option>
+                ))}
+              </select>
+              <label className="row small">
+                <input
+                  type="checkbox"
+                  checked={officer}
+                  onChange={(e) => setOfficer(e.target.checked)}
+                />{' '}
+                Officer
+              </label>
+              <button
+                type="submit"
+                data-testid="btn-enlist"
+                disabled={reason !== null}
+                title={reason ?? undefined}
+              >
+                Enlist
+              </button>
+              {reason && <span className="muted small enroll-note">{reason}</span>}
+            </form>
+          </details>
         </>
       )}
     </section>

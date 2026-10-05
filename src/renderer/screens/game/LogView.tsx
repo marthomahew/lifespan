@@ -21,6 +21,13 @@ export function groupByAge(log: LogEntry[]): Group[] {
   return out;
 }
 
+// A line that starts with its own emoji uses it as the icon, instead of showing two.
+const LEAD =
+  /^(\p{Extended_Pictographic}[\u{FE0F}\u{200D}\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}]*)\s+/u;
+function leadEmoji(text: string): string | null {
+  return LEAD.exec(text)?.[1] ?? null;
+}
+
 /** The life log: grouped by age with sticky headers, newest at the bottom, auto-scrolling. */
 export function LogView({ game }: { game: GameState }): React.JSX.Element {
   const [query, setQuery] = useState('');
@@ -100,7 +107,7 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
                 data-testid="log-line"
               >
                 <span className="log-emoji" aria-hidden="true">
-                  {EXTRA_EMOJI[e.cat] ?? categoryEmoji(e.cat)}
+                  {leadEmoji(e.text) ?? EXTRA_EMOJI[e.cat] ?? categoryEmoji(e.cat)}
                 </span>
                 <span className="log-body">
                   {e.prompt && (
@@ -109,7 +116,7 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
                     </span>
                   )}
                   {e.chose && <span className="log-chose">→ {e.chose}: </span>}
-                  {e.text}
+                  {leadEmoji(e.text) ? e.text.replace(LEAD, '') : e.text}
                 </span>
               </p>
             ))}

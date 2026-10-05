@@ -37,7 +37,11 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
   const groups = groupNpcs(game);
   return (
     <div className="col" data-testid="relationships">
-      <button data-testid="btn-family-tree" onClick={() => app.set({ overlay: 'tree' })}>
+      <button
+        className="tree-button"
+        data-testid="btn-family-tree"
+        onClick={() => app.set({ overlay: 'tree' })}
+      >
         🌳 Family tree
       </button>
       {groups.map((g) => (
@@ -60,16 +64,24 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
                       {n.alive ? `age ${n.age}` : `died ${n.deathYear ?? ''}`}
                     </span>
                   </span>
-                  {n.alive && (
-                    <span
-                      className="mini-bar"
-                      aria-label={`Relationship ${n.rel}`}
-                      data-testid={`npc-${n.id}-rel`}
-                    >
+                  {n.alive ? (
+                    <>
                       <span
-                        className={`bar-fill ${barColour(n.rel)}`}
-                        style={{ width: `${n.rel}%` }}
-                      />
+                        className="mini-bar"
+                        aria-label={`Relationship ${n.rel}`}
+                        title={`Relationship ${n.rel}/100`}
+                        data-testid={`npc-${n.id}-rel`}
+                      >
+                        <span
+                          className={`bar-fill ${barColour(n.rel)}`}
+                          style={{ width: `${n.rel}%` }}
+                        />
+                      </span>
+                      <span className="rel-num muted small">{n.rel}</span>
+                    </>
+                  ) : (
+                    <span className="rel-num muted" aria-label="Died">
+                      †
                     </span>
                   )}
                 </button>

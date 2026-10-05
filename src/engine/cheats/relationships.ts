@@ -192,7 +192,7 @@ export const RELATIONSHIP_CHEATS: CheatDef[] = [
       const cur = partnerOf(ctx.s);
       if (cur && cur.id !== n.id) return `You're with ${cur.first}`;
       marry(ctx, n, false);
-      ctx.log('romance', `🃏 You and ${n.first} are married. Nobody remembers the ceremony.`, true);
+      ctx.log('romance', `🎩 You and ${n.first} are married. Nobody remembers the ceremony.`, true);
       return `Married ${n.first}`;
     },
   },
@@ -220,7 +220,7 @@ export const RELATIONSHIP_CHEATS: CheatDef[] = [
     run: (ctx) => {
       if (ctx.s.player.age < 18) return 'Adults only';
       const kid = addChild(ctx, partnerOf(ctx.s), false);
-      ctx.log('family', `🃏 ${kid.first} arrives, ahead of schedule by about nine months.`, true);
+      ctx.log('family', `🎩 ${kid.first} arrives, ahead of schedule by about nine months.`, true);
       return `Welcome, ${kid.first}`;
     },
   },

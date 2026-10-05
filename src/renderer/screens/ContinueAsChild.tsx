@@ -9,8 +9,8 @@ export function ContinueAsChild({ game }: { game: GameState }): React.JSX.Elemen
     <section className="heirs" data-testid="heirs">
       <h3 className="section-title">Continue as a child</h3>
       <ul className="plain">
-        {heirs.map((h) => (
-          <li key={h.id} className="asset-row">
+        {heirs.map((h, i) => (
+          <li key={h.id} className="heir-row">
             <span className="grow">
               {h.name}, {h.age}
               <span className="muted small">
@@ -19,7 +19,7 @@ export function ContinueAsChild({ game }: { game: GameState }): React.JSX.Elemen
               </span>
             </span>
             <button
-              className="primary"
+              className={i === 0 ? 'primary' : ''}
               data-testid={`heir-${h.id}`}
               onClick={() => continueAs(h.id)}
             >

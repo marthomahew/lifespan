@@ -3,7 +3,7 @@ import { netWorthRef } from './networth';
 import { lifeTitle } from './titles';
 import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
-import { withArticle } from './text';
+import { article, lowerTitle } from './text';
 import { ASPIRATION_BY_ID } from '../content/aspirations';
 import { GRAD_BY_ID, MAJOR_BY_ID } from '../content/education';
 
@@ -51,7 +51,7 @@ export function obituary(s: GameState): Obituary | null {
   const job = s.career.history.at(-1);
   if (job)
     summary.push(
-      `Worked as ${withArticle(job.title)}${s.career.history.length > 1 ? ` among ${s.career.history.length} jobs` : ''}.`,
+      `Worked as ${article(lowerTitle(job.title))} ${lowerTitle(job.title)}${s.career.history.length > 1 ? `, the last of ${s.career.history.length} jobs` : ''}.`,
     );
   const deg = s.education.degrees.filter((d) => d.level !== 'high_school');
   if (deg.length)

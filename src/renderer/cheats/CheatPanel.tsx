@@ -32,7 +32,7 @@ export function CheatPanel({ game }: { game: GameState }): React.JSX.Element {
       role="complementary"
     >
       <div className="cheat-head">
-        <h2>🃏 Cheats</h2>
+        <h2>🎩 Cheats</h2>
         <button
           className="ghost"
           aria-label="Close cheats"

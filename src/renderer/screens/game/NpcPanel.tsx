@@ -23,6 +23,7 @@ export function NpcPanel({
   const [size, setSize] = useState<'small' | 'medium' | 'large'>('small');
   const [prenup, setPrenup] = useState(false);
   const [gifting, setGifting] = useState(false);
+  const [openedAt] = useState(game.log.length);
   if (!n) return null;
   const close = (): void => app.set({ npcId: null });
   const views = interactionsFor(game, n);
@@ -46,7 +47,8 @@ export function NpcPanel({
     setWedding(false);
     setGifting(false);
   };
-  const lastLog = game.log.at(-1);
+  // Only what happened while this panel was open, not whatever the log said before.
+  const lastLog = game.log.length > openedAt ? game.log.at(-1) : undefined;
   return (
     <Modal title={`${n.first} ${n.last}`} testId="npc-panel" onClose={close} wide>
       <div className="npc-panel">

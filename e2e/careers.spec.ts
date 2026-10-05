@@ -45,6 +45,7 @@ test('military and music from the Occupation tab', async ({ page }) => {
   await page.getByTestId('tab-occupation').click();
   await page.getByTestId('music-busk').click();
   await expect(page.getByTestId('music-section')).toContainText('Busker');
+  await page.getByTestId('enlist-open').click();
   await page.getByTestId('enlist-branch').selectOption('Navy');
   await page.getByTestId('enlist-specialty').selectOption('medical');
   await page.getByTestId('btn-enlist').click();
