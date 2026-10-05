@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { oddsBy } from './conditions';
+import { lacksFlag, oddsBy } from './conditions';
 
 /** Childhood, second pack: ages 0–12, mostly family scenes. */
 export const CHILD_EVENTS_2: EventDef[] = [
@@ -8,6 +8,8 @@ export const CHILD_EVENTS_2: EventDef[] = [
     kind: 'choice',
     category: 'family',
     ages: [3, 7],
+    // One imaginary friend per childhood (see baby_imaginary_pony).
+    when: lacksFlag('imaginary_biscuit'),
     weight: 8,
     once: true,
     text: 'You have a new best friend called Captain Gribble. He is invisible, seven feet tall, and insists on his own chair at dinner. {mother.first} has started laying him a plate.',

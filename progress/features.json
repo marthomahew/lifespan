@@ -544,5 +544,10 @@
     "title": "Fun pass, choices: who you are tilts each popup (traits, skills and the relevant stat move the odds of the success outcome, capped at 25 points) and the result card says why; noise cut (minor illnesses half as often and recover quietly, repeat illnesses and notices are not told the same way twice, varied report cards with trends, bankruptcy wording); job leads and a modest unemployment benefit for out-of-work adults; more decision years; a Last year summary under Age Up.",
     "passes": true,
     "evidence": "tests/engine/skill-check.test.ts; tests/engine/repetition.test.ts; tests/engine/report-card.test.ts; tests/engine/careers.test.ts out of work; tests/integration/choice-result.test.ts; e2e/event-popup.spec.ts last year"
+  },
+  "S14": {
+    "title": "Fun pass, first impression: a baby and toddler pack (16 events and a chain) so ages 0-4 offer decisions from the first Age Up; one imaginary friend per childhood.",
+    "passes": true,
+    "evidence": "npm run content:check (454 events); npm run sim:coverage; tests/integration/report.test.ts counts"
   }
 }

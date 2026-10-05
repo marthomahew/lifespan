@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { answerPopup, headerAge } from './helpers';
+import { answerPopup, clearPopups, headerAge } from './helpers';
 
 test('flow 1: new random life, age to 5 with the button and Space', async ({ page }) => {
   await page.goto('/');
@@ -74,6 +74,7 @@ test('achievements: a toast when earned and an Achievements screen', async ({ pa
   await page.getByTestId('btn-random-life').click();
   await page.getByTestId('age-up').click();
   await expect(page.getByTestId('toast').filter({ hasText: 'First Words' })).toBeVisible();
+  await clearPopups(page);
   await page.getByTestId('btn-achievements').click();
   await expect(page.getByTestId('achievements')).toBeVisible();
   await expect(page.getByTestId('ach-first_words')).toHaveAttribute('data-earned', 'true');
