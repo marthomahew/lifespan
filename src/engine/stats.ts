@@ -110,7 +110,7 @@ export function driftStats(ctx: Ctx, c: Circumstances): void {
   st.stress = clampStat(pull(st.stress, sTarget, 0.3) + noise(3));
 
   // Happiness.
-  let hapTarget = 55 + (c.closeRel - 50) * 0.3 - (st.stress - 30) * 0.35 + c.lifestyle;
+  let hapTarget = 52 + (c.closeRel - 50) * 0.3 - (st.stress - 30) * 0.35 + c.lifestyle;
   hapTarget += (st.health - 60) * 0.15 + traitDrift(s, 'happiness') * 4;
   if (c.inPrison) hapTarget -= 20;
   st.happiness = clampStat(pull(st.happiness, hapTarget, 0.3) + noise(4));

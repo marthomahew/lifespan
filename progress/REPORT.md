@@ -163,11 +163,11 @@ What changed:
   | Reached 18 | 99.7% |
   | University degree | 57.3% |
   | Employed by 25 | 100% |
-  | Married by 30 | 80.9% |
-  | Children by 40 | 80.1% |
+  | Married by 30 | 78.3% |
+  | Children by 40 | 76.8% |
   | Ever imprisoned | 0% |
-  | Median net worth at death | $412k |
-  | Mean happiness | 70.4 |
+  | Median net worth at death | $421k |
+  | Mean happiness | 67.5 |
   | Most common popup share | 2.0% |
   | Runtime | about 38 s |
 

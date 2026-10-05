@@ -17,8 +17,8 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
       if (npc && npc.alive && npc.age >= 18 && fitsAttraction(p.attraction, npc.gender)) {
         if (!npc.roles.includes('partner')) npc.roles.push('partner');
         npc.romance = { stage: 'dating', since: s.year, prenup: false };
-        if (ctx.rng.chance(0.4)) npc.flags.push('no_kids');
-        if (ctx.rng.chance(0.2)) npc.flags.push('no_marriage');
+        if (ctx.rng.chance(0.45)) npc.flags.push('no_kids');
+        if (ctx.rng.chance(0.25)) npc.flags.push('no_marriage');
         remember(s, npc, 'how it all started', 5);
         ctx.log('romance', `You start seeing ${npc.first} ${npc.last}.`, true);
         return;
@@ -32,8 +32,8 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
       });
       n.romance = { stage: 'dating', since: s.year, prenup: false };
       // Not everyone wants children.
-      if (ctx.rng.chance(0.4)) n.flags.push('no_kids');
-      if (ctx.rng.chance(0.2)) n.flags.push('no_marriage');
+      if (ctx.rng.chance(0.45)) n.flags.push('no_kids');
+      if (ctx.rng.chance(0.25)) n.flags.push('no_marriage');
       remember(s, n, 'how you met', 5);
       ctx.log('romance', `You start seeing ${n.first} ${n.last}.`, true);
       return;
