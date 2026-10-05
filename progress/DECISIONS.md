@@ -28,3 +28,5 @@ One line each: `- [HH:MM] <decision>. Why: <reason>. Alternatives: <what else yo
 - 2026-10-04 Audit: events can't bind cut-off NPCs or children lost in custody unless they ask for flag cut_off (SPEC §4.3 "absent NPCs").
 - 2026-10-04 Audit: `meet` with a bound NPC turns that person (e.g. a coworker who fits the player's attraction) into a partner; work_coworker_spark covers SPEC §5.1 "meet people through work".
 - 2026-10-04 Audit: gifts are a small present, an amount of money, or a possession; more generous gifts add up to +10 points of odds.
+- 2026-10-05 Bots: careerist and family personas buy the cheapest home on a 30-year, 20%-down mortgage when the bank says yes; chaos keeps one vice habit (by seed). Default persona unchanged (DONE §4). Why: no bot ever bought a home, so mortgages/upkeep/home events were never simulated.
+- 2026-10-05 Hires from age 35 also meet a junior colleague (22–30). Why: every colleague was within ~10 years of the player, so mid-career 'young colleague' content could never fire.

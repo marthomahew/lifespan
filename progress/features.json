@@ -499,5 +499,10 @@
     "title": "The family tree draws lines from each child to its parents, orders generations so couples sit together over their children, highlights a person's links on hover, and centres on you.",
     "passes": true,
     "evidence": "tests/engine/family-tree.test.ts; e2e/relationships.spec.ts flow 13 lines and hover"
+  },
+  "S5": {
+    "title": "Every event can fire: bots buy homes and keep vice habits, mid-career workplaces have young colleagues; every persona passes the DONE §4.1 invariants inside verify.",
+    "passes": true,
+    "evidence": "tests/integration/persona-invariants.test.ts; npm run sim:coverage (307/307)"
   }
 }

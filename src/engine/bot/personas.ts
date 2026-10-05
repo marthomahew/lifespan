@@ -16,6 +16,7 @@ import { emigrateReason } from '../systems/emigration';
 import { musicReason, type MusicActionId } from '../systems/music';
 import { treatmentsFor } from '../systems/health';
 import { countryOf } from '../economy';
+import { mortgageQuote } from '../systems/assets';
 import type { GameState } from '../types';
 
 type TryAct = (s: GameState, a: Parameters<typeof act>[1]) => GameState;
@@ -35,6 +36,21 @@ function bestJob(s: GameState): string | undefined {
     (j) => unmetRequirements(s, j).length === 0 && !s.career.appliedThisYear.includes(j.id),
   );
   return ok.sort((a, b) => (b.salary[0]?.[1] ?? 0) - (a.salary[0]?.[1] ?? 0))[0]?.id;
+}
+
+/** Settle down: buy the cheapest listed home on a 30-year mortgage once the bank says yes. */
+function buyAHome(s: GameState, tryAct: TryAct): GameState {
+  if (s.assets.homes.length || s.player.age < 27 || !s.career.jobId) return s;
+  if (s.assets.listingsYear !== s.year || s.legal.prison) return s;
+  let best = -1;
+  s.assets.listings.forEach((l, i) => {
+    if (best < 0 || l.price < (s.assets.listings[best]?.price ?? Infinity)) best = i;
+  });
+  const l = s.assets.listings[best];
+  if (!l) return s;
+  const financing = { kind: 'mortgage', years: 30, down: 0.2 } as const;
+  if (mortgageQuote(s, l.price, financing).problem) return s;
+  return tryAct(s, { type: 'buy_home', index: best, financing });
 }
 
 function treatEverything(s: GameState, tryAct: TryAct): GameState {
@@ -111,6 +127,7 @@ export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
       },
     });
   if (p.age >= 16 && rng.chance(0.3)) cur = tryAct(cur, { type: 'career', id: 'freelance' });
+  cur = buyAHome(cur, tryAct);
   return treatEverything(cur, tryAct);
 }
 
@@ -156,6 +173,7 @@ export function family(s: GameState, rng: Rng, tryAct: TryAct): GameState {
     const job = bestJob(cur);
     if (job) cur = tryAct(cur, { type: 'apply_job', jobId: job });
   }
+  cur = buyAHome(cur, tryAct);
   return treatEverything(cur, tryAct);
 }
 
@@ -207,6 +225,7 @@ export function musician(s: GameState, rng: Rng, tryAct: TryAct): GameState {
     const job = bestJob(cur);
     if (job) cur = tryAct(cur, { type: 'apply_job', jobId: job });
   }
+  cur = buyAHome(cur, tryAct);
   return treatEverything(cur, tryAct);
 }
 
@@ -226,6 +245,9 @@ export function emigrant(s: GameState, rng: Rng, tryAct: TryAct): GameState {
 
 export function chaos(s: GameState, rng: Rng, tryAct: TryAct): GameState {
   let cur = s;
+  // Chaos has habits: most years it leans on one of drink, cigarettes, or the casino.
+  const habit = (['drink', 'smoke', 'casino'] as const)[cur.seed % 3] ?? 'drink';
+  if (rng.chance(0.8)) cur = doActivity(cur, habit, tryAct);
   for (let i = 0; i < 4; i++) {
     const roll = rng.int(0, 9);
     if (roll <= 3) {

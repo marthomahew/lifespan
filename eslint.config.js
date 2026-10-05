@@ -42,6 +42,7 @@ export default tseslint.config(
   {
     ignores: [
       'node_modules/**',
+      '.scratch/**',
       'out/**',
       'dist/**',
       'dist-web/**',

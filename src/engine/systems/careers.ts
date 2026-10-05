@@ -182,6 +182,15 @@ export function hire(ctx: Ctx, jobId: string): void {
     });
     cw.job = job.titles[0] ?? null;
   }
+  // Mid-career, the office also has someone just starting out.
+  if (s.player.age >= 35) {
+    const junior = addNpc(ctx, {
+      role: 'coworker',
+      age: ctx.rng.int(22, 30),
+      rel: ctx.rng.int(40, 65),
+    });
+    junior.job = job.titles[0] ?? null;
+  }
   ctx.log('work', `You're hired as ${job.titles[0]} at ${formatMoney(s, c.salary)} a year.`, true);
 }
 
