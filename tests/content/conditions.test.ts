@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { newLife, runCheat } from '../../src/engine';
-import { inField, isJob, jobLevelAtLeast } from '../../src/content/events/conditions';
+import {
+  exCon,
+  hasRecord,
+  inField,
+  isJob,
+  jobLevelAtLeast,
+  livesAbroad,
+} from '../../src/content/events/conditions';
 
 describe('career conditions for events', () => {
   it('match the current job, its field, and its level', () => {
@@ -15,5 +22,35 @@ describe('career conditions for events', () => {
     expect(isJob('doctor')(nurse)).toBe(false);
     expect(jobLevelAtLeast(2)(nurse)).toBe(true);
     expect(jobLevelAtLeast(3)(nurse)).toBe(false);
+  });
+
+  it('know when you live abroad, have a record, or have served time', () => {
+    const s = runCheat(newLife({ country: 'us', birthYear: 1990 }, 4), 'age.set', {
+      age: 30,
+    }).state;
+    expect(livesAbroad(s)).toBe(false);
+    expect(livesAbroad({ ...s, player: { ...s.player, country: 'ca' } })).toBe(true);
+    expect(hasRecord(s)).toBe(false);
+    const rec = {
+      ...s,
+      legal: {
+        ...s.legal,
+        record: [
+          {
+            crimeId: 'burglary',
+            year: s.year,
+            age: 30,
+            verdict: 'convicted' as const,
+            sentenceYears: 2,
+            juvenile: false,
+          },
+        ],
+      },
+    };
+    expect(hasRecord(rec)).toBe(true);
+    expect(exCon(s)).toBe(false);
+    expect(exCon({ ...s, player: { ...s.player, flags: [...s.player.flags, 'ex_con'] } })).toBe(
+      true,
+    );
   });
 });

@@ -57,6 +57,16 @@ export const hasChildren = (s: GameState): boolean =>
 export const ownsHome = (s: GameState): boolean => s.assets.homes.length > 0;
 export const ownsVehicle = (s: GameState): boolean => s.assets.vehicles.length > 0;
 export const notInPrison = (s: GameState): boolean => s.legal.prison === null;
+/** Living somewhere other than the country you were born in. */
+export const livesAbroad = (s: GameState): boolean => s.player.country !== s.player.birthCountry;
+/** Out of prison after serving time. */
+export const exCon = (s: GameState): boolean =>
+  s.legal.prison === null && s.player.flags.includes('ex_con');
+/** A conviction or plea on record (sealed juvenile records don't count). */
+export const hasRecord = (s: GameState): boolean =>
+  s.legal.record.some(
+    (r) => (r.verdict === 'convicted' || r.verdict === 'plea') && !(r.juvenile && s.legal.sealed),
+  );
 export const inPrison = (s: GameState): boolean => s.legal.prison !== null;
 export const hasSkill =
   (id: string, v: number) =>
