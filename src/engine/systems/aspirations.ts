@@ -41,6 +41,14 @@ export function dropAspiration(ctx: Ctx, id: string): void {
 export function checkAspirations(ctx: Ctx): void {
   const s = ctx.s;
   if (s.death) return;
+  // Point the way once, when goals open up.
+  if (s.player.age >= ASPIRATION_MIN_AGE && !s.player.flags.includes('goals_prompted')) {
+    s.player.flags.push('goals_prompted');
+    ctx.log(
+      'system',
+      '🎯 You start to wonder what you want from life. Pick up to three life goals in the Life goals card.',
+    );
+  }
   for (const goal of s.player.aspirations) {
     const def = ASPIRATION_BY_ID[goal.id];
     if (goal.done !== null || !def || !def.done(s)) continue;

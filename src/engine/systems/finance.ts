@@ -26,6 +26,26 @@ const LIVING: Record<string, number> = {
 const LIFESTYLE_MULT = { frugal: 0.7, normal: 1, lavish: 1.8 } as const;
 const RENT: Record<string, number> = { renting: 13000 };
 
+/** An adult still at their parents' after both have died has to find a place of their own. */
+function leaveEmptyNest(ctx: Ctx): void {
+  const s = ctx.s;
+  if (s.assets.housing !== 'parents' || s.player.age < 18) return;
+  if (s.npcs.some((n) => n.alive && (n.roles.includes('mother') || n.roles.includes('father'))))
+    return;
+  const home = s.assets.homes[0];
+  if (home) {
+    home.livingIn = true;
+    s.assets.housing = 'owning';
+  } else s.assets.housing = 'renting';
+  ctx.log(
+    'family',
+    home
+      ? `With your parents gone, you move into ${home.name}. It is very quiet.`
+      : 'With your parents gone, the old house is no longer yours to stay in. You find a place of your own.',
+    true,
+  );
+}
+
 /** Step 2 of the year (SPEC §5.6). Records last year's breakdown. */
 export function runFinances(ctx: Ctx, income: { salary: number; other: number }): void {
   const s = ctx.s;
@@ -47,14 +67,24 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     vices: 0,
     net: 0,
   };
+  leaveEmptyNest(ctx);
   const start = netWorth(s);
   m.cash += report.salary + report.otherIncome;
   report.tax = incomeTax(s, report.salary + report.otherIncome);
   m.cash -= report.tax;
 
   if (adult && !s.legal.prison) {
-    report.living = money(s, (LIVING[housing] ?? 0) * LIFESTYLE_MULT[m.lifestyle]);
-    if (housing === 'renting') report.housing = money(s, RENT['renting'] ?? 0);
+    // People live within their means: on a low income you rent the small flat, not the nice one.
+    const income = report.salary + report.otherIncome;
+    const own = housing === 'renting' || housing === 'owning';
+    const full = money(s, LIVING[housing] ?? 0);
+    const base = own ? Math.min(full, Math.max(money(s, 6000), Math.round(income * 0.45))) : full;
+    report.living = Math.round(base * LIFESTYLE_MULT[m.lifestyle]);
+    if (housing === 'renting')
+      report.housing = Math.min(
+        money(s, RENT['renting'] ?? 0),
+        Math.max(money(s, 4000), Math.round(income * 0.3)),
+      );
     m.cash -= report.living + report.housing;
   }
   report.loanPayments = serviceLoans(ctx);

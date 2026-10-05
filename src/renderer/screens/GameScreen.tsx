@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import type { GameState } from '../../engine';
 import { doAgeUp, useApp } from '../store/app';
+import { yearChanges } from '../store/result';
 import { EventModal } from './game/EventModal';
 import { Header } from './game/Header';
 import { LogView } from './game/LogView';
@@ -8,7 +10,12 @@ import { StatsColumn } from './game/StatsColumn';
 
 export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
   const result = useApp((s) => s.result);
-  const lastYear = useApp((s) => s.lastYear);
+  const yearStart = useApp((s) => s.yearStart);
+  // Everything since the last birthday: the year's drift plus every choice since.
+  const lastYear = useMemo(
+    () => (yearStart && yearStart.lifeId === game.lifeId ? yearChanges(yearStart, game) : null),
+    [yearStart, game],
+  );
   const blocked = game.pending.length > 0 || game.death !== null || result !== null;
   return (
     <div className="game" data-testid="game-screen">
@@ -31,7 +38,7 @@ export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
           </button>
           {lastYear && lastYear.length > 0 && (
             <p className="last-year small" data-testid="last-year" aria-live="polite">
-              <span className="muted">Last year:</span>{' '}
+              <span className="muted">This year:</span>{' '}
               {lastYear.map((c) => (
                 <span key={c.label} className={c.good ? 'up' : 'down'}>
                   {c.label} {c.value}

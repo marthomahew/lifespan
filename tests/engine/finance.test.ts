@@ -395,3 +395,60 @@ describe('vehicles, possessions, licence (M7.6)', () => {
     ).toThrow(/17/);
   });
 });
+
+describe('housing you can afford', () => {
+  const renter = (job: string | null, seed = 21): GameState => {
+    let s = runCheat(newLife({ country: 'us', birthYear: 2000 }, seed), 'age.set', {
+      age: 25,
+    }).state;
+    if (job) s = runCheat(s, 'job.set', { job }).state;
+    s = clone(s);
+    s.assets.housing = 'renting';
+    s.money.cash = money(s, 5000);
+    s.money.loans = [];
+    return s;
+  };
+  it('an entry-level worker renting at a normal lifestyle can make ends meet', () => {
+    const s = renter('retail_associate');
+    const cash0 = s.money.cash;
+    runFinances(new Ctx(s), { salary: s.career.salary, other: 0 });
+    expect(s.money.cash).toBeGreaterThanOrEqual(cash0);
+    expect(s.money.loans.filter((l) => l.kind === 'debt')).toEqual([]);
+  });
+  it('out of work, renting still costs more than support pays, but slowly', () => {
+    const s = renter(null);
+    const cash0 = s.money.cash;
+    runFinances(new Ctx(s), { salary: 0, other: money(s, 7000, 'wage') });
+    expect(s.money.cash).toBeLessThan(cash0);
+    expect(cash0 - s.money.cash).toBeLessThan(money(s, 5000));
+  });
+  it('high earners pay full price; lavish still costs more than frugal', () => {
+    const rich = renter('lawyer');
+    rich.career.salary = money(rich, 200000, 'wage');
+    const ctx = new Ctx(rich);
+    runFinances(ctx, { salary: rich.career.salary, other: 0 });
+    expect(rich.money.last?.housing).toBe(money(rich, 13000));
+    const lav = renter('retail_associate');
+    lav.money.lifestyle = 'lavish';
+    const fru = renter('retail_associate');
+    fru.money.lifestyle = 'frugal';
+    runFinances(new Ctx(lav), { salary: lav.career.salary, other: 0 });
+    runFinances(new Ctx(fru), { salary: fru.career.salary, other: 0 });
+    expect(lav.money.last?.living ?? 0).toBeGreaterThan(fru.money.last?.living ?? 0);
+  });
+});
+
+describe('the empty nest', () => {
+  it('an adult at home after both parents have died moves out', () => {
+    const s = clone(
+      runCheat(newLife({ country: 'us', birthYear: 1990 }, 22), 'age.set', { age: 40 }).state,
+    );
+    s.assets.housing = 'parents';
+    for (const n of s.npcs)
+      if (n.roles.includes('mother') || n.roles.includes('father')) n.alive = false;
+    const ctx = new Ctx(s);
+    runFinances(ctx, { salary: 0, other: 0 });
+    expect(s.assets.housing).toBe('renting');
+    expect(ctx.finish().log.some((e) => /find a place of your own/.test(e.text))).toBe(true);
+  });
+});

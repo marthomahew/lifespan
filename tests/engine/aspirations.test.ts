@@ -64,4 +64,13 @@ describe('aspirations', () => {
     raw['schemaVersion'] = 2;
     expect((migrate(raw) as unknown as GameState).player.aspirations).toEqual([]);
   });
+
+  it('you are told once, at 14, that goals are open', () => {
+    let s = runCheat(newLife({ country: 'us', birthYear: 1990 }, 7), 'age.set', { age: 13 }).state;
+    s = { ...s, pending: [], cheats: { ...s.cheats, immortal: true } };
+    const a = ageUp(s).state;
+    expect(a.log.filter((e) => /what you want from life/.test(e.text))).toHaveLength(1);
+    const b = ageUp({ ...a, pending: [] }).state;
+    expect(b.log.filter((e) => /what you want from life/.test(e.text))).toHaveLength(1);
+  });
 });

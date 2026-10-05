@@ -549,5 +549,10 @@
     "title": "Fun pass, first impression: a baby and toddler pack (16 events and a chain) so ages 0-4 offer decisions from the first Age Up; one imaginary friend per childhood.",
     "passes": true,
     "evidence": "npm run content:check (454 events); npm run sim:coverage; tests/integration/report.test.ts counts"
+  },
+  "S15": {
+    "title": "Fun pass, economy: housing costs follow income so entry-level lives can make ends meet (passive-life bankruptcies 2.95 to 0.18 per life); adults move out when both parents have died; a once-only prompt at 14 points to life goals; This year summary counts choices too.",
+    "passes": true,
+    "evidence": "tests/engine/finance.test.ts housing you can afford, the empty nest; tests/engine/aspirations.test.ts prompt; e2e/event-popup.spec.ts this year"
   }
 }
