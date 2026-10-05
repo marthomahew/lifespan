@@ -38,3 +38,8 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Bugs found on the way: bankruptcy missed second debts (persona sweep), cellmates unreachable after release, bots never bought homes, partner-abroad story didn't move you
 - Verify: green in ~71 s (unit 370+, e2e 46, electron 3, sim 300/300 0 violations); coverage 425/434
 - Next: DONE §8 final check on the last commit
+
+## 2026-10-05 · Fun pass S12–S15 (owner: "make sure the loop and gameplay are fun")
+- Measured 60 passive lives + read lives as a player; fixed: no feedback after choices, outcomes context-free in the log, dice-only choices, log noise/repeats, dead years, empty baby years, broke-renter bankruptcy loop
+- Added: result card, This-year summary, skill checks with reasons, baby pack, job leads + benefit, affordable housing, empty-nest move-out, goals prompt
+- Verify: green in ~88 s (unit 386, e2e 48, electron 3, sim 300/300 0 violations); coverage 444/454

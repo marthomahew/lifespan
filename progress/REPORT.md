@@ -19,7 +19,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 - M0.6, M12.2 and M12.3 (packaging and the packaged smoke test) work in the container. `dist:mac`, `check-mac-bundle`, `dist:linux` and `electron:smoke:packaged` all run here.
 - The audit flipped M7.4 (loans) back to failing because overdraft debt grew without limit. It was fixed (see below) and passes again.
 
-## Since the first draft (stretch items S1–S11)
+## Since the first draft (stretch items S1–S11; the fun pass is S12–S15)
 
 After the first draft was finished, the owner asked to keep going. Each item below is tracked in `progress/features.json` with its evidence.
 - **S1 Buy dialog:** buying a home, vehicle or item is a modal form (SPEC §6). Homes get a live mortgage quote: term, deposit, rate, yearly and total cost.
@@ -33,6 +33,28 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **S9 Life goals:** from 14 you choose up to three of 20 aspirations. Reaching one is celebrated and the obituary records it. Save format v3.
 - **S10 More packs:** crime, life after prison, travel and life abroad, and community/world events (51 events). Old cellmates can find you after release. Bankruptcy now covers every unsecured debt; the new persona sweep found that bug.
 - **S11 Story matches state:** moving abroad with a partner really moves you, the obituary records military service, and service counts as a career in life titles.
+
+## Fun pass (S12–S15)
+
+The owner asked for a pass on whether the loop is fun. I measured 60 lives played passively (Age Up plus random answers), read whole lives as a player would, and fixed what got in the way.
+
+| | Before | After |
+|---|---|---|
+| Years with no decision, ages 0–4 | 50% | 17% |
+| Years with no decision, ages 5–64 | 26–31% | 13–17% |
+| Popups a year (ages 5+) | 1.1–1.3 | 1.3–1.5 |
+| Word-for-word repeated log lines per life | 26 | 17 |
+| Bankruptcies per passive life | 3.4 | 0.18 |
+| Popup outcomes that depend on who you are | none | every choice with a marked success |
+
+What changed:
+- **Feedback:** after every choice, a result card shows what you chose, what happened, coloured changes to Happiness, Health, Smarts, Looks, money, fame and relationships, and any knock-on effects. One key continues. Under Age Up, "This year" sums up the year so far.
+- **Your character matters:** traits, skills and the relevant stat tilt each popup toward its success outcome, capped at ±25 points. When that decides it, the card says why ("Being Charming helped").
+- **A log that reads as a story:** each choice outcome keeps its setup (one muted line) and the option you picked.
+- **Less noise:** minor illnesses are half as frequent and recover quietly. Notices and repeat illnesses are never told the same way twice. Report cards vary and show the trend.
+- **A better opening:** a baby and toddler pack gives decisions from the first Age Up.
+- **No dead-end lives:** job leads offer real work to the unemployed, and a modest benefit is paid while out of work. Housing costs follow income, so an entry-level renter can make ends meet; the old costs made every non-graduate life loop through bankruptcy. Adults move out once both parents have died.
+- **Life goals are announced** at 14.
 
 ## Fresh-eyes audit (DONE §7)
 
@@ -118,7 +140,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 
 ## Verification evidence
 
-- `npm run verify` passes every step in about 73 s:
+- `npm run verify` passes every step in about 88 s:
   - typecheck 5 s
   - lint 2 s
   - hygiene 0.3 s
@@ -129,8 +151,8 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - e2e 11 s
   - electron:smoke 2 s
 - Tests:
-  - 334 Vitest tests in 53 files.
-  - 42 Playwright e2e tests, covering DONE §5 flows 1–15 plus extras.
+  - 386 Vitest tests in 63 files.
+  - 48 Playwright e2e tests, covering DONE §5 flows 1–15 plus extras.
   - 3 Electron smoke tests.
   - The packaged smoke test against the `dist:linux` build.
 - Sim: 300 seeded lives, 0 invariant violations, every band passing.
@@ -138,18 +160,18 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   | Band | Result |
   |---|---|
   | Median age at death | 74 |
-  | Reached 18 | 99.3% |
-  | University degree | 48.7% |
+  | Reached 18 | 99.7% |
+  | University degree | 57.3% |
   | Employed by 25 | 100% |
-  | Married by 30 | 82.1% |
-  | Children by 40 | 78.0% |
+  | Married by 30 | 80.9% |
+  | Children by 40 | 80.1% |
   | Ever imprisoned | 0% |
-  | Median net worth at death | $705k |
-  | Mean happiness | 66.7 |
-  | Most common popup share | 1.9% |
-  | Runtime | about 34 s |
+  | Median net worth at death | $412k |
+  | Mean happiness | 70.4 |
+  | Most common popup share | 2.0% |
+  | Runtime | about 38 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 425 of 434 events (97.9%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 444 of 454 events (97.8%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
