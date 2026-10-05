@@ -584,5 +584,10 @@
     "title": "Callbacks: 18 events that bring back 17 earlier choices years later (the release plan, the informant, the memoir, the bike lesson, the playground decision, the motorbike, the model railway...).",
     "passes": true,
     "evidence": "npm run content:check (491 events); npm run sim:coverage"
+  },
+  "S22": {
+    "title": "Free time: a yearly activity budget shaped by work, study, children and retirement",
+    "passes": true,
+    "evidence": "tests/engine/free-time.test.ts; e2e/customize.spec.ts (free time)"
   }
 }

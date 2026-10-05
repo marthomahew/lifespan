@@ -40,7 +40,7 @@ export {
   type ActionItem,
 } from './actions';
 export { interactionsFor, interactionOdds, type InteractionView } from './systems/interactions';
-export { activitiesFor, type ActivityView } from './systems/activities';
+export { activitiesFor, freeTime, type ActivityView } from './systems/activities';
 export { estatePlan } from './systems/inheritance';
 export { familyTree, type TreeNode } from './family-tree';
 export {

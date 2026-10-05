@@ -530,3 +530,31 @@ button.quiet-danger {
 .result-changes li {
   animation: pop-in var(--transition);
 }
+
+/* Free time (S22) */
+.free-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.free-time-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.free-time .pips {
+  display: inline-flex;
+  gap: 3px;
+}
+.free-time .pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: background var(--transition);
+}
+.free-time .pip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+}

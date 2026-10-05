@@ -34,6 +34,15 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **S10 More packs:** crime, life after prison, travel and life abroad, and community/world events (51 events). Old cellmates can find you after release. Bankruptcy now covers every unsecured debt; the new persona sweep found that bug.
 - **S11 Story matches state:** moving abroad with a partner really moves you, the obituary records military service, and service counts as a career in life titles.
 
+## The overnight run (S17–S22)
+
+- **Full character customization (S17):** the New Life screen has Who, Look (skin and hair), Where and when (including who raised you and how many siblings you have), Nature (traits and a gift for one skill) and Starting stats. Each section has its own dice, plus Roll everything and a live preview. In life you can practise a chosen skill, get a new look, or change your name.
+- **UI passes (S18):** three passes over every screen, covering contrast, clipping, button hierarchy, title case, tooltips, toast placement, empty states and the finance chart.
+- **Challenges (S19):** 12 premised lives with goals and deadlines, one of which spans generations. You pick them on New Life, see their status on the goals card, and get a line in the obituary. Completions are remembered across lives.
+- **Feedback and motion (S20):** a result card after every choice that shows what changed and why; stat deltas for the year; fresh log lines highlighted; short entrances, all off with reduced motion.
+- **Callbacks (S21):** 18 events bring old choices back years later (the band you quit, the country you left, the record you carry, the ex you never called).
+- **Free time (S22):** a year holds only so many activities. You get 7 out of work and 9 when retired; full-time work costs 2, studies 1, and small children 1. Health care, paperwork and prison life are free. The Activities tab shows what's left and why, so casual play rarely hits the limit, but you can't do everything every year.
+
 ## Late life (S16)
 
 Many lives ended abruptly ("You died at 63."), and the senior years were the thinnest part of the game.
@@ -179,7 +188,7 @@ What changed:
   | Most common popup share | 2.0% |
   | Runtime | about 42 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 444 of 454 events (97.8%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 482 of 491 events (98.2%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |

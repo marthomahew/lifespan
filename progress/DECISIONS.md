@@ -37,3 +37,4 @@ One line each: `- [HH:MM] <decision>. Why: <reason>. Alternatives: <what else yo
 - 2026-10-06 Customization: hair is a player field (emoji ZWJ variants on teen/adult avatars); parents setup and siblings are New Life options; a talent skill starts at 8 and practice gains ×1.5. Save format v4.
 - 2026-10-06 Challenges: a top-level state.challenge (save v5); setup merged over the player's own New Life choices; completions kept in localStorage (lifespan.challenges) like settings, since they span saves.
 - 2026-10-06 Playwright configs run with reducedMotion: 'reduce' (entrance animations made every dialog click wait ~150 ms; tests target behaviour, not motion).
+- S22 free time: activities share a yearly budget (6 base adults, +1 jobless/+2 retired, −2 full-time work/service, −1 part-time or studies, −1 child under 5, min 2; under-13s 4). Health care, admin, prison exempt. Chosen over money/energy meters because it adds trade-offs without a new resource to grind.

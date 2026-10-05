@@ -23,6 +23,47 @@ export type ActivityView = {
   cost: number;
 };
 
+/** Groups and specials that never cost free time: paperwork, prison life and health care. */
+const FREE_GROUPS = new Set(['admin', 'prison']);
+const FREE_SPECIALS = new Set(['doctor', 'therapy', 'rehab', 'support', 'will']);
+
+export function costsFreeTime(def: ActivityDef): boolean {
+  return !FREE_GROUPS.has(def.group) && !(def.special && FREE_SPECIALS.has(def.special));
+}
+
+/**
+ * How many activities fit in a year. Work, service and small children take time;
+ * retirement and being out of work give it back.
+ */
+export function freeTime(s: GameState): { total: number; left: number; why: string[] } {
+  const why: string[] = [];
+  let total = s.player.age < 13 ? 4 : 6;
+  if (s.player.age >= 18) {
+    if (s.career.jobId || s.military?.active) {
+      total -= 2;
+      why.push('full-time work');
+    } else if (s.career.partTimeId) {
+      total -= 1;
+      why.push('a part-time job');
+    } else if (s.career.retired) {
+      total += 2;
+      why.push('retired');
+    } else if (s.education.enrollment) {
+      total -= 1;
+      why.push('studies');
+    } else {
+      total += 1;
+      why.push('no job');
+    }
+    if (s.npcs.some((n) => n.alive && n.roles.includes('child') && n.age < 5)) {
+      total -= 1;
+      why.push('small children');
+    }
+  }
+  total = Math.max(2, total);
+  return { total, left: Math.max(0, total - usedThisYear(s, 'a:total')), why };
+}
+
 /** Why an activity can't be done now, or null. */
 export function activityReason(s: GameState, def: ActivityDef): string | null {
   const age = s.player.age;
@@ -36,6 +77,7 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
   const special = specialReason(s, def);
   if (special) return special;
   if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
+  if (costsFreeTime(def) && freeTime(s).left <= 0) return 'no free time left this year';
   if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
     return 'you are already seeing someone';
   if (def.special === 'fertility' && s.family.pregnancy) return 'a baby is already on the way';
@@ -75,6 +117,7 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   const why = activityReason(s, def);
   if (why) throw new EngineError(`${def.label}: ${why}`);
   markUsed(s, `a:${def.id}`);
+  if (costsFreeTime(def)) markUsed(s, 'a:total');
   if (def.cost) s.money.cash -= money(s, def.cost);
 
   let outcomes = def.outcomes;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { activitiesFor, formatMoney, type GameState } from '../../../../engine';
+import { activitiesFor, formatMoney, freeTime, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
 import { WillEditor } from './WillEditor';
 import { CrimeSection } from './CrimeSection';
@@ -31,7 +31,10 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
   const query = q.trim().toLowerCase();
   const visible = all.filter(
     (a) =>
-      (a.enabled || a.reason === 'done enough this year' || a.reason.startsWith('costs')) &&
+      (a.enabled ||
+        a.reason === 'done enough this year' ||
+        a.reason === 'no free time left this year' ||
+        a.reason.startsWith('costs')) &&
       (!query || `${a.label} ${a.description}`.toLowerCase().includes(query)),
   );
   const run = (id: string): void => {
@@ -61,6 +64,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
+      {!game.legal.prison && <FreeTime game={game} />}
       {error && (
         <p className="error small" role="alert" data-testid="activity-error">
           {error}
@@ -112,6 +116,29 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
         <p className="muted">{game.player.age < 3 ? 'Babies mostly nap.' : 'Nothing matches.'}</p>
       )}
       {will && <WillEditor game={game} onClose={() => setWill(false)} />}
+    </div>
+  );
+}
+
+/** This year's free time: a row of pips and what is eating it. */
+function FreeTime({ game }: { game: GameState }): React.JSX.Element {
+  const f = freeTime(game);
+  return (
+    <div
+      className="free-time"
+      data-testid="free-time"
+      data-left={f.left}
+      title="Activities that fit in a year. Health care and paperwork are free. It refills on your birthday."
+    >
+      <span className="free-time-label">Free time</span>
+      <span className="pips" aria-hidden="true">
+        {Array.from({ length: f.total }, (_, i) => (
+          <span key={i} className={i < f.left ? 'pip on' : 'pip'} />
+        ))}
+      </span>
+      <span className="muted small">
+        {f.left} of {f.total} left{f.why.length > 0 && ` · ${f.why.join(', ')}`}
+      </span>
     </div>
   );
 }
