@@ -11,7 +11,7 @@ import { estatePlan, settleEstate } from '../../src/engine/systems/inheritance';
 import { clone } from '../../src/engine/util';
 import { playYears } from '../helpers';
 import { Ctx } from '../../src/engine/ctx';
-import { addNpc } from '../../src/engine/npc';
+import { addNpc, relLabel } from '../../src/engine/npc';
 import { applyStatusEffect } from '../../src/engine/systems/status-effects';
 import { matches } from '../../src/engine/events/select';
 import { EVENT_BY_ID } from '../../src/content/events';
@@ -43,6 +43,7 @@ describe('romance (M5.5)', () => {
     expect(matches(s, other, { role: 'coworker', fitsAttraction: true }, true)).toBe(false);
     applyStatusEffect(ctx, 'meet', mate);
     expect(mate.roles).toEqual(expect.arrayContaining(['coworker', 'partner']));
+    expect(relLabel(mate)).toBe('your boyfriend');
     expect(mate.romance?.stage).toBe('dating');
     expect(s.npcs.filter((n) => n.roles.includes('partner'))).toHaveLength(1);
     const ev = EVENT_BY_ID['work_coworker_spark'];

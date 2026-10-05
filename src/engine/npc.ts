@@ -123,7 +123,11 @@ export function pronouns(g: Gender): { they: string; them: string; their: string
 
 /** "your sister", "your friend". */
 export function relLabel(n: Npc): string {
-  const role = n.roles[0] ?? 'acquaintance';
+  // Who they are to you first: a coworker you're dating is your partner.
+  const role =
+    (['spouse', 'partner', 'ex'] as const).find((r) => n.roles.includes(r)) ??
+    n.roles[0] ??
+    'acquaintance';
   const g = n.gender;
   const pick = (m: string, f: string, x: string): string =>
     g === 'male' ? m : g === 'female' ? f : x;
