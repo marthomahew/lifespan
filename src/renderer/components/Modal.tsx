@@ -11,6 +11,8 @@ type Props = {
   children: React.ReactNode;
   testId: string;
   wide?: boolean;
+  /** Nearly the whole window (the family tree). */
+  full?: boolean;
   hideTitle?: boolean;
 };
 
@@ -21,6 +23,7 @@ export function Modal({
   children,
   testId,
   wide,
+  full,
   hideTitle,
 }: Props): React.JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
@@ -77,7 +80,7 @@ export function Modal({
     <div className="modal-backdrop" data-testid={`${testId}-backdrop`}>
       <div
         ref={ref}
-        className={`modal card${wide ? ' wide' : ''}`}
+        className={`modal card${wide ? ' wide' : ''}${full ? ' full' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}

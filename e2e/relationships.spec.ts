@@ -22,17 +22,22 @@ test('flow 5: an interaction changes the relationship bar and adds a memory line
   const before = Number(await page.getByTestId('npc-rel-value').textContent());
   const memories = await page.getByTestId('memory-line').count();
   // Interactions until the bar moves (a single roll can land on +0).
-  let after = before;
   let done = 0;
   for (const id of ['insult', 'argue', 'prank', 'apologize']) {
     await page.getByTestId(`int-${id}`).click();
     done++;
     await expect(page.getByTestId('memory-line')).toHaveCount(Math.min(30, memories + done));
-    after = Number(await page.getByTestId('npc-rel-value').textContent());
+    const after = Number(await page.getByTestId('npc-rel-value').textContent());
     if (after !== before) break;
   }
-  expect(after).not.toBe(before);
-  await expect(page.getByTestId('npc-rel-bar')).toHaveAttribute('data-value', String(after));
+  // Reads right after a click can be a frame early; wait for the bar and the number to agree.
+  await expect
+    .poll(async () => {
+      const v = (await page.getByTestId('npc-rel-value').textContent()) ?? '';
+      const bar = (await page.getByTestId('npc-rel-bar').getAttribute('data-value')) ?? '';
+      return v === bar && Number(v) !== before;
+    })
+    .toBe(true);
   await expect(page.getByTestId('npc-last-log')).not.toBeEmpty();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('npc-panel')).toHaveCount(0);
@@ -48,6 +53,14 @@ test('flow 13: the family tree opens and clicking a node opens that NPC', async 
   await expect(page.getByTestId('family-tree')).toBeVisible();
   await expect(page.getByTestId('tree-gen--1')).toBeVisible();
   await expect(page.getByTestId('tree-gen-1')).toBeVisible();
+  // Lines join children to parents: you to each parent, your child to you.
+  const lines = page.getByTestId('tree-lines').locator('path');
+  expect(await lines.count()).toBeGreaterThanOrEqual(3);
+  const child = page.getByTestId('tree-gen-1').locator('button').first();
+  const childId = (await child.getAttribute('data-node')) ?? '';
+  await expect(page.getByTestId(`tree-line-${childId}-0`)).toHaveCount(1);
+  await child.hover();
+  await expect(page.getByTestId(`tree-line-${childId}-0`)).toHaveClass(/lit/);
   const node = page.getByTestId('tree-gen--1').locator('button').first();
   const name = (await node.locator('.tree-name').textContent()) ?? '';
   await node.click();

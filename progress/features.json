@@ -494,5 +494,10 @@
     "title": "The people around you live their own lives: marriages, divorces, jobs, promotions, moves (some abroad), babies, health scares and windfalls, capped at three pieces of news a year; distance fades relationships.",
     "passes": true,
     "evidence": "tests/engine/family.test.ts the people around you live their own lives; distance; sim invariants"
+  },
+  "S4": {
+    "title": "The family tree draws lines from each child to its parents, orders generations so couples sit together over their children, highlights a person's links on hover, and centres on you.",
+    "passes": true,
+    "evidence": "tests/engine/family-tree.test.ts; e2e/relationships.spec.ts flow 13 lines and hover"
   }
 }
