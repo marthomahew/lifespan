@@ -86,7 +86,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 - Injuries are a counter plus a Health hit, not individual injury records.
 - Originality and "no self-harm" are enforced by the writing guide and by hand review. `content:check` catches duplicates, banned words, tokens and age rules, but not originality.
-- Toasts can briefly cover the bottom of the right panel.
+- Toasts sit in the bottom of the left column. At 1024×700 they can cover the quick facts for their 4 seconds.
 - The default bot persona never commits crimes (DONE §4), so the 300-life sim shows 0% imprisoned. The criminal persona in `sim:coverage` covers prison.
 
 ## Ten key decisions

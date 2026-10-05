@@ -31,5 +31,12 @@ for (const size of [
     expect(log.width).toBeGreaterThan(right.width);
     await expect(page.getByTestId('tab-occupation')).toBeVisible();
     await expect(page.getByTestId('tab-activities')).toBeVisible();
+    // Achievement toasts land over the left column, never over the log or the panels.
+    await page.getByTestId('age-up').click();
+    const toast = page.getByTestId('toast').first();
+    await expect(toast).toBeVisible();
+    const t = await toast.boundingBox();
+    expect(t).not.toBeNull();
+    if (t) expect(t.x + t.width).toBeLessThanOrEqual(log.x);
   });
 }
