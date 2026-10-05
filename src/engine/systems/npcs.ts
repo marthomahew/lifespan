@@ -8,6 +8,7 @@ import type { Npc } from '../types';
 import { clampStat } from '../util';
 import { inheritFrom } from './inheritance';
 import { killNpc } from './partners';
+import { npcMilestones } from './npc-lives';
 
 const FAMILY = [
   'mother',
@@ -182,6 +183,8 @@ export function relationshipDecay(ctx: Ctx): void {
     } else if (isFamily(n)) {
       n.rel = clampStat(n.rel - r.int(0, 2));
     } else n.rel = clampStat(n.rel - r.int(2, 5));
+    // Distance makes it harder: people who moved away fade a little faster.
+    if (n.flags.includes('moved_away') && !n.roles.includes('enemy')) n.rel = clampStat(n.rel - 1);
   }
 }
 
@@ -262,5 +265,6 @@ export function npcLifecycle(ctx: Ctx): void {
   npcDeaths(ctx);
   npcBirths(ctx);
   schoolFriends(ctx);
+  npcMilestones(ctx);
   pruneNpcs(ctx);
 }

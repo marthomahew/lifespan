@@ -8,9 +8,10 @@ function busySeventy(): GameState {
   let s = runCheat(newLife({ country: 'us', birthYear: 1950 }, 99), 'immortal', { on: true }).state;
   s = playYears(s, 50);
   s = runCheat(s, 'age.set', { age: 70 }).state;
+  s = playYears(s, 1);
+  // Top up after the year, so a death in it can't leave fewer than 40.
   for (let i = 0; s.npcs.filter((n) => n.alive).length < 40 && i < 80; i++)
     s = runCheat(s, 'npc.spawn', { role: i % 3 ? 'friend' : 'sibling' }).state;
-  s = playYears(s, 1);
   const c = clone(s);
   // Pad the log toward the 5,000-entry budget.
   while (c.log.length < 5000)

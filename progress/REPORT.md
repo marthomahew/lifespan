@@ -59,7 +59,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | §4.1–4.2 Event kinds and definition | `events/types.ts`, `apply.ts`, `choose.ts` | content:check, `event-popup.spec.ts` | some effect kinds are covered only through the sim and content checks |
 | §4.3 Selection and pacing | `events/select.ts` | `events-pacing.test.ts` | absent NPCs fixed in the audit |
 | §4.4–4.5 Tokens, chains | `events/tokens.ts`, `select.ts` | `events-tokens`, `events-chains` tests | none |
-| §5.1 Relationships | `npcs.ts`, `interactions.ts`, `gifts.ts`, `romance.ts`, `inheritance.ts`, `family-tree.ts` | `family`, `interactions`, `romance` tests; e2e `relationships` | work romance and gifts added in the audit |
+| §5.1 Relationships | `npcs.ts`, `interactions.ts`, `gifts.ts`, `romance.ts`, `inheritance.ts`, `family-tree.ts` | `family`, `interactions`, `romance` tests; e2e `relationships` | work romance and gifts added in the audit; NPC milestones (S3) after it |
 | §5.2 Education | `systems/education.ts`, `content/education.ts` | `education.test.ts`, e2e `careers` | none |
 | §5.3 Careers | `systems/careers.ts`, `content/jobs*.ts` | `careers.test.ts`, e2e flow 4 | perks given real effects after the audit (S2) |
 | §5.4 Military | `systems/military.ts`, `content/military.ts` | `military.test.ts` | none |
@@ -85,7 +85,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 ## Known issues and limitations
 
 - Injuries are a counter plus a Health hit, not individual injury records.
-- NPCs' own lives are fairly simple: school, work, retirement, children, death.
 - Originality and "no self-harm" are enforced by the writing guide and by hand review. `content:check` catches duplicates, banned words, tokens and age rules, but not originality.
 - Toasts can briefly cover the bottom of the right panel. The family tree shows generations as rows, with no connecting lines.
 - Six of 307 events never fired in 2,080 bot lives. Their conditions are narrow (for example, a grandchild who smokes).
@@ -201,7 +200,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Suggested next steps
 
-- Deepen NPC lives: their own careers, moves, marriages and crises, shown as notices.
 - Draw connecting lines in the family tree.
 - Add an automated content lint for brand names and sensitive topics on top of the hand review.
 - Write more chains for the six events that never fire, or loosen their conditions.

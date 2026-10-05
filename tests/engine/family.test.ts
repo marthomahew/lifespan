@@ -3,6 +3,9 @@ import { newLife, runCheat, act, type GameState, type Npc } from '../../src/engi
 import { playYears } from '../helpers';
 import { clone } from '../../src/engine/util';
 import { MEMORY_MAX, remember } from '../../src/engine/npc';
+import { Ctx } from '../../src/engine/ctx';
+import { MILESTONE_CAP, npcMilestones } from '../../src/engine/systems/npc-lives';
+import { relationshipDecay } from '../../src/engine/systems/npcs';
 
 const immortal = (s: GameState): GameState => ({ ...s, cheats: { ...s.cheats, immortal: true } });
 
@@ -138,5 +141,75 @@ describe('friends (M5.4)', () => {
     const fDrop = 80 - f2.rel;
     expect(fDrop).toBeGreaterThanOrEqual(3);
     expect(80 - m2.rel).toBeLessThan(fDrop + 1);
+  });
+});
+
+describe('the people around you live their own lives', () => {
+  const grownUp = (seed: number): GameState => {
+    let s = immortal(newLife({ country: 'us', birthYear: 1980 }, seed));
+    s = runCheat(s, 'age.set', { age: 30 }).state;
+    s = runCheat(s, 'npc.spawn', { role: 'friend' }).state;
+    return { ...s, pending: [], cheats: { ...s.cheats, noBadEvents: false } };
+  };
+
+  it('over twenty years, close people marry, change jobs, move, and have children, and you hear about it', () => {
+    const kinds = new Set<string>();
+    let logged = 0;
+    for (const seed of [61, 62, 63, 64]) {
+      const s = grownUp(seed);
+      const ctx = new Ctx(clone(s));
+      let married = 0;
+      for (let y = 0; y < 20; y++) {
+        ctx.s.year += 1;
+        for (const n of ctx.s.npcs) if (n.alive) n.age = ctx.s.year - n.birthYear;
+        const before = ctx.s.log.length;
+        const got = npcMilestones(ctx);
+        for (const k of got) kinds.add(k);
+        if (got.includes('married')) married += 1;
+        const lines = ctx.s.log.length - before;
+        expect(lines).toBeLessThanOrEqual(MILESTONE_CAP);
+        logged += lines;
+      }
+      // Milestones change the person, not just the log.
+      if (married) expect(ctx.s.npcs.some((n) => n.flags.includes('npc_married'))).toBe(true);
+    }
+    expect(logged).toBeGreaterThan(10);
+    for (const k of ['married', 'job', 'moved', 'baby']) expect(kinds, k).toContain(k);
+  });
+
+  it('children hear none of it; news starts in the teens', () => {
+    const s = immortal(newLife({ country: 'us', birthYear: 1980 }, 67));
+    const ctx = new Ctx(clone(s));
+    ctx.s.player.age = 10;
+    for (let y = 0; y < 30; y++) expect(npcMilestones(ctx)).toEqual([]);
+  });
+
+  it('only people who matter make the news; strangers and the cut-off stay quiet', () => {
+    const s = grownUp(65);
+    for (const n of s.npcs) n.flags.push('cut_off');
+    const ctx = new Ctx(clone(s));
+    for (let y = 0; y < 15; y++) {
+      ctx.s.year += 1;
+      for (const n of ctx.s.npcs) if (n.alive) n.age = ctx.s.year - n.birthYear;
+      expect(npcMilestones(ctx)).toEqual([]);
+    }
+  });
+});
+
+describe('distance', () => {
+  it('people who moved away fade faster without contact', () => {
+    const s = clone(immortal(newLife({ country: 'us', birthYear: 1980 }, 66)));
+    const near = s.npcs.find((n) => n.roles.includes('mother'));
+    expect(near).toBeDefined();
+    if (!near) return;
+    near.lastContact = s.year - 5;
+    near.rel = 60;
+    const far = clone(s);
+    far.npcs.find((n) => n.id === near.id)?.flags.push('moved_away');
+    relationshipDecay(new Ctx(s));
+    relationshipDecay(new Ctx(far));
+    const a = s.npcs.find((n) => n.id === near.id)?.rel ?? 0;
+    const b = far.npcs.find((n) => n.id === near.id)?.rel ?? 0;
+    expect(b).toBe(a - 1);
   });
 });

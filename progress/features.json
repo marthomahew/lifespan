@@ -489,5 +489,10 @@
     "title": "Job perks have real effects (medical cost, pension, performance bonus, job stress, happiness) and the UI says what each perk does.",
     "passes": true,
     "evidence": "tests/engine/careers.test.ts job perks; e2e/careers.spec.ts perks say what they do"
+  },
+  "S3": {
+    "title": "The people around you live their own lives: marriages, divorces, jobs, promotions, moves (some abroad), babies, health scares and windfalls, capped at three pieces of news a year; distance fades relationships.",
+    "passes": true,
+    "evidence": "tests/engine/family.test.ts the people around you live their own lives; distance; sim invariants"
   }
 }
