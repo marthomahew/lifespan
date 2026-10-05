@@ -19,6 +19,21 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 - M0.6, M12.2 and M12.3 (packaging and the packaged smoke test) work in the container. `dist:mac`, `check-mac-bundle`, `dist:linux` and `electron:smoke:packaged` all run here.
 - The audit flipped M7.4 (loans) back to failing because overdraft debt grew without limit. It was fixed (see below) and passes again.
 
+## Since the first draft (stretch items S1–S11)
+
+After the first draft was finished, the owner asked to keep going. Each item below is tracked in `progress/features.json` with its evidence.
+- **S1 Buy dialog:** buying a home, vehicle or item is a modal form (SPEC §6). Homes get a live mortgage quote: term, deposit, rate, yearly and total cost.
+- **S2 Job perks:** perks now do something. Insurance halves medical bills, pensions pay more, and bonuses, stock options and tips follow your performance. Flexible work lowers stress. The UI says what each perk does.
+- **S3 Other people's lives:** family and friends marry, divorce, change jobs, get promoted, move (some abroad), have babies, have health scares and come into money. You get at most three pieces of news a year, starting in your teens, and distance fades ties.
+- **S4 Family tree:** lines join each child to their parents, couples sit over their children, hovering a person highlights their links, and the view opens centred on you.
+- **S5 Event coverage:** every event can fire. Bots buy homes, keep vice habits and chase a dream career field. Mid-career workplaces include young colleagues. Every persona passes the invariants inside verify.
+- **S6 Toasts:** compact, at the bottom of the left column, under any open dialog.
+- **S7 Injuries:** recorded as minor, major or serious. They heal over years or linger, and physio or surgery treats them. Save format v2 migrates old saves.
+- **S8 Careers and romance:** career events for all 14 job fields, plus career-arc moments and a second romance pack: 76 events.
+- **S9 Life goals:** from 14 you choose up to three of 20 aspirations. Reaching one is celebrated and the obituary records it. Save format v3.
+- **S10 More packs:** crime, life after prison, travel and life abroad, and community/world events (51 events). Old cellmates can find you after release. Bankruptcy now covers every unsecured debt; the new persona sweep found that bug.
+- **S11 Story matches state:** moving abroad with a partner really moves you, the obituary records military service, and service counts as a career in life titles.
+
 ## Fresh-eyes audit (DONE §7)
 
 **How it was done:**

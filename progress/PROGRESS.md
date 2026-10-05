@@ -32,3 +32,9 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Audit fixes: bankruptcy ends runaway debt (M7.4 re-opened and fixed); prison-only events + prison pack; work romance; money/item gifts; skill tooltips; flow 15 spec; absent NPCs unbound; obituary/article/acronym text
 - Verify: green in 73 s (unit 334, e2e 42, electron 3, sim 300/300, 0 violations); coverage 301/307 (98.0%)
 - Next: DONE §8 final check
+
+## 2026-10-05 · Stretch S1–S11 (owner: "keep going")
+- Done: buy dialog + mortgage quote, real job perks, NPC milestones, family-tree lines, full event coverage + persona invariant sweep, toasts, injuries (save v2), 127 new events (careers, romance, crime, release, travel, world), life goals (save v3), story/state fixes
+- Bugs found on the way: bankruptcy missed second debts (persona sweep), cellmates unreachable after release, bots never bought homes, partner-abroad story didn't move you
+- Verify: green in ~71 s (unit 370+, e2e 46, electron 3, sim 300/300 0 violations); coverage 425/434
+- Next: DONE §8 final check on the last commit
