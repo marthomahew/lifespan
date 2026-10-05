@@ -509,5 +509,10 @@
     "title": "Toasts sit compactly in the empty bottom of the left column, clear of the log, the tabs and the cheat panel.",
     "passes": true,
     "evidence": "e2e/layout.spec.ts toast placement at 1280 and 1024"
+  },
+  "S7": {
+    "title": "Injuries are records (SPEC §5.8): minor, major or serious from accidents, fights, sports and deployments; they heal over years or linger; physio and surgery treat them; save format v2 migrates old saves.",
+    "passes": true,
+    "evidence": "tests/engine/injuries.test.ts; tests/engine/cheats/health.test.ts injury.add; e2e/cheats.spec.ts injuries"
   }
 }

@@ -10,6 +10,7 @@ import { clampStat } from '../util';
 import { addIllness } from './illness';
 import { lowerLabel } from '../text';
 import { perkEffect } from './perks';
+import { injuryTick } from './injuries';
 
 /** Whether a parent had (or has) this illness: recorded on the NPC as a flag. */
 function familyHistory(s: GameState, id: string): boolean {
@@ -42,6 +43,7 @@ export function onsetChance(s: GameState, def: IllnessDef): number {
 /** Step 4: new illnesses, progression of untreated ones, their yearly effects (SPEC §5.8). */
 export function healthTick(ctx: Ctx): void {
   const s = ctx.s;
+  injuryTick(ctx);
   const h = s.health;
   const st = s.player.stats;
   h.lowHappyYears = st.happiness < 30 ? h.lowHappyYears + 1 : 0;

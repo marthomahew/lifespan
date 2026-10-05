@@ -18,6 +18,12 @@ describe('health and legal cheats', () => {
     expect(runCheat(sick, 'cure.all', {}).state.health.illnesses).toEqual([]);
   });
 
+  it("'injury.add' records an injury of the chosen tier", () => {
+    const hurt = runCheat(base, 'injury.add', { severity: 15 }).state;
+    expect(hurt.health.injuryList.map((i) => i.tier)).toEqual(['major']);
+    expect(runCheat(hurt, 'cure.all', {}).state.health.injuryList).toEqual([]);
+  });
+
   it("'addiction.set' sets a meter", () => {
     expect(
       runCheat(base, 'addiction.set', { vice: 'smoking', value: 70 }).state.vices.levels.smoking,

@@ -89,7 +89,13 @@ export const stateSchema = z.looseObject({
 
 type Raw = Record<string, unknown> & { schemaVersion?: unknown };
 /** Migration hook: MIGRATIONS[n] upgrades a version-n save to n+1. */
-export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {};
+export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
+  // v2: injuries became records (health.injuryList).
+  1: (raw) => {
+    const health = (raw['health'] ?? {}) as Record<string, unknown>;
+    return { ...raw, health: { ...health, injuryList: health['injuryList'] ?? [] } };
+  },
+};
 
 export class SaveError extends Error {}
 

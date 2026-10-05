@@ -1,6 +1,6 @@
 import type { RngState } from '../rng';
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const VISIBLE_STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export const HIDDEN_STATS = [

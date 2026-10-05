@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { ageTo, headerAge, startSeeded } from './helpers';
+import { ageTo, cheat, clearPopups, headerAge, startSeeded } from './helpers';
 
 test('flow 11: cheat panel via both shortcuts; a console command changes state; rewind works', async ({
   page,
@@ -105,4 +105,15 @@ test('events tab lists every event with eligibility and fires one', async ({ pag
   await page.getByTestId('ev-force-child_crayon_wall').click();
   await page.getByTestId('cheat-close').click();
   await expect(page.getByTestId('event-modal')).toBeVisible();
+});
+
+test('injuries show in the health section and can be treated', async ({ page }) => {
+  await startSeeded(page, 1515);
+  await cheat(page, 'age set 30', 'money add 50000', 'injury add 15');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await expect(page.getByTestId('injury-0')).toContainText('to heal');
+  await page.getByTestId('injury-0-physio').click();
+  await expect(page.getByTestId('injury-0-physio')).toBeDisabled();
+  await expect(page.getByTestId('injury-0')).toContainText('about 1 year to heal');
 });

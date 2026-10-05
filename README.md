@@ -107,6 +107,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 |---|---|
 | `cure all` | Remove every illness and injury and top up Health. |
 | `illness add {illness}` | Give yourself an illness from the catalog. |
+| `injury add {severity}` | Hurt yourself: 6–11 is minor, 12–19 major, 20+ serious. Example: injury add 15 |
 | `addiction {vice} {value}` | Set a vice addiction meter 0–100. |
 | `record clear` | Wipe your criminal record and any open case. |
 | `release` | Walk out of prison today. |
@@ -146,7 +147,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `state size` | How big the current save is. |
 | `deathbot` | Let the default sim bot play the rest of this life. |
 
-68 commands in all. Every one is also a form in the cheat panel.
+69 commands in all. Every one is also a form in the cheat panel.
 
 <!-- cheats:end -->
 

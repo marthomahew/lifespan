@@ -9,6 +9,7 @@ import { hasAdultRecord } from './careers';
 import { addLoan, annuityPayment } from './loans';
 import { addSkill } from './skills';
 import { withArticle } from '../text';
+import { addInjury } from './injuries';
 
 const conditionMult = (c: number): number => 0.6 + c / 250;
 
@@ -283,8 +284,7 @@ function vehicleAccidents(ctx: Ctx): void {
   car.condition = clampStat(car.condition - (severe ? 60 : 25));
   car.value = Math.round(car.value * (severe ? 0.4 : 0.8));
   if (severe) {
-    addStat(s, 'health', -ctx.rng.int(15, 35));
-    s.health.injuries += 1;
+    addInjury(ctx, ctx.rng.int(15, 35));
     ctx.log(
       'health',
       `You crash the ${def?.label ?? 'car'} on a wet road. You wake up in hospital with a cast and a lot of paperwork.`,

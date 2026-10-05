@@ -69,6 +69,8 @@ export type Circumstances = {
   /** Whether the player studied this year (school-age smarts growth). */
   studied: boolean;
   inEducation: boolean;
+  /** Health target lost to injuries still healing or lingering. */
+  injuryPenalty: number;
 };
 
 /** Yearly drift (SPEC §3.2). Each stat moves part of the way toward a baseline. */
@@ -83,7 +85,7 @@ export function driftStats(ctx: Ctx, c: Circumstances): void {
 
   // Health.
   let hTarget = healthBaseline(age, p.genes.health) + traitDrift(s, 'health') * 3;
-  hTarget -= Math.max(0, st.stress - 60) * 0.25;
+  hTarget -= Math.max(0, st.stress - 60) * 0.25 + c.injuryPenalty;
   st.health = clampStat(pull(st.health, hTarget, 0.2) + noise(2));
 
   // Looks.

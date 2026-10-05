@@ -3,6 +3,7 @@ import type { ViceKey } from '../types';
 import { clampStat } from '../util';
 import type { CheatDef } from './types';
 import { illnessOptions, viceOptions } from './options';
+import { addInjury } from '../systems/injuries';
 
 export const HEALTH_CHEATS: CheatDef[] = [
   {
@@ -15,6 +16,7 @@ export const HEALTH_CHEATS: CheatDef[] = [
     run: (ctx) => {
       ctx.s.health.illnesses = [];
       ctx.s.health.injuries = 0;
+      ctx.s.health.injuryList = [];
       ctx.s.player.stats.health = Math.max(ctx.s.player.stats.health, 90);
       return 'Cured';
     },
@@ -29,6 +31,19 @@ export const HEALTH_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       addIllness(ctx, String(p['illness']));
       return `Added ${String(p['illness'])}`;
+    },
+  },
+  {
+    id: 'injury.add',
+    group: 'health',
+    label: 'Add an injury',
+    syntax: 'injury add {severity}',
+    help: 'Hurt yourself: 6–11 is minor, 12–19 major, 20+ serious. Example: injury add 15',
+    params: [{ name: 'severity', type: 'int', min: 6, max: 40 }],
+    run: (ctx, p) => {
+      addInjury(ctx, Number(p['severity']));
+      const i = ctx.s.health.injuryList.at(-1);
+      return i ? `Added a ${i.tier} injury: ${i.kind}` : 'Added an injury';
     },
   },
   {

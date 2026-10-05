@@ -6,7 +6,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
 - **Content:** 307 original events (24 chains) shape each year.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
-- **Cheats:** a full cheat menu (68 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
+- **Cheats:** a full cheat menu (69 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
 
 ## Installing the Mac app
@@ -66,7 +66,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | §5.5 Music and fame | `systems/music.ts`, `events/fame.ts` | `music.test.ts` | none |
 | §5.6 Money | `economy.ts`, `finance.ts`, `loans.ts`, `banking.ts` | `finance.test.ts`, sim invariants | bankruptcy and the tax test added in the audit |
 | §5.7 Assets | `systems/assets.ts`, `content/assets.ts` | `finance.test.ts`, e2e flow 6 | none |
-| §5.8–5.9 Health, vices | `health.ts`, `illness.ts`, `vices.ts` | `health.test.ts`, `vices.test.ts` | injuries are a count and a Health hit, not records |
+| §5.8–5.9 Health, vices | `health.ts`, `illness.ts`, `vices.ts` | `health.test.ts`, `vices.test.ts`, `injuries.test.ts` | injury records with healing, lingering and treatment added after the audit (S7) |
 | §5.10 Crime and justice | `crime.ts`, `legal-effects.ts`, `events/legal.ts`, `events/prison.ts` | `crime.test.ts`, e2e flow 7 | prison events added in the audit |
 | §5.11 Countries | `content/countries/*`, `emigration.ts` | `world.test.ts`, e2e flow 8 | none |
 | §5.12 Traits and skills | `content/traits.ts`, `skills.ts`, `describe.ts` | `world.test.ts`, e2e `settings` | none |
@@ -84,7 +84,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Known issues and limitations
 
-- Injuries are a counter plus a Health hit, not individual injury records.
 - Originality and "no self-harm" are enforced by the writing guide and by hand review. `content:check` catches duplicates, banned words, tokens and age rules, but not originality.
 - Toasts sit in the bottom of the left column. At 1024×700 they can cover the quick facts for their 4 seconds.
 - The default bot persona never commits crimes (DONE §4), so the 300-life sim shows 0% imprisoned. The criminal persona in `sim:coverage` covers prison.
@@ -153,7 +152,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |
-  | Cheat commands | 68 |
+  | Cheat commands | 69 |
 
 ## Screenshots
 

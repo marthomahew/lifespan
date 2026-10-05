@@ -25,6 +25,7 @@ import {
 } from './systems/assets';
 import type { GameState } from './types';
 import { cloneState } from './util';
+import { treatInjury } from './systems/injuries';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -45,6 +46,7 @@ export type PlayerAction =
   | { type: 'buy_item'; item: string }
   | { type: 'crime'; id: string }
   | { type: 'treat'; illness: string; method: Treatment }
+  | { type: 'treat_injury'; index: number; method: 'physio' | 'surgery' }
   | { type: 'emigrate'; country: string; city?: string };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
@@ -106,6 +108,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'treat':
       treat(ctx, action.illness, action.method);
+      break;
+    case 'treat_injury':
+      treatInjury(ctx, action.index, action.method);
       break;
     case 'emigrate':
       emigrate(ctx, action.country, action.city);

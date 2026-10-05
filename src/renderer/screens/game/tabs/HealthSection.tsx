@@ -1,5 +1,6 @@
 import { formatMoney, treatmentsFor, VICE_LABEL, VICES, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { injuryLabel, injuryOptions } from '../../../../engine/systems/injuries';
 
 /** Current illnesses with every treatment's cost and odds, plus addiction meters worth knowing about. */
 export function HealthSection({
@@ -11,7 +12,8 @@ export function HealthSection({
 }): React.JSX.Element | null {
   const ills = treatmentsFor(game);
   const vices = VICES.filter((v) => game.vices.levels[v] >= 20);
-  if (!ills.length && !vices.length) return null;
+  const hurts = game.health.injuryList;
+  if (!ills.length && !vices.length && !hurts.length) return null;
   return (
     <section className="panel-section" data-testid="health-section">
       <h3 className="section-title">Health</h3>
@@ -33,6 +35,37 @@ export function HealthSection({
                 title={`${Math.round(o.odds * 100)}% chance`}
                 onClick={() =>
                   onError(doAct({ type: 'treat', illness: i.illness, method: o.method }))
+                }
+              >
+                {o.method} · {formatMoney(game, o.cost)}
+              </button>
+            ))}
+          </li>
+        ))}
+        {hurts.map((inj, idx) => (
+          <li
+            key={`${inj.kind}-${inj.year}-${idx}`}
+            className="asset-row"
+            data-testid={`injury-${idx}`}
+          >
+            <span className="grow">
+              🩹 {injuryLabel(inj).charAt(0).toUpperCase() + injuryLabel(inj).slice(1)}
+              <span className="muted small">
+                {' '}
+                ·{' '}
+                {inj.lingering
+                  ? 'never fully healed'
+                  : `${inj.tier}, about ${inj.healsIn} year${inj.healsIn === 1 ? '' : 's'} to heal`}
+              </span>
+            </span>
+            {injuryOptions(game, idx).map((o) => (
+              <button
+                key={o.method}
+                data-testid={`injury-${idx}-${o.method}`}
+                title={`${Math.round(o.odds * 100)}% chance`}
+                disabled={o.method === 'physio' && inj.physioYear === game.year}
+                onClick={() =>
+                  onError(doAct({ type: 'treat_injury', index: idx, method: o.method }))
                 }
               >
                 {o.method} · {formatMoney(game, o.cost)}

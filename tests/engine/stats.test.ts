@@ -106,6 +106,7 @@ describe('stats (M1.4)', () => {
       lifestyle: 0,
       studied: false,
       inEducation: false,
+      injuryPenalty: 0,
     };
     const drift = (over: Partial<Circumstances>): GameState => {
       const s = clone(immortal(21));

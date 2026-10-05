@@ -15,6 +15,7 @@ import type { ChainPayload, Npc } from '../types';
 import { clampStat } from '../util';
 import { renderText } from './tokens';
 import type { Effect, EventDef, MoneyAmount, OutcomeDef } from './types';
+import { addInjury } from '../systems/injuries';
 
 export function outcomeChance(ctx: Ctx, o: OutcomeDef, payload: ChainPayload = {}): number {
   const c = typeof o.chance === 'function' ? o.chance(ctx.s, payload) : o.chance;
@@ -93,8 +94,7 @@ export function applyEffect(
   } else if ('cure' in e) {
     cureIllness(ctx, e.cure);
   } else if ('injury' in e) {
-    addStat(s, 'health', -Math.abs(e.injury));
-    s.health.injuries += 1;
+    addInjury(ctx, e.injury);
   } else if ('vice' in e) {
     s.vices.levels[e.vice] = clampStat(s.vices.levels[e.vice] + e.delta);
     if (e.delta > 0) s.vices.lastUse[e.vice] = s.year;

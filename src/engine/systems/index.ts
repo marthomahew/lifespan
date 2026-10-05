@@ -16,6 +16,7 @@ import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
 import { bonusLine, perkBonus, perkEffect } from './perks';
+import { injuryPenalty } from './injuries';
 
 /** Inputs to stat drift derived from the rest of the state. */
 export function yearCircumstances(s: GameState): Circumstances {
@@ -39,6 +40,7 @@ export function yearCircumstances(s: GameState): Circumstances {
       (s.money.lifestyle === 'lavish' ? 6 : s.money.lifestyle === 'frugal' ? -4 : 0) +
       perkEffect(s).happiness,
     studied: s.education.studyYear === s.year - 1,
+    injuryPenalty: injuryPenalty(s),
     inEducation:
       (s.player.age >= 5 && s.player.age <= 17 && !s.education.droppedOut) ||
       s.education.enrollment !== null,

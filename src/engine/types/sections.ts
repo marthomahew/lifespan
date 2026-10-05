@@ -133,10 +133,24 @@ export type MusicState = {
 
 export type Illness = { id: string; since: number; severity: number; treated: number };
 
+export type InjuryTier = 'minor' | 'major' | 'serious';
+export type Injury = {
+  kind: string;
+  tier: InjuryTier;
+  year: number;
+  /** Years of healing left. */
+  healsIn: number;
+  /** Healed badly: a small permanent drag until surgery. */
+  lingering: boolean;
+  physioYear: number;
+};
+
 export type HealthState = {
   illnesses: Illness[];
   lastDoctor: number;
+  /** Lifetime count, bruises included. */
   injuries: number;
+  injuryList: Injury[];
   surgeryCount: number;
   lowHappyYears: number;
   highStressYears: number;

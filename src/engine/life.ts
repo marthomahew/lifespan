@@ -140,6 +140,7 @@ export function emptyState(seed: number): GameState {
       illnesses: [],
       lastDoctor: -1,
       injuries: 0,
+      injuryList: [],
       surgeryCount: 0,
       lowHappyYears: 0,
       highStressYears: 0,
