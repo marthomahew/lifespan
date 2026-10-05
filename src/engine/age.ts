@@ -13,6 +13,7 @@ import type { GameState } from './types';
 import { cloneState } from './util';
 import { checkAspirations } from './systems/aspirations';
 import { healthWarning } from './systems/health-warning';
+import { checkChallenge } from './systems/challenge';
 
 /** Inflation: default 2.5% a year with ±1.5 points of seeded noise, never below 0. */
 export function stepInflation(ctx: Ctx): void {
@@ -63,6 +64,7 @@ export function ageUpInPlace(ctx: Ctx): void {
   ctx.phase('records');
   checkAchievements(ctx);
   checkAspirations(ctx);
+  checkChallenge(ctx);
   prunePending(s);
   applyLocks(s);
   recordStatHistory(s);

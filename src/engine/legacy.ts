@@ -8,6 +8,7 @@ import { Rng } from './rng';
 import { recordStatHistory } from './stats';
 import { PLAYER_ID, type GameState, type GenerationRecord, type Npc, type Role } from './types';
 import { clampStat, clone } from './util';
+import { CHALLENGE_BY_ID } from '../content/challenges';
 
 export type HeirOption = { id: number; name: string; age: number; rel: number; money: number };
 
@@ -76,6 +77,9 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
   next.cheats = { ...s.cheats, locks: {} };
   next.dynasty = s.dynasty;
   next.generation = s.generation + 1;
+  // A family challenge passes to the heir along with everything else.
+  if (s.challenge && CHALLENGE_BY_ID[s.challenge.id]?.spansGenerations)
+    next.challenge = { ...s.challenge };
   next.nextNpcId = s.nextNpcId + 1;
   const oldId = s.nextNpcId;
 

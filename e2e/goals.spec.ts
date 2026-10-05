@@ -21,3 +21,27 @@ test('life goals: choose, drop, and reach one', async ({ page }) => {
   await expect(page.getByTestId('goal-abroad')).toContainText('✅');
   await expect(page.getByTestId('goal-drop-abroad')).toHaveCount(0);
 });
+
+test('challenges: pick one, see it in the goals card, win it, and it is remembered', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await page.getByTestId('f-first').fill('Ada');
+  await page.getByTestId('f-seed').fill('5150');
+  await page.getByTestId('btn-challenges').click();
+  await expect(page.getByTestId('challenge-picker')).toBeVisible();
+  await page.getByTestId('challenge-rags_to_riches').click();
+  await expect(page.getByTestId('game-screen')).toBeVisible();
+  await expect(page.getByTestId('player-name')).toContainText('Ada');
+  await expect(page.getByTestId('goal-challenge')).toContainText('Rags to Riches');
+  await cheat(page, 'age set 30', 'money add 3000000');
+  await clearPopups(page);
+  await page.getByTestId('age-up').click();
+  await expect(page.getByTestId('goal-challenge')).toContainText('✅');
+  // Back to the picker: it is marked as completed.
+  await page.goto('/');
+  await page.getByTestId('btn-new-life').click();
+  await page.getByTestId('btn-challenges').click();
+  await expect(page.getByTestId('challenge-rags_to_riches')).toContainText('✅');
+});

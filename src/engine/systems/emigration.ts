@@ -110,6 +110,7 @@ export function emigrate(
   if (!to) throw new EngineError('unknown country');
   if (!instant) s.money.cash -= money(s, MOVE_COST);
   convertCurrency(s, to.currency.perUsd / from.currency.perUsd);
+  if (!s.player.flags.includes(`lived:${from.id}`)) s.player.flags.push(`lived:${from.id}`);
   s.player.country = to.id;
   s.player.city = city && to.cities.includes(city) ? city : ctx.rng.pick(to.cities);
   if (!s.player.flags.includes('emigrated')) s.player.flags.push('emigrated');

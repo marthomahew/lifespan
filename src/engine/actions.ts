@@ -27,6 +27,7 @@ import type { GameState } from './types';
 import { cloneState } from './util';
 import { treatInjury } from './systems/injuries';
 import { checkAspirations, chooseAspiration, dropAspiration } from './systems/aspirations';
+import { checkChallenge } from './systems/challenge';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -126,6 +127,7 @@ export function act(input: GameState, action: PlayerAction): Step {
   applyLocks(ctx.s);
   checkAchievements(ctx);
   checkAspirations(ctx);
+  checkChallenge(ctx);
   return ctx.finish();
 }
 

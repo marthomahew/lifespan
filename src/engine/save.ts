@@ -108,6 +108,8 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
       player: { ...player, hair: player['hair'] ?? 'default', talent: player['talent'] ?? null },
     };
   },
+  // v5: challenges.
+  4: (raw) => ({ ...raw, challenge: raw['challenge'] ?? null }),
 };
 
 export class SaveError extends Error {}

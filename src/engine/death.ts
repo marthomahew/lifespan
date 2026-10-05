@@ -5,12 +5,17 @@ import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
 import { article, lowerTitle } from './text';
 import { ASPIRATION_BY_ID } from '../content/aspirations';
+import { CHALLENGE_BY_ID } from '../content/challenges';
 import { GRAD_BY_ID, MAJOR_BY_ID } from '../content/education';
+import { challengeAtDeath, checkChallenge } from './systems/challenge';
 
 /** End the life with a recorded cause (SPEC §3.5). */
 export function die(ctx: Ctx, cause: string): void {
   const s = ctx.s;
   if (s.death) return;
+  // Settle the challenge before the record is written.
+  checkChallenge(ctx);
+  challengeAtDeath(ctx);
   s.pending = [];
   const title = lifeTitle(s);
   const estate = settleEstate(s);
@@ -88,6 +93,15 @@ export function obituary(s: GameState): Obituary | null {
       `Fulfilled ${done.length} of ${p.aspirations.length} life goals${names.length ? `: ${names.join(', ')}` : ''}.`,
     );
   }
+  const ch = s.challenge ? CHALLENGE_BY_ID[s.challenge.id] : undefined;
+  if (ch && s.challenge)
+    summary.push(
+      s.challenge.status === 'won'
+        ? `Completed the ${ch.title} challenge.`
+        : s.challenge.status === 'lost'
+          ? `Took on the ${ch.title} challenge, and fell short.`
+          : `Was still working on the ${ch.title} challenge.`,
+    );
   const ticks = p.flags.filter((f) => f === 'bucket_item').length;
   if (ticks)
     summary.push(`Ticked ${ticks === 1 ? 'one thing' : `${ticks} things`} off the bucket list.`);

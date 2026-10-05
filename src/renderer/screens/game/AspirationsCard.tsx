@@ -1,4 +1,5 @@
 import { ASPIRATION_BY_ID } from '../../../content/aspirations';
+import { CHALLENGE_BY_ID } from '../../../content/challenges';
 import type { GameState } from '../../../engine';
 import { ASPIRATION_MIN_AGE, MAX_ACTIVE_ASPIRATIONS } from '../../../engine/systems/aspirations';
 import { app, doAct } from '../../store/app';
@@ -8,10 +9,23 @@ export function AspirationsCard({ game }: { game: GameState }): React.JSX.Elemen
   const goals = game.player.aspirations;
   const open = goals.filter((g) => g.done === null).length;
   const canChoose = game.player.age >= ASPIRATION_MIN_AGE && open < MAX_ACTIVE_ASPIRATIONS;
-  if (!goals.length && game.player.age < ASPIRATION_MIN_AGE) return null;
+  const ch = game.challenge ? CHALLENGE_BY_ID[game.challenge.id] : undefined;
+  if (!goals.length && !ch && game.player.age < ASPIRATION_MIN_AGE) return null;
   return (
     <section className="card pad" aria-label="Life goals" data-testid="goals-card">
       <h3 className="section-title">Life goals</h3>
+      {ch && game.challenge && (
+        <p className="goal-challenge" data-testid="goal-challenge" title={ch.premise}>
+          {game.challenge.status === 'won'
+            ? '✅'
+            : game.challenge.status === 'lost'
+              ? '✖️'
+              : ch.emoji}{' '}
+          <strong>{ch.title}</strong>
+          <br />
+          <span className="muted small">{ch.goal}</span>
+        </p>
+      )}
       <ul className="plain goals">
         {goals.map((g) => {
           const def = ASPIRATION_BY_ID[g.id];

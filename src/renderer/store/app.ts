@@ -19,6 +19,7 @@ import { createSaveStore, type SaveStore } from '../platform/saveStore';
 import { createStore, useStore } from './store';
 import { applySettingsToDocument, loadSettings, saveSettings, type Settings } from './settings';
 import { choiceResult, type ChoiceResult } from './result';
+import { markCompleted } from './challenges';
 
 export type Screen = 'start' | 'new' | 'game' | 'obituary' | 'lives' | 'settings';
 export type Tab = 'occupation' | 'assets' | 'relationships' | 'activities';
@@ -125,6 +126,9 @@ export function applyStep(step: Step, opts: { autosave?: boolean } = {}): void {
     screen: game.death ? 'obituary' : app.get().screen === 'obituary' ? 'game' : app.get().screen,
   });
   pushToasts(step.toasts);
+  // Remember a won challenge across lives.
+  if (game.challenge?.status === 'won' && prev?.challenge?.status !== 'won')
+    markCompleted(game.challenge.id);
   const newYear = !prev || prev.year !== game.year || game.death !== prev.death;
   if ((opts.autosave ?? true) && app.get().settings.autosave && newYear) void persist(game);
 }

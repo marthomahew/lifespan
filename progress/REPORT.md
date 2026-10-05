@@ -231,6 +231,7 @@ What changed:
 | `24-buy-home` | Buy dialog with the mortgage quote |
 | `25-goals` | Life goal picker |
 | `26-result` | Result card after a choice |
+| `27-challenges` | Challenge picker |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

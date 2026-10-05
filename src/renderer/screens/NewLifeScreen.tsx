@@ -8,10 +8,13 @@ import {
   StatsSection,
 } from './newlife/Sections';
 import { DICE, START, toOptions, useNewLife } from './newlife/useNewLife';
+import { useState } from 'react';
+import { ChallengePicker } from './ChallengePicker';
 
 /** Random in one click, or built piece by piece with a live preview of who you'll be. */
 export function NewLifeScreen(): React.JSX.Element {
   const [d, set] = useNewLife();
+  const [challenges, setChallenges] = useState(false);
   const begin = (e?: React.FormEvent): void => {
     e?.preventDefault();
     const { opts, seed } = toOptions(d);
@@ -29,6 +32,9 @@ export function NewLifeScreen(): React.JSX.Element {
         <span className="grow" />
         <button className="ghost" data-testid="btn-reset-life" onClick={() => set(() => START)}>
           Clear
+        </button>
+        <button className="ghost" data-testid="btn-challenges" onClick={() => setChallenges(true)}>
+          🏆 Challenges
         </button>
         <button className="ghost" data-testid="btn-roll-all" onClick={rollAll}>
           🎲 Roll everything
@@ -51,6 +57,13 @@ export function NewLifeScreen(): React.JSX.Element {
           </button>
         </Preview>
       </form>
+      {challenges && (
+        <ChallengePicker
+          own={toOptions(d).opts}
+          {...(toOptions(d).seed !== undefined ? { seed: toOptions(d).seed } : {})}
+          onClose={() => setChallenges(false)}
+        />
+      )}
     </div>
   );
 }

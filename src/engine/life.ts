@@ -21,6 +21,7 @@ import { clampStat } from './util';
 import { refToLocal } from './economy';
 import { HAIR_STYLES } from './avatar';
 import { SKILL_BY_ID } from '../content/skills';
+import { CHALLENGE_BY_ID } from '../content/challenges';
 
 export type NewLifeOptions = {
   first?: string;
@@ -43,6 +44,8 @@ export type NewLifeOptions = {
   parents?: ParentSetup;
   /** 0–4 older siblings and younger ones still to come are rolled as usual. */
   siblings?: number;
+  /** Start as a challenge (its setup is merged in by the caller). */
+  challenge?: string;
 };
 
 const HEREDITARY = [
@@ -205,6 +208,7 @@ export function emptyState(seed: number): GameState {
     death: null,
     dynasty: [],
     generation: 1,
+    challenge: null,
   };
 }
 
@@ -317,6 +321,8 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
     s.settings.popupsPerYear = Math.min(5, Math.max(1, Math.round(opts.popupsPerYear)));
 
   generateFamily(ctx, opts);
+  if (opts.challenge && CHALLENGE_BY_ID[opts.challenge])
+    s.challenge = { id: opts.challenge, status: 'active', year: s.year };
   s.lifeId = `${p.first.toLowerCase().replace(/[^a-z0-9]/g, '') || 'life'}-${(seed >>> 0).toString(36)}-${r.int(0, 1679615).toString(36)}`;
 
   const parents = s.npcs.filter((n) => n.roles.includes('mother') || n.roles.includes('father'));

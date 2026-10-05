@@ -99,5 +99,7 @@ export type GameState = {
   snapshots: Snapshot[];
   death: DeathInfo | null;
   dynasty: GenerationRecord[];
+  /** The challenge this life was started with, if any. */
+  challenge: { id: string; status: 'active' | 'won' | 'lost'; year: number } | null;
   generation: number;
 };

@@ -445,3 +445,50 @@ button.quiet-danger {
 .networth-chart .axis.zero {
   stroke-dasharray: 3 3;
 }
+
+/* Challenges (S19). */
+.challenge-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.challenge-list li {
+  display: flex;
+}
+.challenge {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  padding: 10px 12px;
+}
+.challenge.done {
+  border-color: var(--green);
+}
+.challenge-emoji {
+  font-size: 1.6em;
+}
+.challenge-title {
+  display: block;
+  font-weight: 650;
+}
+.challenge-premise,
+.challenge-goal {
+  display: block;
+  margin-top: 2px;
+}
+.challenge-stars {
+  color: var(--amber);
+  white-space: nowrap;
+}
+.goal-challenge {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  font-size: 0.9em;
+}

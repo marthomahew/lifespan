@@ -569,5 +569,10 @@
     "title": "UI pass from a 35-item design review: sticky stats, toasts placed per screen, wrapped choice setups, safe-centred tree, readable controls and pills, one primary per area, military disclosure, listings, relationship numbers, centred settings and lives, obituary tiles, start screen, popup context line, chart scale, capitalised reasons, title case, cheat icon.",
     "passes": true,
     "evidence": "e2e/layout.spec.ts toast placement; e2e suite (51); npm run shots reviewed"
+  },
+  "S19": {
+    "title": "Challenges: 12 lives with a premise and a goal (some with deadlines, one across generations), started from the New Life page with your own choices filling the rest; won or missed with a toast and an obituary line; completions remembered across lives; save format v5.",
+    "passes": true,
+    "evidence": "tests/engine/challenges.test.ts; e2e/goals.spec.ts challenges"
   }
 }
