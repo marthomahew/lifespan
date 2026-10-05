@@ -28,7 +28,9 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as {
 const electronVersion = pkg.devDependencies['electron'] ?? '44.5.1';
 const platform = target === 'mac' ? 'darwin' : 'linux';
 const outDir = resolve('release', `Lifespan-${platform}-arm64`);
-if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
+// Retries: on the Mac bind mount, Finder can drop a .DS_Store in mid-delete.
+if (existsSync(outDir))
+  rmSync(outDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 
 // Only the built app and production dependencies go into app.asar.
 const KEEP = /^\/(out|node_modules|package\.json)(\/|$)/;
