@@ -327,6 +327,7 @@ export const LIFE_TITLES: LifeTitleDef[] = [
       s.music.releases.some((r) => r.quality >= 60),
   },
   { title: 'Decorated, Twice Over', when: (s) => (s.military?.medals.length ?? 0) >= 2 },
+  { title: 'A Life In Uniform', when: (s) => (s.military?.years ?? 0) >= 12 },
   {
     title: 'The Smartest Person In Most Rooms',
     when: (s) => hasDegree(s, ['doctorate', 'law', 'medicine']) && s.player.stats.smarts >= 80,
@@ -346,7 +347,7 @@ export const LIFE_TITLES: LifeTitleDef[] = [
   { title: 'Comfortably Off, Loudly', when: (s) => nw(s) >= 1_000_000 },
   {
     title: 'Gainfully Unemployed',
-    when: (s) => s.player.age >= 30 && !flag(s, 'ever_employed_ft'),
+    when: (s) => s.player.age >= 30 && !flag(s, 'ever_employed_ft') && (s.military?.years ?? 0) < 4,
   },
   { title: 'Married To The Job', when: (s) => s.career.yearsWorked >= 40 },
   { title: 'Ordinary, In The Best Way', when: () => true },

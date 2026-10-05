@@ -58,6 +58,27 @@ describe('achievements and life titles (M10.3)', () => {
     plain.player.flags.push('ever_employed_ft');
     plain.player.stats.karma = 50;
     expect(lifeTitle(plain)).toBe('Ordinary, In The Best Way');
+    // A career in the forces is a career, not unemployment.
+    const vet = clone(kid);
+    vet.player.age = 65;
+    vet.player.stats.karma = 50;
+    vet.military = {
+      branch: 'Army',
+      specialty: 'infantry',
+      officer: false,
+      rank: 5,
+      since: 1990,
+      deployed: false,
+      deployments: 3,
+      medals: [],
+      conduct: 70,
+      discharge: 'honorable',
+      active: false,
+      years: 20,
+    };
+    expect(lifeTitle(vet)).toBe('A Life In Uniform');
+    vet.military.years = 6;
+    expect(lifeTitle(vet)).not.toBe('Gainfully Unemployed');
     const titles = new Set<string>();
     for (let seed = 1; seed <= 25; seed++)
       titles.add(runCheat(newLife({}, seed), 'deathbot', {}).state.death?.title ?? '');

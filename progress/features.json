@@ -533,6 +533,6 @@
   "S11": {
     "title": "Story and state agree: moving abroad with a partner really moves you; children who emigrate are flagged as moved away; the obituary records military service; probation wording.",
     "passes": true,
-    "evidence": "tests/engine/romance.test.ts moving abroad together; tests/engine/text.test.ts obituary service line"
+    "evidence": "tests/engine/romance.test.ts moving abroad together; tests/engine/text.test.ts obituary service line; tests/engine/achievements.test.ts veteran titles"
   }
 }
