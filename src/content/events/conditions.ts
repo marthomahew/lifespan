@@ -1,5 +1,6 @@
 import { refToLocal } from '../../engine/economy';
 import type { GameState } from '../../engine/types';
+import { JOB_BY_ID } from '../jobs';
 
 /** Small pure predicates for event `when`, `weight` and choice `requires` functions. */
 export const canAfford =
@@ -27,6 +28,21 @@ export const statBelow =
   (s: GameState): boolean =>
     s.player.stats[k] < v;
 export const hasJob = (s: GameState): boolean => s.career.jobId !== null;
+/** Working full-time in a job field (healthcare, law, trades...). */
+export const inField =
+  (field: string) =>
+  (s: GameState): boolean =>
+    s.career.jobId !== null && JOB_BY_ID[s.career.jobId]?.field === field;
+/** Working full-time as one particular job. */
+export const isJob =
+  (...ids: string[]) =>
+  (s: GameState): boolean =>
+    s.career.jobId !== null && ids.includes(s.career.jobId);
+/** Career level (0 = entry title) at least n. */
+export const jobLevelAtLeast =
+  (n: number) =>
+  (s: GameState): boolean =>
+    s.career.jobId !== null && s.career.level >= n;
 export const noJob = (s: GameState): boolean => s.career.jobId === null;
 export const inSchool = (s: GameState): boolean =>
   s.player.age >= 5 && s.player.age <= 17 && !s.education.droppedOut;
