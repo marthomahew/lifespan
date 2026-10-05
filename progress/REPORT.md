@@ -85,7 +85,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 ## Known issues and limitations
 
 - Originality and "no self-harm" are enforced by the writing guide and by hand review. `content:check` catches duplicates, banned words, tokens and age rules, but not originality.
-- Toasts sit in the bottom of the left column. At 1024×700 they can cover the quick facts for their 4 seconds.
+- Toasts sit in the bottom of the left column, under any open dialog. At 1024×700 they can cover the quick facts for their 4 seconds.
 - The default bot persona never commits crimes (DONE §4), so the 300-life sim shows 0% imprisoned. The criminal persona in `sim:coverage` covers prison.
 
 ## Ten key decisions
@@ -184,6 +184,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | `22-obituary` | Obituary |
 | `23-dynasty` | Dynasty |
 | `24-buy-home` | Buy dialog with the mortgage quote |
+| `25-goals` | Life goal picker |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

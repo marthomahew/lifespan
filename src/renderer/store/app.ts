@@ -21,7 +21,15 @@ import { applySettingsToDocument, loadSettings, saveSettings, type Settings } fr
 export type Screen = 'start' | 'new' | 'game' | 'obituary' | 'lives' | 'settings';
 export type Tab = 'occupation' | 'assets' | 'relationships' | 'activities';
 export type Overlay =
-  'help' | 'palette' | 'achievements' | 'dynasty' | 'tree' | 'finances' | 'timeline' | null;
+  | 'help'
+  | 'palette'
+  | 'achievements'
+  | 'dynasty'
+  | 'tree'
+  | 'finances'
+  | 'timeline'
+  | 'goals'
+  | null;
 export type ToastItem = Toast & { id: number };
 
 export type AppState = {

@@ -12,6 +12,7 @@ import { quickFacts } from './facts';
 import { SkillsCard } from './SkillsCard';
 import { useApp } from '../../store/app';
 import { HIDDEN_STATS, VICES } from '../../../engine';
+import { AspirationsCard } from './AspirationsCard';
 
 const STATS = [
   { id: 'happiness', label: 'Happiness', emoji: '😊' },
@@ -93,6 +94,7 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
         </div>
       </section>
       <SkillsCard game={game} />
+      <AspirationsCard game={game} />
       <section className="card pad facts" aria-label="Quick facts" data-testid="quick-facts">
         <div>
           <span className="muted">Stage</span> {STAGE_LABEL[stageOf(p.age)]}

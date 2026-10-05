@@ -95,6 +95,11 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
     const health = (raw['health'] ?? {}) as Record<string, unknown>;
     return { ...raw, health: { ...health, injuryList: health['injuryList'] ?? [] } };
   },
+  // v3: life goals (player.aspirations).
+  2: (raw) => {
+    const player = (raw['player'] ?? {}) as Record<string, unknown>;
+    return { ...raw, player: { ...player, aspirations: player['aspirations'] ?? [] } };
+  },
 };
 
 export class SaveError extends Error {}

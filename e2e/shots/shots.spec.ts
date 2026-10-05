@@ -55,6 +55,12 @@ for (const size of SIZES) {
       await ageTo(page, 24);
       while (await page.getByTestId('event-modal').isVisible())
         await page.locator('button.choice:not([disabled])').first().click();
+      await page.getByTestId('btn-choose-goal').click();
+      await page.getByTestId('goal-picker').waitFor();
+      await shot('25-goals');
+      await page.getByTestId('pick-goal-own_home').click();
+      await page.getByTestId('btn-choose-goal').click();
+      await page.getByTestId('pick-goal-marry').click();
       await shot('05-main-adult');
       await page.getByTestId('tab-relationships').click();
       await shot('06-relationships');

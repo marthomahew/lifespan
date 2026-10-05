@@ -52,6 +52,8 @@ export type Player = {
   languages: Record<string, number>;
   flags: string[];
   achievements: string[];
+  /** Life goals the player chose, and the year each was reached. */
+  aspirations: { id: string; chosen: number; done: number | null }[];
   parentIds: number[];
   /** Inherited potential that drift pulls toward. */
   genes: { looks: number; smarts: number; health: number };

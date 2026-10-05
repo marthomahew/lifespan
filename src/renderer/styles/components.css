@@ -74,7 +74,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  z-index: 80;
+  /* Under modal backdrops (50), so a dialog is never covered. */
+  z-index: 40;
 }
 .toast {
   padding: 6px 10px;
@@ -544,4 +545,31 @@
   position: sticky;
   left: 0;
   width: max-content;
+}
+
+/* Life goals card. */
+.goals li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  font-size: 0.92em;
+}
+.goals li.done {
+  color: var(--text-2);
+}
+.goals .ghost.small {
+  padding: 0 6px;
+  font-size: 0.85em;
+}
+.goal-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.goal-list li {
+  display: flex;
+}
+.goal-list .activity {
+  flex: 1;
 }

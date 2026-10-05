@@ -18,6 +18,7 @@ import { DynastyView } from '../screens/DynastyView';
 import { Timeline } from '../screens/Timeline';
 import { CommandPalette } from '../screens/CommandPalette';
 import { NpcPanel } from '../screens/game/NpcPanel';
+import { GoalPicker } from '../screens/GoalPicker';
 
 export function App(): React.JSX.Element {
   const screen = useApp((s) => s.screen);
@@ -59,6 +60,7 @@ export function App(): React.JSX.Element {
       {overlay === 'achievements' && game && <AchievementsView game={game} />}
       {overlay === 'dynasty' && game && <DynastyView game={game} />}
       {overlay === 'timeline' && game && <Timeline game={game} />}
+      {overlay === 'goals' && game && <GoalPicker game={game} />}
       {overlay === 'palette' && game && <CommandPalette game={game} />}
       {npcId !== null && game && !overlay && <NpcPanel game={game} npcId={npcId} />}
       {error && (

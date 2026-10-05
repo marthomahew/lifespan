@@ -88,6 +88,7 @@ export function emptyState(seed: number): GameState {
       languages: {},
       flags: [],
       achievements: [],
+      aspirations: [],
       parentIds: [],
       genes: { looks: 50, smarts: 50, health: 80 },
     },

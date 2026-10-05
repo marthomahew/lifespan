@@ -519,5 +519,10 @@
     "title": "Career-specific events for all 14 job fields plus career-arc moments, and a second romance pack (76 events, 10 chains); bots chase a dream field so careers vary in the sims.",
     "passes": true,
     "evidence": "npm run content:check (383 events, 34 chains); npm run sim:coverage 98.4%; tests/content/conditions.test.ts"
+  },
+  "S9": {
+    "title": "Life goals: from 14, choose up to three of 20 aspirations; reaching one is celebrated once, a fulfilled goal frees a slot, and the obituary records them; save format v3.",
+    "passes": true,
+    "evidence": "tests/engine/aspirations.test.ts; e2e/goals.spec.ts"
   }
 }

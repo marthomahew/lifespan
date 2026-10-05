@@ -11,6 +11,7 @@ import { runYearSystems, yearCircumstances } from './systems';
 import { netWorthRef } from './networth';
 import type { GameState } from './types';
 import { cloneState } from './util';
+import { checkAspirations } from './systems/aspirations';
 
 /** Inflation: default 2.5% a year with ±1.5 points of seeded noise, never below 0. */
 export function stepInflation(ctx: Ctx): void {
@@ -59,6 +60,7 @@ export function ageUpInPlace(ctx: Ctx): void {
   // 8. Records and snapshot (autosave is the platform's job).
   ctx.phase('records');
   checkAchievements(ctx);
+  checkAspirations(ctx);
   prunePending(s);
   applyLocks(s);
   recordStatHistory(s);

@@ -4,6 +4,7 @@ import { lifeTitle } from './titles';
 import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
 import { withArticle } from './text';
+import { ASPIRATION_BY_ID } from '../content/aspirations';
 import { GRAD_BY_ID, MAJOR_BY_ID } from '../content/education';
 
 /** End the life with a recorded cause (SPEC §3.5). */
@@ -68,6 +69,13 @@ export function obituary(s: GameState): Obituary | null {
   if (s.legal.record.some((r) => r.verdict === 'convicted' || r.verdict === 'plea'))
     summary.push('Had a criminal record.');
   if (p.stats.fame > 40) summary.push('Was genuinely famous for a while.');
+  if (p.aspirations.length) {
+    const done = p.aspirations.filter((a) => a.done !== null);
+    const names = done.map((a) => ASPIRATION_BY_ID[a.id]?.label.toLowerCase() ?? a.id);
+    summary.push(
+      `Fulfilled ${done.length} of ${p.aspirations.length} life goals${names.length ? `: ${names.join(', ')}` : ''}.`,
+    );
+  }
   if (p.achievements.length) summary.push(`Earned ${p.achievements.length} achievements.`);
   if (!summary.length) summary.push('Lived quietly and left the world about how they found it.');
   const survivors = s.npcs

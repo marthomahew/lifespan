@@ -26,6 +26,7 @@ import {
 import type { GameState } from './types';
 import { cloneState } from './util';
 import { treatInjury } from './systems/injuries';
+import { checkAspirations, chooseAspiration, dropAspiration } from './systems/aspirations';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -47,6 +48,7 @@ export type PlayerAction =
   | { type: 'crime'; id: string }
   | { type: 'treat'; illness: string; method: Treatment }
   | { type: 'treat_injury'; index: number; method: 'physio' | 'surgery' }
+  | { type: 'aspiration'; op: 'choose' | 'drop'; id: string }
   | { type: 'emigrate'; country: string; city?: string };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
@@ -112,6 +114,10 @@ export function act(input: GameState, action: PlayerAction): Step {
     case 'treat_injury':
       treatInjury(ctx, action.index, action.method);
       break;
+    case 'aspiration':
+      if (action.op === 'choose') chooseAspiration(ctx, action.id);
+      else dropAspiration(ctx, action.id);
+      break;
     case 'emigrate':
       emigrate(ctx, action.country, action.city);
       break;
@@ -119,6 +125,7 @@ export function act(input: GameState, action: PlayerAction): Step {
   prunePending(ctx.s);
   applyLocks(ctx.s);
   checkAchievements(ctx);
+  checkAspirations(ctx);
   return ctx.finish();
 }
 
