@@ -13,6 +13,7 @@ import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { clampOdds, playerOdds } from './odds';
 import { speaksLocal } from './emigration';
+import { perkBonus, perkEffect } from './perks';
 
 const RANK: Record<EducationLevel, number> = {
   none: 0,
@@ -301,7 +302,8 @@ export function pensionFor(s: GameState): number {
   const c = countryOf(s);
   const years = s.career.yearsWorked + (s.military?.years ?? 0);
   return Math.round(
-    money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01),
+    (money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01)) *
+      perkEffect(s).pension,
   );
 }
 
@@ -331,6 +333,7 @@ export function careerIncome(s: GameState): { salary: number; other: number } {
     const [lo, hi] = pt?.salary[0] ?? [0, 0];
     salary += money(s, (lo + hi) / 2, 'wage');
   }
+  other += perkBonus(s);
   if (s.legal.prison) {
     salary = 0;
     other = 0;

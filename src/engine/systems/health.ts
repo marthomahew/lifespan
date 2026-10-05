@@ -9,6 +9,7 @@ import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { addIllness } from './illness';
 import { lowerLabel } from '../text';
+import { perkEffect } from './perks';
 
 /** Whether a parent had (or has) this illness: recorded on the NPC as a flag. */
 function familyHistory(s: GameState, id: string): boolean {
@@ -87,7 +88,8 @@ export function treatmentCost(s: GameState, def: IllnessDef, method: Treatment):
           : method === 'therapy'
             ? 0.8
             : 1;
-  return money(s, def.cost * mult * countryOf(s).healthcare.costMult);
+  // Health insurance from work cuts the bill.
+  return money(s, def.cost * mult * countryOf(s).healthcare.costMult * perkEffect(s).medical);
 }
 
 /** Treat an illness: pay, roll the method's success odds; chronic illnesses are managed, not cured. */

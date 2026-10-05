@@ -480,3 +480,6 @@
 .buy-form .primary {
   align-self: stretch;
 }
+.perk-note {
+  color: var(--accent);
+}

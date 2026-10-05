@@ -61,7 +61,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 | §4.4–4.5 Tokens, chains | `events/tokens.ts`, `select.ts` | `events-tokens`, `events-chains` tests | none |
 | §5.1 Relationships | `npcs.ts`, `interactions.ts`, `gifts.ts`, `romance.ts`, `inheritance.ts`, `family-tree.ts` | `family`, `interactions`, `romance` tests; e2e `relationships` | work romance and gifts added in the audit |
 | §5.2 Education | `systems/education.ts`, `content/education.ts` | `education.test.ts`, e2e `careers` | none |
-| §5.3 Careers | `systems/careers.ts`, `content/jobs*.ts` | `careers.test.ts`, e2e flow 4 | job perks are display-only |
+| §5.3 Careers | `systems/careers.ts`, `content/jobs*.ts` | `careers.test.ts`, e2e flow 4 | perks given real effects after the audit (S2) |
 | §5.4 Military | `systems/military.ts`, `content/military.ts` | `military.test.ts` | none |
 | §5.5 Music and fame | `systems/music.ts`, `events/fame.ts` | `music.test.ts` | none |
 | §5.6 Money | `economy.ts`, `finance.ts`, `loans.ts`, `banking.ts` | `finance.test.ts`, sim invariants | bankruptcy and the tax test added in the audit |
@@ -84,7 +84,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Known issues and limitations
 
-- Job perks are descriptive text only, with no mechanical effect.
 - Injuries are a counter plus a Health hit, not individual injury records.
 - NPCs' own lives are fairly simple: school, work, retirement, children, death.
 - Originality and "no self-harm" are enforced by the writing guide and by hand review. `content:check` catches duplicates, banned words, tokens and age rules, but not originality.
@@ -202,7 +201,6 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Suggested next steps
 
-- Give job perks real effects (a gym membership lifts Health, a company car saves on transport).
 - Deepen NPC lives: their own careers, moves, marriages and crises, shown as notices.
 - Draw connecting lines in the family tree.
 - Add an automated content lint for brand names and sensitive topics on top of the hand review.

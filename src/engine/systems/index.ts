@@ -15,6 +15,7 @@ import { skillDecay } from './skills';
 import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
+import { bonusLine, perkBonus, perkEffect } from './perks';
 
 /** Inputs to stat drift derived from the rest of the state. */
 export function yearCircumstances(s: GameState): Circumstances {
@@ -33,8 +34,10 @@ export function yearCircumstances(s: GameState): Circumstances {
     debtLoad: debts > 0 ? Math.min(1, debts / (income * 4)) : 0,
     inPrison: s.legal.prison !== null,
     closeRel,
-    jobStress: jobStress(s) + (s.military?.active ? 30 : 0),
-    lifestyle: s.money.lifestyle === 'lavish' ? 6 : s.money.lifestyle === 'frugal' ? -4 : 0,
+    jobStress: Math.max(0, jobStress(s) + perkEffect(s).stress) + (s.military?.active ? 30 : 0),
+    lifestyle:
+      (s.money.lifestyle === 'lavish' ? 6 : s.money.lifestyle === 'frugal' ? -4 : 0) +
+      perkEffect(s).happiness,
     studied: s.education.studyYear === s.year - 1,
     inEducation:
       (s.player.age >= 5 && s.player.age <= 17 && !s.education.droppedOut) ||
@@ -50,6 +53,8 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   // 2. Finances.
   ctx.phase('finances');
   const income = careerIncome(s);
+  const bonus = perkBonus(s);
+  if (bonus > 0 && !s.legal.prison) ctx.log('money', bonusLine(s, bonus));
   runFinances(ctx, { salary: income.salary + militaryPay(s), other: income.other });
   // 3. Drift.
   ctx.phase('drift');

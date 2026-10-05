@@ -3,6 +3,7 @@ import { JOB_FIELDS } from '../../../../content/jobs';
 import { formatMoney, jobListings, type GameState } from '../../../../engine';
 import { Modal } from '../../../components/Modal';
 import { doAct } from '../../../store/app';
+import { Perks } from './Perks';
 
 /** Job listings with filters: field, and requirements met (SPEC §5.3). */
 export function JobListings({
@@ -77,9 +78,7 @@ export function JobListings({
                 <span className="muted small">· {l.job.field.replace('_', ' ')}</span>
               </div>
               <div className="muted small">{l.job.description}</div>
-              {l.job.perks.length > 0 && (
-                <div className="small perks">Perks: {l.job.perks.join(', ')}</div>
-              )}
+              <Perks jobId={l.job.id} />
               <div className="small">
                 {formatMoney(game, l.salary)} a year
                 {l.unmet.length > 0 && <span className="error"> · needs {l.unmet.join(', ')}</span>}

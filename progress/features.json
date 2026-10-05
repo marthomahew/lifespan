@@ -484,5 +484,10 @@
     "title": "Buy forms are modal dialogs (SPEC §6) with a live mortgage quote: term, deposit, rate, yearly and total cost.",
     "passes": true,
     "evidence": "tests/engine/finance.test.ts mortgage quote; e2e/assets.spec.ts flow 6 and buy dialog; e2e/a11y.spec.ts buy dialog"
+  },
+  "S2": {
+    "title": "Job perks have real effects (medical cost, pension, performance bonus, job stress, happiness) and the UI says what each perk does.",
+    "passes": true,
+    "evidence": "tests/engine/careers.test.ts job perks; e2e/careers.spec.ts perks say what they do"
   }
 }

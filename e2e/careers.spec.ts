@@ -51,3 +51,12 @@ test('military and music from the Occupation tab', async ({ page }) => {
   await expect(page.getByTestId('military-rank')).toContainText('Private');
   await expect(page.getByTestId('occupation-now')).toContainText('Navy');
 });
+
+test('perks say what they do, on listings and on the current job', async ({ page }) => {
+  await startSeeded(page, 404);
+  await cheat(page, 'age set 30', 'job set school_teacher');
+  await clearPopups(page);
+  await page.getByTestId('tab-occupation').click();
+  await expect(page.getByTestId('job-perks')).toContainText('summers off (less job stress)');
+  await expect(page.getByTestId('job-perks')).toContainText('pension (pension +25%)');
+});

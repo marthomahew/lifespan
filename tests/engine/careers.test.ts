@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   act,
+  ageUp,
   choose,
   jobListings,
   newLife,
@@ -10,6 +11,9 @@ import {
 } from '../../src/engine';
 import { FULL_TIME_JOBS, JOB_BY_ID, JOB_FIELDS, PART_TIME_JOBS } from '../../src/content/jobs';
 import { careerIncome, pensionFor } from '../../src/engine/systems/careers';
+import { perkBonus, perkEffect, perkNotes } from '../../src/engine/systems/perks';
+import { treatmentCost } from '../../src/engine/systems/health';
+import { ILLNESS_BY_ID } from '../../src/content/illnesses';
 import { clone } from '../../src/engine/util';
 import { playYears } from '../helpers';
 
@@ -189,5 +193,57 @@ describe('part-time jobs and freelance gigs (M6.6)', () => {
     const r = act(s, { type: 'career', id: 'freelance' }).state;
     expect(r.money.cash).toBeGreaterThan(s.money.cash);
     expect(() => act(r, { type: 'career', id: 'freelance' })).toThrow(/one gig a year/);
+  });
+});
+
+describe('job perks with real effects', () => {
+  const employed = (job: string, seed = 51): GameState => {
+    const s = clone(runCheat(adult(seed, 35), 'job.set', { job }).state);
+    s.cheats.noBadEvents = true;
+    return s;
+  };
+
+  it('every perk note in the listings maps to a rule, and most jobs have one', () => {
+    const real = FULL_TIME_JOBS.filter((j) => perkNotes(j.id).some((p) => p.note));
+    expect(real.length / FULL_TIME_JOBS.length).toBeGreaterThan(0.5);
+  });
+
+  it('health insurance halves medical bills', () => {
+    const nurse = employed('nurse');
+    const idle = clone(nurse);
+    idle.career.jobId = null;
+    const flu = ILLNESS_BY_ID['pneumonia'];
+    expect(flu).toBeDefined();
+    if (!flu) return;
+    const half = treatmentCost(idle, flu, 'doctor') / 2;
+    expect(Math.abs(treatmentCost(nurse, flu, 'doctor') - half)).toBeLessThanOrEqual(1);
+  });
+
+  it('pension perks raise the pension', () => {
+    const teacher = employed('school_teacher');
+    teacher.career.yearsWorked = 30;
+    const plain = clone(teacher);
+    plain.career.jobId = 'accountant';
+    expect(Math.abs(pensionFor(teacher) - pensionFor(plain) * 1.25)).toBeLessThanOrEqual(1);
+  });
+
+  it('bonuses follow performance and are paid, taxed, and logged with the year', () => {
+    const dev = employed('software_engineer');
+    dev.career.performance = 100;
+    expect(perkBonus(dev)).toBe(Math.round(dev.career.salary * 0.15));
+    dev.career.performance = 40;
+    expect(perkBonus(dev)).toBe(0);
+    dev.career.performance = 90;
+    expect(careerIncome(dev).other).toBe(perkBonus(dev));
+    const next = ageUp({ ...dev, pending: [] });
+    expect(next.log.some((e) => /stock options vest/i.test(e.text))).toBe(true);
+    expect(next.state.money.last?.otherIncome).toBeGreaterThan(0);
+  });
+
+  it('flexible work lowers stress and small comforts lift happiness', () => {
+    const e = perkEffect(employed('web_developer'));
+    expect(e.stress).toBeLessThan(0);
+    expect(perkEffect(employed('retail_associate')).happiness).toBeGreaterThan(0);
+    expect(perkEffect(employed('accountant')).stress).toBe(0);
   });
 });

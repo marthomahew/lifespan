@@ -4,6 +4,7 @@ import { formatMoney, type GameState } from '../../../../engine';
 import { barColour } from '../../../components/StatBar';
 import { doAct } from '../../../store/app';
 import { JobListings } from './JobListings';
+import { Perks } from './Perks';
 
 export function CareerSection({
   game,
@@ -33,6 +34,7 @@ export function CareerSection({
               ? ` · residency, ${game.education.residency} years left`
               : ''}
           </div>
+          <Perks jobId={job.id} testId="job-perks" />
           <div className="row perf">
             <span className="small muted">Performance</span>
             <span
