@@ -87,14 +87,14 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'millionaire',
     label: 'Millionaire',
     emoji: '💰',
-    description: 'Net worth of a million in 2026 money.',
+    description: 'Net worth of a million in today’s money.',
     check: (s) => nw(s) >= 1_000_000,
   },
   {
     id: 'deca_millionaire',
     label: 'Ten Times Over',
     emoji: '🏦',
-    description: 'Net worth of ten million in 2026 money.',
+    description: 'Net worth of ten million in today’s money.',
     check: (s) => nw(s) >= 10_000_000,
   },
   {

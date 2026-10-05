@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { COUNTRIES, COUNTRY_BY_ID } from '../../../../content/countries';
 import { emigrateReason, formatMoney, money, MOVE_COST, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { cap } from '../../../components/text';
 
 /** Move abroad (SPEC §5.11). */
 export function EmigrateSection({
@@ -62,8 +63,9 @@ export function EmigrateSection({
           Emigrate
         </button>
         <span className="muted small enroll-note">
-          {why ??
-            `Moving costs ${formatMoney(game, money(game, MOVE_COST))}. Your job stays behind.`}
+          {why
+            ? cap(why)
+            : `Moving costs ${formatMoney(game, money(game, MOVE_COST))}. Your job stays behind.`}
         </span>
       </form>
     </section>

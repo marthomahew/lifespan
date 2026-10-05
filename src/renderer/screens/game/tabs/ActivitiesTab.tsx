@@ -6,6 +6,7 @@ import { CrimeSection } from './CrimeSection';
 import { EmigrateSection } from './EmigrateSection';
 import { HealthSection } from './HealthSection';
 import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
+import { cap } from '../../../components/text';
 
 const GROUP_LABEL: Record<string, string> = {
   mind_body: 'Mind and body',
@@ -86,7 +87,9 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
                     </span>
                     <span className="grow">
                       <span className="activity-label">{a.label}</span>
-                      <span className="muted small activity-desc">{a.reason || a.description}</span>
+                      <span className="muted small activity-desc">
+                        {a.reason ? cap(a.reason) : a.description}
+                      </span>
                     </span>
                     {a.cost > 0 && <span className="muted small">{formatMoney(game, a.cost)}</span>}
                   </button>

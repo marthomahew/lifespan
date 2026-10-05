@@ -1,6 +1,7 @@
 import { CRIMES } from '../../../../content/crimes';
 import { crimeOdds, crimeReason, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { cap } from '../../../components/text';
 
 /** The crime menu (SPEC §5.13): abstract descriptions, odds shown. */
 export function CrimeSection({
@@ -32,7 +33,9 @@ export function CrimeSection({
                 </span>
                 <span className="grow">
                   <span className="activity-label">{c.label}</span>
-                  <span className="muted small activity-desc">{why ?? c.description}</span>
+                  <span className="muted small activity-desc">
+                    {why ? cap(why) : c.description}
+                  </span>
                 </span>
                 <span className="muted small">{Math.round(crimeOdds(game, c.id) * 100)}%</span>
               </button>

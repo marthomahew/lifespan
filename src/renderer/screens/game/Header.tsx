@@ -39,7 +39,7 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       </div>
       <div className="header-badges">
         {fame > 0 && (
-          <span className="badge fame" data-testid="fame-badge" title="Fame">
+          <span className="badge fame" data-testid="fame-badge" title={`Fame ${fame}/100`}>
             🌟 {fame}
           </span>
         )}
@@ -49,8 +49,12 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
           </span>
         )}
       </div>
-      <div className="cash" data-testid="header-cash" title={formatMoney(game, game.money.cash)}>
-        <span className="muted small">{c.currency.code}</span>{' '}
+      <div
+        className="cash"
+        data-testid="header-cash"
+        title={`Cash in hand: ${formatMoney(game, game.money.cash)}`}
+      >
+        <span className="muted small">Cash · {c.currency.code}</span>{' '}
         {formatMoneyShort(game, game.money.cash)}
       </div>
       <nav className="header-actions" aria-label="Game menu">

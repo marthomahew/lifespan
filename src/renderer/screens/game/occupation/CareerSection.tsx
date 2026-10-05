@@ -58,7 +58,7 @@ export function CareerSection({
             <button data-testid="btn-ask-promotion" onClick={() => act('ask_promotion')}>
               Ask for a promotion
             </button>
-            <button className="danger" data-testid="btn-quit" onClick={() => act('quit')}>
+            <button className="quiet-danger" data-testid="btn-quit" onClick={() => act('quit')}>
               Quit
             </button>
             {age >= 50 && (

@@ -36,7 +36,10 @@ export function StartScreen(): React.JSX.Element {
           🌱
         </div>
         <h1>Lifespan</h1>
-        <p className="muted">One year at a time.</p>
+        <p className="life-strip" aria-hidden="true">
+          👶 <span>·</span> 🧒 <span>·</span> 🧑 <span>·</span> 🧓
+        </p>
+        <p className="muted">A whole life, one year at a time.</p>
         <div className="col start-actions">
           {latest && (
             <button
@@ -54,14 +57,21 @@ export function StartScreen(): React.JSX.Element {
           >
             New Life
           </button>
-          <button data-testid="btn-start-lives" onClick={() => go('lives')}>
-            Lives
-          </button>
-          <button data-testid="btn-start-settings" onClick={() => go('settings')}>
-            Settings
-          </button>
+          <div className="row start-secondary">
+            <button className="ghost" data-testid="btn-start-lives" onClick={() => go('lives')}>
+              🗂️ Lives
+            </button>
+            <button
+              className="ghost"
+              data-testid="btn-start-settings"
+              onClick={() => go('settings')}
+            >
+              ⚙️ Settings
+            </button>
+          </div>
         </div>
       </div>
+      <p className="start-foot muted small">No ads, no timers, no paywalls. Just a life.</p>
     </div>
   );
 }

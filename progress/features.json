@@ -564,5 +564,10 @@
     "title": "Character customization: hair shown on the avatar (with skin tone), family background (parents together, apart, single mother or father) and siblings, a starting talent that grows faster; a New Life screen with sections, per-section dice, roll everything, and a live preview with Begin always visible; in life, pick-what dialogs for practice and languages, a new look, and a name change; save format v4.",
     "passes": true,
     "evidence": "tests/engine/customization.test.ts; e2e/new-life.spec.ts full customization, roll everything; e2e/customize.spec.ts"
+  },
+  "S18": {
+    "title": "UI pass from a 35-item design review: sticky stats, toasts placed per screen, wrapped choice setups, safe-centred tree, readable controls and pills, one primary per area, military disclosure, listings, relationship numbers, centred settings and lives, obituary tiles, start screen, popup context line, chart scale, capitalised reasons, title case, cheat icon.",
+    "passes": true,
+    "evidence": "e2e/layout.spec.ts toast placement; e2e suite (51); npm run shots reviewed"
   }
 }

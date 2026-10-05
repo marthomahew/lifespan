@@ -9,6 +9,7 @@ import {
   type GameState,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { cap } from '../../../components/text';
 
 type Kind = 'university' | 'community' | 'grad';
 
@@ -66,7 +67,7 @@ export function EducationSection({
         <ul className="plain" data-testid="degrees">
           {e.degrees.map((d, i) => (
             <li key={i}>
-              🎓 {d.level.replace('_', ' ')}
+              🎓 {cap(d.level.replace('_', ' '))}
               {d.field !== 'general'
                 ? ` · ${MAJOR_BY_ID[d.field]?.label ?? GRAD_BY_ID[d.field]?.label ?? d.field}`
                 : ''}{' '}
@@ -116,7 +117,9 @@ export function EducationSection({
             Apply
           </button>
           <span className="muted small enroll-note">
-            {reason ?? `Tuition ${formatMoney(game, tuitionFor(game, kind, prog))} a year`}
+            {reason
+              ? cap(reason)
+              : `Tuition ${formatMoney(game, tuitionFor(game, kind, prog))} a year`}
           </span>
         </form>
       )}

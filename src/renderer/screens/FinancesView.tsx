@@ -13,14 +13,28 @@ export function NetWorthChart({
 }): React.JSX.Element {
   const pts = history.slice(-80);
   const w = 640;
-  const h = 160;
+  const h = 180;
+  // Room for the value scale on the left and the years underneath.
+  const L = 58;
+  const B = 22;
   if (pts.length < 2) return <p className="muted small">The graph fills in as the years go by.</p>;
   const vals = pts.map((p) => p[2]);
   const min = Math.min(0, ...vals);
   const max = Math.max(1, ...vals);
-  const x = (i: number): number => (i / (pts.length - 1)) * (w - 20) + 10;
-  const y = (v: number): number => h - 10 - ((v - min) / (max - min)) * (h - 20);
+  const x = (i: number): number => L + (i / (pts.length - 1)) * (w - L - 16);
+  const y = (v: number): number => h - B - ((v - min) / (max - min)) * (h - B - 12);
   const d = pts.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(p[2]).toFixed(1)}`).join(' ');
+  const short = (v: number): string => {
+    const a = Math.abs(v);
+    const t =
+      a >= 1e6
+        ? `${(a / 1e6).toFixed(1)}M`
+        : a >= 1e3
+          ? `${Math.round(a / 1e3)}K`
+          : `${Math.round(a)}`;
+    return `${v < 0 ? '−' : ''}$${t}`;
+  };
+  const last = pts.at(-1);
   return (
     <svg
       viewBox={`0 0 ${w} ${h}`}
@@ -29,13 +43,21 @@ export function NetWorthChart({
       aria-label="Net worth over time, inflation-adjusted"
       data-testid="networth-chart"
     >
-      <line x1="10" x2={w - 10} y1={y(0)} y2={y(0)} className="axis" />
+      <line x1={L} x2={w - 16} y1={y(min)} y2={y(min)} className="axis" />
+      {min < 0 && <line x1={L} x2={w - 16} y1={y(0)} y2={y(0)} className="axis zero" />}
+      <text x={L - 6} y={y(max) + 4} textAnchor="end" className="label">
+        {short(max)}
+      </text>
+      <text x={L - 6} y={y(min) + 4} textAnchor="end" className="label">
+        {short(min)}
+      </text>
       <path d={d} className="line" />
-      <text x="10" y="12" className="label">
+      {last && <circle cx={x(pts.length - 1)} cy={y(last[2])} r="4" className="dot" />}
+      <text x={L} y={h - 4} className="label">
         {pts[0]?.[0]}
       </text>
-      <text x={w - 10} y="12" textAnchor="end" className="label">
-        {pts.at(-1)?.[0]}
+      <text x={w - 16} y={h - 4} textAnchor="end" className="label">
+        {last?.[0]}
       </text>
     </svg>
   );

@@ -13,6 +13,12 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       <section className="panel-section">
         <h3 className="section-title">Now</h3>
         <p data-testid="occupation-now">{occupationLabel(game)}</p>
+        {game.player.age < 5 && (
+          <p className="muted small empty-hint">
+            School starts at 5, jobs at 14, and the rest of life after that. For now, the Activities
+            and Relationships tabs are where the action is.
+          </p>
+        )}
       </section>
       {error && (
         <p className="error small" role="alert" data-testid="occupation-error">

@@ -4,6 +4,7 @@ import type { GameState } from '../../engine';
 import { aspirationReason } from '../../engine/systems/aspirations';
 import { Modal } from '../components/Modal';
 import { app, doAct } from '../store/app';
+import { cap } from '../components/text';
 
 /** Pick a life goal; ones you can't pick say why. */
 export function GoalPicker({ game }: { game: GameState }): React.JSX.Element {
@@ -34,7 +35,9 @@ export function GoalPicker({ game }: { game: GameState }): React.JSX.Element {
                 </span>
                 <span className="grow">
                   <span className="activity-label">{a.label}</span>
-                  <span className="activity-desc muted small">{why ?? a.description}</span>
+                  <span className="activity-desc muted small">
+                    {why ? cap(why) : a.description}
+                  </span>
                 </span>
               </button>
             </li>

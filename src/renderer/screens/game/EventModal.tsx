@@ -2,6 +2,23 @@ import { currentPopup, type GameState } from '../../../engine';
 import { continueResult, doChoose, useApp } from '../../store/app';
 import type { ChoiceResult } from '../../store/result';
 import { Modal } from '../../components/Modal';
+import { EVENT_BY_ID } from '../../../content/events';
+
+const CATEGORY_LABEL: Record<string, string> = {
+  family: 'Family',
+  school: 'School',
+  social: 'Friends',
+  romance: 'Love',
+  work: 'Work',
+  money: 'Money',
+  health: 'Health',
+  crime: 'Crime',
+  military: 'Service',
+  fame: 'Fame',
+  travel: 'Travel',
+  world: 'The world',
+  random: 'Life',
+};
 
 /** The event popup: emoji, text and numbered choices. Keys 1–4 choose. Then the result card. */
 export function EventModal({ game }: { game: GameState }): React.JSX.Element | null {
@@ -15,6 +32,10 @@ export function EventModal({ game }: { game: GameState }): React.JSX.Element | n
         <div className="event-emoji" aria-hidden="true">
           {popup.emoji}
         </div>
+        <p className="event-context muted small" data-testid="event-context">
+          {CATEGORY_LABEL[EVENT_BY_ID[popup.eventId]?.category ?? ''] ?? 'Life'} · Age{' '}
+          {game.player.age}
+        </p>
         <p className="event-text" data-testid="event-text">
           {popup.text}
         </p>

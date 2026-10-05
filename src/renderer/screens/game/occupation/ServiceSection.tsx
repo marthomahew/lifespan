@@ -9,6 +9,7 @@ import {
   type MusicActionId,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { cap } from '../../../components/text';
 
 export function MilitarySection({
   game,
@@ -94,7 +95,7 @@ export function MilitarySection({
               >
                 Enlist
               </button>
-              {reason && <span className="muted small enroll-note">{reason}</span>}
+              {reason && <span className="muted small enroll-note">{cap(reason)}</span>}
             </form>
           </details>
         </>

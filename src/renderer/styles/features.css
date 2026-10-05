@@ -28,7 +28,8 @@
   align-self: stretch;
 }
 .perk-note {
-  color: var(--accent);
+  color: var(--text-2);
+  font-style: italic;
 }
 
 /* Family tree lines: an SVG behind the cards, child top to parent bottom. */
@@ -286,7 +287,7 @@ select {
 }
 
 /* Occupation: one primary action per area; leaving a job looks like what it is (P2 #15, #16). */
-button.danger {
+button.quiet-danger {
   color: var(--red);
 }
 .enlist-details summary {
@@ -383,4 +384,64 @@ button.danger {
 .dynasty-table th:last-child {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+/* Off the game screen there is no log to sit over: toasts go bottom-right. */
+.toasts.off-game {
+  top: auto;
+  left: auto;
+  right: 16px;
+  bottom: 16px;
+  transform: none;
+}
+
+/* Start screen: a first impression (P3 #28). */
+.start {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, var(--accent-soft), transparent 70%), var(--bg);
+  grid-template-rows: 1fr auto 1fr;
+}
+.start-card {
+  grid-row: 2;
+  box-shadow: var(--shadow);
+}
+.start h1 {
+  font-size: 2.8em;
+  letter-spacing: -0.02em;
+  margin: 4px 0 2px;
+}
+.life-strip {
+  font-size: 1.5em;
+  margin: 0 0 6px;
+  letter-spacing: 0.1em;
+}
+.life-strip span {
+  color: var(--text-2);
+  font-size: 0.6em;
+  vertical-align: middle;
+}
+.start-secondary {
+  justify-content: center;
+  gap: 8px;
+}
+.start-foot {
+  grid-row: 3;
+  align-self: start;
+  margin-top: 16px;
+  text-align: center;
+}
+.event-context {
+  margin: 6px 0 -6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.72em;
+}
+.empty-hint {
+  margin-top: 6px;
+}
+.networth-chart .dot {
+  fill: var(--accent);
+}
+.networth-chart .axis.zero {
+  stroke-dasharray: 3 3;
 }
