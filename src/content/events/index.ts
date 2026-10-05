@@ -28,6 +28,7 @@ import { CRIME_EVENTS_2 } from './crime-2';
 import { RELEASE_EVENTS } from './release';
 import { TRAVEL_EVENTS_2 } from './travel-2';
 import { WORLD_EVENTS_2 } from './world-2';
+import { JOB_LEAD_EVENTS } from './job-leads';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -40,6 +41,7 @@ export const EVENTS: EventDef[] = [
   ...RELEASE_EVENTS,
   ...TRAVEL_EVENTS_2,
   ...WORLD_EVENTS_2,
+  ...JOB_LEAD_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

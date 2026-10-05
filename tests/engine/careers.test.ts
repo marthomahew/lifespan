@@ -10,7 +10,7 @@ import {
   type GameState,
 } from '../../src/engine';
 import { FULL_TIME_JOBS, JOB_BY_ID, JOB_FIELDS, PART_TIME_JOBS } from '../../src/content/jobs';
-import { careerIncome, pensionFor } from '../../src/engine/systems/careers';
+import { careerIncome, pensionFor, unemploymentBenefit } from '../../src/engine/systems/careers';
 import { perkBonus, perkEffect, perkNotes } from '../../src/engine/systems/perks';
 import { treatmentCost } from '../../src/engine/systems/health';
 import { ILLNESS_BY_ID } from '../../src/content/illnesses';
@@ -135,9 +135,11 @@ describe('applications and the job (M6.5)', () => {
     slacker.player.traits = ['lazy'];
     slacker.career.performance = 5;
     let f = slacker;
-    for (let i = 0; i < 6 && f.career.jobId; i++) f = playYears(f, 1);
-    expect(f.career.jobId).toBeNull();
-    expect(f.career.history.at(-1)?.reason).toBe('fired');
+    const firedFrom = (x: GameState): boolean => x.career.history.some((h) => h.reason === 'fired');
+    for (let i = 0; i < 6 && !firedFrom(f); i++) f = playYears(f, 1);
+    // Fired (a job lead may have found new work since, which is fine).
+    expect(firedFrom(f)).toBe(true);
+    expect(f.career.history.find((h) => h.reason === 'fired')?.jobId).toBe(base.career.jobId);
   });
 
   it('asking for a raise, quitting, and retiring with a pension that depends on years and country', () => {
@@ -245,5 +247,33 @@ describe('job perks with real effects', () => {
     expect(e.stress).toBeLessThan(0);
     expect(perkEffect(employed('retail_associate')).happiness).toBeGreaterThan(0);
     expect(perkEffect(employed('accountant')).stress).toBe(0);
+  });
+});
+
+describe('out of work', () => {
+  it('an unemployed adult gets a modest benefit, announced once; a job ends it', () => {
+    const s = clone(adult(61, 30));
+    expect(s.career.jobId).toBeNull();
+    const pay = unemploymentBenefit(s);
+    expect(pay).toBeGreaterThan(0);
+    expect(careerIncome(s).other).toBe(pay);
+    const y1 = ageUp({ ...s, pending: [] });
+    expect(y1.log.filter((e) => /unemployment support/.test(e.text))).toHaveLength(1);
+    const y2 = ageUp({ ...y1.state, pending: [] });
+    expect(y2.log.filter((e) => /unemployment support/.test(e.text))).toHaveLength(0);
+    const hired = runCheat(y2.state, 'job.set', { job: 'accountant' }).state;
+    expect(unemploymentBenefit(hired)).toBe(0);
+    // Students, retirees and children don't claim.
+    expect(unemploymentBenefit(clone(adult(62, 12)))).toBe(0);
+  });
+
+  it('job leads offer real work you can take on the spot', () => {
+    const s = clone(adult(63, 30));
+    const fired = runCheat({ ...s, pending: [] }, 'event.fire', {
+      event: 'lead_site_foreman',
+      force: true,
+    }).state;
+    const hired = choose(fired, 'take').state;
+    expect(hired.career.jobId).toBe('construction_worker');
   });
 });

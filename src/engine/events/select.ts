@@ -2,7 +2,7 @@ import { EVENT_BY_ID, EVENTS } from '../../content/events';
 import { TRAIT_BY_ID } from '../../content/traits';
 import type { Ctx } from '../ctx';
 import type { Category, ChainPayload, GameState, Npc, PendingEvent, Role } from '../types';
-import { tokenNames } from './tokens';
+import { renderText, tokenNames } from './tokens';
 import type { ChoiceDef, Effect, EventDef, NpcQuery } from './types';
 import { applyOutcome, pickOutcome } from './apply';
 import { fitsAttraction } from '../systems/partners';
@@ -118,6 +118,12 @@ export function eligibility(
         return { ok: false, reason: 'category switched off' };
     }
     if (s.legal.prison && !def.inPrison) return { ok: false, reason: 'not while in prison' };
+    if (
+      !opts.chain &&
+      def.kind === 'notice' &&
+      (s.events.counts[def.id] ?? 0) >= (def.outcomes?.length ?? 1)
+    )
+      return { ok: false, reason: 'already told every way it can be' };
     if (def.when && !def.when(s)) return { ok: false, reason: 'its conditions are not met' };
   }
   for (const [name, q] of Object.entries(bindingQueries(def))) {
@@ -230,14 +236,21 @@ export function fireEvent(
     ctx.s.totals.popups += 1;
     ctx.s.events.popupsThisYear += 1;
   } else {
-    const outcome = pickOutcome(ctx, def.outcomes ?? [], payload);
+    // Prefer an outcome this life hasn't already read.
+    const all = def.outcomes ?? [];
+    const fresh = all.filter((o) => {
+      const t = renderText(ctx.s, o.text, bindings, payload);
+      return !ctx.s.log.some((e) => e.text.endsWith(t));
+    });
+    const outcome = pickOutcome(ctx, fresh.length ? fresh : all, payload);
     if (outcome) applyOutcome(ctx, def, outcome, bindings, payload, true);
     ctx.s.events.noticesThisYear += 1;
   }
   return true;
 }
 
-const POPUP_ATTEMPT = [0.7, 0.5, 0.45, 0.4, 0.4];
+// Most years bring at least one decision; quiet years still happen.
+const POPUP_ATTEMPT = [0.85, 0.5, 0.45, 0.4, 0.4];
 const NOTICE_ATTEMPT = [0.6, 0.35, 0.2, 0.12, 0.06, 0.04];
 export const NOTICE_CAP = 6;
 

@@ -131,6 +131,7 @@ function leaveCoworkers(ctx: Ctx): void {
 
 export function hire(ctx: Ctx, jobId: string): void {
   const s = ctx.s;
+  s.player.flags = s.player.flags.filter((f) => f !== 'on_benefits');
   const job = JOB_BY_ID[jobId];
   if (!job) return;
   const c = s.career;
@@ -332,6 +333,16 @@ export function retire(ctx: Ctx): void {
   addStat(s, 'stress', -15);
 }
 
+/** A modest safety net for adults out of work, so a bad run slows down rather than spirals. */
+export function unemploymentBenefit(s: GameState): number {
+  const c = s.career;
+  const p = s.player;
+  if (p.age < 18 || p.age >= countryOf(s).ages.retirement) return 0;
+  if (c.jobId || c.partTimeId || c.retired || s.education.enrollment) return 0;
+  if (s.legal.prison || s.military?.active) return 0;
+  return money(s, 7000, 'wage');
+}
+
 /** Yearly income for the finances step. */
 export function careerIncome(s: GameState): { salary: number; other: number } {
   const c = s.career;
@@ -342,7 +353,7 @@ export function careerIncome(s: GameState): { salary: number; other: number } {
     const [lo, hi] = pt?.salary[0] ?? [0, 0];
     salary += money(s, (lo + hi) / 2, 'wage');
   }
-  other += perkBonus(s);
+  other += perkBonus(s) + unemploymentBenefit(s);
   if (s.legal.prison) {
     salary = 0;
     other = 0;

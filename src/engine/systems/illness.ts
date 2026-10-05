@@ -2,6 +2,13 @@ import { ILLNESS_BY_ID } from '../../content/illnesses';
 import type { Ctx } from '../ctx';
 import { lowerLabel } from '../text';
 
+const AGAIN = [
+  'You recognise it at once, like an old enemy at a party.',
+  'Same as last time, only you are older and less patient about it.',
+  'Back for another round. You know where the good blanket is.',
+  'You were hoping you had seen the last of it.',
+];
+
 export function addIllness(ctx: Ctx, id: string): void {
   const s = ctx.s;
   const def = ILLNESS_BY_ID[id];
@@ -13,9 +20,12 @@ export function addIllness(ctx: Ctx, id: string): void {
     treated: -10,
   });
   // Only serious or lasting conditions are milestones; colds just go in the log.
+  // Second time round, it's an old acquaintance rather than news.
+  const first = `${def.emoji} Diagnosed: ${def.label}.`;
+  const again = s.log.some((e) => e.text.startsWith(first));
   ctx.log(
     'health',
-    `${def.emoji} Diagnosed: ${def.label}. ${def.symptom}`,
+    again ? `${def.emoji} ${def.label} again. ${ctx.rng.pick(AGAIN)}` : `${first} ${def.symptom}`,
     def.chronic || def.deathFactor >= 1,
   );
 }

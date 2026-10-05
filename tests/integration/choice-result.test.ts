@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { choose, currentPopup, newLife, runCheat } from '../../src/engine';
-import { choiceResult } from '../../src/renderer/store/result';
+import { choiceResult, yearChanges } from '../../src/renderer/store/result';
 import { clone } from '../../src/engine/util';
 
 describe('the result card after a choice', () => {
@@ -37,5 +37,14 @@ describe('the result card after a choice', () => {
     expect(by['💰 Money']?.value).toBe('+$500');
     if (n && a.npcs[0] && a.npcs[0].rel >= 4) expect(by[`🤝 ${n.first}`]?.value).toBe('−4');
     expect(r.changes.some((c) => /karma/i.test(c.label))).toBe(false);
+  });
+
+  it('sums up a year in stats and money, without the cast list', () => {
+    const a = clone(newLife({ country: 'us', birthYear: 1995 }, 11));
+    const b = clone(a);
+    b.player.stats.smarts += 2;
+    if (b.npcs[0]) b.npcs[0].rel = Math.min(100, b.npcs[0].rel + 3);
+    const y = yearChanges(a, b);
+    expect(y.map((c) => c.label)).toEqual(['🧠 Smarts']);
   });
 });

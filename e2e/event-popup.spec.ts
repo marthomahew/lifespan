@@ -59,3 +59,14 @@ test('after a choice, a result card shows what you chose and what changed', asyn
   // The log keeps the choice with its outcome.
   await expect(page.locator('.log-chose').last()).toContainText(label);
 });
+
+test('after Age Up, a line sums up what the year did', async ({ page }) => {
+  await startSeeded(page, 34);
+  await expect(page.getByTestId('last-year')).toHaveCount(0);
+  for (let i = 0; i < 6; i++) {
+    while (await page.getByTestId('event-modal').isVisible())
+      await page.locator('button.choice:not([disabled])').first().click();
+    await page.getByTestId('age-up').click();
+  }
+  await expect(page.getByTestId('last-year')).toContainText('Last year:');
+});

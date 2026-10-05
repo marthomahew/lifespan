@@ -73,6 +73,8 @@ export type Enrollment = {
 export type EducationState = {
   /** 0..100 rolling school grade. */
   grade: number;
+  /** The grade on the last report card, for the trend. */
+  reportGrade?: number;
   inSchool: boolean;
   droppedOut: boolean;
   enrollment: Enrollment | null;

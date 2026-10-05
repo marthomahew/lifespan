@@ -56,15 +56,45 @@ export function schoolTick(ctx: Ctx): void {
   }
   if (inSchoolAge(s) && !s.legal.prison) {
     e.grade = clampStat(e.grade + (gradeTarget(s) - e.grade) * 0.4 + ctx.rng.int(-5, 5));
-    if (age % 3 === 0)
-      ctx.log(
-        'school',
-        `Your report card says ${letterGrade(e.grade)}. ${e.grade >= 80 ? 'It goes on the fridge.' : e.grade < 50 ? 'It goes in a drawer.' : 'It goes in the recycling, eventually.'}`,
-      );
+    if (age % 3 === 0) ctx.log('school', reportCard(ctx));
   }
   if (age === 18 && !e.droppedOut && !e.degrees.some((d) => d.level === 'high_school'))
     graduateHighSchool(ctx);
   if (age > 17) e.inSchool = false;
+}
+
+/** The three-yearly report card: the letter, the trend since last time, and a varied reaction. */
+function reportCard(ctx: Ctx): string {
+  const s = ctx.s;
+  const e = s.education;
+  const now = letterGrade(e.grade);
+  const before = e.reportGrade === undefined ? null : letterGrade(e.reportGrade);
+  e.reportGrade = e.grade;
+  const parent =
+    s.npcs.find((n) => n.alive && (n.roles.includes('mother') || n.roles.includes('father')))
+      ?.first ?? 'Someone';
+  const rank = (l: string): number => ['F', 'D', 'C', 'B', 'A', 'A+'].indexOf(l);
+  const trend =
+    before && before !== now ? `, ${rank(now) > rank(before) ? 'up' : 'down'} from ${before}` : '';
+  const lines =
+    e.grade >= 80
+      ? [
+          'It goes on the fridge.',
+          `${parent} photographs it for the family group chat.`,
+          'You read it twice to make sure it is yours.',
+        ]
+      : e.grade >= 60
+        ? [
+            'It goes in the recycling, eventually.',
+            'The comments say "steady", which is both a compliment and not.',
+            'Nobody frames it. Nobody shouts about it either.',
+          ]
+        : [
+            'It goes in a drawer.',
+            'Your teacher writes "capable of more, if the library ever sees you."',
+            `You reach the post before ${parent} does. The report card does not survive the journey.`,
+          ];
+  return `Your report card says ${now}${trend}. ${ctx.rng.pick(lines)}`;
 }
 
 export function graduateHighSchool(ctx: Ctx): void {

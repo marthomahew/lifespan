@@ -59,6 +59,11 @@ function ResultCard({ result, more }: { result: ChoiceResult; more: number }): R
         <p className="event-text" data-testid="result-text">
           {result.text}
         </p>
+        {result.because && (
+          <p className="result-because" data-testid="result-because">
+            {result.because}
+          </p>
+        )}
         {result.changes.length > 0 && (
           <ul className="result-changes" data-testid="result-changes">
             {result.changes.map((c) => (

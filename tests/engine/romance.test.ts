@@ -143,6 +143,8 @@ describe('romance (M5.5)', () => {
     let s = runCheat(adult(8), 'npc.spawn', { role: 'partner' }).state;
     const p = s.npcs.at(-1) as Npc;
     s = runCheat(s, 'marry.now', { id: String(p.id) }).state;
+    // A workplace affair needs a workplace.
+    s = runCheat(s, 'job.set', { job: 'accountant' }).state;
     s = runCheat(s, 'npc.spawn', { role: 'coworker' }).state;
     s = runCheat(s, 'event.fire', { event: 'rom_affair_temptation' }).state;
     expect(s.pending[0]?.eventId).toBe('rom_affair_temptation');

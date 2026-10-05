@@ -10,6 +10,8 @@ export type ChoiceResult = {
   changes: Change[];
   /** Other things that happened as a result (hired, a new friend, an arrest...). */
   also: string[];
+  /** Why it went that way, when your traits, skills or stats tipped it. */
+  because: string | null;
 };
 
 const STATS = [
@@ -56,5 +58,11 @@ export function choiceResult(before: GameState, after: GameState, emoji: string)
       .filter((e) => e !== outcome)
       .map((e) => e.text)
       .slice(0, 3),
+    because: outcome?.because ?? null,
   };
+}
+
+/** The year just lived, in a line: visible stats and money (relationships are too many to list). */
+export function yearChanges(before: GameState, after: GameState): Change[] {
+  return choiceResult(before, after, '').changes.filter((c) => !c.label.startsWith('🤝'));
 }

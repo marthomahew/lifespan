@@ -18,7 +18,7 @@ import {
 import { createSaveStore, type SaveStore } from '../platform/saveStore';
 import { createStore, useStore } from './store';
 import { applySettingsToDocument, loadSettings, saveSettings, type Settings } from './settings';
-import { choiceResult, type ChoiceResult } from './result';
+import { choiceResult, yearChanges, type Change, type ChoiceResult } from './result';
 
 export type Screen = 'start' | 'new' | 'game' | 'obituary' | 'lives' | 'settings';
 export type Tab = 'occupation' | 'assets' | 'relationships' | 'activities';
@@ -54,6 +54,8 @@ export type AppState = {
   hiddenStats: boolean;
   /** The result card for the choice just made, until the player continues. */
   result: ChoiceResult | null;
+  /** What the last Age Up did to your stats and money. */
+  lastYear: Change[] | null;
 };
 
 export const saveStore: SaveStore = createSaveStore();
@@ -73,6 +75,7 @@ export const app = createStore<AppState>({
   savesVersion: 0,
   hiddenStats: false,
   result: null,
+  lastYear: null,
 });
 
 export function useApp<U>(sel: (s: AppState) => U): U {
@@ -136,6 +139,7 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
     game,
     screen: 'game',
     result: null,
+    lastYear: null,
     saveName: `${game.player.first} ${game.player.last}`,
     tab: 'occupation',
     overlay: null,
@@ -147,7 +151,9 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
 export function doAgeUp(): void {
   const g = app.get().game;
   if (!g || g.death || g.pending.length > 0 || app.get().result) return;
-  applyStep(engineAgeUp(g));
+  const step = engineAgeUp(g);
+  applyStep(step);
+  app.set({ lastYear: yearChanges(g, step.state) });
 }
 
 export function doChoose(choiceId: string): void {
@@ -172,6 +178,7 @@ export async function loadLife(id: string): Promise<void> {
     app.set({
       game: state,
       result: null,
+      lastYear: null,
       saveName: summary.name,
       screen: state.death ? 'obituary' : 'game',
       overlay: null,

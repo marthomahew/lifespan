@@ -60,6 +60,8 @@ export type LogEntry = {
   /** For a choice outcome: the popup's setup and the option picked, so the log reads as a story. */
   prompt?: string;
   chose?: string;
+  /** Why it went that way, when your talents tipped it ("Being Charming helped."). */
+  because?: string;
 };
 
 export type Toast = { kind: 'achievement' | 'info'; text: string };

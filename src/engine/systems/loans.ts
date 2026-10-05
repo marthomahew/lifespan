@@ -182,14 +182,18 @@ export function bankruptcyCheck(ctx: Ctx, salary: number): void {
   const wiped = total - seized;
   m.loans = m.loans.filter((l) => !unsecured.includes(l));
   if (wiped < 0) m.cash += -wiped;
-  if (!s.player.flags.includes('bankrupt')) s.player.flags.push('bankrupt');
+  const again = s.player.flags.includes('bankrupt');
+  if (!again) s.player.flags.push('bankrupt');
   addStat(s, 'stress', 20);
   addStat(s, 'happiness', -15);
+  const took = seized > 0 ? `Creditors take ${formatMoney(s, seized)} and the` : 'The';
   ctx.log(
     'money',
-    wiped > 0
-      ? `You file for bankruptcy. Creditors take ${formatMoney(s, seized)} and the court wipes ${formatMoney(s, wiped)}. Your credit rating will take years to crawl back.`
-      : `Creditors force a bankruptcy sale of your savings and investments to clear the debt.`,
+    wiped <= 0
+      ? 'Creditors force a bankruptcy sale of your savings and investments to clear the debt.'
+      : again
+        ? `Bankrupt again. ${took} court wipes ${formatMoney(s, wiped)}, and the clerk remembers your name.`
+        : `You file for bankruptcy. ${took} court wipes ${formatMoney(s, wiped)}. Your credit rating will take years to crawl back.`,
     true,
   );
 }

@@ -8,6 +8,7 @@ import { StatsColumn } from './game/StatsColumn';
 
 export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
   const result = useApp((s) => s.result);
+  const lastYear = useApp((s) => s.lastYear);
   const blocked = game.pending.length > 0 || game.death !== null || result !== null;
   return (
     <div className="game" data-testid="game-screen">
@@ -28,6 +29,16 @@ export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
               Space
             </span>
           </button>
+          {lastYear && lastYear.length > 0 && (
+            <p className="last-year small" data-testid="last-year" aria-live="polite">
+              <span className="muted">Last year:</span>{' '}
+              {lastYear.map((c) => (
+                <span key={c.label} className={c.good ? 'up' : 'down'}>
+                  {c.label} {c.value}
+                </span>
+              ))}
+            </p>
+          )}
         </div>
       </main>
       <RightPanel game={game} />

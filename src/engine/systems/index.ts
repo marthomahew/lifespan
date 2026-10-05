@@ -2,7 +2,7 @@ import type { Ctx } from '../ctx';
 import { drawRandomEvents, runDueChains } from '../events/select';
 import type { Circumstances } from '../stats';
 import type { GameState } from '../types';
-import { careerIncome, careerTick, jobStress } from './careers';
+import { careerIncome, careerTick, jobStress, unemploymentBenefit } from './careers';
 import { schoolTick, universityTick } from './education';
 import { runFinances } from './finance';
 import { militaryPay, militaryTick } from './military';
@@ -17,6 +17,7 @@ import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
 import { bonusLine, perkBonus, perkEffect } from './perks';
 import { injuryPenalty } from './injuries';
+import { formatMoney } from '../economy';
 
 /** Inputs to stat drift derived from the rest of the state. */
 export function yearCircumstances(s: GameState): Circumstances {
@@ -57,6 +58,16 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   const income = careerIncome(s);
   const bonus = perkBonus(s);
   if (bonus > 0 && !s.legal.prison) ctx.log('money', bonusLine(s, bonus));
+  // Announce support once per spell out of work.
+  if (unemploymentBenefit(s) === 0)
+    s.player.flags = s.player.flags.filter((f) => f !== 'on_benefits');
+  else if (!s.player.flags.includes('on_benefits')) {
+    s.player.flags.push('on_benefits');
+    ctx.log(
+      'money',
+      `You sign on for unemployment support: ${formatMoney(s, unemploymentBenefit(s))} a year. It covers the basics, and none of the dignity.`,
+    );
+  }
   runFinances(ctx, { salary: income.salary + militaryPay(s), other: income.other });
   // 3. Drift.
   ctx.phase('drift');

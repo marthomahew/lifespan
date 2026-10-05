@@ -9,6 +9,7 @@ import { prunePending, selectableChoices } from './select';
 import { checkAchievements } from '../systems/achievements';
 import { renderText } from './tokens';
 import type { EventDef } from './types';
+import { edgeReason } from './skill-check';
 
 export type PopupView = {
   eventId: string;
@@ -76,8 +77,13 @@ export function chooseInPlace(ctx: Ctx, choiceId: string): void {
   const choice = selectableChoices(s, def).find((c) => c.id === choiceId);
   if (!choice) throw new EngineError(`choice ${choiceId} is not available`);
   s.pending = s.pending.slice(1);
-  const outcome = pickOutcome(ctx, choice.outcomes, pe.payload);
+  const outcome = pickOutcome(ctx, choice.outcomes, pe.payload, def);
+  const from = s.log.length;
   if (outcome) applyOutcome(ctx, def, outcome, pe.bindings, pe.payload, false, choice.label);
+  // Say so when who you are tipped it.
+  const entry = s.log[from];
+  const why = outcome && entry ? edgeReason(s, def, choice.outcomes, outcome) : null;
+  if (entry && why) entry.because = why;
   // Bindings of later popups may have died in the meantime.
   prunePending(s);
   applyLocks(s);

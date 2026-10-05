@@ -156,10 +156,11 @@ describe('fame, custody, service', () => {
     s = runCheat(s, 'baby.now', {}).state;
     s = clone(s);
     const kid = s.npcs.find((n) => n.roles.includes('child')) as Npc;
-    s.family.custodyLost.push(kid.id);
     s.money.cash = 100000;
-    const next = ageUp(s).state;
-    expect(next.money.cash).toBeLessThan(100000);
+    const together = ageUp(clone(s)).state;
+    s.family.custodyLost.push(kid.id);
+    const apart = ageUp(s).state;
+    expect(apart.money.cash).toBeLessThan(together.money.cash);
   });
 
   it('conduct effects and injury discharges come from service events', () => {

@@ -25,7 +25,8 @@ export function onsetChance(s: GameState, def: IllnessDef): number {
   const o = def.onset;
   if (age < o.ages[0] || age > o.ages[1]) return 0;
   // Chronic conditions are calibrated a little rarer than the catalog's raw rates.
-  let p = o.base * (def.chronic ? 0.7 : 1);
+  // Colds and the like still happen, just not so often that they drown out the story.
+  let p = o.base * (def.chronic ? 0.7 : isMinorIllness(def) ? 0.5 : 1);
   if (o.vice && s.vices.levels[o.vice.key] > 30)
     p *= 1 + ((o.vice.mult - 1) * s.vices.levels[o.vice.key]) / 100;
   if (o.lowHealth && s.player.stats.health < 40) p *= o.lowHealth;
@@ -65,7 +66,9 @@ export function healthTick(ctx: Ctx): void {
       if (v) addStat(s, k as 'health', Math.round((v * Math.max(30, ill.severity)) / 150));
     if (ill.severity <= 0 && !def.chronic) {
       h.illnesses = h.illnesses.filter((x) => x !== ill);
-      ctx.log('health', `${def.emoji} The ${def.label.toLowerCase()} clears up on its own.`);
+      // Minor bugs pass quietly; recovering from anything worse is news.
+      if (!isMinorIllness(def))
+        ctx.log('health', `${def.emoji} The ${def.label.toLowerCase()} clears up on its own.`);
     }
   }
   if (s.cheats.noBadEvents) return;
@@ -140,6 +143,11 @@ export function treat(
     );
     addStat(s, 'happiness', -3);
   }
+}
+
+/** Short, curable, low-severity things (colds, flu, food poisoning). */
+export function isMinorIllness(def: IllnessDef): boolean {
+  return !def.chronic && !def.mental && def.severity[1] <= 35;
 }
 
 /** Calibrates catalog death factors against the DONE §4.2 age band. */

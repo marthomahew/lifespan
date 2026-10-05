@@ -1,4 +1,5 @@
 import { TRAIT_BY_ID } from '../../content/traits';
+import { eventEdge, tiltWeights } from './skill-check';
 import type { Ctx } from '../ctx';
 import { die } from '../death';
 import { money as refMoney } from '../economy';
@@ -27,13 +28,21 @@ export function pickOutcome(
   ctx: Ctx,
   outcomes: OutcomeDef[],
   payload: ChainPayload = {},
+  /** For a choice: the event, so the player's talents can tilt the roll. */
+  def?: EventDef,
 ): OutcomeDef | undefined {
   let pool = outcomes;
   if (ctx.s.cheats.forceSuccess) {
     const ok = outcomes.filter((o) => o.success);
     if (ok.length) pool = ok;
   }
-  return ctx.rng.weighted(pool, (o) => outcomeChance(ctx, o, payload)) ?? pool[0];
+  const base = pool.map((o) => outcomeChance(ctx, o, payload));
+  const weights = def ? tiltWeights(base, pool, eventEdge(ctx.s, def).bonus) : base;
+  const i = ctx.rng.weighted(
+    pool.map((_, k) => k),
+    (k) => weights[k] ?? 0,
+  );
+  return (i === undefined ? undefined : pool[i]) ?? pool[0];
 }
 
 export function resolveMoney(ctx: Ctx, amount: MoneyAmount, payload: ChainPayload): number {
