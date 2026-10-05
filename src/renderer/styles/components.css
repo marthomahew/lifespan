@@ -67,10 +67,11 @@
 }
 .toasts {
   position: fixed;
-  /* Bottom of the left column, which is usually empty, clear of the tabs and the cheat panel. */
-  left: 12px;
-  bottom: 12px;
-  width: 250px;
+  /* Over the top of the log (its search bar), clear of the stats, the panels and Age Up. */
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(360px, 40vw);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -84,9 +85,7 @@
 }
 @media (max-width: 1180px) {
   .toasts {
-    left: 8px;
-    bottom: 8px;
-    width: 220px;
+    top: 78px;
   }
 }
 .toast.achievement {

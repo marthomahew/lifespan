@@ -40,8 +40,8 @@ export function Modal({
             (el) => !el.hasAttribute('disabled'),
           )
         : [];
-    const firstEnabled =
-      focusables().find((el) => !el.classList.contains('close')) ?? focusables()[0];
+    // Start on the first real control; a dialog with only a close button focuses itself.
+    const firstEnabled = focusables().find((el) => !el.classList.contains('close')) ?? root;
     firstEnabled?.focus();
     const token = {};
     stack.push(token);
@@ -82,6 +82,7 @@ export function Modal({
         ref={ref}
         className={`modal card${wide ? ' wide' : ''}${full ? ' full' : ''}`}
         role="dialog"
+        tabIndex={-1}
         aria-modal="true"
         aria-label={title}
         data-testid={testId}
