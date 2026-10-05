@@ -40,3 +40,22 @@ test('flow 3b: a popup answered by number key', async ({ page }) => {
   await page.keyboard.press(testId.replace('choice-', ''));
   await expect(page.getByTestId('log-line')).toHaveCount(lines + 1);
 });
+
+test('after a choice, a result card shows what you chose and what changed', async ({ page }) => {
+  await startSeeded(page, 33);
+  await ageUntilPopup(page);
+  const first = page.getByTestId('event-modal').locator('button.choice:not([disabled])').first();
+  const label = ((await first.textContent()) ?? '').replace(/^\d/, '').trim();
+  await first.click();
+  await expect(page.getByTestId('event-result')).toBeVisible();
+  await expect(page.getByTestId('result-chose')).toContainText(label);
+  await expect(page.getByTestId('result-text')).not.toBeEmpty();
+  // Age Up waits for you to read it; Space carries on without ageing.
+  await expect(page.getByTestId('age-up')).toBeDisabled();
+  const age = await headerAge(page);
+  await page.keyboard.press('Space');
+  await expect(page.getByTestId('event-result')).toHaveCount(0);
+  expect(await headerAge(page)).toBe(age);
+  // The log keeps the choice with its outcome.
+  await expect(page.locator('.log-chose').last()).toContainText(label);
+});

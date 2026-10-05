@@ -200,6 +200,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 | `23-dynasty` | Dynasty |
 | `24-buy-home` | Buy dialog with the mortgage quote |
 | `25-goals` | Life goal picker |
+| `26-result` | Result card after a choice |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

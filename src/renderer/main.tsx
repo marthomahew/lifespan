@@ -5,6 +5,7 @@ import './styles/global.css';
 import './styles/layout.css';
 import './styles/screens.css';
 import './styles/components.css';
+import './styles/features.css';
 import './styles/cheats.css';
 
 const rootEl = document.getElementById('root');

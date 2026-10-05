@@ -6,6 +6,7 @@ import {
   runConsole,
   ageUp as engineAgeUp,
   choose as engineChoose,
+  currentPopup,
   makeSaveFile,
   newLife,
   parseSaveFile,
@@ -17,6 +18,7 @@ import {
 import { createSaveStore, type SaveStore } from '../platform/saveStore';
 import { createStore, useStore } from './store';
 import { applySettingsToDocument, loadSettings, saveSettings, type Settings } from './settings';
+import { choiceResult, type ChoiceResult } from './result';
 
 export type Screen = 'start' | 'new' | 'game' | 'obituary' | 'lives' | 'settings';
 export type Tab = 'occupation' | 'assets' | 'relationships' | 'activities';
@@ -50,6 +52,8 @@ export type AppState = {
   savesVersion: number;
   /** Debug overlay showing hidden stats. */
   hiddenStats: boolean;
+  /** The result card for the choice just made, until the player continues. */
+  result: ChoiceResult | null;
 };
 
 export const saveStore: SaveStore = createSaveStore();
@@ -68,6 +72,7 @@ export const app = createStore<AppState>({
   npcId: null,
   savesVersion: 0,
   hiddenStats: false,
+  result: null,
 });
 
 export function useApp<U>(sel: (s: AppState) => U): U {
@@ -130,6 +135,7 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
   app.set({
     game,
     screen: 'game',
+    result: null,
     saveName: `${game.player.first} ${game.player.last}`,
     tab: 'occupation',
     overlay: null,
@@ -140,14 +146,22 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
 
 export function doAgeUp(): void {
   const g = app.get().game;
-  if (!g || g.death || g.pending.length > 0) return;
+  if (!g || g.death || g.pending.length > 0 || app.get().result) return;
   applyStep(engineAgeUp(g));
 }
 
 export function doChoose(choiceId: string): void {
   const g = app.get().game;
-  if (!g || g.pending.length === 0) return;
-  applyStep(engineChoose(g, choiceId));
+  if (!g || g.pending.length === 0 || app.get().result) return;
+  const emoji = currentPopup(g)?.emoji ?? '🎲';
+  const step = engineChoose(g, choiceId);
+  applyStep(step);
+  if (!step.state.death) app.set({ result: choiceResult(g, step.state, emoji) });
+}
+
+/** Dismiss the result card; the next popup (if any) shows. */
+export function continueResult(): void {
+  app.set({ result: null });
 }
 
 export async function loadLife(id: string): Promise<void> {
@@ -157,6 +171,7 @@ export async function loadLife(id: string): Promise<void> {
     const { summary, state } = parseSaveFile(json);
     app.set({
       game: state,
+      result: null,
       saveName: summary.name,
       screen: state.death ? 'obituary' : 'game',
       overlay: null,

@@ -33,7 +33,9 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
     const q = query.trim().toLowerCase();
     if (!q && cat === 'all') return log;
     return log.filter(
-      (e) => (cat === 'all' || e.cat === cat) && (!q || e.text.toLowerCase().includes(q)),
+      (e) =>
+        (cat === 'all' || e.cat === cat) &&
+        (!q || `${e.prompt ?? ''} ${e.chose ?? ''} ${e.text}`.toLowerCase().includes(q)),
     );
   }, [log, query, cat]);
   const groups = useMemo(() => groupByAge(filtered), [filtered]);
@@ -100,7 +102,15 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
                 <span className="log-emoji" aria-hidden="true">
                   {EXTRA_EMOJI[e.cat] ?? categoryEmoji(e.cat)}
                 </span>
-                <span>{e.text}</span>
+                <span className="log-body">
+                  {e.prompt && (
+                    <span className="log-prompt" title={e.prompt}>
+                      {e.prompt}
+                    </span>
+                  )}
+                  {e.chose && <span className="log-chose">→ {e.chose}: </span>}
+                  {e.text}
+                </span>
               </p>
             ))}
           </div>

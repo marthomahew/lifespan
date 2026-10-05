@@ -77,7 +77,7 @@ export function chooseInPlace(ctx: Ctx, choiceId: string): void {
   if (!choice) throw new EngineError(`choice ${choiceId} is not available`);
   s.pending = s.pending.slice(1);
   const outcome = pickOutcome(ctx, choice.outcomes, pe.payload);
-  if (outcome) applyOutcome(ctx, def, outcome, pe.bindings, pe.payload, false);
+  if (outcome) applyOutcome(ctx, def, outcome, pe.bindings, pe.payload, false, choice.label);
   // Bindings of later popups may have died in the meantime.
   prunePending(s);
   applyLocks(s);

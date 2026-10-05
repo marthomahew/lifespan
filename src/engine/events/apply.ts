@@ -138,11 +138,17 @@ export function applyOutcome(
   bindings: Record<string, number>,
   payload: ChainPayload,
   isNotice: boolean,
+  choiceLabel?: string,
 ): void {
   const s = ctx.s;
   const text = renderText(s, o.text, bindings, payload);
-  const lead = isNotice ? `${renderText(s, def.text, bindings, payload)} ` : '';
-  ctx.log(def.category, `${lead}${text}`.trim());
+  const prompt = renderText(s, def.text, bindings, payload);
+  if (isNotice) ctx.log(def.category, `${prompt} ${text}`.trim());
+  else
+    ctx.log(def.category, text, false, {
+      prompt,
+      chose: renderText(s, choiceLabel ?? '', bindings, payload),
+    });
   for (const e of o.effects) {
     if (s.death) break;
     applyEffect(ctx, e, bindings, payload, def.id.replace(/_/g, ' '));

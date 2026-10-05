@@ -1,5 +1,5 @@
 import type { GameState } from '../../engine';
-import { doAgeUp } from '../store/app';
+import { doAgeUp, useApp } from '../store/app';
 import { EventModal } from './game/EventModal';
 import { Header } from './game/Header';
 import { LogView } from './game/LogView';
@@ -7,7 +7,8 @@ import { RightPanel } from './game/RightPanel';
 import { StatsColumn } from './game/StatsColumn';
 
 export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
-  const blocked = game.pending.length > 0 || game.death !== null;
+  const result = useApp((s) => s.result);
+  const blocked = game.pending.length > 0 || game.death !== null || result !== null;
   return (
     <div className="game" data-testid="game-screen">
       <Header game={game} />

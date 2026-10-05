@@ -57,6 +57,9 @@ export type LogEntry = {
   text: string;
   /** Milestones feed the timeline (M11.3). */
   milestone?: boolean;
+  /** For a choice outcome: the popup's setup and the option picked, so the log reads as a story. */
+  prompt?: string;
+  chose?: string;
 };
 
 export type Toast = { kind: 'achievement' | 'info'; text: string };

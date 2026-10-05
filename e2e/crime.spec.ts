@@ -15,10 +15,13 @@ test('flow 7: commit a crime; the arrest, trial, and sentence or acquittal path 
   await expect(modal).toBeVisible();
   await expect(page.getByTestId('event-text')).toContainText('arrested');
   await page.locator('[data-choice-id="wait"]').click();
+  await page.getByTestId('result-continue').click();
   await expect(page.getByTestId('event-text')).toContainText('lawyer');
   await page.locator('[data-choice-id="public"]').click();
+  await page.getByTestId('result-continue').click();
   await expect(page.getByTestId('event-text')).toContainText('plea');
   await page.locator('[data-choice-id="trial"]').click();
+  await page.getByTestId('result-continue').click();
   await expect(modal).toHaveCount(0);
   const verdict = page
     .getByTestId('log-line')

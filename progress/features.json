@@ -534,5 +534,10 @@
     "title": "Story and state agree: moving abroad with a partner really moves you; children who emigrate are flagged as moved away; the obituary records military service; probation wording.",
     "passes": true,
     "evidence": "tests/engine/romance.test.ts moving abroad together; tests/engine/text.test.ts obituary service line; tests/engine/achievements.test.ts veteran titles"
+  },
+  "S12": {
+    "title": "Fun pass, feedback: a result card after every choice (what you chose, what happened, coloured changes to visible stats, money, fame and relationships, knock-on effects; Enter/Space/1 to continue), and the log keeps each choice's setup and the option picked.",
+    "passes": true,
+    "evidence": "tests/engine/log-context.test.ts; tests/integration/choice-result.test.ts; e2e/event-popup.spec.ts result card"
   }
 }

@@ -51,7 +51,12 @@ for (const size of SIZES) {
       await newGame(page);
       await shot('03-main-newborn');
       await ageTo(page, 9);
-      if (await page.getByTestId('event-modal').isVisible()) await shot('04-event');
+      if (await page.getByTestId('event-modal').isVisible()) {
+        await shot('04-event');
+        await page.locator('button.choice:not([disabled])').first().click();
+        await page.getByTestId('event-result').waitFor();
+        await shot('26-result');
+      }
       await ageTo(page, 24);
       while (await page.getByTestId('event-modal').isVisible())
         await page.locator('button.choice:not([disabled])').first().click();

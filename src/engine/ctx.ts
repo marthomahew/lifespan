@@ -18,9 +18,18 @@ export class Ctx {
     this.rng = new Rng(draft.rng);
   }
 
-  log(cat: LogCategory, text: string, milestone = false): void {
+  log(
+    cat: LogCategory,
+    text: string,
+    milestone = false,
+    context?: { prompt: string; chose: string },
+  ): void {
     const entry: LogEntry = { age: this.s.player.age, year: this.s.year, cat, text };
     if (milestone) entry.milestone = true;
+    if (context) {
+      entry.prompt = context.prompt;
+      entry.chose = context.chose;
+    }
     this.s.log.push(entry);
     this.newLog.push(entry);
   }

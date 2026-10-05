@@ -1,4 +1,4 @@
-import { app, doAgeUp, doChoose, go, persist, type Tab } from '../store/app';
+import { app, continueResult, doAgeUp, doChoose, go, persist, type Tab } from '../store/app';
 import { currentPopup } from '../../engine';
 
 const TAB_ORDER: Tab[] = ['occupation', 'assets', 'relationships', 'activities'];
@@ -43,7 +43,8 @@ export function onKeyDown(e: KeyboardEvent): void {
     return;
   }
   if (key === 'Escape') {
-    if (s.overlay) app.set({ overlay: null });
+    if (s.result && !s.overlay) continueResult();
+    else if (s.overlay) app.set({ overlay: null });
     else if (s.cheatsOpen) app.set({ cheatsOpen: false });
     else if (s.npcId !== null) app.set({ npcId: null });
     else if (s.screen === 'settings' || s.screen === 'lives')
@@ -93,6 +94,14 @@ export function onKeyDown(e: KeyboardEvent): void {
     return;
   }
   if (s.screen !== 'game' || !s.game || s.overlay) return;
+  // The result card: Enter, Space, or 1 carries on.
+  if (s.result) {
+    if (key === 'Enter' || key === ' ' || key === '1') {
+      e.preventDefault();
+      continueResult();
+    }
+    return;
+  }
   const popup = currentPopup(s.game);
   if (popup) {
     const n = Number(key);
