@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { categoryEmoji, type GameState, type LogEntry } from '../../../engine';
+import { useApp } from '../../store/app';
 
 const PAGE_AGES = 40;
 const EXTRA_EMOJI: Record<string, string> = {
@@ -30,6 +31,10 @@ function leadEmoji(text: string): string | null {
 
 /** The life log: grouped by age with sticky headers, newest at the bottom, auto-scrolling. */
 export function LogView({ game }: { game: GameState }): React.JSX.Element {
+  // Lines from the year just lived get a quiet marker, so the new story is easy to spot.
+  const yearStart = useApp((x) => x.yearStart);
+  const freshFrom =
+    yearStart && yearStart.lifeId === game.lifeId ? yearStart.log.length : Number.POSITIVE_INFINITY;
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState('all');
   const [pages, setPages] = useState(1);
@@ -103,7 +108,7 @@ export function LogView({ game }: { game: GameState }): React.JSX.Element {
             {g.entries.map(({ e, i }) => (
               <p
                 key={i}
-                className={`log-line cat-${e.cat}${e.milestone ? ' milestone' : ''}`}
+                className={`log-line cat-${e.cat}${e.milestone ? ' milestone' : ''}${i >= freshFrom ? ' fresh' : ''}`}
                 data-testid="log-line"
               >
                 <span className="log-emoji" aria-hidden="true">

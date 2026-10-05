@@ -574,5 +574,15 @@
     "title": "Challenges: 12 lives with a premise and a goal (some with deadlines, one across generations), started from the New Life page with your own choices filling the rest; won or missed with a toast and an obituary line; completions remembered across lives; save format v5.",
     "passes": true,
     "evidence": "tests/engine/challenges.test.ts; e2e/goals.spec.ts challenges"
+  },
+  "S20": {
+    "title": "Feedback and motion: stat deltas since your last birthday beside each stat, this year’s log lines marked, short pop and drop entrances for popups, results and toasts (within SPEC §7 150 ms, off with reduced motion; test browsers run reduced-motion).",
+    "passes": true,
+    "evidence": "e2e/event-popup.spec.ts this year (deltas, fresh lines)"
+  },
+  "S21": {
+    "title": "Callbacks: 18 events that bring back 17 earlier choices years later (the release plan, the informant, the memoir, the bike lesson, the playground decision, the motorbike, the model railway...).",
+    "passes": true,
+    "evidence": "npm run content:check (491 events); npm run sim:coverage"
   }
 }

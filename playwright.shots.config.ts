@@ -7,7 +7,11 @@ export default defineConfig({
   reporter: [['list']],
   outputDir: 'test-results/shots',
   timeout: 120_000,
-  use: { baseURL: 'http://localhost:4173' },
+  use: {
+    // Tests click through hundreds of dialogs; they don't need to wait out entrance animations.
+    reducedMotion: 'reduce',
+    baseURL: 'http://localhost:4173',
+  },
   webServer: {
     command: 'npx vite preview -c vite.web.config.ts --port 4173 --strictPort',
     url: 'http://localhost:4173',

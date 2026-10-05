@@ -32,6 +32,7 @@ import { JOB_LEAD_EVENTS } from './job-leads';
 import { BABY_EVENTS } from './baby';
 import { HEALTH_WARNING_EVENTS } from './health-warning';
 import { LATE_LIFE_EVENTS } from './late-life';
+import { CALLBACK_EVENTS } from './callbacks';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -48,6 +49,7 @@ export const EVENTS: EventDef[] = [
   ...BABY_EVENTS,
   ...HEALTH_WARNING_EVENTS,
   ...LATE_LIFE_EVENTS,
+  ...CALLBACK_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

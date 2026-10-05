@@ -36,3 +36,4 @@ One line each: `- [HH:MM] <decision>. Why: <reason>. Alternatives: <what else yo
 - 2026-10-06 Balance headroom: happiness baseline 55→52, partners not wanting children 40%→45%, not wanting marriage 20%→25%. Married 78%, children 77%, happiness 67.5 (were 81/80/70 against 85/85/75 ceilings).
 - 2026-10-06 Customization: hair is a player field (emoji ZWJ variants on teen/adult avatars); parents setup and siblings are New Life options; a talent skill starts at 8 and practice gains ×1.5. Save format v4.
 - 2026-10-06 Challenges: a top-level state.challenge (save v5); setup merged over the player's own New Life choices; completions kept in localStorage (lifespan.challenges) like settings, since they span saves.
+- 2026-10-06 Playwright configs run with reducedMotion: 'reduce' (entrance animations made every dialog click wait ~150 ms; tests target behaviour, not motion).

@@ -10,6 +10,8 @@ export default defineConfig({
   outputDir: 'test-results/e2e',
   timeout: 60_000,
   use: {
+    // Tests click through hundreds of dialogs; they don't need to wait out entrance animations.
+    reducedMotion: 'reduce',
     baseURL: 'http://localhost:4173',
     viewport: { width: 1280, height: 820 },
     trace: 'off',

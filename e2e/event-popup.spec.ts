@@ -69,4 +69,7 @@ test('after Age Up, a line sums up what this year has done', async ({ page }) =>
     await page.getByTestId('age-up').click();
   }
   await expect(page.getByTestId('last-year')).toContainText('This year:');
+  // The same year shows beside the stats, and this year's log lines are marked.
+  expect(await page.locator('[data-testid$="-delta"]').count()).toBeGreaterThan(0);
+  expect(await page.locator('.log-line.fresh').count()).toBeGreaterThan(0);
 });

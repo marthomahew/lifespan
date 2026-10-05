@@ -1,13 +1,21 @@
 import { Sparkline } from './Sparkline';
 
-type Props = { id: string; label: string; emoji: string; value: number; history?: number[] };
+type Props = {
+  id: string;
+  label: string;
+  emoji: string;
+  value: number;
+  history?: number[];
+  /** Change since the last birthday, shown beside the value. */
+  delta?: number;
+};
 
 export function barColour(v: number): 'red' | 'amber' | 'green' {
   return v < 30 ? 'red' : v < 60 ? 'amber' : 'green';
 }
 
 /** A stat bar: red below 30, amber 30–59, green from 60 (SPEC §7). */
-export function StatBar({ id, label, emoji, value, history }: Props): React.JSX.Element {
+export function StatBar({ id, label, emoji, value, history, delta }: Props): React.JSX.Element {
   const colour = barColour(value);
   return (
     <div className="stat" data-testid={`stat-${id}`}>
@@ -17,6 +25,15 @@ export function StatBar({ id, label, emoji, value, history }: Props): React.JSX.
         {history && (
           <Sparkline values={history} label={`${label} over the last ${history.length} years`} />
         )}
+        {delta ? (
+          <span
+            className={`stat-delta ${delta > 0 ? 'up' : 'down'}`}
+            data-testid={`stat-${id}-delta`}
+            title="Since your last birthday"
+          >
+            {delta > 0 ? `+${delta}` : `−${-delta}`}
+          </span>
+        ) : null}
         <span className="stat-value" data-testid={`stat-${id}-value`}>
           {value}
         </span>

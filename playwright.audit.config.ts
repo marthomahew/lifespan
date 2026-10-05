@@ -8,7 +8,12 @@ export default defineConfig({
   reporter: [['list']],
   outputDir: 'test-results/audit',
   timeout: 900_000,
-  use: { baseURL: 'http://localhost:4173', viewport: { width: 1280, height: 820 } },
+  use: {
+    // Tests click through hundreds of dialogs; they don't need to wait out entrance animations.
+    reducedMotion: 'reduce',
+    baseURL: 'http://localhost:4173',
+    viewport: { width: 1280, height: 820 },
+  },
   webServer: {
     command: 'npx vite preview -c vite.web.config.ts --port 4173 --strictPort',
     url: 'http://localhost:4173',

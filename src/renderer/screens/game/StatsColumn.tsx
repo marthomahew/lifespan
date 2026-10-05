@@ -25,6 +25,8 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
   const p = game.player;
   const facts = quickFacts(game);
   const hidden = useApp((x) => x.hiddenStats);
+  const yearStart = useApp((x) => x.yearStart);
+  const since = yearStart && yearStart.lifeId === game.lifeId ? yearStart.player.stats : null;
   return (
     <aside className="stats-col" aria-label="Stats">
       <section className="card pad">
@@ -36,6 +38,7 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
             emoji={s.emoji}
             value={p.stats[s.id]}
             history={game.statHistory[s.id]}
+            {...(since ? { delta: p.stats[s.id] - since[s.id] } : {})}
           />
         ))}
       </section>
