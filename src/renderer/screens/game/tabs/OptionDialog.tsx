@@ -4,6 +4,8 @@ import type { GameState } from '../../../../engine';
 import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
 import { Portrait } from '../../../portrait/Portrait';
 import { PetPicker } from './PetPicker';
+import { EscapeGame } from './EscapeGame';
+import { CasinoTable } from './CasinoTable';
 import { Modal } from '../../../components/Modal';
 
 /** Activities that need you to pick something first. */
@@ -14,6 +16,8 @@ export const OPTION_ACTIVITIES = [
   'change_name',
   'plastic_surgery',
   'adopt_pet',
+  'prison_escape',
+  'casino',
 ];
 
 /** What a salon, a razor, an optician and a shop can change. */
@@ -33,6 +37,8 @@ const TITLE: Record<string, string> = {
   change_name: 'Your new name',
   plastic_surgery: 'What would you like changed?',
   adopt_pet: 'Who is coming home?',
+  prison_escape: 'Tonight, the yard',
+  casino: 'The card tables',
 };
 
 /** Pick what the activity is about, right where you chose it. */
@@ -167,6 +173,8 @@ export function OptionDialog({
         </div>
       )}
       {activity === 'adopt_pet' && <PetPicker game={game} onRun={onRun} />}
+      {activity === 'prison_escape' && <EscapeGame game={game} onRun={onRun} />}
+      {activity === 'casino' && <CasinoTable game={game} onRun={onRun} />}
       {activity === 'change_name' && (
         <form
           className="buy-form"

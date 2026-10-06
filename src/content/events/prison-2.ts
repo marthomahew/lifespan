@@ -449,6 +449,50 @@ export const PRISON_2_EVENTS: EventDef[] = [
     ],
   },
   {
+    id: 'prison2_funeral_release_father',
+    kind: 'choice',
+    category: 'family',
+    ages: [18, 100],
+    weight: 5,
+    once: true,
+    inPrison: true,
+    when: servedAtLeast(1),
+    bind: { dad: { role: 'father', minAge: 65 } },
+    text: 'The chaplain comes to your cell instead of an officer, which is how you know before a word is said. {dad.first} has died. The governor will allow an escorted day release for the funeral.',
+    choices: [
+      {
+        id: 'go',
+        label: 'Go, in handcuffs',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'The officers let you stand by the grave for one minute longer than the rules allow. Someone has brought {dad.first}’s old cap. You are allowed to hold it.',
+            effects: [
+              { status: 'npc_dies', with: 'dad' },
+              { stat: 'happiness', delta: -10 },
+              { stat: 'stress', delta: -2 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'stay',
+        label: 'Say goodbye from here',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You ask the chaplain to read something {dad.first} liked at the service. At the hour it starts, you stand at your window, and three cells along someone turns their radio off.',
+            effects: [
+              { status: 'npc_dies', with: 'dad' },
+              { stat: 'happiness', delta: -12 },
+              { stat: 'stress', delta: 5 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
     id: 'prison2_sibling_wedding',
     kind: 'choice',
     category: 'family',

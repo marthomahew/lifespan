@@ -73,7 +73,9 @@ export const canMoveAbroad = (s: GameState): boolean =>
   s.player.age >= 18 && s.legal.prison === null && s.legal.case === null && s.legal.probation === 0;
 /** Out of prison after serving time. */
 export const exCon = (s: GameState): boolean =>
-  s.legal.prison === null && s.player.flags.includes('ex_con');
+  s.legal.prison === null && !s.legal.fugitive && s.player.flags.includes('ex_con');
+/** Escaped, and still on the run. */
+export const onTheRun = (s: GameState): boolean => !!s.legal.fugitive && !s.legal.prison;
 /** A conviction or plea on record (sealed juvenile records don't count). */
 export const hasRecord = (s: GameState): boolean =>
   s.legal.record.some(

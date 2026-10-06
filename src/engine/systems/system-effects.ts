@@ -5,7 +5,7 @@ import type { ChainPayload } from '../types';
 import { hire } from './careers';
 import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
-import { caseStep } from './crime';
+import { caseStep, recapture } from './crime';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -27,6 +27,9 @@ export function applySystemEffect(
 ): void {
   const s = ctx.s;
   switch (kind) {
+    case 'recapture':
+      recapture(ctx);
+      return;
     case 'hire': {
       const jobId = arg ?? (typeof payload['jobId'] === 'string' ? payload['jobId'] : undefined);
       if (jobId) hire(ctx, jobId);

@@ -60,6 +60,8 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
   const p = s.player;
   const out: string[] = [];
   const vet = isVeteran(s) && r.veteranBonus;
+  if (s.legal.fugitive && !p.flags.includes('false_papers'))
+    out.push('papers you cannot show while on the run');
   if (p.age < r.minAge) out.push(`age ${r.minAge}+`);
   if (r.education && !vet && !hasEducation(s, r.education, r.majors))
     out.push(

@@ -10,6 +10,8 @@ import { addChild } from './romance';
 import { currentPartner, partnerOf } from './partners';
 import { markUsed, usedThisYear } from './usage';
 import { runSpecial, specialReason } from './activity-specials';
+import { escapeMap, parseMoves, simulate } from './escape';
+import { betOptions, parsePlan, playSession, shoeFor } from './blackjack';
 import { clampOdds, playerOdds } from './odds';
 
 export type ActivityView = {
@@ -116,6 +118,8 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   if (!def) throw new EngineError(`unknown activity ${id}`);
   const why = activityReason(s, def);
   if (why) throw new EngineError(`${def.label}: ${why}`);
+  // The casino shoe is shuffled for this visit, so read it before the visit is counted.
+  const shoe = def.special === 'casino' && params['plan'] !== undefined ? shoeFor(s) : null;
   markUsed(s, `a:${def.id}`);
   if (costsFreeTime(def)) markUsed(s, 'a:total');
   if (def.cost) s.money.cash -= money(s, def.cost);
@@ -140,6 +144,32 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
       (s.player.stats.smarts - 50) * 0.004 +
       (s.player.traits.includes('reckless') ? -0.15 : 0);
     outcomes = outcomes.map((o) => (o.success ? { ...o, chance: Math.max(0.1, tilt) } : o));
+  }
+  // Blackjack: the hands you played decide the night.
+  if (shoe) {
+    const plan = parsePlan(params['plan']);
+    const bet = Number(params['bet']);
+    if (plan === null) throw new EngineError('Casino: that is not how cards work');
+    if (!betOptions(s, (r) => money(s, r)).includes(bet))
+      throw new EngineError('Casino: pick a table');
+    const session = playSession(shoe, plan);
+    if (session.waiting) throw new EngineError('Casino: finish the hand first');
+    const net = Math.round(session.net * bet);
+    params = { ...params, net };
+    const pick = net > 0 ? 0 : net < 0 ? 1 : 2;
+    outcomes = [
+      { ...(def.outcomes[pick] ?? def.outcomes[0]), chance: 1 } as (typeof outcomes)[number],
+    ];
+  }
+  // A planned escape is decided by the route you took, not a dice roll.
+  if (def.special === 'prison:escape' && params['moves'] !== undefined) {
+    const moves = parseMoves(params['moves']);
+    if (!moves) throw new EngineError('Escape: that route makes no sense');
+    const end = simulate(escapeMap(s), moves).status;
+    const pick = end === 'escaped' ? 0 : end === 'caught' ? 1 : 2;
+    outcomes = [
+      { ...(def.outcomes[pick] ?? def.outcomes[0]), chance: 1 } as (typeof outcomes)[number],
+    ];
   }
   const o = pickOutcome(ctx, outcomes);
   if (!o) return;

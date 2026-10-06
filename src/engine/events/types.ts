@@ -67,7 +67,8 @@ export type Effect =
         | 'case_bail'
         | 'case_lawyer'
         | 'case_plea'
-        | 'move_abroad';
+        | 'move_abroad'
+        | 'recapture';
       arg?: string;
     }
   | { death: string }

@@ -629,5 +629,20 @@
     "title": "Prison behaviour from events; six post-release callbacks for the degree, garden, ship, mentee, list and trade certificate",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts (life inside comes back outside); content:check"
+  },
+  "S31": {
+    "title": "Prison escape mini-game: a seeded, solvable yard with patrolling guards and sight lines; turning back costs nothing",
+    "passes": true,
+    "evidence": "tests/engine/escape.test.ts; e2e/escape.spec.ts"
+  },
+  "S32": {
+    "title": "Casino blackjack: tables, up to five hands, hit/stand/double, replayed by the engine",
+    "passes": true,
+    "evidence": "tests/engine/blackjack.test.ts; e2e/casino.spec.ts"
+  },
+  "S33": {
+    "title": "On the run: years owed, no papers for jobs, recapture risk fading over 20 years, turning yourself in, four fugitive events; prison.send cheat",
+    "passes": true,
+    "evidence": "tests/engine/escape.test.ts (on the run); tests/engine/cheats/health.test.ts; sim invariants"
   }
 }

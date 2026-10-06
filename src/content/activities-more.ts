@@ -1112,4 +1112,35 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
+  {
+    id: 'turn_yourself_in',
+    label: 'Turn yourself in',
+    emoji: '🚔',
+    group: 'admin',
+    ages: [10, 120],
+    limitPerYear: 1,
+    special: 'surrender',
+    description:
+      'Walk into a police station and end the running. Judges look kindly on it, a little.',
+    outcomes: [
+      {
+        chance: 0.4,
+        success: true,
+        text: 'The desk sergeant looks up, looks at your name on the screen, and says "Oh." That is the whole conversation.',
+        effects: [{ stat: 'stress', delta: -12 }],
+      },
+      {
+        chance: 0.35,
+        success: true,
+        text: 'You sit in the car park for an hour first. Then you go in. It is the bravest thing you have done in years, and it feels like nothing.',
+        effects: [{ stat: 'stress', delta: -10 }],
+      },
+      {
+        chance: 0.25,
+        success: true,
+        text: 'A lawyer you can barely afford walks in beside you and does all the talking. The judge notes, for the record, that you came in on your own.',
+        effects: [{ stat: 'stress', delta: -8 }],
+      },
+    ],
+  },
 ];

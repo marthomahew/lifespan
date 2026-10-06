@@ -146,8 +146,25 @@ for (const size of SIZES) {
       await page.getByTestId('lives-screen').waitFor();
       await shot('09-lives');
       await page.getByTestId('btn-back').click();
+      // The casino table, then a night in the prison yard.
+      await page.getByTestId('tab-activities').click();
+      await page.getByTestId('act-casino').click();
+      await page.getByTestId('bj-bet-1').click();
+      await shot('32-blackjack');
+      await page.keyboard.press('Escape');
       await page.keyboard.press('`');
-      for (const cmd of ['baby now', 'deathbot']) {
+      await page.getByTestId('console-input').fill('prison send 4');
+      await page.getByTestId('console-input').press('Enter');
+      await page.getByTestId('cheat-close').click();
+      while (await page.getByTestId('event-modal').isVisible())
+        await page.locator('button.choice:not([disabled])').first().click();
+      await page.getByTestId('tab-activities').click();
+      await page.getByTestId('act-prison_escape').click();
+      await page.keyboard.press('ArrowRight');
+      await shot('33-escape');
+      await page.keyboard.press('Escape');
+      await page.keyboard.press('`');
+      for (const cmd of ['prison release', 'baby now', 'deathbot']) {
         await page.getByTestId('console-input').fill(cmd);
         await page.getByTestId('console-input').press('Enter');
       }

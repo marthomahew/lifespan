@@ -225,7 +225,7 @@ export function imprison(ctx: Ctx, crimeId: string, years: number, juvenile = fa
   }
 }
 
-export function release(ctx: Ctx, parole: boolean): void {
+export function release(ctx: Ctx, parole: boolean, quiet = false): void {
   const s = ctx.s;
   s.legal.prison = null;
   s.assets.housing = s.assets.homes.some((h) => h.livingIn)
@@ -241,6 +241,7 @@ export function release(ctx: Ctx, parole: boolean): void {
       // Outside, they're someone you used to share a cell with.
       if (!n.flags.includes('former_cellmate')) n.flags.push('former_cellmate');
     }
+  if (quiet) return;
   ctx.log(
     'crime',
     parole
@@ -260,6 +261,7 @@ export function legalTick(ctx: Ctx): void {
     ctx.log('crime', 'You turn 18 and your juvenile record is sealed. A clean-ish slate.', true);
   }
   if (l.probation > 0 && !l.prison) l.probation -= 1;
+  if (l.fugitive && !l.prison) fugitiveTick(ctx);
   const p = l.prison;
   if (!p) return;
   p.served += 1;
@@ -272,4 +274,43 @@ export function legalTick(ctx: Ctx): void {
   addStat(s, 'stress', 6);
   if (p.served >= p.years) release(ctx, false);
   else if (p.served * 2 >= p.years && p.behaviour >= 60 && ctx.rng.chance(0.4)) release(ctx, true);
+}
+
+/** On the run: the risk of a knock at the door fades with the years, and after twenty nobody is looking. */
+function fugitiveTick(ctx: Ctx): void {
+  const s = ctx.s;
+  const f = s.legal.fugitive;
+  if (!f) return;
+  const years = s.year - f.since;
+  if (years >= 20) {
+    s.legal.fugitive = null;
+    s.player.flags = s.player.flags.filter((x) => x !== 'fugitive');
+    ctx.log(
+      'crime',
+      'Twenty years on, the file on you is in a box in a basement. Nobody is looking any more.',
+      true,
+    );
+    return;
+  }
+  // Good false papers halve the risk.
+  const risk =
+    Math.max(0.05, 0.3 - years * 0.04) * (s.player.flags.includes('false_papers') ? 0.5 : 1);
+  if (!ctx.roll(risk)) return;
+  recapture(ctx);
+}
+
+export function recapture(ctx: Ctx, surrendered = false): void {
+  const s = ctx.s;
+  const f = s.legal.fugitive;
+  if (!f) return;
+  s.legal.fugitive = null;
+  s.player.flags = s.player.flags.filter((x) => x !== 'fugitive' && x !== 'false_papers');
+  ctx.log(
+    'crime',
+    surrendered
+      ? `You hand yourself in. The sentence: the ${f.owed} years still owed, and nothing more.`
+      : 'A knock at six in the morning. They are polite, and there are a lot of them. You are going back.',
+    true,
+  );
+  imprison(ctx, f.crimeId, f.owed);
 }

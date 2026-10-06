@@ -190,6 +190,8 @@ export type LegalState = {
   prison: { years: number; served: number; crimeId: string; behaviour: number } | null;
   probation: number;
   escapes: number;
+  /** On the run after an escape: the years still owed. */
+  fugitive?: { since: number; owed: number; crimeId: string } | null;
 };
 
 export type Home = {

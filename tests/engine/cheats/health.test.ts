@@ -56,4 +56,12 @@ describe('health and legal cheats', () => {
     expect(runCheat(jailed, 'sentence.set', { years: 0 }).state.legal.prison).toBeNull();
     expect(runCheat(jailed, 'probation.end', {}).state.legal.probation).toBe(0);
   });
+
+  it("'prison.send' starts a sentence on the spot", () => {
+    const free = runCheat(newLife({ birthYear: 1990 }, 4), 'age.set', { age: 25 }).state;
+    const inside = runCheat({ ...free, pending: [] }, 'prison.send', { years: 5 }).state;
+    expect(inside.legal.prison?.years).toBe(5);
+    expect(inside.assets.housing).toBe('prison');
+    expect(runCheat(inside, 'prison.send', { years: 2 }).state.legal.prison?.years).toBe(5);
+  });
 });

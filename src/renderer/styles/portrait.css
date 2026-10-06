@@ -214,3 +214,89 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Escape mini-game (S31) */
+.escape {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.escape-grid {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  border-radius: var(--radius);
+  background: #2b2f38;
+  border: 3px dashed #7a7f8a;
+}
+.escape-cell {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  border-radius: 4px;
+  background: #3a3f4a;
+  transition: background var(--transition);
+}
+.escape-cell.lit {
+  background: #b39a3a;
+}
+.escape-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.escape-pad {
+  display: inline-flex;
+  gap: 4px;
+}
+.escape-pad button {
+  min-width: 38px;
+}
+
+/* Blackjack (S32) */
+.casino {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bj-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: #1f6b45;
+  color: #fff;
+}
+.bj-row .muted {
+  color: #cfe8da;
+}
+.bj-cards {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.bj-card {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 52px;
+  border-radius: 6px;
+  background: #fffdf8;
+  color: #1d1d1f;
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.bj-card.red {
+  color: #c4302b;
+}
+.bj-card.down {
+  background: repeating-linear-gradient(45deg, #2a63c4 0 6px, #1d4a96 6px 12px);
+}
+.bj-status {
+  margin: 0;
+}

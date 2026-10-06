@@ -1,3 +1,4 @@
+import { imprison } from '../systems/crime';
 import { addIllness } from '../systems/illness';
 import type { ViceKey } from '../types';
 import { clampStat } from '../util';
@@ -110,6 +111,20 @@ export const HEALTH_CHEATS: CheatDef[] = [
       }
       pr.years = pr.served + left;
       return `${left} years left`;
+    },
+  },
+  {
+    id: 'prison.send',
+    group: 'health',
+    label: 'Go to prison',
+    syntax: 'prison send {years}',
+    help: 'Start a prison sentence now, no trial needed. Example: prison send 5',
+    params: [{ name: 'years', type: 'int', min: 1, max: 60 }],
+    run: (ctx, p) => {
+      if (ctx.s.legal.prison) return 'You are already in prison';
+      if (ctx.s.player.age < 10) return 'Too young for prison';
+      imprison(ctx, 'burglary', Number(p['years']));
+      return `Sentenced to ${Number(p['years'])} years`;
     },
   },
   {

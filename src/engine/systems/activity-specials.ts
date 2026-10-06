@@ -6,7 +6,7 @@ import { addNpc } from '../npc';
 import { addStat } from '../stats';
 import type { GameState, ViceKey } from '../types';
 import { clampStat } from '../util';
-import { release } from './crime';
+import { recapture, release } from './crime';
 import { graduateHighSchool } from './education';
 import { treat } from './health';
 import { ILLNESS_BY_ID } from '../../content/illnesses';
@@ -31,6 +31,7 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   }
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
+  if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
     if (reasons.every((r) => r !== null)) return reasons.find((r) => r) ?? 'not now';
@@ -87,6 +88,15 @@ export function runSpecial(
     case 'bucket_list':
       s.player.flags.push('bucket_item');
       return;
+    case 'surrender': {
+      const f = s.legal.fugitive;
+      if (!f) return;
+      // Coming in yourself takes two years off what you owe and starts you in good standing.
+      s.legal.fugitive = { ...f, owed: Math.max(1, f.owed - 2) };
+      recapture(ctx, true);
+      if (s.legal.prison) s.legal.prison.behaviour = 70;
+      return;
+    }
     case 'adopt_pet': {
       const asked = typeof params['kind'] === 'string' ? params['kind'] : '';
       // Without a choice (the sim bots), any animal that is allowed.
@@ -154,13 +164,17 @@ export function runSpecial(
       // The money follows the outcome the player read: a win, a loss, or breaking even. Slightly negative odds overall.
       useVice(ctx, 'gambling');
       const stake = money(s, 200) + Math.round(Math.max(0, s.money.cash) * 0.02);
-      const delta = success
-        ? ctx.rng.chance(0.1)
-          ? stake * 3
-          : stake
-        : outcomeIndex === 1
-          ? -stake
-          : 0;
+      // A played session brings its own result; otherwise the dice decide.
+      const delta =
+        typeof params['net'] === 'number'
+          ? params['net']
+          : success
+            ? ctx.rng.chance(0.1)
+              ? stake * 3
+              : stake
+            : outcomeIndex === 1
+              ? -stake
+              : 0;
       s.money.cash += delta;
       if (delta)
         ctx.log(
@@ -243,15 +257,20 @@ export function runSpecial(
     case 'prison:escape': {
       const p = s.legal.prison;
       if (!p) return;
+      // Outcome 2 is turning back before anyone noticed: nothing happened, officially.
+      if (!success && outcomeIndex === 2) return;
       s.legal.escapes += 1;
       if (success) {
-        release(ctx, false);
+        const owed = Math.max(1, p.years - p.served) + 3;
+        release(ctx, false, true);
+        s.legal.fugitive = { since: s.year, owed, crimeId: p.crimeId };
         s.player.flags.push('fugitive');
         addStat(s, 'notoriety', 15);
         ctx.log('crime', 'You are free, technically. Every siren is about you now.', true);
       } else {
         p.years += 2;
         p.behaviour = clampStat(p.behaviour - 30);
+        ctx.log('crime', 'Two years are added to your sentence.');
       }
       return;
     }

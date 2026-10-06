@@ -115,7 +115,13 @@ export function onKeyDown(e: KeyboardEvent): void {
     if (key === ' ') e.preventDefault();
     return;
   }
-  if (key === ' ' && !s.cheatsOpen && !pressable(e.target)) {
+  // Never age up underneath an open dialog (pickers, the escape plan, a pet's panel).
+  if (
+    key === ' ' &&
+    !s.cheatsOpen &&
+    !pressable(e.target) &&
+    !document.querySelector('[role="dialog"]')
+  ) {
     e.preventDefault();
     doAgeUp();
   }

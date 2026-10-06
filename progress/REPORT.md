@@ -4,9 +4,9 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 533 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 538 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
-- **Cheats:** a full cheat menu (69 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
+- **Cheats:** a full cheat menu (70 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
 
 ## Installing the Mac app
@@ -45,6 +45,22 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **Drawn portraits (S23):** layered SVG faces replace the emoji avatars. The New Life builder has 10 tabs: skin and freckles, 5 face shapes, 13 haircuts in 13 colours, 5 eye shapes in 6 colours, 6 brows, 6 noses, 5 mouths, 6 kinds of facial hair, 5 glasses and 5 tops in 10 colours. Every option is drawn on your own face, and the preview shows you at 1, 8, 30 and 75. Portraits age, from a baby's round face and blush to greying hair and lines. Everyone in your life has a face: blood relatives take after you, and your children mix you and their other parent. An heir keeps the face they had as your child. A makeover (hair, colour, facial hair, glasses, clothes) shows a live preview. Save v6 builds a portrait for older saves from their old hair and skin tone.
 - **Faces everywhere (S24–S25):** expressions follow happiness (a frown and worried brows when miserable) and health (pale, tired eyes when ill). Faces appear in event popups (whoever the event is about), the family tree, the Lives list and the Continue button. Cosmetic surgery uses the builder to change face, eyes, brows, nose or mouth. Most patients get what they picked, some get a bill, and complications pick a nose for you.
 - **Pets (S26):** adopt a dog, cat, rabbit, hamster, parrot, goldfish, tortoise or horse from age 6. Children get one small pet that the parents pay for. Each pet has a name, a bond and its own health. Play, walks (dogs and horses) and the vet build the bond; neglect wears it down, and a neglected cat or dog may wander off. Pets cost upkeep, lift your mood when the bond is strong, age on their own clock (a hamster lasts two years, a tortoise outlives you), are mourned when they die, pass to your heir, and are rehomed if you go to prison. 20 pet events name them, the obituary remembers them, and the Relationships tab lists the living and the remembered.
+- **Accessories (S27):** earrings (studs, hoops, drops, gems) and headwear (beanie, cap, bucket hat, fedora, headscarf). Hats tuck tall hair away; a headscarf covers it.
+- **Playtest fixes (S28–S30):** a fresh-eyes reviewer read ten bot lives, and the fixes cover what they found:
+  - Names, fertility and named strangers: nobody new shares a first name with your family; fertility ends in the mid-forties (no more births at 64); a friend named in an event's text gets that name.
+  - Words: wealth titles convert currency; crimes are charged as nouns ("arrested for burglary"); NPC pronouns and grammar are fixed.
+  - Prison: cellmates don't send you photos from outside, and talking to someone from prison happens across a visiting table.
+  - Text that assumed things: no imaginary pets; the family-dog choice brings home a real dog; money words are local.
+  - Timing: early-relationship events stay early; the empty nest comes when the youngest leaves.
+  - Repetition: yearly lines are fresher and repeats grow rarer. 16 long-sentence prison events were added, plus six callbacks after release.
+- **Mini-games (S31–S32):**
+  - **Prison escape:** a turn-based plan across the yard past patrolling guards and their sight lines, before dawn. The yard is seeded and always solvable, and turning back costs nothing.
+  - **Casino blackjack:** pick a table, play up to five hands (hit, stand, double), and cash out.
+  - **How they're decided:** the engine replays your moves, so the result is exactly what you played.
+- **On the run (S33):**
+  - An escape leaves you a fugitive. The years you still owe follow you, and you can't take a job without papers (false ones can be bought, at a risk).
+  - Each year the chance of a 6 a.m. knock fades. After twenty years nobody is looking, and turning yourself in takes two years off.
+  - Four events cover your face on the news, false papers, a police checkpoint and the quiet life.
 
 ## Late life (S16)
 
@@ -191,12 +207,12 @@ What changed:
   | Most common popup share | 2.0% |
   | Runtime | about 42 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 523 of 533 events (98.1%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 528 of 538 events (98.1%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
   |---|---|
-  | Events (in 45 chains) | 533 |
+  | Events (in 45 chains) | 538 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |
@@ -209,7 +225,7 @@ What changed:
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |
-  | Cheat commands | 69 |
+  | Cheat commands | 70 |
 
 ## Screenshots
 
@@ -248,6 +264,8 @@ What changed:
 | `29-makeover` | Get a new look: hair, facial hair, glasses and clothes |
 | `30-adopt` | Adopt a pet: eight animals, costs and lifespans |
 | `31-pet` | A pet's panel: bond, health, play, walk, vet |
+| `32-blackjack` | The casino's blackjack table |
+| `33-escape` | The prison-yard escape mini-game |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.
