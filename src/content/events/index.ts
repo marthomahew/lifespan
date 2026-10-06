@@ -41,6 +41,7 @@ import { CHILDHOOD_3_EVENTS } from './childhood-3';
 import { CALLBACK_2_EVENTS } from './callbacks-2';
 import { PROJECT_EVENTS } from './projects';
 import { CROSSROADS_EVENTS } from './crossroads';
+import { WEALTH_EVENTS } from './wealth';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -66,6 +67,7 @@ export const EVENTS: EventDef[] = [
   ...CALLBACK_2_EVENTS,
   ...PROJECT_EVENTS,
   ...CROSSROADS_EVENTS,
+  ...WEALTH_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

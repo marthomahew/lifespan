@@ -336,3 +336,20 @@ describe('money that matters', () => {
     expect(gap.length).toBeGreaterThanOrEqual(3);
   });
 });
+
+describe('big money, big decisions', () => {
+  it('the stakes scale with what you are worth', async () => {
+    const { choose } = await import('../../src/engine');
+    const { netWorth } = await import('../../src/engine/networth');
+    let s = runCheat(newLife({ birthYear: 1970, country: 'us' }, 24), 'age.set', { age: 50 }).state;
+    s = runCheat({ ...s, pending: [] }, 'money.set', { amount: 3_000_000 }).state;
+    const before = netWorth(s);
+    s = runCheat({ ...s, pending: [] }, 'event.fire', {
+      event: 'wl_foundation',
+      force: 'on',
+    }).state;
+    const after = choose(s, 'found').state;
+    expect(before - netWorth(after)).toBeCloseTo(before * 0.2, -3);
+    expect(after.player.flags).toContain('philanthropist');
+  });
+});

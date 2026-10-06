@@ -1,4 +1,5 @@
 import { refToLocal } from '../../engine/economy';
+import { netWorthRef } from '../../engine/networth';
 import type { GameState } from '../../engine/types';
 import { JOB_BY_ID } from '../jobs';
 
@@ -143,3 +144,9 @@ export const newCouple =
         s.year - n.romance.since <= maxYears &&
         !s.npcs.some((k) => k.roles.includes('child') && k.parentIds.includes(n.id)),
     );
+
+/** Worth at least this much in today's money (reference dollars). */
+export const worthAtLeast =
+  (ref: number) =>
+  (s: GameState): boolean =>
+    netWorthRef(s) >= ref;

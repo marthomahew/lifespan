@@ -41,7 +41,9 @@ describe('late life', () => {
     expect(s.player.flags.filter((f) => f === 'bucket_item')).toHaveLength(5);
     expect(s.player.achievements).toContain('bucket_list');
     const dead = runCheat(s, 'deathbot', {}).state;
-    expect(obituary(dead)?.summary.some((l) => /5 things off the bucket list/.test(l))).toBe(true);
+    // The bot may tick a few more before the end; the obituary counts them all.
+    const line = obituary(dead)?.summary.find((l) => /things off the bucket list/.test(l)) ?? '';
+    expect(Number(/Ticked (\d+)/.exec(line)?.[1] ?? 0)).toBeGreaterThanOrEqual(5);
   });
 
   it('choosing the bucket list after a warning is remembered', () => {

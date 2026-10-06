@@ -89,7 +89,9 @@ export type Effect =
   /** A new animal joins the family (no shop, no fee: an event already paid). */
   | { pet: 'adopt'; kind: string; name: string }
   /** A step for the novel in progress. */
-  | { novel: NovelOp };
+  | { novel: NovelOp }
+  /** Money as a share of your net worth (a big gift, an investment, a settlement). */
+  | { wealth: number };
 
 export type ChainStepDef = {
   eventId: string;

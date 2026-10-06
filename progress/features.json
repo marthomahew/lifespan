@@ -749,5 +749,10 @@
     "title": "Career crossroads every five to eight years: management or craft, a rival offer, a redundancy package, a sabbatical",
     "passes": true,
     "evidence": "tests/engine/crossroads.test.ts; content:check; sim"
+  },
+  "S55": {
+    "title": "Wealth decisions with stakes as a share of net worth: a sibling’s deposit, a friend’s startup, a foundation, a lawsuit, a holiday home",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts (big money); content:check; sim"
   }
 }

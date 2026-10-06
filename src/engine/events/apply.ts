@@ -1,3 +1,4 @@
+import { netWorth } from '../networth';
 import { favouritePet, givePet } from '../systems/pets';
 import { novelOp } from '../systems/projects';
 import { TRAIT_BY_ID } from '../../content/traits';
@@ -144,6 +145,9 @@ export function applyEffect(
       s.legal.prison.behaviour = clampStat(s.legal.prison.behaviour + e.behaviour);
   } else if ('conduct' in e) {
     if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
+  } else if ('wealth' in e) {
+    // Stakes that scale with what you have: a share of net worth, paid from (or into) cash.
+    s.money.cash += Math.round(Math.max(0, netWorth(s)) * e.wealth);
   } else if ('novel' in e) {
     novelOp(ctx, e.novel);
   } else if ('pet' in e && e.pet === 'adopt') {
