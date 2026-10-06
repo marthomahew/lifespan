@@ -197,6 +197,8 @@ export function runSpecial(
               ? -stake
               : 0;
       s.money.cash += delta;
+      if (!delta && typeof params['net'] === 'number')
+        ctx.log('money', 'You walk out with exactly what you came in with.');
       if (delta)
         ctx.log(
           'money',
