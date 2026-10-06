@@ -135,7 +135,14 @@ export type MusicState = {
   lastWork: number;
 };
 
-export type Illness = { id: string; since: number; severity: number; treated: number };
+export type Illness = {
+  id: string;
+  since: number;
+  severity: number;
+  treated: number;
+  /** Treatments in a row that didn't work (absent in older saves). */
+  fails?: number;
+};
 
 export type InjuryTier = 'minor' | 'major' | 'serious';
 export type Injury = {

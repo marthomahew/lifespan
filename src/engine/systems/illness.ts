@@ -69,6 +69,18 @@ export function illnessPlan(ctx: Ctx, plan: string, illnessId: string): void {
     ill.severity = clampStat(ill.severity - 12);
     ill.treated = s.year;
     addStat(s, 'happiness', 2);
+  } else if (plan === 'specialist') {
+    pay(2500);
+    ill.severity = clampStat(ill.severity - 20);
+    ill.treated = s.year;
+    addStat(s, 'stress', 3);
+  } else if (plan === 'switch') {
+    pay(500);
+    ill.severity = clampStat(ill.severity - 10);
+    ill.treated = s.year;
+  } else if (plan === 'live') {
+    addStat(s, 'stress', -5);
+    addStat(s, 'happiness', 2);
   } else if (plan === 'second') {
     pay(300);
     if (ctx.rng.chance(0.45)) {

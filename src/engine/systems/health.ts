@@ -1,3 +1,5 @@
+import { fireEvent } from '../events/select';
+import { EVENT_BY_ID } from '../../content/events';
 import { pickFresh } from '../fresh';
 import { ILLNESS_BY_ID, ILLNESSES } from '../../content/illnesses';
 import type { IllnessDef, Treatment } from '../../content/types';
@@ -128,6 +130,7 @@ export function treat(
   ill.treated = s.year;
   const label = def.label.toLowerCase();
   if (ctx.roll(odds)) {
+    ill.fails = 0;
     if (def.chronic) {
       ill.severity = clampStat(ill.severity - ctx.rng.int(20, 40));
       ctx.log(
@@ -148,6 +151,13 @@ export function treat(
     }
     addStat(s, 'happiness', 3);
   } else {
+    // Two failures in a row and it's time to rethink, not to repeat.
+    ill.fails = (ill.fails ?? 0) + 1;
+    if (ill.fails >= 2 && !s.legal.prison) {
+      ill.fails = 0;
+      const ev = EVENT_BY_ID['hl_treatment_rethink'];
+      if (ev) fireEvent(ctx, ev, 'system', { illness: ill.id, label: def.label.toLowerCase() });
+    }
     ill.severity = clampStat(ill.severity + (method === 'surgery' ? 10 : 0));
     ctx.log(
       'health',

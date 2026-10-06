@@ -774,5 +774,10 @@
     "title": "Event outcome variants (checked by content:check); a writing career: advances grow with books, the backlist pays each year",
     "passes": true,
     "evidence": "tests/engine/projects.test.ts (writing career); content:check"
+  },
+  "S60": {
+    "title": "When treatment keeps failing: after two failures in a row, a specialist, a different approach, or learning to live with it",
+    "passes": true,
+    "evidence": "tests/engine/health.test.ts (rethink)"
   }
 }

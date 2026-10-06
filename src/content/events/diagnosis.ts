@@ -46,4 +46,48 @@ export const DIAGNOSIS_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'hl_treatment_rethink',
+    kind: 'choice',
+    category: 'health',
+    ages: [10, 120],
+    weight: 1,
+    chainOnly: true,
+    text: 'Two rounds of treatment for the {$label} and nothing to show for it. Your doctor leans back and says it might be time to try something else.',
+    choices: [
+      {
+        id: 'specialist',
+        label: 'See the best specialist you can find',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'A long train journey, a waiting room full of framed certificates, and a woman who listens for forty minutes before she says anything. Then she says something that helps.',
+            effects: [{ system: 'illness_plan', arg: 'specialist' }],
+          },
+        ],
+      },
+      {
+        id: 'switch',
+        label: 'Try a different approach',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'New tablets, a new routine, a new leaflet on the fridge. It is not a miracle, but the bad days come further apart.',
+            effects: [{ system: 'illness_plan', arg: 'switch' }],
+          },
+        ],
+      },
+      {
+        id: 'live',
+        label: 'Learn to live with it',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You stop treating it as a fight and start treating it as weather. It is still there. You are still here, and that turns out to matter more.',
+            effects: [{ system: 'illness_plan', arg: 'live' }],
+          },
+        ],
+      },
+    ],
+  },
 ];

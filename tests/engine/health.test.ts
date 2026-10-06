@@ -173,3 +173,21 @@ describe('a serious diagnosis is a decision', () => {
     expect(hard.money.cash).toBeLessThan(gentle.money.cash);
   });
 });
+
+describe('when treatment keeps failing', () => {
+  it('two failures in a row bring a rethink instead of a third identical try', async () => {
+    const { currentPopup } = await import('../../src/engine');
+    let s = runCheat(adult(5, 50), 'illness.add', { illness: 'heart_disease' }).state;
+    s = { ...s, pending: [], money: { ...s.money, cash: 1_000_000 } };
+    let rethink = false;
+    for (let i = 0; i < 40 && !rethink; i++) {
+      const t = act(
+        { ...s, pending: [], usage: { year: 0, used: {} } },
+        { type: 'treat', illness: 'heart_disease', method: 'doctor' },
+      ).state;
+      rethink = currentPopup(t)?.eventId === 'hl_treatment_rethink';
+      s = t;
+    }
+    expect(rethink).toBe(true);
+  });
+});
