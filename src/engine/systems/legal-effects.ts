@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import { CRIME_BY_ID } from '../../content/crimes';
 import type { Ctx } from '../ctx';
 import { addStat } from '../stats';
@@ -12,5 +13,6 @@ export function applyCrimeEffect(ctx: Ctx, crimeId: string, arrest: boolean): vo
     addStat(s, 'notoriety', Math.ceil(def.notoriety / 2));
     addStat(s, 'karma', Math.ceil(def.karma / 2));
   }
-  if (arrest) openCase(ctx, crimeId);
+  // Never caught: even a story that ends in handcuffs usually doesn't, for the lucky.
+  if (arrest && !ctx.rng.chance(0.75 * Math.min(1, luck(s, 'crime')))) openCase(ctx, crimeId);
 }

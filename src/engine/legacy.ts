@@ -206,10 +206,22 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
     `You are ${p.first} ${p.last}, ${p.age}, and the family story is yours now. ${parentNpc.first} is gone, but not forgotten.`,
     true,
   );
+  // The family business passes to an adult heir in place of its share of the cash.
+  if (s.business && p.age >= 18 && s.business.country === next.player.country) {
+    next.business = { ...s.business, hands: heir.job ? 'manager' : 'self' };
+    next.money.cash = Math.max(0, next.money.cash - s.business.value);
+    if (!p.flags.includes('founded_business')) p.flags.push('founded_business');
+  }
   if (next.money.cash > 0)
     ctx.log(
       'money',
       `Your share of ${parentNpc.first}’s estate arrives: ${formatMoney(next, next.money.cash)}.`,
+    );
+  if (next.business)
+    ctx.log(
+      'work',
+      `${s.business?.name ?? 'The business'} is yours now: the keys, the staff, the lot.`,
+      true,
     );
   // An adult heir already had a working life; they keep it.
   const link = heir.job ? PARENT_JOB_LINK[heir.job] : undefined;

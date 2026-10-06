@@ -191,7 +191,8 @@ function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
         >
           {forSale.map((x) => (
             <option key={x.id} value={x.id}>
-              {x.emoji} {productName(x, game.year)} ({x.label.toLowerCase()}) ·{' '}
+              {x.emoji} {productName(x, game.year)}
+              {productName(x, game.year) !== x.label ? ` (${x.label.toLowerCase()})` : ''} ·{' '}
               {formatMoney(game, money(game, x.price))}
             </option>
           ))}
@@ -239,7 +240,7 @@ function ItemForm({ game, onBuy }: FormProps): React.JSX.Element {
           {forSale.map((x) => (
             <option key={x.id} value={x.id}>
               {x.emoji} {productName(x, game.year)}
-              {x.eras?.length ? ` (${x.label.toLowerCase()})` : ''} ·{' '}
+              {productName(x, game.year) !== x.label ? ` (${x.label.toLowerCase()})` : ''} ·{' '}
               {formatMoney(game, money(game, x.price))}
             </option>
           ))}

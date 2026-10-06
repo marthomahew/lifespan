@@ -15,7 +15,7 @@ import { clampStat } from '../util';
 import { hasAdultRecord } from './careers';
 import { addLoan, annuityPayment } from './loans';
 import { addSkill } from './skills';
-import { article, withArticle } from '../text';
+import { article, lowerLabel, withArticle } from '../text';
 import { addInjury } from './injuries';
 
 const conditionMult = (c: number): number => 0.6 + c / 250;
@@ -355,12 +355,17 @@ export function downsizeHome(ctx: Ctx): void {
 /** An owned vehicle's model: the one on sale the year you bought it. */
 export function vehicleName(v: { model: string; bought: number }): string {
   const def = VEHICLE_BY_ID[v.model];
-  return def ? productName(def, v.bought) : 'vehicle';
+  if (!def) return 'vehicle';
+  const name = productName(def, v.bought);
+  return name === def.label ? lowerLabel(name) : name;
 }
 /** An owned possession's make: the one on sale the year you got it. */
 export function itemName(p: { item: string; bought: number }): string {
   const def = POSSESSION_BY_ID[p.item];
-  return def ? productName(def, p.bought) : 'item';
+  if (!def) return 'item';
+  const name = productName(def, p.bought);
+  // A brand keeps its capitals; a plain thing ("oil painting") reads lower-case mid-sentence.
+  return name === def.label ? lowerLabel(name) : name;
 }
 
 /** "a Volkswagen Golf" (a brand keeps its capitals), or "an oil painting" (a plain thing doesn't). */
@@ -369,5 +374,5 @@ export function productPhrase(
   year: number,
 ): string {
   const name = productName(def, year);
-  return def.eras?.length ? `${article(name)} ${name}` : withArticle(name);
+  return name !== def.label ? `${article(name)} ${name}` : withArticle(name);
 }

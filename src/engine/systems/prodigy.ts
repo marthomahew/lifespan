@@ -16,6 +16,7 @@ export function prodigyTick(ctx: Ctx): void {
     if (m.after && !flags.includes(`pm:${m.after}`)) continue;
     if (s.player.age > m.maxAge || s.player.age < (m.minAge ?? 0)) continue;
     if (level(s, m.skills) < m.minLevel) continue;
+    if (m.gifted && !m.skills.includes(s.player.talent ?? '')) continue;
     const def = EVENT_BY_ID[m.event];
     if (!def) continue;
     flags.push(`pm:${m.id}`);

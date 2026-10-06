@@ -356,9 +356,11 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   );
   ctx.log(
     'family',
-    solo
-      ? `You are born in ${p.city}, ${c.name}, and raised by your ${solo.roles.includes('mother') ? 'mother' : 'father'}, ${solo.first} (${solo.job ?? 'unemployed'}).`
-      : `You are born in ${p.city}, ${c.name}, to ${parentText || 'a family that loves you'}.`,
+    p.background === 'grandparents'
+      ? `You are born in ${p.city}, ${c.name}.`
+      : solo
+        ? `You are born in ${p.city}, ${c.name}, and raised by your ${solo.roles.includes('mother') ? 'mother' : 'father'}, ${solo.first} (${solo.job ?? 'unemployed'}).`
+        : `You are born in ${p.city}, ${c.name}, to ${parentText || 'a family that loves you'}.`,
     true,
   );
   const bg = p.background ? BACKGROUND_LINES[p.background] : undefined;

@@ -869,5 +869,10 @@
     "title": "Real product names by era: vehicles, possessions, record labels",
     "passes": true,
     "evidence": "tests/engine/products.test.ts"
+  },
+  "S79": {
+    "title": "Fixes from the S73–S78 review: business currency on emigration, random lives roll backgrounds, talent matters for the top milestones, family business inheritance, luck covers arrests and sport hiring, consistent background setup, product names",
+    "passes": true,
+    "evidence": "tests/engine/review-s78.test.ts"
   }
 }

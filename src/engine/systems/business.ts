@@ -100,7 +100,7 @@ export function businessAction(ctx: Ctx, a: BusinessOp): void {
       health: 50,
       value: 0,
       lastProfit: 0,
-      hands: s.career.jobId ? 'manager' : 'self',
+      hands: s.career.jobId || s.military?.active ? 'manager' : 'self',
     };
     b.value = valueOf(s, b);
     s.business = b;
@@ -118,6 +118,11 @@ export function businessAction(ctx: Ctx, a: BusinessOp): void {
   const b = businessOf(s);
   if (!b) throw new EngineError('you have no business');
   const k = kindOf(b);
+  // From a cell, or from the other side of the world, the business runs without you.
+  if (s.legal.prison && a.op !== 'sell' && a.op !== 'close')
+    throw new EngineError('not from prison');
+  if (b.country !== s.player.country && a.op !== 'sell' && a.op !== 'close')
+    throw new EngineError('it is back in the old country');
   switch (a.op) {
     case 'expand': {
       const cost = expandCost(s, b);
@@ -150,6 +155,7 @@ export function businessAction(ctx: Ctx, a: BusinessOp): void {
     case 'hands':
       if (a.hands === 'self' && s.career.jobId)
         throw new EngineError('quit your job to run it yourself');
+      if (a.hands === 'self' && s.military?.active) throw new EngineError('not while serving');
       b.hands = a.hands;
       ctx.log(
         'work',

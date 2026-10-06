@@ -903,4 +903,37 @@ export const BG_FAMILY_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'bgf_biz_inherit',
+    kind: 'choice',
+    category: 'family',
+    ages: [18, 100],
+    weight: 1,
+    chainOnly: true,
+    text: 'With the funeral over, the solicitor slides a set of keys across the desk: {fambiz} is yours to keep or to let go.',
+    choices: [
+      {
+        id: 'keep',
+        label: 'Keep it running',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You open up on Monday at the usual time. The regulars come in quietly and say the same thing in different words: they would have been proud.',
+            effects: [{ system: 'take_fambiz' }, { stat: 'happiness', delta: 4 }],
+          },
+        ],
+      },
+      {
+        id: 'sell',
+        label: 'Sell it',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'A buyer takes it on, staff and all. You keep the old sign, which goes in your hallway.',
+            effects: [{ system: 'sell_fambiz' }, { stat: 'happiness', delta: -2 }],
+          },
+        ],
+      },
+    ],
+  },
 ];

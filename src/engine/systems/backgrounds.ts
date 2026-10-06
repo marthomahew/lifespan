@@ -1,3 +1,5 @@
+import { EVENT_BY_ID } from '../../content/events';
+import { fireEvent } from '../events/select';
 import { BACKGROUND_BY_ID } from '../../content/backgrounds';
 import { BUSINESS_BY_ID } from '../../content/businesses';
 import { COUNTRIES, COUNTRY_BY_ID } from '../../content/countries';
@@ -45,6 +47,11 @@ export function setupBackground(ctx: Ctx, id: string): void {
         data['job'] = one.job.toLowerCase();
       }
       p.stats.fame = Math.max(p.stats.fame, 15);
+      // Fame pays: the family is comfortable at least.
+      if (p.wealth === 'poor' || p.wealth === 'working' || p.wealth === 'middle') {
+        p.wealth = 'comfortable';
+        for (const n of parents(s)) n.money = Math.round(n.money * 4 + money(s, 200000));
+      }
       break;
     case 'moving_family':
       if (one) {
@@ -53,7 +60,11 @@ export function setupBackground(ctx: Ctx, id: string): void {
       }
       break;
     case 'immigrant_family': {
-      const from = ctx.rng.pick(COUNTRIES.filter((c) => c.id !== p.country));
+      // From somewhere with a different first language: there is a second language at home.
+      const here = COUNTRY_BY_ID[p.country]?.languages[0];
+      const from = ctx.rng.pick(
+        COUNTRIES.filter((c) => c.id !== p.country && c.languages[0] !== here),
+      );
       data['heritage'] = from.id;
       for (const n of s.npcs)
         if (n.roles.some((r) => r === 'mother' || r === 'father' || r === 'grandparent'))
@@ -68,7 +79,20 @@ export function setupBackground(ctx: Ctx, id: string): void {
         if (!n.flags.includes('absent_parent')) n.flags.push('absent_parent');
         n.rel = Math.min(n.rel, 25);
       }
-      const living = s.npcs.filter((n) => n.alive && n.roles.includes('grandparent'));
+      let living = s.npcs.filter((n) => n.alive && n.roles.includes('grandparent'));
+      // Someone has to take you home: the youngest grandparent, alive after all.
+      if (!living.length) {
+        const g = s.npcs
+          .filter((n) => n.roles.includes('grandparent'))
+          .sort((a, b) => a.age - b.age)[0];
+        if (g) {
+          g.alive = true;
+          delete g.deathYear;
+          delete g.deathCause;
+          g.age = Math.min(g.age, 68);
+          living = [g];
+        }
+      }
       const gp = living.sort((a, b) => a.age - b.age)[0];
       if (gp) {
         gp.flags.push('raising_grandparent');
@@ -123,11 +147,13 @@ export function backgroundEffect(ctx: Ctx, kind: string): void {
       hands: s.career.jobId ? 'manager' : 'self',
     };
     if (!s.player.flags.includes('founded_business')) s.player.flags.push('founded_business');
+    s.player.flags.push('fambiz_settled');
     ctx.log('work', `${k.emoji} ${s.business.name} is yours now.`, true);
   } else if (kind === 'sell_fambiz') {
     const k = BUSINESS_BY_ID[d['kind'] ?? 'shop'];
     const share = money(s, (k?.startCost ?? 50000) * 0.8, 'wage');
     s.money.cash += share;
+    s.player.flags.push('fambiz_settled');
     ctx.log('money', `Your share of the sale: ${formatMoney(s, share)}.`);
   } else if (kind === 'birth_parent') {
     const n = addNpc(ctx, {
@@ -162,3 +188,19 @@ export const BACKGROUND_LINES: Record<string, (s: GameState) => string> = {
     `👯 You are not alone: your twin, ${s.player.backgroundData?.['twin'] ?? 'your twin'}, arrives eleven minutes later.`,
   adopted: () => '🏡 You are adopted as a baby, into a family that very much wanted you.',
 };
+
+/**
+ * Once a year: if the parent who ran the family business has died and it was never settled,
+ * it falls to you (as an adult) to keep it or let it go.
+ */
+export function backgroundTick(ctx: Ctx): void {
+  const s = ctx.s;
+  if (s.player.background !== 'family_business' || s.death || s.legal.prison) return;
+  if (s.player.age < 18 || s.business || s.player.flags.includes('fambiz_settled')) return;
+  const par = s.npcs.find((n) => n.flags.includes('business_parent'));
+  if (!par || par.alive) return;
+  const def = EVENT_BY_ID['bgf_biz_inherit'];
+  if (!def) return;
+  s.player.flags.push('fambiz_settled');
+  fireEvent(ctx, def, 'system');
+}

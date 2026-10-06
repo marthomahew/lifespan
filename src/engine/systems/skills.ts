@@ -14,7 +14,13 @@ export function learnRate(s: GameState, skill?: string): number {
   const gift =
     skill && s.player.talent === skill ? (s.player.talentLevel === 'prodigy' ? 3 : 1.5) : 1;
   const quick = (s.player.gifts ?? []).reduce((m, g) => m * (GIFT_BY_ID[g]?.learn ?? 1), 1);
-  return young * gift * quick;
+  // A born athlete takes to sport, a golden ear to music.
+  const lucky =
+    (skill === 'athletics' && s.player.gifts?.includes('sport_luck')) ||
+    ((skill === 'instrument' || skill === 'voice') && s.player.gifts?.includes('music_luck'))
+      ? 1.5
+      : 1;
+  return young * gift * quick * lucky;
 }
 
 /** Add to a skill (0..100). Positive deltas count as practice this year, at your learning rate. */

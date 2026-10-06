@@ -437,7 +437,8 @@ export function productName(
   def: { label: string; eras?: { from: number; name: string }[] },
   year: number,
 ): string {
-  const era = [...(def.eras ?? [])].reverse().find((e) => e.from <= year) ?? def.eras?.[0];
+  // Before its first model existed, it is just the kind of thing it is.
+  const era = [...(def.eras ?? [])].reverse().find((e) => e.from <= year);
   return era?.name ?? def.label;
 }
 

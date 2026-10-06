@@ -103,7 +103,9 @@ export function interviewOdds(s: GameState, job: JobDef): number {
     (p.smarts - 50) * 0.005 +
     (p.looks - 50) * 0.002 +
     playerOdds(s, 'work') +
-    playerOdds(s, 'social') * 0.5;
+    playerOdds(s, 'social') * 0.5 +
+    // Scouts notice a born athlete.
+    (job.field === 'sports' ? 0.4 * luck(s, 'sport') : 0);
   for (const [k, v] of Object.entries(job.req.skills ?? {}))
     o += Math.min(0.15, ((s.player.skills[k] ?? 0) - v) * 0.005);
   if (

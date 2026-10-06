@@ -12,6 +12,8 @@ export type ProdigyMilestone = {
   minAge?: number;
   /** An earlier milestone this one follows. */
   after?: string;
+  /** Only for someone born with the gift (hard work alone gets you close, not here). */
+  gifted?: boolean;
   event: string;
 };
 
@@ -44,6 +46,7 @@ export const PRODIGY_MILESTONES: ProdigyMilestone[] = [
   },
   {
     id: 'chess_gm',
+    gifted: true,
     skills: ['chess'],
     minLevel: 90,
     maxAge: 30,
@@ -76,6 +79,7 @@ export const PRODIGY_MILESTONES: ProdigyMilestone[] = [
   },
   {
     id: 'music_composer',
+    gifted: true,
     skills: MUSIC,
     minLevel: 88,
     maxAge: 19,

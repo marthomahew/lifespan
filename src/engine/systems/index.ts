@@ -18,6 +18,7 @@ import { vicesTick } from './vices';
 import { skillDecay } from './skills';
 import { focusTick } from './focus';
 import { prodigyTick } from './prodigy';
+import { backgroundTick } from './backgrounds';
 import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
@@ -84,6 +85,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   relationshipDecay(ctx);
   focusTick(ctx);
   prodigyTick(ctx);
+  backgroundTick(ctx);
   skillDecay(s);
   // 4. System ticks.
   ctx.phase('systems');

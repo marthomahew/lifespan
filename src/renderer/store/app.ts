@@ -1,4 +1,4 @@
-import { BACKGROUNDS, BACKGROUND_ODDS } from '../../content/backgrounds';
+import { AUTO_BACKGROUND, rollBackground } from './background-roll';
 import {
   continueAsChild,
   act as engineAct,
@@ -142,21 +142,14 @@ export function applyStep(step: Step, opts: { autosave?: boolean } = {}): void {
   if ((opts.autosave ?? true) && app.get().settings.autosave && newYear) void persist(game);
 }
 
-/** "Follow the setting": a background rolled from the seed, as often as Settings allows. */
-export const AUTO_BACKGROUND = 'auto';
-
-export function rollBackground(seed: number, freq: Settings['backgrounds']): string | undefined {
-  // Derived from the seed so a replayed seed gets the same start.
-  const roll = ((seed * 2654435761) >>> 0) / 2 ** 32;
-  if (roll >= BACKGROUND_ODDS[freq]) return undefined;
-  return BACKGROUNDS[Math.floor((roll / BACKGROUND_ODDS[freq]) * BACKGROUNDS.length)]?.id;
-}
-
 export function startLife(opts: NewLifeOptions, seed?: number): void {
   const s = app.get().settings;
   const theSeed = seed ?? Math.floor(Math.random() * 2 ** 31);
   const background =
-    opts.background === AUTO_BACKGROUND ? rollBackground(theSeed, s.backgrounds) : opts.background;
+    // Not chosen (a random life, a challenge) or 'auto': as often as Settings says.
+    opts.background === undefined || opts.background === AUTO_BACKGROUND
+      ? rollBackground(theSeed, s.backgrounds)
+      : opts.background;
   const { background: _picked, ...rest } = opts;
   const game = newLife(
     {

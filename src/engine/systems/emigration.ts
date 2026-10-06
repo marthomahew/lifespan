@@ -56,6 +56,10 @@ function convertCurrency(s: GameState, ratio: number): void {
     l.payment = r(l.payment);
   }
   for (const a of m.alimony) a.amount = r(a.amount);
+  if (s.business) {
+    s.business.value = r(s.business.value);
+    s.business.lastProfit = r(s.business.lastProfit);
+  }
   m.history = m.history.map(([y, nw, ref]) => [y, r(nw), ref]);
   for (const h of s.assets.homes) {
     h.value = r(h.value);

@@ -1,5 +1,6 @@
 import { EVENTS } from '../src/content/events';
 import { BACKGROUNDS } from '../src/content/backgrounds';
+import { SKILLS } from '../src/content/skills';
 import { newLife, type GameState } from '../src/engine';
 import { botStep, newBotMemory, PERSONAS, type PersonaId } from '../src/engine/bot/persona';
 import { eligibility } from '../src/engine/events/select';
@@ -51,7 +52,16 @@ export function runCoverage(
       const seed = seedBase + pi * 100000 + i;
       // Every third life starts with a background, so their stories get played too.
       const bg = i % 3 === 0 ? BACKGROUNDS[(i / 3) % BACKGROUNDS.length]?.id : undefined;
-      let s: GameState = newLife(bg ? { background: bg } : {}, seed);
+      // Every fifth is a prodigy who practises, so the prodigy stories get played too.
+      const gift = i % 5 === 2 ? SKILLS[Math.floor(i / 5) % SKILLS.length]?.id : undefined;
+      let s: GameState = newLife(
+        {
+          ...(bg ? { background: bg } : {}),
+          ...(gift ? { talent: gift, talentLevel: 'prodigy' as const } : {}),
+        },
+        seed,
+      );
+      if (gift) s = { ...s, player: { ...s.player, focus: gift } };
       const bot = new Rng(seedRng(seed * 31 + 7));
       const mem = newBotMemory();
       const sample = i % sampleEvery === 0;

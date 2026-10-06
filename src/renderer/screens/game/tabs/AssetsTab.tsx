@@ -1,3 +1,4 @@
+import { cap } from '../../../components/text';
 import { itemName, vehicleName } from '../../../../engine/systems/assets';
 import { useState } from 'react';
 import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
@@ -185,7 +186,7 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
             {game.assets.vehicles.map((v) => (
               <li key={v.id} className="asset-row">
                 <span className="grow">
-                  {VEHICLE_BY_ID[v.model]?.emoji} {vehicleName(v)}
+                  {VEHICLE_BY_ID[v.model]?.emoji} {cap(vehicleName(v))}
                   <span className="muted small">
                     {' '}
                     · {formatMoney(game, v.value)} · condition {v.condition}
@@ -207,7 +208,7 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
             {game.assets.possessions.map((p) => (
               <li key={p.id} className="asset-row">
                 <span className="grow">
-                  {POSSESSION_BY_ID[p.item]?.emoji} {itemName(p)}
+                  {POSSESSION_BY_ID[p.item]?.emoji} {cap(itemName(p))}
                   <span className="muted small"> · {formatMoney(game, p.value)}</span>
                 </span>
                 <button onClick={() => run({ type: 'sell_asset', id: p.id })}>Sell</button>

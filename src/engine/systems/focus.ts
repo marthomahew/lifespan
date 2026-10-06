@@ -10,8 +10,13 @@ import { addLanguage, addSkill } from './skills';
  */
 export const FOCUS_COST = 2;
 const SESSIONS = 3;
-/** The most a focus can add in one year. */
-const YEAR_CAP = 40;
+/** The most a focus can add in a year: hard work, a gift, or a prodigy's gift. */
+export function yearCap(s: GameState, skill: string): number {
+  // Languages aren't gifts: steady work gets you fluent in five years or so.
+  if (skill.startsWith('lang:')) return 20;
+  if (s.player.talent !== skill) return 12;
+  return s.player.talentLevel === 'prodigy' ? 40 : 22;
+}
 
 export type FocusOption = { id: string; label: string; level: number };
 
@@ -90,7 +95,7 @@ export function focusTick(ctx: Ctx): void {
     else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)));
   }
   // Even a prodigy needs a few years.
-  const after = Math.min(focusLevel(s, f), before + YEAR_CAP);
+  const after = Math.min(focusLevel(s, f), before + yearCap(s, f));
   if (f.startsWith('lang:')) s.player.languages[f.slice(5)] = after;
   else s.player.skills[f] = after;
   if (after >= 100) mastered();

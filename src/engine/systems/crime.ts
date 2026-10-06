@@ -321,7 +321,7 @@ function fugitiveTick(ctx: Ctx): void {
   // Good false papers halve the risk.
   const risk =
     Math.max(0.05, 0.3 - years * 0.04) * (s.player.flags.includes('false_papers') ? 0.5 : 1);
-  if (!ctx.roll(risk)) return;
+  if (!ctx.roll(risk * Math.max(0.1, 1 - 0.75 * luck(s, 'crime')))) return;
   recapture(ctx);
 }
 
