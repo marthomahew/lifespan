@@ -151,7 +151,7 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
         ? Math.max(pf, n.gender === 'female' ? n.fertility : 0)
         : n.fertility;
     const other = carrier === pf ? n.fertility : pf;
-    const fert = carrier <= 0 ? 0 : (carrier * 0.7 + other * 0.3) / 100;
+    const fert = carrier < 5 ? 0 : (carrier * 0.7 + other * 0.3) / 100;
     ok = ctx.roll(Math.min(0.9, fert * 0.85));
   }
   if (def.special === 'wedding')

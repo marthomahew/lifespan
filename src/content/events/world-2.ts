@@ -357,7 +357,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You lose the carpets and the kitchen units, but the photo albums, the good chair and the cat all spend the night dry on the landing. The repairs still sting.',
+            text: 'You lose the carpets and the kitchen units, but the photo albums, the good chair and the box of birth certificates all spend the night dry on the landing. The repairs still sting.',
             effects: [{ money: -4000 }, { stat: 'stress', delta: 4 }],
           },
         ],

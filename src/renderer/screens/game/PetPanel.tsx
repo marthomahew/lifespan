@@ -115,7 +115,7 @@ function Meter({
     <div className="pet-meter">
       <span className="small">{label}</span>
       <span
-        className="mini-bar wide"
+        className="mini-bar"
         aria-label={`${label} ${value}`}
         data-testid={testId}
         data-value={value}

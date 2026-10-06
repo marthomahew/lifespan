@@ -113,3 +113,17 @@ export const hasPet =
   (kind?: string) =>
   (s: GameState): boolean =>
     s.pets.some((p) => p.alive && (!kind || p.kind === kind));
+
+/** Early days: a partner of at most a few years, with no children together yet. */
+export const newCouple =
+  (maxYears: number) =>
+  (s: GameState): boolean =>
+    s.npcs.some(
+      (n) =>
+        n.alive &&
+        n.roles.includes('partner') &&
+        !n.roles.includes('spouse') &&
+        n.romance !== undefined &&
+        s.year - n.romance.since <= maxYears &&
+        !s.npcs.some((k) => k.roles.includes('child') && k.parentIds.includes(n.id)),
+    );

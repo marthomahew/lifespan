@@ -1,4 +1,4 @@
-import { favouritePet } from '../systems/pets';
+import { favouritePet, givePet } from '../systems/pets';
 import { TRAIT_BY_ID } from '../../content/traits';
 import { eventEdge, tiltWeights } from './skill-check';
 import type { Ctx } from '../ctx';
@@ -140,6 +140,8 @@ export function applyEffect(
     addStat(s, 'notoriety', e.notoriety);
   } else if ('conduct' in e) {
     if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
+  } else if ('pet' in e && e.pet === 'adopt') {
+    givePet(ctx, e.kind, e.name);
   } else if ('pet' in e) {
     const pet = favouritePet(s, e.kind);
     if (!pet) return;

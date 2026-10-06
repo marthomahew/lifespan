@@ -270,11 +270,11 @@ export const CAREER_OFFICE_EVENTS: EventDef[] = [
     cooldownYears: 6,
     when: inField('finance'),
     bind: { col: { role: 'coworker' } },
-    text: 'The year-end books are off by exactly one cent. Not a dollar, not a rounding error you can name: one cent, somewhere among forty thousand entries. {col.first} suggests buying a calculator with a better attitude.',
+    text: 'The year-end books are off by exactly the smallest coin there is. Not a note, not a rounding error you can name: one coin, somewhere among forty thousand entries. {col.first} suggests buying a calculator with a better attitude.',
     choices: [
       {
         id: 'hunt',
-        label: 'Hunt the cent down',
+        label: 'Hunt the missing coin down',
         outcomes: [
           {
             chance: oddsBy('discipline', 0.5),
@@ -288,14 +288,14 @@ export const CAREER_OFFICE_EVENTS: EventDef[] = [
           },
           {
             chance: 0.5,
-            text: 'Two days, no cent. You start seeing decimal points when you close your eyes.',
+            text: 'Two days, no coin. You start seeing decimal points when you close your eyes.',
             effects: [{ performance: -2 }, { stat: 'stress', delta: 8 }],
           },
         ],
       },
       {
         id: 'plug',
-        label: 'Post a one-cent adjustment and go home',
+        label: 'Post a one-coin adjustment and go home',
         outcomes: [
           {
             chance: 0.7,

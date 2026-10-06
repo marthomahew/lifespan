@@ -49,6 +49,16 @@ export function adoptPet(ctx: Ctx, kind: string, name?: string): Pet {
   if (why) throw new EngineError(`Adopt: ${why}`);
   const def = PET_BY_ID[kind] as PetKindDef;
   if (s.player.age >= 18) s.money.cash -= refToLocal(s, def.adoptCost);
+  const pet = givePet(ctx, kind, name, true);
+  if (!pet) throw new EngineError('Adopt: no room');
+  return pet;
+}
+
+/** A new animal joins you (an event's dog, an adoption). Null if the house is already full. */
+export function givePet(ctx: Ctx, kind: string, name?: string, announce = false): Pet | null {
+  const s = ctx.s;
+  const def = PET_BY_ID[kind];
+  if (!def || livingPets(s).length >= MAX_PETS) return null;
   const taken = new Set(livingPets(s).map((p) => p.name));
   const chosen = (name ?? '').trim().slice(0, 30);
   const free = def.names.filter((n) => !taken.has(n));
@@ -67,6 +77,7 @@ export function adoptPet(ctx: Ctx, kind: string, name?: string): Pet {
   };
   s.pets.push(pet);
   if (!s.player.flags.includes('had_pet')) s.player.flags.push('had_pet');
+  if (!announce) return pet;
   addStat(s, 'happiness', 6);
   ctx.log(
     'family',

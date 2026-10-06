@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { EVENT_BY_ID } from '../../content/events';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
@@ -121,9 +122,23 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       const good = ctx.roll(0.3 + skill / 150);
       ctx.log(
         'fame',
-        good
-          ? 'Your open-mic set gets the room to stop talking. That never happens.'
-          : 'Your open-mic set coincides with the coffee machine. You lose.',
+        pickFresh(
+          ctx,
+          good
+            ? [
+                'Your open-mic set gets the room to stop talking. That never happens.',
+                'Someone at the back films your second song. By the chorus, three people are singing along.',
+                'You play the new one for the first time and the room goes quiet in the right way.',
+                'The compere asks you to do one more. There is no one more; you play the first again, better.',
+                'A stranger buys you a drink and tells you the bridge made them call their sister.',
+              ]
+            : [
+                'Your open-mic set coincides with the coffee machine. You lose.',
+                'A string snaps in the first verse. You finish on five and nobody notices but you.',
+                'The act before you is a nine-year-old prodigy. You follow a nine-year-old prodigy.',
+                'Half the room is there for a birthday and treats your ballad as background music.',
+              ],
+        ),
       );
       addStat(s, 'happiness', good ? 5 : -2);
       return;

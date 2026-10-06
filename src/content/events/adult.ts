@@ -76,7 +76,7 @@ export const ADULT_EVENTS: EventDef[] = [
     weight: 7,
     once: true,
     bind: { sib: { role: 'sibling', minAge: 21 } },
-    text: '{sib.first} wants to open a food truck that only sells soup in bread bowls. {sib.They} need{sib.s} {money:5000} and {sib.has} already bought the bread.',
+    text: '{sib.first} wants to turn an old dentist’s surgery into an escape room called Root Canal. {sib.They} need{sib.s} {money:5000} and {sib.has} already bought the reclining chair.',
     choices: [
       {
         id: 'lend',
@@ -88,7 +88,7 @@ export const ADULT_EVENTS: EventDef[] = [
             text: '{sib.first} hugs you so hard your glasses go crooked and promises a payment plan by spring.',
             effects: [
               { money: -5000 },
-              { rel: 'sib', delta: 10, memory: 'the soup truck loan' },
+              { rel: 'sib', delta: 10, memory: 'the escape room loan' },
               { stat: 'karma', delta: 2 },
             ],
             next: {
@@ -107,7 +107,7 @@ export const ADULT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You build a twelve-tab cost model. {sib.first} reads one tab and calls you a joy vampire.',
             effects: [
-              { rel: 'sib', delta: -4, memory: 'the soup spreadsheet' },
+              { rel: 'sib', delta: -4, memory: 'the escape room spreadsheet' },
               { stat: 'smarts', delta: 1 },
             ],
           },
@@ -120,7 +120,7 @@ export const ADULT_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: '{sib.first} takes it well at dinner and badly in the family group chat.',
-            effects: [{ rel: 'sib', delta: -6, memory: 'the time you said no to the soup truck' }],
+            effects: [{ rel: 'sib', delta: -6, memory: 'the time you said no to the escape room' }],
           },
         ],
       },
@@ -134,7 +134,7 @@ export const ADULT_EVENTS: EventDef[] = [
     weight: 10,
     chainOnly: true,
     bind: { sib: { role: 'sibling' } },
-    text: 'The soup truck has had a year. {sib.first} turns up on your doorstep with a bread bowl, a nervous smile, and an envelope that may or may not contain your {money:$amount}.',
+    text: 'Root Canal has had a year. {sib.first} turns up on your doorstep with a souvenir toothbrush, a nervous smile, and an envelope that may or may not contain your {money:$amount}.',
     choices: [
       {
         id: 'open',
@@ -142,17 +142,17 @@ export const ADULT_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 0.5,
-            text: 'The full amount, plus interest, plus a lifetime soup pass. The truck is a hit with the office-lunch crowd.',
+            text: 'The full amount, plus interest, plus a lifetime pass. Root Canal is booked solid with office team-building days.',
             effects: [
               { money: { payload: 'amount', mult: 1.2 } },
-              { rel: 'sib', delta: 8, memory: 'paying back the soup loan with interest' },
+              { rel: 'sib', delta: 8, memory: 'paying back the escape room loan with interest' },
               { stat: 'happiness', delta: 6 },
             ],
             success: true,
           },
           {
             chance: 0.5,
-            text: 'Inside is a handwritten apology and a coupon for one free soup. The truck now belongs to a man named Dov.',
+            text: 'Inside is a handwritten apology and a voucher for one free escape. The building is a dentist’s again.',
             effects: [
               { rel: 'sib', delta: -3, memory: 'the coupon instead of the money' },
               { stat: 'happiness', delta: -5 },
@@ -166,7 +166,7 @@ export const ADULT_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You hand the envelope back unopened. {sib.first} cries into the bread bowl, which holds up surprisingly well.',
+            text: 'You hand the envelope back unopened. {sib.first} cries into the souvenir toothbrush packaging, which holds up surprisingly well.',
             effects: [
               { rel: 'sib', delta: 14, memory: 'the loan you forgave on the doorstep' },
               { stat: 'karma', delta: 5 },

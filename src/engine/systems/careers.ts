@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { JOB_BY_ID, JOBS } from '../../content/jobs';
 import { SPECIALTY_BY_ID } from '../../content/military';
 import { GRAD_BY_ID } from '../../content/education';
@@ -384,10 +385,14 @@ export function careerAction(ctx: Ctx, id: string): void {
       addStat(s, 'stress', 5);
       ctx.log(
         'work',
-        ctx.rng.pick([
+        pickFresh(ctx, [
           'You stay late every night for a month. Your boss notices; your houseplants do not survive.',
           'You answer emails at weekends. It works, and it shows on your face.',
           'You volunteer for the project nobody wants and quietly nail it.',
+          'You learn the system everyone else avoids. Suddenly people bring you their problems, and their biscuits.',
+          'You arrive first and leave last for a season. The cleaner starts saying good night to you by name.',
+          'You fix a process that has annoyed everyone for years. Nobody thanks you, but the right person notices.',
+          'You take the difficult client off a colleague’s hands and win them round with sheer patience.',
         ]),
       );
       return;
@@ -404,7 +409,13 @@ export function careerAction(ctx: Ctx, id: string): void {
         c.performance = clampStat(c.performance - 4);
         ctx.log(
           'work',
-          'Your boss says "not this year" with the confidence of someone who says it every year.',
+          pickFresh(ctx, [
+            'Your boss says "not this year" with the confidence of someone who says it every year.',
+            'Your boss is very sympathetic about the budget, which is apparently a natural disaster.',
+            'You are told your contribution is "really valued", in a tone that does not include money.',
+            'Your boss promises to "revisit it in the new year" and writes nothing down.',
+            'HR sends a chart about market rates. You appear to be exactly on it, somehow.',
+          ]),
         );
         addStat(s, 'happiness', -3);
       }

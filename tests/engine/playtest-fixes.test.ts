@@ -80,3 +80,58 @@ describe('wealth titles', () => {
     }
   });
 });
+
+describe('the family dog', () => {
+  it('"Get a dog" really brings home a dog', async () => {
+    const { choose } = await import('../../src/engine');
+    let s = runCheat(newLife({ country: 'us', birthYear: 1970, gender: 'female' }, 8), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'age.set', { age: 40 }).state;
+    s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 10000 }).state;
+    s = runCheat({ ...s, pending: [] }, 'event.fire', {
+      event: 'par_older_pet',
+      force: 'on',
+    }).state;
+    expect(s.pending[0]?.eventId).toBe('par_older_pet');
+    s = choose(s, 'dog').state;
+    expect(s.pets.map((p) => `${p.name}:${p.kind}`)).toContain('Biscuit:dog');
+  });
+});
+
+describe('wording', () => {
+  it('crimes are charged as nouns, and survivors are named with who they were', async () => {
+    const { CRIMES } = await import('../../src/content/crimes');
+    for (const c of CRIMES)
+      expect(c.charge, c.id).not.toMatch(
+        /^(commit|burgle|steal|deal|evade|shoplift|pickpocket|vandalise|embezzle|assault someone)\b/,
+      );
+    const { obituary } = await import('../../src/engine');
+    let s = runCheat(newLife({ birthYear: 1960, gender: 'female' }, 12), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
+    const ob = obituary(s);
+    for (const line of ob?.survivors ?? [])
+      expect(line).toMatch(/^(son|daughter|child|husband|wife|spouse|partner)\b/);
+  });
+
+  it('a chronic condition reads as routine after the first treatment', async () => {
+    const s0 = runCheat(newLife({ birthYear: 1980, country: 'us' }, 13), 'age.set', {
+      age: 40,
+    }).state;
+    let s = runCheat({ ...s0, pending: [] }, 'illness.add', { illness: 'migraines' }).state;
+    s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 100000 }).state;
+    const { act, ageUp } = await import('../../src/engine');
+    const lines: string[] = [];
+    for (let i = 0; i < 6; i++) {
+      s = { ...s, pending: [], cheats: { ...s.cheats, forceSuccess: true } };
+      const r = act(s, { type: 'treat', illness: 'migraines', method: 'doctor' });
+      lines.push(r.state.log.at(-1)?.text ?? '');
+      s = ageUp({ ...r.state, pending: [] }).state;
+    }
+    expect(lines.filter((l) => l.includes('under control')).length).toBeLessThanOrEqual(1);
+  });
+});

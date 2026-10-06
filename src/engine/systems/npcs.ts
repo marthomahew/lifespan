@@ -1,3 +1,4 @@
+import { pickFreshTemplate } from '../fresh';
 import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { baseHazard, healthMultiplier } from '../mortality';
@@ -210,7 +211,20 @@ function schoolFriends(ctx: Ctx): void {
       age: Math.max(4, age + r.int(-1, 1)),
       rel: r.int(30, 60),
     });
-    ctx.log('school', `${n.first} ${n.last} joins your class and sits next to you.`);
+    ctx.log(
+      'school',
+      pickFreshTemplate(
+        ctx,
+        [
+          '{n} joins your class and sits next to you.',
+          'A new kid, {n}, arrives mid-term with a lunchbox shaped like a bus.',
+          '{n} transfers in and is seated next to you because of the alphabet.',
+          'The teacher introduces {n}, who waves at the wrong half of the room.',
+          '{n} starts at your school and immediately knows where everything is.',
+        ],
+        `${n.first} ${n.last}`,
+      ),
+    );
   }
   for (const n of classmates) {
     if (!n.roles.includes('friend') && n.rel >= 60 && r.chance(0.5)) {
@@ -218,7 +232,17 @@ function schoolFriends(ctx: Ctx): void {
       remember(s, n, 'becoming friends at school', 5);
       ctx.log(
         'social',
-        `You and ${n.first} are friends now. It happened somewhere between lunch and detention.`,
+        pickFreshTemplate(
+          ctx,
+          [
+            'You and {n} are friends now. It happened somewhere between lunch and detention.',
+            '{n} saves you a seat three days running. That settles it: friends.',
+            'You and {n} invent a secret handshake with eleven steps. Friendship is official.',
+            '{n} shares the good crisps with you. Nobody shares the good crisps.',
+            'You and {n} get told off for talking in class, together. A friendship is born.',
+          ],
+          n.first,
+        ),
       );
     }
     // Shared classes count as contact, and people you see every day grow on you (or don't).

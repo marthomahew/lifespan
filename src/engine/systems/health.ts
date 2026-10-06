@@ -120,6 +120,8 @@ export function treat(
   if (!opts.free && s.money.cash < cost)
     throw new EngineError(`treatment costs ${formatMoney(s, cost)}`);
   if (!opts.free) s.money.cash -= cost;
+  // Ongoing care for a chronic condition is routine after the first time.
+  const routine = def.chronic && ill.treated > 0 && ill.treated >= s.year - 2;
   ill.treated = s.year;
   const label = def.label.toLowerCase();
   if (ctx.roll(odds)) {
@@ -127,7 +129,13 @@ export function treat(
       ill.severity = clampStat(ill.severity - ctx.rng.int(20, 40));
       ctx.log(
         'health',
-        `${def.emoji} The ${method} gets your ${label} under control. It is manageable now.`,
+        routine
+          ? `${def.emoji} ${ctx.rng.pick([
+              `Another check-up for the ${label}. The routine holds.`,
+              `Repeat prescription, short appointment, steady numbers. The ${label} stays in its box.`,
+              `The ${label} has good and bad weeks, but the ${method} keeps the bad ones short.`,
+            ])}`
+          : `${def.emoji} The ${method} gets your ${label} under control. It is manageable now.`,
       );
     } else {
       s.health.illnesses = s.health.illnesses.filter((i) => i !== ill);

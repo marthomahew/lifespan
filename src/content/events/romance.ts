@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { hasJob, hasPartner, isMarried, single } from './conditions';
+import { all, hasJob, hasPartner, isMarried, newCouple, single } from './conditions';
 import type { GameState } from '../../engine/types';
 
 const singleAtWork = (s: GameState): boolean => single(s) && hasJob(s);
@@ -168,7 +168,7 @@ export const ROMANCE_EVENTS: EventDef[] = [
     ages: [19, 70],
     weight: 6,
     once: true,
-    when: hasPartner,
+    when: all(hasPartner, newCouple(4)),
     bind: { pt: { role: 'partner', minAge: 18 } },
     text: "{pt.first} has started leaving a drawer's worth of clothes at your place. {pt.They} ask{pt.s} whether you two should just get one place.",
     choices: [

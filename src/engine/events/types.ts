@@ -78,7 +78,9 @@ export type Effect =
   | { conduct: number }
   /** Your favourite pet (of a kind, if given): the bond or their health moves, or they leave. */
   | { pet: 'bond' | 'health'; delta: number; kind?: string }
-  | { pet: 'lose'; fate: string; kind?: string };
+  | { pet: 'lose'; fate: string; kind?: string }
+  /** A new animal joins the family (no shop, no fee: an event already paid). */
+  | { pet: 'adopt'; kind: string; name: string };
 
 export type ChainStepDef = {
   eventId: string;

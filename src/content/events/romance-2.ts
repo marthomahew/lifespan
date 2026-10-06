@@ -1,12 +1,14 @@
 import type { EventDef } from '../../engine/events/types';
 import type { GameState } from '../../engine/types';
 import {
+  all,
   canAfford,
   canMoveAbroad,
   hasChildren,
   hasJob,
   hasPartner,
   isMarried,
+  newCouple,
   single,
 } from './conditions';
 
@@ -22,7 +24,7 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
     ages: [18, 45],
     weight: 7,
     once: true,
-    when: hasPartner,
+    when: all(hasPartner, newCouple(2)),
     bind: { love: { role: 'partner', minAge: 18 } },
     text: 'Your first holiday together. {love.first} has printed a colour-coded itinerary with a column labelled "contingency lunch". You had planned to wander.',
     choices: [
@@ -95,7 +97,7 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
     ages: [19, 50],
     weight: 6,
     once: true,
-    when: hasPartner,
+    when: all(hasPartner, newCouple(2)),
     bind: { love: { role: 'partner', minAge: 18 } },
     text: "Sunday lunch at {love.first}'s parents. There is a dog that hates you, a cousin who sells insurance, and a roast that has clearly been cooked as a test.",
     choices: [
@@ -167,7 +169,7 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
     ages: [20, 55],
     weight: 6,
     cooldownYears: 8,
-    when: hasPartner,
+    when: all(hasPartner, newCouple(4)),
     bind: { love: { role: 'partner', minAge: 18 } },
     text: "The new place has room for one sofa. Yours has a dent shaped like you; {love.first}'s is beige and smells faintly of a former flatmate.",
     choices: [

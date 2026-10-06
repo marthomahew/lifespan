@@ -81,7 +81,7 @@ export const PARENTING_EVENTS: EventDef[] = [
     once: true,
     when: hasKidAged(1, 2),
     bind: { kid: { role: 'child', minAge: 1, maxAge: 2 } },
-    text: '{kid.first} lets go of the sofa, wobbles, and takes three determined steps straight toward the dog bowl.',
+    text: '{kid.first} lets go of the sofa, wobbles, and takes three determined steps straight toward the biscuit tin.',
     outcomes: [
       {
         chance: 0.6,
@@ -483,6 +483,7 @@ export const PARENTING_EVENTS: EventDef[] = [
               { stat: 'health', delta: 2 },
               { npcStat: 'kid', stat: 'happiness', delta: 8 },
               { rel: 'kid', delta: 8, memory: 'the day you brought the dog home' },
+              { pet: 'adopt', kind: 'dog', name: 'Biscuit' },
             ],
           },
         ],

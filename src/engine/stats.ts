@@ -120,7 +120,10 @@ export function driftStats(ctx: Ctx, c: Circumstances): void {
   st.discipline = clampStat(
     pull(st.discipline, 50 + traitDrift(s, 'discipline') * 10, 0.08) + noise(1),
   );
-  st.fertility = clampStat(pull(st.fertility, fertilityBaseline(age, p.gender), 0.5));
+  const fb = fertilityBaseline(age, p.gender);
+  st.fertility = clampStat(pull(st.fertility, fb, 0.5));
+  // Rounding would leave a last point forever; past the end it is zero.
+  if (fb === 0 && st.fertility < 3) st.fertility = 0;
   st.notoriety = clampStat(st.notoriety - 2);
   for (const k of ALL_STATS) st[k] = clamp(st[k], 0, 100);
   applyLocks(s);

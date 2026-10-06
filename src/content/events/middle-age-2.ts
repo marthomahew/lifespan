@@ -378,10 +378,19 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
     id: 'mid2_empty_nest',
     kind: 'notice',
     category: 'family',
-    ages: [50, 60],
+    ages: [36, 72],
     weight: 6,
     once: true,
-    bind: { kid: { role: 'child', minAge: 18 } },
+    // The youngest has just left home.
+    when: (s) => {
+      const kids = s.npcs.filter((n) => n.alive && n.roles.includes('child'));
+      return (
+        kids.length > 0 &&
+        Math.min(...kids.map((k) => k.age)) >= 18 &&
+        Math.min(...kids.map((k) => k.age)) <= 19
+      );
+    },
+    bind: { kid: { role: 'child', minAge: 18, maxAge: 19 } },
     text: 'The last of the boxes leaves in the back of {kid.first}’s borrowed van, and the house goes very quiet.',
     outcomes: [
       {

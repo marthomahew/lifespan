@@ -99,7 +99,7 @@ export const BABY_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'Peas go everywhere: the walls, the cat, a small but meaningful amount on the ceiling. You find this hilarious.',
+            text: 'Peas go everywhere: the walls, the high chair, a small but meaningful amount on the ceiling. You find this hilarious.',
             effects: [
               { stat: 'happiness', delta: 3 },
               { rel: 'mum', delta: -1, memory: 'the peas on the ceiling' },

@@ -166,7 +166,7 @@
   gap: 8px;
   margin-bottom: 8px;
 }
-.mini-bar.wide {
+.pet-meter .mini-bar {
   width: 100%;
 }
 .pet-panel .row {

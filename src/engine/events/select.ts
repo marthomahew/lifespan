@@ -210,6 +210,9 @@ export function eventWeight(s: GameState, def: EventDef): number {
     if (gap <= 0) w *= 0.35;
     else if (gap === 1) w *= 0.7;
   }
+  // Every time you've seen it, a repeat gets less likely: news should feel new.
+  const seen = s.events.counts[def.id] ?? 0;
+  if (seen > 0) w *= Math.pow(0.6, seen);
   if (s.cheats.noBadEvents && isBadEvent(def)) return 0;
   return w;
 }

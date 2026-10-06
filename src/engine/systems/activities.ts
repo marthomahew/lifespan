@@ -190,7 +190,14 @@ export function writeWill(ctx: Ctx, heirs?: { npcId: number; share: number }[]):
     const fam = s.npcs.filter(
       (n) => n.alive && (n.roles.includes('spouse') || n.roles.includes('child')),
     );
-    list = fam.map((n) => ({ npcId: n.id, share: 1 }));
+    // No spouse or children: the two people you are closest to.
+    const close = fam.length
+      ? fam
+      : s.npcs
+          .filter((n) => n.alive && n.rel >= 50 && !n.roles.includes('enemy'))
+          .sort((a, b) => b.rel - a.rel || a.id - b.id)
+          .slice(0, 2);
+    list = close.map((n) => ({ npcId: n.id, share: 1 }));
   }
   const total = list.reduce((t, h) => t + h.share, 0) || 1;
   s.will = {
@@ -205,6 +212,6 @@ export function writeWill(ctx: Ctx, heirs?: { npcId: number; share: number }[]):
     'money',
     names.length
       ? `Your will: ${names.join(', ')}.`
-      : 'Your will leaves everything to the state, by default.',
+      : 'You write a will, but there is nobody to leave it to. It will all go to the state.',
   );
 }

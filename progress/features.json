@@ -619,5 +619,10 @@
     "title": "Playtest fixes 1: unique names, fertility limits, named strangers, currency-correct wealth titles, crime nouns, pronouns and grammar, prison context, one death line",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts; sim invariants"
+  },
+  "S29": {
+    "title": "Playtest fixes 2: pets only where they exist, the family dog, local money words, early-relationship events gated, empty nest when the youngest leaves, wills to the closest, varied yearly lines, repeats less likely, 16 long-sentence prison events, obituary relations, fertility rounding",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts; content:check; sim invariants"
   }
 }

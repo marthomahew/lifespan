@@ -2,6 +2,7 @@ import { COUNTRY_BY_ID } from '../content/countries';
 import { TRAITS } from '../content/traits';
 import type { Ctx } from './ctx';
 import type { Attraction, Gender, GameState, Memory, Npc, Role } from './types';
+import { fertilityBaseline } from './stats';
 import { clampStat } from './util';
 
 export const MEMORY_MAX = 30;
@@ -96,7 +97,7 @@ export function addNpc(ctx: Ctx, spec: NpcSpec): Npc {
     lastContact: s.year,
     money: Math.max(0, Math.round(spec.money ?? 0)),
     attraction: randomAttraction(ctx, gender),
-    fertility: r.int(40, 90),
+    fertility: startFertility(r.int(40, 90), spec.age, gender),
   };
   s.npcs.push(npc);
   return npc;
@@ -165,4 +166,11 @@ export function relLabel(n: Npc): string {
     default:
       return `your ${role}`;
   }
+}
+
+/** Women past their mid-forties start at zero, like the yearly curve. */
+function startFertility(roll: number, age: number, gender: Gender): number {
+  if (gender !== 'female') return roll;
+  if (age > 46) return 0;
+  return Math.min(roll, fertilityBaseline(age, 'female') + 10);
 }

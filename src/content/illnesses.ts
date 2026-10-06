@@ -49,7 +49,7 @@ export const ILLNESSES: IllnessDef[] = [
     id: 'food_poisoning',
     label: 'Food poisoning',
     emoji: '🤢',
-    symptom: 'That gas-station sushi has filed a formal complaint.',
+    symptom: 'That bargain sushi has filed a formal complaint.',
     severity: [10, 30],
     chronic: false,
     onset: { ages: [2, 120], base: 0.04 },

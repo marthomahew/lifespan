@@ -1,3 +1,4 @@
+import { relLabel } from './npc';
 import { petsEver } from './systems/pets';
 import type { Ctx } from './ctx';
 import { netWorthRef } from './networth';
@@ -119,7 +120,13 @@ export function obituary(s: GameState): Obituary | null {
         n.alive &&
         (n.roles.includes('child') || n.roles.includes('spouse') || n.roles.includes('partner')),
     )
-    .map((n) => `${n.first} ${n.last}`);
+    // "their husband Rami Haddad", "their son Leo": a different surname still reads as family.
+    .sort(
+      (a, b) =>
+        Number(b.roles.includes('spouse') || b.roles.includes('partner')) -
+          Number(a.roles.includes('spouse') || a.roles.includes('partner')) || b.age - a.age,
+    )
+    .map((n) => `${relLabel(n).replace(/^your /, '')} ${n.first} ${n.last}`);
   return {
     name: `${p.first} ${p.last}`,
     born: p.birthYear,

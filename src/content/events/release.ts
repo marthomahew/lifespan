@@ -604,7 +604,7 @@ export const RELEASE_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: '{kid.first} remembers the police at the door, and a birthday you missed, and a dog called Biscuit you had forgotten. You start from there.',
+            text: '{kid.first} remembers the police at the door, and a birthday you missed, and a song you used to sing in the car that you had forgotten. You start from there.',
             effects: [
               { rel: 'kid', delta: 7, memory: 'listening before you explained' },
               { stat: 'happiness', delta: 3 },
