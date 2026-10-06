@@ -1,3 +1,4 @@
+import { lowerTitle } from '../text';
 import { pickFresh } from '../fresh';
 import { COUNTRIES } from '../../content/countries';
 import { PARENT_JOBS } from '../../content/family';
@@ -179,7 +180,7 @@ const MILESTONES: Milestone[] = [
 ];
 
 function withA(job: string): string {
-  const j = job.charAt(0).toLowerCase() + job.slice(1);
+  const j = lowerTitle(job);
   return `${/^[aeiou]/i.test(j) ? 'an' : 'a'} ${j}`;
 }
 

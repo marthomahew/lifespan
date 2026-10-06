@@ -68,6 +68,7 @@ export function musicReason(s: GameState, id: MusicActionId): string | null {
   if (s.settings.freeTime !== false && freeTime(s).left <= 0) return 'no free time left this year';
   switch (id) {
     case 'busk':
+      if (s.player.stats.fame >= 70) return 'too famous: it would cause a crush';
       return skill < 10 ? 'needs instrument or voice 10' : null;
     case 'open_mic':
       return skill < 20 ? 'needs instrument or voice 20' : null;
@@ -122,7 +123,12 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       m.stage = Math.max(m.stage, 1);
       ctx.log(
         'fame',
-        `You busk outside the station and make ${formatMoney(s, pay)}, a sandwich, and one fan.`,
+        pickFresh(ctx, [
+          `You busk outside the station and make ${formatMoney(s, pay)}, a sandwich, and one fan.`,
+          `An afternoon in the shopping street: ${formatMoney(s, pay)} in the case and a dog that stays for three songs.`,
+          `You busk in the underpass where the echo is kind. ${formatMoney(s, pay)}, and a child who dances the whole time.`,
+          `Rain stops play after an hour. ${formatMoney(s, pay)}, damp, and one man who says you made his day.`,
+        ]),
       );
       return;
     }
@@ -161,7 +167,12 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       addStat(s, 'fame', skill > 70 ? 2 : 1);
       ctx.log(
         'fame',
-        `A paid gig at a pub with sticky floors: ${formatMoney(s, pay)} and a regular slot.`,
+        pickFresh(ctx, [
+          `A paid gig at a pub with sticky floors: ${formatMoney(s, pay)} and a regular slot.`,
+          `A wedding band needs a dep at short notice. ${formatMoney(s, pay)} and more cake than anyone should eat.`,
+          `A Friday night in a back room above a bar: ${formatMoney(s, pay)}, a full room, and an encore you didn't plan.`,
+          `A festival's smallest stage, at noon, to forty people and a lot of mud. ${formatMoney(s, pay)}, and it counts.`,
+        ]),
       );
       return;
     }
@@ -199,7 +210,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       s.money.cash += pay;
       ctx.log(
         'fame',
-        `You release "${title}". ${quality > 80 ? 'Critics call it a masterpiece; your mum agrees.' : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? 'It finds an audience of about forty people.' : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
+        `You release "${title}". ${quality > 80 ? 'Critics call it a masterpiece; your mum agrees.' : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 50 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
       if (!m.label && quality >= 60 && m.stage === 3) {

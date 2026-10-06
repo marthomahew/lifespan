@@ -73,6 +73,8 @@ export function interactionReason(s: GameState, n: Npc, def: InteractionDef): st
     if (!cut && !(n.rel < 25 && s.year - n.lastContact >= 3)) return 'nothing to patch up';
   } else if (cut) return 'you cut them off';
   if (def.special === 'cut_off' && isPartner(n)) return 'break up instead';
+  if ((def.special === 'cut_off' || def.special === 'reconnect') && n.age < 12)
+    return `${n.first} is too young`;
   const t = targetOk(def, n);
   if (t) return t;
   if (usedThisYear(s, `i:${n.id}:${def.id}`) >= def.limitPerYear) return 'done this year';
@@ -81,6 +83,13 @@ export function interactionReason(s: GameState, n: Npc, def: InteractionDef): st
     if (n.flags.includes('no_kids')) return `${n.first} doesn't want children`;
     if (p.gender !== 'female' && n.gender !== 'female')
       return 'try the fertility clinic or adoption';
+    // Whoever would carry is past it: say so instead of a year of hoping.
+    const carriers = [
+      ...(p.gender === 'female' ? [{ age: p.age, fertility: p.stats.fertility }] : []),
+      ...(n.gender === 'female' ? [{ age: n.age, fertility: n.fertility }] : []),
+    ];
+    if (carriers.every((c) => c.age >= 45 && c.fertility < 5))
+      return 'too late for that now; adoption is still open';
   }
   if (def.special === 'wedding' && p.age < countryOf(s).ages.marriage)
     return `marriage age is ${countryOf(s).ages.marriage}`;

@@ -35,8 +35,42 @@ const LINGER_PENALTY = 4;
 
 export const injuryLabel = (i: Injury): string => (i.lingering ? `old ${i.kind}` : i.kind);
 
-/** Record an injury from an event, an accident, a fight, or a deployment. Under 6 is just a bruise. */
-export function addInjury(ctx: Ctx, amount: number): void {
+/** Body parts a story might name, and what each becomes at each severity. */
+const PARTS: [RegExp, Record<InjuryTier, string>][] = [
+  [/ankle/, { minor: 'sprained ankle', major: 'broken ankle', serious: 'shattered ankle' }],
+  [/wrist/, { minor: 'sprained wrist', major: 'broken wrist', serious: 'shattered wrist' }],
+  [/\brib/, { minor: 'cracked rib', major: 'broken rib', serious: 'fractured ribs' }],
+  [/\bknee/, { minor: 'twisted knee', major: 'torn knee ligament', serious: 'shattered knee' }],
+  [
+    /shoulder/,
+    { minor: 'pulled shoulder', major: 'dislocated shoulder', serious: 'shattered shoulder' },
+  ],
+  [/\bback\b/, { minor: 'pulled back', major: 'back injury', serious: 'spinal injury' }],
+  [/\b(arm|elbow)/, { minor: 'sprained arm', major: 'broken arm', serious: 'shattered arm' }],
+  [/\b(leg|shin)/, { minor: 'pulled hamstring', major: 'broken leg', serious: 'shattered leg' }],
+  [
+    /collarbone/,
+    { minor: 'bruised collarbone', major: 'broken collarbone', serious: 'broken collarbone' },
+  ],
+  [/\b(hand|finger)/, { minor: 'sprained finger', major: 'broken hand', serious: 'crushed hand' }],
+  [
+    /\b(head|concuss)/,
+    { minor: 'mild concussion', major: 'concussion', serious: 'serious head injury' },
+  ],
+  [/\bnose\b/, { minor: 'bloody nose', major: 'broken nose', serious: 'broken nose' }],
+];
+
+/** The injury a story describes, if it names a body part. */
+export function injuryFromText(text: string, tier: InjuryTier): string | null {
+  const t = text.toLowerCase();
+  return PARTS.find(([re]) => re.test(t))?.[1][tier] ?? null;
+}
+
+/**
+ * Record an injury from an event, an accident, a fight, or a deployment. Under 6 is just a bruise.
+ * The story's own text, when given, decides what was hurt; otherwise the log says.
+ */
+export function addInjury(ctx: Ctx, amount: number, story?: string): void {
   const s = ctx.s;
   const n = Math.abs(amount);
   addStat(s, 'health', -n);
@@ -44,8 +78,11 @@ export function addInjury(ctx: Ctx, amount: number): void {
   if (n < 6) return;
   const tier: InjuryTier = n >= 20 ? 'serious' : n >= 12 ? 'major' : 'minor';
   const t = TIERS[tier];
+  const named = story ? injuryFromText(story, tier) : null;
+  const kind = named ?? ctx.rng.pick(t.kinds);
+  if (!named) ctx.log('health', `🩹 The damage: ${kind.endsWith('ribs') ? kind : `a ${kind}`}.`);
   s.health.injuryList.push({
-    kind: ctx.rng.pick(t.kinds),
+    kind,
     tier,
     year: s.year,
     healsIn: t.heal,
@@ -82,7 +119,7 @@ export function injuryTick(ctx: Ctx): void {
       i.lingering = true;
       keep.push(i);
       ctx.log('health', `Your ${i.kind} never quite heals. It aches when the weather turns.`);
-    } else ctx.log('health', `Your ${i.kind} has healed.`);
+    } else ctx.log('health', `Your ${i.kind} ${i.kind.endsWith('ribs') ? 'have' : 'has'} healed.`);
   }
   s.health.injuryList = keep;
 }
@@ -106,7 +143,10 @@ export function treatInjury(ctx: Ctx, index: number, method: 'physio' | 'surgery
   const i = s.health.injuryList[index];
   if (!i) throw new EngineError('no such injury');
   const opt = injuryOptions(s, index).find((o) => o.method === method);
-  if (!opt) throw new EngineError(`${method} won't help a ${injuryLabel(i)}`);
+  if (!opt)
+    throw new EngineError(
+      `${method} won't help ${injuryLabel(i).endsWith('ribs') ? '' : 'a '}${injuryLabel(i)}`,
+    );
   if (method === 'physio' && i.physioYear === s.year)
     throw new EngineError('you have already done physio this year');
   // A child's treatment is the parents' bill.

@@ -208,7 +208,7 @@ export const MARRIAGE_EVENTS: EventDef[] = [
     weight: 1,
     chainOnly: true,
     bind: { sp: { role: 'spouse', minAge: 18 } },
-    text: '{$years} years married. Some evenings you and {sp.first} talk about everything; lately, mostly about bins. {sp.They} look{sp.s} up at you across the kitchen, and you both know it.',
+    text: '{$years} years married to {sp.first}. {$scene} {sp.They} look{sp.s} up at you across the kitchen, and you both know it.',
     choices: [
       {
         id: 'invest',

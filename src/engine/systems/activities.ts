@@ -207,7 +207,7 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
     : renderText(s, o.text);
   // A picked holiday tells its own story (the destination's line); the generic one would clash.
   if (!(def.special === 'vacation' && params['dest'])) ctx.log('activity', `${def.emoji} ${line}`);
-  for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id);
+  for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id, line);
 
   if (def.special === 'fertility' && o.success) {
     const partner = currentPartner(ctx);

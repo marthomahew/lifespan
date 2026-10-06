@@ -66,7 +66,13 @@ export function schoolTick(ctx: Ctx): void {
     // Report cards at 9, 12 and 15: not on the first day of school.
     if (age % 3 === 0 && age > 6) ctx.log('school', reportCard(ctx));
   }
-  if (age === 18 && !e.droppedOut && !e.degrees.some((d) => d.level === 'high_school'))
+  // Inside at 18, there's no graduation: the prison diploma course is the way.
+  if (
+    age === 18 &&
+    !s.legal.prison &&
+    !e.droppedOut &&
+    !e.degrees.some((d) => d.level === 'high_school')
+  )
     graduateHighSchool(ctx);
   if (age > 17) e.inSchool = false;
 }

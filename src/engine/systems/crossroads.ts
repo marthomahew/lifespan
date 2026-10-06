@@ -67,5 +67,15 @@ export function marriageTick(ctx: Ctx): void {
   if (last !== undefined && s.year - last < 8) return;
   if (!ctx.rng.chance(0.25)) return;
   const def = EVENT_BY_ID['mar_checkin'];
-  if (def) fireEvent(ctx, def, 'system', { years: s.year - sp.romance.since }, { sp: sp.id });
+  const years = s.year - sp.romance.since;
+  // A different picture of the marriage each time it comes round.
+  const scene = MARRIAGE_SCENES[Math.floor(years / 8) % MARRIAGE_SCENES.length] ?? '';
+  if (def) fireEvent(ctx, def, 'system', { years, scene }, { sp: sp.id });
 }
+
+const MARRIAGE_SCENES = [
+  'The calendar is all appointments and other people’s birthdays, and your two names appear on it separately.',
+  'Some evenings you two talk about everything; lately, mostly about bins.',
+  'You know each other’s coffee orders, snores and silences by heart. Lately it is mostly the silences.',
+  'The house runs like clockwork, and you cannot remember the last time you went anywhere just the two of you.',
+];

@@ -57,6 +57,8 @@ export type Effect =
       /** A new friend or enemy the text has already named. */
       first?: string;
       gender?: Gender;
+      /** Their age, when the text says it (otherwise near yours). */
+      age?: number;
     }
   | { schedule: string; inYears: number | [number, number]; payload?: ChainPayload }
   | {

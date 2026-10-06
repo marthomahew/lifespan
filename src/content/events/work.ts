@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, oddsBy } from './conditions';
+import { canAfford, hasJob, oddsBy, officeJob } from './conditions';
 
 /** Workplace events across a working life. Every one needs a job. */
 export const WORK_EVENTS: EventDef[] = [
@@ -11,7 +11,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [18, 29],
     weight: 9,
     cooldownYears: 5,
-    when: hasJob,
+    when: officeJob,
     bind: { boss: { role: 'boss' } },
     text: '{boss.first} has booked a ninety-minute meeting titled "Alignment Touchpoint" to read out an agenda that was already in the invite. You are slide nine of nothing.',
     choices: [
@@ -145,7 +145,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [20, 26],
     weight: 9,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     bind: { cw: { role: 'coworker' }, boss: { role: 'boss' } },
     text: 'In the team meeting, {cw.first} presents your fix for the billing bug as {cw.their} own, using your diagram, your joke and your exact pause before the punchline.',
     choices: [
@@ -275,7 +275,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [19, 29],
     weight: 8,
     cooldownYears: 6,
-    when: hasJob,
+    when: officeJob,
     text: 'At 4:10 p.m. every screen in the building turns blue at once. Someone in the next row whispers, "It was only a small update."',
     choices: [
       {
@@ -459,7 +459,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [18, 25],
     weight: 6,
     once: true,
-    when: hasJob,
+    when: officeJob,
     text: 'Your security badge photo was taken mid-sneeze.',
     outcomes: [
       {
@@ -567,7 +567,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 44],
     weight: 9,
     cooldownYears: 6,
-    when: hasJob,
+    when: officeJob,
     text: 'A client wants the logo "bigger, but also smaller," the colour "blue, but not like that," and the final version yesterday. This is the eleventh round.',
     choices: [
       {
@@ -636,7 +636,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 44],
     weight: 8,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     text: "A headhunter named Priya Okonkwo-Lund messages: \"Exciting opportunity, can't say where, can't say what, but the salary is a number you'll like.\" She wants a call during lunch.",
     choices: [
       {
@@ -687,7 +687,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 49],
     weight: 8,
     cooldownYears: 7,
-    when: hasJob,
+    when: officeJob,
     text: 'You realise you have read the same email nine times without understanding it, and that you cannot remember your last weekend. Your eye has developed a small, persistent twitch.',
     choices: [
       {
@@ -751,7 +751,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 49],
     weight: 8,
     cooldownYears: 6,
-    when: hasJob,
+    when: officeJob,
     bind: { cw: { role: 'coworker' } },
     text: 'You and {cw.first} are sent to a conference in a beige hotel by a motorway. The keynote is called "Disrupting the Disruptors." The bar has a happy hour.',
     choices: [
@@ -818,7 +818,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 44],
     weight: 8,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     bind: { boss: { role: 'boss' } },
     text: '{boss.first} has started CC-ing {boss.their} own manager on every reply to you, including the one that said "sounds good."',
     choices: [
@@ -1010,7 +1010,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 49],
     weight: 7,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     bind: { cw: { role: 'coworker' } },
     text: 'The office goes "hot-desking." Your desk is gone. Your plant is in a box marked LOST PROPERTY. {cw.first} has taken the last seat by a window.',
     choices: [
@@ -1071,7 +1071,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [50, 64],
     weight: 8,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     bind: { boss: { role: 'boss' } },
     text: 'Consultants in identical vests have been interviewing everyone about "what you do, exactly." {boss.first} asks you to justify your role in one slide.',
     choices: [
@@ -1130,7 +1130,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [50, 64],
     weight: 7,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     text: 'The company is replacing the old system you have mastered over fifteen years with a new one that has a cartoon mascot and no undo button.',
     choices: [
       {
@@ -1499,7 +1499,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [65, 75],
     weight: 6,
     cooldownYears: 6,
-    when: hasJob,
+    when: officeJob,
     text: 'In a client presentation you realise the small print on your own slides is a grey blur, and your reading glasses are on your head.',
     choices: [
       {

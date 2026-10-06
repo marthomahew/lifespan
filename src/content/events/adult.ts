@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, oddsBy } from './conditions';
+import { canAfford, hasJob, oddsBy, officeJob } from './conditions';
 
 export const ADULT_EVENTS: EventDef[] = [
   {
@@ -235,7 +235,7 @@ export const ADULT_EVENTS: EventDef[] = [
     ages: [30, 49],
     weight: 8,
     cooldownYears: 6,
-    when: hasJob,
+    when: officeJob,
     bind: { cw: { role: 'coworker' } },
     text: "{cw.first} has replied-all to the entire company with a message clearly meant for you: 'can you BELIEVE this meeting'. The meeting was led by the CEO.",
     choices: [

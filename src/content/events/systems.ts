@@ -185,7 +185,7 @@ export const SYSTEM_EVENTS: EventDef[] = [
     ages: [16, 30],
     weight: 0,
     chainOnly: true,
-    text: 'A brown envelope arrives: you are called up for {$years} year(s) of national service.',
+    text: 'A brown envelope arrives: you are called up for {$term} of national service.',
     choices: [
       {
         id: 'army',

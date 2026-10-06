@@ -12,7 +12,7 @@ export function applyStatusEffect(
   kind: string,
   npc: Npc | undefined,
   role?: Role,
-  named: { first?: string; gender?: Gender } = {},
+  named: { first?: string; gender?: Gender; age?: number } = {},
 ): void {
   const s = ctx.s;
   const p = s.player;

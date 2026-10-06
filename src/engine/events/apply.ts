@@ -67,6 +67,8 @@ export function applyEffect(
   bindings: Record<string, number>,
   payload: ChainPayload,
   source: string,
+  /** The outcome's text, so an injury matches what the story says happened. */
+  story?: string,
 ): void {
   const s = ctx.s;
   const p = s.player;
@@ -108,7 +110,7 @@ export function applyEffect(
   } else if ('cure' in e) {
     cureIllness(ctx, e.cure);
   } else if ('injury' in e) {
-    addInjury(ctx, e.injury);
+    addInjury(ctx, e.injury, story);
   } else if ('vice' in e) {
     s.vices.levels[e.vice] = clampStat(s.vices.levels[e.vice] + e.delta);
     if (e.delta > 0) s.vices.lastUse[e.vice] = s.year;
@@ -125,6 +127,7 @@ export function applyEffect(
     applyStatusEffect(ctx, e.status, e.with ? boundNpc(ctx, e.with, bindings) : undefined, e.role, {
       ...(e.first ? { first: e.first } : {}),
       ...(e.gender ? { gender: e.gender } : {}),
+      ...(e.age !== undefined ? { age: e.age } : {}),
     });
   } else if ('schedule' in e) {
     const [lo, hi] = typeof e.inYears === 'number' ? [e.inYears, e.inYears] : e.inYears;
@@ -202,7 +205,7 @@ export function applyOutcome(
     });
   for (const e of o.effects) {
     if (s.death) break;
-    applyEffect(ctx, e, bindings, payload, def.id.replace(/_/g, ' '));
+    applyEffect(ctx, e, bindings, payload, def.id.replace(/_/g, ' '), text);
   }
   if (o.next && !s.death) {
     const [lo, hi] =

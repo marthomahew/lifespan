@@ -75,7 +75,8 @@ export function serviceLoans(ctx: Ctx): number {
   const s = ctx.s;
   let paid = 0;
   for (const l of s.money.loans) {
-    if (l.payment === 0 && l.kind === 'student') {
+    // Not yet repaying, or inside (student loans are deferred during a sentence): interest only.
+    if (l.kind === 'student' && (l.payment === 0 || s.legal.prison)) {
       l.balance = Math.round(l.balance * (1 + l.rate));
       continue;
     }

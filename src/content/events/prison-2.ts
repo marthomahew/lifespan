@@ -286,7 +286,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
     category: 'social',
     ages: [20, 100],
     weight: 6,
-    cooldownYears: 6,
+    once: true,
     inPrison: true,
     when: servedAtLeast(3),
     text: 'A new arrival called Robin moves into the cell opposite: nineteen, sleeps with shoes on, and jumps every time the doors bang.',
@@ -299,7 +299,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You explain which rules are real and which are noise. A month later Robin sleeps barefoot and starts calling you by your first name.',
             effects: [
-              { status: 'friend', first: 'Robin' },
+              { status: 'friend', first: 'Robin', age: 19 },
               { stat: 'karma', delta: 4 },
               { stat: 'happiness', delta: 2 },
             ],

@@ -114,7 +114,7 @@ export function discharge(ctx: Ctx, type?: string): void {
   if (t === 'honorable' || t === 'general') s.education.veteranBenefit = true;
   ctx.log(
     'military',
-    `You leave the ${m.branch} with ${t === 'honorable' ? 'an honorable' : t === 'general' ? 'a general' : t === 'other than honorable' ? 'an other-than-honorable' : 'a dishonorable'} discharge after ${served} years.${t === 'honorable' || t === 'general' ? ' The veteran benefit will pay for school.' : ''}`,
+    `You leave the ${m.branch} with ${t === 'honorable' ? 'an honorable' : t === 'general' ? 'a general' : t === 'other than honorable' ? 'an other-than-honorable' : 'a dishonorable'} discharge after ${served} ${served === 1 ? 'year' : 'years'}.${t === 'honorable' || t === 'general' ? ' The veteran benefit will pay for school.' : ''}`,
     true,
   );
   s.player.flags = s.player.flags.filter((f) => f !== 'conscript');
@@ -137,7 +137,11 @@ export function militaryTick(ctx: Ctx): void {
   ) {
     s.player.flags.push('called_up');
     const def = EVENT_BY_ID['military_conscription_notice'];
-    if (def) fireEvent(ctx, def, 'system', { years: c.conscription.years });
+    if (def)
+      fireEvent(ctx, def, 'system', {
+        years: c.conscription.years,
+        term: `${c.conscription.years} ${c.conscription.years === 1 ? 'year' : 'years'}`,
+      });
   }
   if (!m?.active || s.legal.prison) return;
   m.years += 1;

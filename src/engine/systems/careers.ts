@@ -488,6 +488,7 @@ export function careerAction(ctx: Ctx, id: string): void {
       return;
     case 'freelance': {
       if (s.player.age < 16) throw new EngineError('from age 16');
+      if (s.legal.prison) throw new EngineError('not from prison');
       if (c.freelanceYear === s.year) throw new EngineError('one gig a year');
       c.freelanceYear = s.year;
       const sk = s.player.skills;
@@ -502,7 +503,12 @@ export function careerAction(ctx: Ctx, id: string): void {
       s.money.cash += pay;
       ctx.log(
         'work',
-        `A freelance gig pays ${formatMoney(s, pay)}. The client asks for "one small change" eleven times.`,
+        pickFresh(ctx, [
+          `A freelance gig pays ${formatMoney(s, pay)}. The client asks for "one small change" eleven times.`,
+          `A weekend job for a friend of a friend: ${formatMoney(s, pay)}, paid on time, which feels like a miracle.`,
+          `A freelance job pays ${formatMoney(s, pay)} and comes with a brief that changes twice before lunch.`,
+          `You take on a side project for ${formatMoney(s, pay)}. The invoice is the most satisfying thing you write all year.`,
+        ]),
       );
       return;
     }

@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { all, hasJob, notInPrison, worthAtLeast } from './conditions';
+import { all, notInPrison, worthAtLeast, officeJob } from './conditions';
 
 /** When you have real money, real decisions: the stakes scale with what you are worth. */
 export const WEALTH_EVENTS: EventDef[] = [
@@ -197,7 +197,7 @@ export const WEALTH_EVENTS: EventDef[] = [
     ages: [30, 80],
     weight: 5,
     cooldownYears: 15,
-    when: all(worthAtLeast(400_000), hasJob, notInPrison),
+    when: all(worthAtLeast(400_000), officeJob, notInPrison),
     text: 'A letter from a law firm: a former client says a decision of yours cost them dearly. Their lawyer has clearly looked up what you are worth.',
     choices: [
       {

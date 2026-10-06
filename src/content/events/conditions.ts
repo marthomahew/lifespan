@@ -34,6 +34,21 @@ export const inField =
   (field: string) =>
   (s: GameState): boolean =>
     s.career.jobId !== null && JOB_BY_ID[s.career.jobId]?.field === field;
+/** Office work: the fields at desks, and the desk jobs in the others (reply-all, badges, slides). */
+const OFFICE_FIELDS = ['technology', 'finance', 'law', 'science'];
+const OFFICE_JOBS = [
+  'medical_receptionist',
+  'professor',
+  'school_principal',
+  'graphic_designer',
+  'architect',
+  'journalist',
+  'civil_servant',
+];
+export const officeJob = (s: GameState): boolean => {
+  const job = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
+  return !!job && (OFFICE_FIELDS.includes(job.field) || OFFICE_JOBS.includes(job.id));
+};
 /** Working full-time as one particular job. */
 export const isJob =
   (...ids: string[]) =>

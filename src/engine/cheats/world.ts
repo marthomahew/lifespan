@@ -44,7 +44,10 @@ export function shiftAge(ctx: Ctx, target: number): void {
       n.deathCause = 'Old age';
     }
   }
-  for (const c of s.chains) c.dueYear += d;
+  for (const c of s.chains) {
+    c.dueYear += d;
+    if (c.firstDue !== undefined) c.firstDue += d;
+  }
   catchUpSystems(ctx, from, target);
   ctx.log('system', `🎩 Time jumps to age ${target}.`);
 }

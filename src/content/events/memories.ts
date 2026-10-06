@@ -10,7 +10,7 @@ export const MEMORY_EVENTS: EventDef[] = [
     weight: 1,
     chainOnly: true,
     bind: { who: { role: 'acquaintance', anyRole: true } },
-    text: '{who.first} turns up out of the blue. {who.They} still think{who.s} about {$memory}, and {who.they} {who.has} come to return the favour.',
+    text: '{who.first} turns up out of the blue. {who.They} still think{who.s} about {$memory}, and want{who.s} you to know it mattered. {who.They} would like to do something for you.',
     choices: [
       {
         id: 'accept',

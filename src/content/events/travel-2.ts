@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, livesAbroad, oddsBy } from './conditions';
+import { canAfford, livesAbroad, oddsBy, officeJob } from './conditions';
 
 export const TRAVEL_EVENTS_2: EventDef[] = [
   // ---------------------------------------------------------------- living abroad
@@ -637,7 +637,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
     ages: [22, 61],
     weight: 7,
     cooldownYears: 4,
-    when: hasJob,
+    when: officeJob,
     text: 'The conference wraps up early, and you have a free afternoon in a city you have never seen before your flight home. Your laptop has eleven unread messages.',
     choices: [
       {

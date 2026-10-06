@@ -1,5 +1,14 @@
 import type { EventDef } from '../../engine/events/types';
-import { all, canAfford, exCon, hasJob, noJob, oddsBy, releasedWithin } from './conditions';
+import {
+  all,
+  canAfford,
+  exCon,
+  hasJob,
+  hasRecord,
+  noJob,
+  oddsBy,
+  releasedWithin,
+} from './conditions';
 
 /** Life after release: rebuilding with a record (SPEC §5.10). Every event needs exCon. */
 export const RELEASE_EVENTS: EventDef[] = [
@@ -62,7 +71,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 8,
     cooldownYears: 4,
-    when: all(releasedWithin(6), noJob),
+    when: all(releasedWithin(6), hasRecord, noJob),
     text: 'The interview at a warehouse goes well until the manager reaches the box on the form that asks about convictions. You ticked it. He taps it twice with his pen.',
     choices: [
       {
@@ -122,7 +131,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 8,
     once: true,
-    when: all(releasedWithin(8), hasJob),
+    when: all(releasedWithin(8), hasRecord, hasJob),
     bind: { gaffer: { role: 'boss' } },
     text: '{gaffer.first} calls you in and shuts the door. Someone has told the whole floor about your record. {gaffer.They} say{gaffer.s} {gaffer.they} knew already and hired you anyway, and would like to know what you want done about the gossip.',
     choices: [
@@ -493,7 +502,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 7,
     cooldownYears: 6,
-    when: releasedWithin(6),
+    when: all(releasedWithin(6), hasRecord),
     text: 'The flat is perfect: second floor, decent light, a radiator that works. Then the letting agent mentions they run background checks on all tenants, and smiles like that is good news.',
     choices: [
       {

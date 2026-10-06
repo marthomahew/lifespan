@@ -301,9 +301,11 @@ export function runDueChains(ctx: Ctx): void {
   for (const step of due) {
     const def = EVENT_BY_ID[step.eventId];
     if (!def || s.death) continue;
-    // The outside world waits for you: a step due in prison comes up the year after release.
+    // The outside world waits for you, a while: a step due in prison comes up the year after
+    // release, unless it's more than five years stale (the street party is long forgotten).
     if (s.legal.prison && !def.inPrison) {
-      s.chains.push({ ...step, dueYear: s.year + 1 });
+      const first = step.firstDue ?? step.dueYear;
+      if (s.year - first < 5) s.chains.push({ ...step, dueYear: s.year + 1, firstDue: first });
       continue;
     }
     if (!eligibility(s, def, { chain: true, preset: step.bindings }).ok) continue;

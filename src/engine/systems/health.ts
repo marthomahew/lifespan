@@ -129,6 +129,8 @@ export function treat(
   const routine = def.chronic && ill.treated > 0 && ill.treated >= s.year - 2;
   ill.treated = s.year;
   const label = def.label.toLowerCase();
+  // Verb agreement for plural labels ("the migraines have…").
+  const v = (one: string, many: string): string => (def.plural ? many : one);
   if (ctx.roll(odds)) {
     ill.fails = 0;
     if (def.chronic) {
@@ -138,16 +140,20 @@ export function treat(
         routine
           ? `${def.emoji} ${ctx.rng.pick([
               `Another check-up for the ${label}. The routine holds.`,
-              `Repeat prescription, short appointment, steady numbers. The ${label} stays in its box.`,
-              `The ${label} has good and bad weeks, but the ${method} keeps the bad ones short.`,
+              `Repeat prescription, short appointment, steady numbers. The ${label} ${v('stays in its box', 'stay in their box')}.`,
+              `The ${label} ${v('has', 'have')} good and bad weeks, but the ${method} keeps the bad ones short.`,
             ])}`
-          : `${def.emoji} The ${method} gets your ${label} under control. It is manageable now.`,
+          : `${def.emoji} The ${method} gets your ${label} under control. ${v('It is', 'They are')} manageable now.`,
       );
     } else {
       s.health.illnesses = s.health.illnesses.filter((i) => i !== ill);
       if (/cancer|tumour/.test(def.id) && !s.player.flags.includes('survived_cancer'))
         s.player.flags.push('survived_cancer');
-      ctx.log('health', `${def.emoji} The ${method} works. Your ${label} is gone.`, true);
+      ctx.log(
+        'health',
+        `${def.emoji} The ${method} works. Your ${label} ${v('is', 'are')} gone.`,
+        true,
+      );
     }
     addStat(s, 'happiness', 3);
   } else {
@@ -165,8 +171,8 @@ export function treat(
         ? `The healer's tea smells of moss and does nothing for your ${label}.`
         : pickFresh(ctx, [
             `The ${method} doesn't help your ${label} this time.`,
-            `Another round of the ${method}, another set of numbers that refuse to move. The ${label} digs in.`,
-            `The ${label} has a bad year whatever the ${method} says. You start asking about other options.`,
+            `Another round of the ${method}, another set of numbers that refuse to move. The ${label} ${v('digs', 'dig')} in.`,
+            `The ${label} ${v('has', 'have')} a bad year whatever the ${method} says. You start asking about other options.`,
             `The specialist calls the result "stable", in the voice people use for weather that won't change.`,
           ]),
     );

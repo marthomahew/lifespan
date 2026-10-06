@@ -216,6 +216,8 @@ export type ChainPayload = Record<string, string | number | boolean>;
 export type ChainStep = {
   eventId: string;
   dueYear: number;
+  /** When it was first due, if a prison term has pushed it back. */
+  firstDue?: number;
   payload: ChainPayload;
   /** NPC ids for the follow-up's bindings, keyed by binding name. */
   bindings: Record<string, number>;

@@ -90,7 +90,7 @@ export function CareerSection({
           <button
             data-testid="btn-freelance"
             onClick={() => act('freelance')}
-            disabled={c.freelanceYear === game.year}
+            disabled={c.freelanceYear === game.year || !!game.legal.prison}
           >
             Freelance gig
           </button>

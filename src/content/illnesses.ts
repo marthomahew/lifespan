@@ -90,6 +90,7 @@ export const ILLNESSES: IllnessDef[] = [
   {
     id: 'kidney_stones',
     label: 'Kidney stones',
+    plural: true,
     emoji: '🪨',
     symptom:
       'A stabbing pain in your side that makes you reconsider every glass of water you skipped.',
@@ -197,6 +198,7 @@ export const ILLNESSES: IllnessDef[] = [
   {
     id: 'migraines',
     label: 'Migraines',
+    plural: true,
     emoji: '🤕',
     symptom: 'Pounding headaches that make light and sound feel like a personal attack.',
     severity: [15, 40],

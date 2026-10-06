@@ -85,7 +85,7 @@ export const PARENTING_EVENTS: EventDef[] = [
     outcomes: [
       {
         chance: 0.6,
-        text: 'You catch {kid.them} one step short of the water and both of you shriek with joy. You will tell this story far too often.',
+        text: 'You catch {kid.them} one step short of the biscuit tin and both of you shriek with joy. You will tell this story far too often.',
         effects: [
           { stat: 'happiness', delta: 7 },
           { rel: 'kid', delta: 4, memory: 'the first steps you caught' },

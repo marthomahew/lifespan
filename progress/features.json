@@ -824,5 +824,10 @@
     "title": "Playtest 4 fixes, batch 1: losses never bankrupt the rich, stale popups dropped, situational events gated, warm retirement",
     "passes": true,
     "evidence": "tests/engine/playtest4.test.ts; tests/engine/wealth-followups.test.ts; tests/engine/late-chapter.test.ts"
+  },
+  "S70": {
+    "title": "Playtest 4 fixes, batch 2: injuries match the story, sealed records, Robin, stale chains, office-only events, plural illnesses, interaction age limits, music and freelance variety",
+    "passes": true,
+    "evidence": "tests/engine/playtest4.test.ts"
   }
 }

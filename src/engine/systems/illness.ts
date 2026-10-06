@@ -106,5 +106,9 @@ export function cureIllness(ctx: Ctx, id: string): void {
   if (!had) return;
   s.health.illnesses = s.health.illnesses.filter((i) => i.id !== id);
   const def = ILLNESS_BY_ID[id];
-  if (def) ctx.log('health', `${def.emoji} Your ${lowerLabel(def.label)} is gone.`);
+  if (def)
+    ctx.log(
+      'health',
+      `${def.emoji} Your ${lowerLabel(def.label)} ${def.plural ? 'are' : 'is'} gone.`,
+    );
 }

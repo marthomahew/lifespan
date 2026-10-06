@@ -114,6 +114,8 @@ export type Treatment =
   'doctor' | 'specialist' | 'surgery' | 'alternative' | 'therapy' | 'medication';
 
 export type IllnessDef = {
+  /** The label is plural ("migraines"): verbs agree with it. */
+  plural?: boolean;
   id: string;
   label: string;
   emoji: string;
