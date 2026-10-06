@@ -45,6 +45,7 @@ export const WEALTH_EVENTS: EventDef[] = [
               { wealth: -0.05 },
               { rel: 'sib', delta: -10, memory: 'the loan nobody talks about' },
             ],
+            next: { eventId: 'wl_loan_return', inYears: [4, 9] },
           },
         ],
       },
@@ -128,6 +129,7 @@ export const WEALTH_EVENTS: EventDef[] = [
             chance: 1,
             text: '{pal.first} takes it well, mostly. You find yourself checking the news for the company name every few months.',
             effects: [{ rel: 'pal', delta: -4, memory: 'saying no to the company' }],
+            next: { eventId: 'wl_startup_news', inYears: [3, 6] },
           },
         ],
       },
@@ -271,6 +273,76 @@ export const WEALTH_EVENTS: EventDef[] = [
             text: 'You walk past it one more time on the last day of a holiday, and leave it where it belongs: in the good past.',
             effects: [{ stat: 'happiness', delta: 1 }],
           },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'wl_loan_return',
+    kind: 'choice',
+    category: 'family',
+    ages: [32, 95],
+    weight: 1,
+    chainOnly: true,
+    bind: { sib: { role: 'sibling', minAge: 25 } },
+    text: '{sib.first} turns up on your doorstep with an envelope and a face that has clearly rehearsed this. It is the rest of the house loan, years late, every penny.',
+    choices: [
+      {
+        id: 'take',
+        label: 'Take it, and hug them',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You take the envelope and then you take {sib.first}, and neither of you lets go for a while. Christmas is easier after that.',
+            effects: [
+              { wealth: 0.04 },
+              { rel: 'sib', delta: 16, memory: 'paying back the loan, finally' },
+              { stat: 'happiness', delta: 5 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'keep',
+        label: 'Tell them to keep it for the kids',
+        outcomes: [
+          {
+            chance: 1,
+            text: '{sib.first} argues, then cries, then puts the envelope back in {sib.their} coat. A university fund is opened that week in {sib.their} children’s names.',
+            effects: [
+              { rel: 'sib', delta: 22, memory: 'the loan you told me to keep' },
+              { stat: 'karma', delta: 6 },
+              { stat: 'happiness', delta: 6 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'wl_startup_news',
+    kind: 'notice',
+    category: 'money',
+    ages: [28, 95],
+    weight: 1,
+    chainOnly: true,
+    bind: { pal: { role: 'friend', minAge: 22 } },
+    text: 'The company you said no to is in the news.',
+    outcomes: [
+      {
+        chance: 0.35,
+        text: 'It has sold for a figure with a great many zeros. {pal.first} sends you a kind message and, you suspect, a slightly smug one. You do the sums once and then make yourself stop.',
+        effects: [
+          { stat: 'happiness', delta: -5 },
+          { rel: 'pal', delta: 2, memory: 'the company that sold without you' },
+        ],
+      },
+      {
+        chance: 0.65,
+        text: 'It has quietly closed. {pal.first} is fine, already on to the next thing, and admits over a drink that you were right not to put money in.',
+        effects: [
+          { stat: 'happiness', delta: 2 },
+          { rel: 'pal', delta: 4, memory: 'admitting you were right about the company' },
         ],
       },
     ],

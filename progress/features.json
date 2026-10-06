@@ -799,5 +799,10 @@
     "title": "Raising a teenager: five parenting decisions",
     "passes": true,
     "evidence": "tests/engine/parenting-teens.test.ts; content:check; sim"
+  },
+  "S65": {
+    "title": "Wealth choices come back around (loan repaid, startup news)",
+    "passes": true,
+    "evidence": "tests/engine/wealth-followups.test.ts; content:check"
   }
 }
