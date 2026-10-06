@@ -1,10 +1,5 @@
-import {
-  avatarEmoji,
-  countryOf,
-  formatMoneyShort,
-  formatMoney,
-  type GameState,
-} from '../../../engine';
+import { countryOf, formatMoneyShort, formatMoney, type GameState } from '../../../engine';
+import { Portrait } from '../../portrait/Portrait';
 import { go, persist, useApp, app } from '../../store/app';
 
 export function Header({ game }: { game: GameState }): React.JSX.Element {
@@ -20,9 +15,15 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       data-attraction={p.attraction}
       data-wealth={p.wealth}
     >
-      <div className="avatar" aria-hidden="true">
-        {avatarEmoji(p.age, p.gender, p.appearance, game.death !== null, p.hair)}
-      </div>
+      <Portrait
+        className="avatar"
+        look={p.look}
+        age={p.age}
+        gender={p.gender}
+        dead={game.death !== null}
+        size={52}
+        testId="header-portrait"
+      />
       <div className="who">
         <div className="name" data-testid="player-name">
           {p.first} {p.last}

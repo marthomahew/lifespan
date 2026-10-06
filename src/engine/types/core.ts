@@ -1,6 +1,6 @@
 import type { RngState } from '../rng';
 
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const VISIBLE_STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export const HIDDEN_STATS = [
@@ -27,7 +27,63 @@ export const VICES = [
 export type ViceKey = (typeof VICES)[number];
 
 export type Gender = 'male' | 'female' | 'nonbinary';
-export type HairStyle = 'default' | 'blond' | 'red' | 'curly' | 'white' | 'bald';
+export type FaceShape = 'oval' | 'round' | 'square' | 'long' | 'heart';
+export type HairCut =
+  | 'buzz'
+  | 'short'
+  | 'side'
+  | 'quiff'
+  | 'curly'
+  | 'afro'
+  | 'bob'
+  | 'long'
+  | 'ponytail'
+  | 'bun'
+  | 'braids'
+  | 'mohawk'
+  | 'bald';
+export type HairColor =
+  | 'black'
+  | 'darkbrown'
+  | 'brown'
+  | 'auburn'
+  | 'red'
+  | 'blond'
+  | 'platinum'
+  | 'grey'
+  | 'white'
+  | 'blue'
+  | 'pink'
+  | 'green'
+  | 'purple';
+export type EyeShape = 'round' | 'almond' | 'narrow' | 'wide' | 'hooded';
+export type EyeColor = 'darkbrown' | 'brown' | 'hazel' | 'green' | 'blue' | 'grey';
+export type BrowShape = 'soft' | 'straight' | 'arched' | 'thick' | 'thin' | 'angled';
+export type NoseShape = 'button' | 'straight' | 'wide' | 'long' | 'roman' | 'small';
+export type MouthShape = 'smile' | 'grin' | 'neutral' | 'smirk' | 'full';
+export type FacialHair = 'none' | 'stubble' | 'moustache' | 'goatee' | 'beard' | 'longbeard';
+export type Glasses = 'none' | 'round' | 'square' | 'cateye' | 'sunglasses';
+export type TopStyle = 'tee' | 'hoodie' | 'shirt' | 'sweater' | 'vneck';
+
+/** How a character looks, drawn as a layered portrait. Ageing (grey, lines) is applied when drawn. */
+export type Look = {
+  /** Index into SKIN_COLORS (0 lightest). */
+  skin: number;
+  face: FaceShape;
+  hair: HairCut;
+  hairColor: HairColor;
+  eyes: EyeShape;
+  eyeColor: EyeColor;
+  brows: BrowShape;
+  nose: NoseShape;
+  mouth: MouthShape;
+  facialHair: FacialHair;
+  glasses: Glasses;
+  freckles: boolean;
+  top: TopStyle;
+  /** Index into TOP_COLORS. */
+  topColor: number;
+};
 export type ParentSetup = 'together' | 'apart' | 'mother' | 'father';
 export type Attraction = 'men' | 'women' | 'everyone';
 export type WealthTier = 'poor' | 'working' | 'middle' | 'comfortable' | 'rich';

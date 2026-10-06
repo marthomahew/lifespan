@@ -4,7 +4,8 @@ import { cheat, clearPopups, startSeeded } from './helpers';
 test('in life: practise a picked skill, get a new look, change your name', async ({ page }) => {
   await startSeeded(page, 9090, async (p) => {
     await p.getByTestId('f-gender').selectOption('male');
-    await p.getByTestId('f-hair-default').click();
+    await p.getByTestId('look-tab-hair').click();
+    await p.getByTestId('look-opt-hair-short').click();
   });
   await cheat(page, 'age set 25', 'money add 5000');
   await clearPopups(page);
@@ -15,8 +16,16 @@ test('in life: practise a picked skill, get a new look, change your name', async
   await expect(page.getByTestId('option-dialog')).toHaveCount(0);
   await expect(page.getByTestId('skill-cooking')).toBeVisible();
   await page.getByTestId('act-new_look').click();
-  await page.getByTestId('opt-hair-curly').click();
-  await expect(page.getByTestId('header')).toContainText('👨‍🦱');
+  await expect(page.getByTestId('look-builder')).toBeVisible();
+  // Only what a salon, a razor, an optician or a shop can change.
+  await expect(page.getByTestId('look-tab-face')).toHaveCount(0);
+  await page.getByTestId('look-opt-hair-mohawk').click();
+  await page.getByTestId('look-opt-hairColor-green').click();
+  await page.getByTestId('look-tab-facialHair').click();
+  await page.getByTestId('look-opt-facialHair-goatee').click();
+  await expect(page.getByTestId('makeover-portrait')).toHaveAttribute('data-hair', 'mohawk');
+  await page.getByTestId('opt-look-go').click();
+  await expect(page.getByTestId('header-portrait')).toHaveAttribute('data-hair', 'mohawk');
   await page.getByTestId('act-change_name').click();
   await page.getByTestId('opt-first').fill('Bastian');
   await page.getByTestId('opt-last').fill('Moreau');

@@ -1,3 +1,4 @@
+import { skinFromTone } from '../look';
 import { SKIN_TONES } from '../../content/family';
 import { TRAIT_BY_ID } from '../../content/traits';
 import { setStat } from '../stats';
@@ -121,10 +122,12 @@ export const CHARACTER_CHEATS: CheatDef[] = [
     group: 'character',
     label: 'Set appearance',
     syntax: 'appearance {tone}',
-    help: 'Skin tone 0–5 (0 is the default yellow).',
+    help: 'Skin tone 0–5 (0 keeps the portrait as it is; 1 lightest, 5 darkest).',
     params: [{ name: 'tone', type: 'enum', options: toneOptions }],
     run: (ctx, p) => {
-      ctx.s.player.appearance = SKIN_TONES[Number(p['tone'])] ?? '';
+      const tone = SKIN_TONES[Number(p['tone'])] ?? '';
+      ctx.s.player.appearance = tone;
+      if (tone) ctx.s.player.look = { ...ctx.s.player.look, skin: skinFromTone(tone) };
       return 'Appearance updated';
     },
   },

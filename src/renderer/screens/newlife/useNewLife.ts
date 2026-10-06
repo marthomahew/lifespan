@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { COUNTRIES } from '../../../content/countries';
-import { SKIN_TONES } from '../../../content/family';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
 import {
@@ -10,8 +9,8 @@ import {
   type NewLifeOptions,
   type WealthTier,
 } from '../../../engine';
-import { HAIR_STYLES } from '../../../engine/avatar';
-import type { HairStyle, ParentSetup } from '../../../engine/types';
+import { DEFAULT_LOOK, lookRng, randomLook } from '../../../engine/look';
+import type { Look, ParentSetup } from '../../../engine/types';
 
 export const STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export type StatKey = (typeof STATS)[number];
@@ -25,8 +24,7 @@ export type Draft = {
   country: string;
   city: string;
   birthYear: number;
-  tone: string;
-  hair: HairStyle | '';
+  look: Look;
   traits: string[];
   stats: Record<StatKey, number>;
   wealth: WealthTier;
@@ -44,8 +42,7 @@ export const START: Draft = {
   country: 'us',
   city: '',
   birthYear: 2000,
-  tone: '',
-  hair: '',
+  look: DEFAULT_LOOK,
   traits: [],
   stats: { happiness: 80, health: 90, smarts: 20, looks: 50 },
   wealth: 'middle',
@@ -58,6 +55,11 @@ export const START: Draft = {
 // The renderer can use the platform's randomness; only the engine must be seeded.
 const pick = <T>(xs: readonly T[]): T => xs[Math.floor(Math.random() * xs.length)] as T;
 const int = (lo: number, hi: number): number => lo + Math.floor(Math.random() * (hi - lo + 1));
+
+/** A random face for the builder (the engine rolls its own when a life is seeded). */
+export function rollLook(gender: Gender): Look {
+  return randomLook(lookRng(int(1, 2 ** 30), 0), gender);
+}
 
 /** Add or remove a trait, keeping at most three and no contradictions. */
 export function toggleTrait(cur: string[], id: string): string[] {
@@ -85,7 +87,7 @@ export const DICE = {
       attraction: pick(['men', 'women', 'everyone'] as const),
     };
   },
-  look: (d: Draft): Draft => ({ ...d, tone: pick(SKIN_TONES), hair: pick(HAIR_STYLES).id }),
+  look: (d: Draft): Draft => ({ ...d, look: rollLook(d.gender || 'nonbinary') }),
   origins: (d: Draft): Draft => ({
     ...d,
     country: pick(COUNTRIES).id,
@@ -115,13 +117,12 @@ export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
   const opts: NewLifeOptions = {
     country: d.country,
     birthYear: d.birthYear,
-    appearance: d.tone,
+    look: d.look,
     traits: d.traits,
     stats: d.stats,
     wealth: d.wealth,
     ...(d.gender ? { gender: d.gender } : {}),
     ...(d.attraction ? { attraction: d.attraction } : {}),
-    ...(d.hair ? { hair: d.hair } : {}),
     ...(d.parents ? { parents: d.parents } : {}),
     ...(d.siblings !== '' ? { siblings: Number(d.siblings) } : {}),
     ...(d.talent ? { talent: d.talent } : {}),
@@ -134,7 +135,7 @@ export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
 }
 
 export function useNewLife(): [Draft, (patch: Partial<Draft> | ((d: Draft) => Draft)) => void] {
-  const [d, setD] = useState<Draft>(START);
+  const [d, setD] = useState<Draft>(() => ({ ...START, look: rollLook('nonbinary') }));
   const update = (patch: Partial<Draft> | ((d: Draft) => Draft)): void =>
     setD((cur) => (typeof patch === 'function' ? patch(cur) : { ...cur, ...patch }));
   return [d, update];

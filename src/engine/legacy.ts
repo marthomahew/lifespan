@@ -1,3 +1,4 @@
+import { npcLook, toneOf } from './look';
 import { COUNTRY_BY_ID } from '../content/countries';
 import { TRAIT_BY_ID } from '../content/traits';
 import { Ctx } from './ctx';
@@ -136,7 +137,9 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
   p.last = heir.last;
   p.gender = heir.gender;
   p.attraction = heir.attraction;
-  p.appearance = old.appearance;
+  // The heir keeps the face they had as your child.
+  p.look = npcLook(s, heir);
+  p.appearance = toneOf(p.look);
   p.age = heir.age;
   p.birthYear = heir.birthYear;
   p.birthCountry = old.country;

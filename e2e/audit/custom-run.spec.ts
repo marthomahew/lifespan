@@ -30,8 +30,9 @@ test('a fully customized life, played through', async ({ page }) => {
   await page.getByTestId('f-last').fill('Haddad');
   await page.getByTestId('f-gender').selectOption('female');
   await page.getByTestId('f-attraction').selectOption('everyone');
-  await page.getByTestId('f-tone-4').click();
-  await page.getByTestId('f-hair-curly').click();
+  await page.getByTestId('look-opt-skin-4').click();
+  await page.getByTestId('look-tab-hair').click();
+  await page.getByTestId('look-opt-hair-curly').click();
   await page.getByTestId('f-country').selectOption('ca');
   await page.getByTestId('f-city').selectOption({ index: 1 });
   await page.getByTestId('f-year').fill('1995');
@@ -56,7 +57,12 @@ test('a fully customized life, played through', async ({ page }) => {
   while ((await age(page)) < 35) {
     const a = await age(page);
     if (a >= 6 && a % 2 === 0) await act(page, 'practice_skill', 'opt-skill-voice');
-    if (a === 16) await act(page, 'new_look', 'opt-hair-red');
+    if (a === 16) {
+      await act(page, 'new_look', 'look-opt-hairColor-pink');
+      if (await page.getByTestId('opt-look-go').count())
+        await page.getByTestId('opt-look-go').click();
+      await popups(page);
+    }
     if (a === 25) {
       await page.getByTestId('tab-activities').click();
       if (await page.getByTestId('act-change_name').isEnabled()) {

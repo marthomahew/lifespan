@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { LANGUAGES, SKILLS } from '../../../../content/skills';
-import { avatarEmoji, type GameState } from '../../../../engine';
-import { HAIR_STYLES } from '../../../../engine/avatar';
+import type { GameState } from '../../../../engine';
+import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
+import { Portrait } from '../../../portrait/Portrait';
 import { Modal } from '../../../components/Modal';
 
 /** Activities that need you to pick something first. */
 export const OPTION_ACTIVITIES = ['practice_skill', 'learn_language', 'new_look', 'change_name'];
+
+/** What a salon, a razor, an optician and a shop can change. */
+const MAKEOVER_TABS = LOOK_TABS.filter((t) =>
+  ['hair', 'facialHair', 'glasses', 'top'].includes(t.id),
+);
 
 const TITLE: Record<string, string> = {
   practice_skill: 'Practise which skill?',
@@ -23,12 +29,13 @@ export function OptionDialog({
 }: {
   game: GameState;
   activity: string;
-  onRun: (params: Record<string, string>) => void;
+  onRun: (params: Record<string, string | number>) => void;
   onClose: () => void;
 }): React.JSX.Element {
   const p = game.player;
   const [first, setFirst] = useState(p.first);
   const [last, setLast] = useState(p.last);
+  const [look, setLook] = useState(p.look);
   return (
     <Modal title={TITLE[activity] ?? 'Choose'} testId="option-dialog" onClose={onClose}>
       {activity === 'practice_skill' && (
@@ -66,22 +73,40 @@ export function OptionDialog({
         </div>
       )}
       {activity === 'new_look' && (
-        <div className="option-grid">
-          {HAIR_STYLES.map((h) => (
-            <button
-              key={h.id}
-              className={`option${p.hair === h.id ? ' current' : ''}`}
-              data-testid={`opt-hair-${h.id}`}
-              disabled={p.hair === h.id}
-              onClick={() => onRun({ hair: h.id })}
-            >
-              <span className="option-emoji">
-                {avatarEmoji(30, p.gender, p.appearance, false, h.id)}
-              </span>
-              <span className="grow">{h.label}</span>
-              {p.hair === h.id && <span className="muted small">now</span>}
-            </button>
-          ))}
+        <div className="makeover">
+          <Portrait
+            look={look}
+            age={p.age}
+            gender={p.gender}
+            size={110}
+            label="Your new look"
+            testId="makeover-portrait"
+          />
+          <LookBuilder
+            look={look}
+            age={p.age}
+            gender={p.gender}
+            tabs={MAKEOVER_TABS}
+            onChange={setLook}
+          />
+          <button
+            className="primary"
+            type="button"
+            data-testid="opt-look-go"
+            disabled={JSON.stringify(look) === JSON.stringify(p.look)}
+            onClick={() =>
+              onRun({
+                hair: look.hair,
+                hairColor: look.hairColor,
+                facialHair: look.facialHair,
+                glasses: look.glasses,
+                top: look.top,
+                topColor: look.topColor,
+              })
+            }
+          >
+            Book it
+          </button>
         </div>
       )}
       {activity === 'change_name' && (

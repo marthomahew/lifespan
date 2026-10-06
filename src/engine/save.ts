@@ -1,5 +1,21 @@
 import { z } from 'zod';
-import { SCHEMA_VERSION, type GameState } from './types';
+import { SCHEMA_VERSION, type GameState, type Gender, type HairColor, type HairCut } from './types';
+import { cleanLook, lookRng, randomLook, skinsForTone, toneOf } from './look';
+
+/** v6: build a portrait from the old emoji tone and hair style. */
+function lookFromV5(raw: Record<string, unknown>, player: Record<string, unknown>): unknown {
+  const seed = typeof raw['seed'] === 'number' ? raw['seed'] : 1;
+  const r = lookRng(seed, 7);
+  const tone = typeof player['appearance'] === 'string' ? player['appearance'] : '';
+  const gender = (
+    ['male', 'female', 'nonbinary'].includes(String(player['gender'])) ? player['gender'] : 'female'
+  ) as Gender;
+  const base = randomLook(r, gender, r.pick(skinsForTone(tone)));
+  const old = String(player['hair'] ?? 'default');
+  const color: Partial<Record<string, HairColor>> = { blond: 'blond', red: 'red', white: 'white' };
+  const cut: Partial<Record<string, HairCut>> = { curly: 'curly', bald: 'bald' };
+  return cleanLook({ hairColor: color[old], hair: cut[old] }, base);
+}
 
 const num = z.number().finite();
 const int = z.number().int();
@@ -23,6 +39,7 @@ const playerSchema = z.looseObject({
   last: z.string().min(1).max(80),
   gender: z.enum(['male', 'female', 'nonbinary']),
   attraction: z.enum(['men', 'women', 'everyone']),
+  look: z.looseObject({ skin: int.min(0).max(7), hair: z.string(), hairColor: z.string() }),
   age: int.min(0).max(200),
   birthYear: int,
   country: z.string(),
@@ -110,6 +127,13 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   },
   // v5: challenges.
   4: (raw) => ({ ...raw, challenge: raw['challenge'] ?? null }),
+  // v6: drawn portraits (player.look replaces player.hair).
+  5: (raw) => {
+    const { hair: _hair, ...player } = (raw['player'] ?? {}) as Record<string, unknown>;
+    const look = player['look'] ?? lookFromV5(raw, { ...player, hair: _hair });
+    const tone = toneOf(look as Parameters<typeof toneOf>[0]);
+    return { ...raw, player: { ...player, look, appearance: tone } };
+  },
 };
 
 export class SaveError extends Error {}

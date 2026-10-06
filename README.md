@@ -48,7 +48,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `rename {first} {last}` | Change your first and last name. Example: rename Ada "Byron King" |
 | `gender {gender}` | male, female, or nonbinary. |
 | `attraction {attraction}` | men, women, or everyone. |
-| `appearance {tone}` | Skin tone 0–5 (0 is the default yellow). |
+| `appearance {tone}` | Skin tone 0–5 (0 keeps the portrait as it is; 1 lightest, 5 darkest). |
 | `trait add {trait}` | Add a trait; conflicting traits are removed. |
 | `trait remove {trait}` | Remove one of your traits. |
 | `skill {skill} {value}` | Set a skill to 0–100. Example: skill instrument 80 |

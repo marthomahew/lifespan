@@ -14,12 +14,12 @@ import {
   type Stats,
   type VisibleStat,
   type WealthTier,
-  type HairStyle,
+  type Look,
   type ParentSetup,
 } from './types';
 import { clampStat } from './util';
 import { refToLocal } from './economy';
-import { HAIR_STYLES } from './avatar';
+import { cleanLook, DEFAULT_LOOK, lookRng, randomLook, skinsForTone, toneOf } from './look';
 import { SKILL_BY_ID } from '../content/skills';
 import { CHALLENGE_BY_ID } from '../content/challenges';
 
@@ -37,7 +37,8 @@ export type NewLifeOptions = {
   stats?: Partial<Record<VisibleStat, number>>;
   wealth?: WealthTier;
   popupsPerYear?: number;
-  hair?: HairStyle;
+  /** Any features picked in the builder; the rest are rolled. */
+  look?: Partial<Look>;
   /** A skill you were born with a gift for. */
   talent?: string;
   /** Who raised you. */
@@ -77,7 +78,7 @@ export function emptyState(seed: number): GameState {
       gender: 'female',
       attraction: 'men',
       appearance: '',
-      hair: 'default',
+      look: DEFAULT_LOOK,
       talent: null,
       age: 0,
       birthYear: 2000,
@@ -278,10 +279,14 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
       'comfortable',
       'rich',
     ] as const);
-  p.hair =
-    opts.hair && HAIR_STYLES.some((h) => h.id === opts.hair)
-      ? opts.hair
-      : r.pick(['default', 'default', 'default', 'blond', 'red', 'curly'] as const);
+  // One draw from the life's RNG seeds the face, so the rest of the life rolls as before.
+  const lookSalt = r.int(0, 2 ** 30);
+  const skinGuess = lookRng(seed, lookSalt).pick(skinsForTone(p.appearance));
+  p.look = cleanLook(
+    opts.look ?? {},
+    randomLook(lookRng(seed, lookSalt + 1), p.gender, opts.look?.skin ?? skinGuess),
+  );
+  p.appearance = toneOf(p.look);
   if (opts.talent && SKILL_BY_ID[opts.talent]) {
     p.talent = opts.talent;
     p.skills[opts.talent] = 8;

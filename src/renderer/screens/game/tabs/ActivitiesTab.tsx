@@ -49,7 +49,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
     }
     setError(doAct({ type: 'activity', id }));
   };
-  const runWith = (params: Record<string, string>): void => {
+  const runWith = (params: Record<string, string | number>): void => {
     if (!picking) return;
     setError(doAct({ type: 'activity', id: picking, params }));
     setPicking(null);

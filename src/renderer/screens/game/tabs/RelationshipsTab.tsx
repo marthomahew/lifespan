@@ -1,4 +1,6 @@
 import type { GameState, Npc } from '../../../../engine';
+import { npcLook } from '../../../../engine/look';
+import { Portrait } from '../../../portrait/Portrait';
 import { relLabel } from '../../../../engine/npc';
 import { barColour } from '../../../components/StatBar';
 import { app } from '../../../store/app';
@@ -55,6 +57,13 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
                   data-testid={`npc-${n.id}`}
                   onClick={() => app.set({ npcId: n.id })}
                 >
+                  <Portrait
+                    look={npcLook(game, n)}
+                    age={n.age}
+                    gender={n.gender}
+                    dead={!n.alive}
+                    size={36}
+                  />
                   <span className="grow npc-name">
                     <span>
                       {n.first} {n.last}

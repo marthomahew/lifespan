@@ -1,4 +1,5 @@
 import { formatMoney, obituary, type GameState } from '../../engine';
+import { Portrait } from '../portrait/Portrait';
 import { refToLocal } from '../../engine/economy';
 import { app, go, useApp } from '../store/app';
 import { ContinueAsChild } from './ContinueAsChild';
@@ -11,9 +12,15 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
   return (
     <div className="screen obituary" data-testid="obituary-screen">
       <article className="card pad obit-card">
-        <div className="obit-emoji" aria-hidden="true">
-          🕯️
-        </div>
+        <Portrait
+          className="obit-portrait"
+          look={game.player.look}
+          age={game.player.age}
+          gender={game.player.gender}
+          dead
+          size={112}
+          testId="obit-portrait"
+        />
         <h1 data-testid="obit-name">{ob.name}</h1>
         <p className="muted">
           {ob.born} – {ob.died} · aged {ob.age}

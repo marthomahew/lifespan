@@ -13,7 +13,8 @@ import { ILLNESS_BY_ID } from '../../content/illnesses';
 import { addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
-import { HAIR_STYLES } from '../avatar';
+import { cleanLook } from '../look';
+import type { Look } from '../types';
 import { EngineError } from '../errors';
 
 /** Extra gates for special activities (drinking age, nothing to treat...). */
@@ -93,10 +94,11 @@ export function runSpecial(
       return;
     }
     case 'new_look': {
-      const hair = String(params['hair'] ?? '');
-      const style = HAIR_STYLES.find((h) => h.id === hair);
-      if (!style) throw new EngineError('pick a look');
-      s.player.hair = style.id;
+      // Only what a salon, a razor or an optician can change.
+      const cur = s.player.look;
+      const next = cleanLook(pickKeys(params, MAKEOVER), cur);
+      if (MAKEOVER.every((k) => next[k] === cur[k])) throw new EngineError('pick a look');
+      s.player.look = next;
       return;
     }
     case 'change_name': {
@@ -250,4 +252,14 @@ export function runSpecial(
       return;
     }
   }
+}
+
+/** Features you can change in a year without surgery. */
+export const MAKEOVER = ['hair', 'hairColor', 'facialHair', 'glasses', 'top', 'topColor'] as const;
+
+function pickKeys(
+  o: Record<string, unknown>,
+  keys: readonly (keyof Look)[],
+): Record<string, unknown> {
+  return Object.fromEntries(keys.filter((k) => k in o).map((k) => [k, o[k]]));
 }

@@ -1,15 +1,9 @@
 import { COUNTRIES } from '../../../content/countries';
-import { SKIN_TONES } from '../../../content/family';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
-import {
-  avatarEmoji,
-  WEALTH_TIERS,
-  type Attraction,
-  type Gender,
-  type WealthTier,
-} from '../../../engine';
-import { HAIR_STYLES } from '../../../engine/avatar';
+import { WEALTH_TIERS, type Attraction, type Gender, type WealthTier } from '../../../engine';
+import { LookBuilder } from '../../portrait/LookBuilder';
+import { Portrait } from '../../portrait/Portrait';
 import type { ParentSetup } from '../../../engine/types';
 import { DICE, STATS, toggleTrait, type Draft } from './useNewLife';
 
@@ -103,51 +97,22 @@ export function IdentitySection({ d, set }: Props): React.JSX.Element {
 }
 
 export function LookSection({ d, set }: Props): React.JSX.Element {
-  const g = d.gender || 'nonbinary';
   return (
     <Section title="Look" dice="look" set={set}>
-      <div className="nl-picks" role="group" aria-label="Skin tone">
-        <span className="nl-pick-label">Skin</span>
-        {SKIN_TONES.map((t, i) => (
-          <button
-            type="button"
-            key={i}
-            className={`tone${d.tone === t ? ' active' : ''}`}
-            aria-pressed={d.tone === t}
-            aria-label={`Skin tone ${i + 1}`}
-            data-testid={`f-tone-${i}`}
-            onClick={() => set({ tone: t })}
-          >
-            {`🧑${t}`}
-          </button>
-        ))}
-      </div>
-      <div className="nl-picks" role="group" aria-label="Hair">
-        <span className="nl-pick-label">Hair</span>
-        <button
-          type="button"
-          className={`tone${d.hair === '' ? ' active' : ''}`}
-          aria-pressed={d.hair === ''}
-          data-testid="f-hair-random"
-          title="Surprise me"
-          onClick={() => set({ hair: '' })}
-        >
-          ❔
-        </button>
-        {HAIR_STYLES.map((h) => (
-          <button
-            type="button"
-            key={h.id}
-            className={`tone${d.hair === h.id ? ' active' : ''}`}
-            aria-pressed={d.hair === h.id}
-            aria-label={`${h.label} hair`}
-            title={h.label}
-            data-testid={`f-hair-${h.id}`}
-            onClick={() => set({ hair: h.id })}
-          >
-            {avatarEmoji(30, g, d.tone, false, h.id)}
-          </button>
-        ))}
+      <div className="nl-look">
+        <Portrait
+          look={d.look}
+          age={30}
+          gender={d.gender || 'nonbinary'}
+          size={132}
+          label="Your look as an adult"
+          testId="look-portrait"
+        />
+        <LookBuilder
+          look={d.look}
+          gender={d.gender || 'nonbinary'}
+          onChange={(look) => set({ look })}
+        />
       </div>
     </Section>
   );

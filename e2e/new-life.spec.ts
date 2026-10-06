@@ -37,7 +37,7 @@ test('flow 2: custom life with every field set', async ({ page }) => {
   const city = await page.getByTestId('f-city').inputValue();
   await page.getByTestId('f-year').fill('1988');
   await page.getByTestId('f-wealth').selectOption('rich');
-  await page.getByTestId('f-tone-4').click();
+  await page.getByTestId('look-opt-skin-5').click();
   await page.getByTestId('f-trait-bookish').click();
   await page.getByTestId('f-trait-funny').click();
   await page.getByTestId('f-trait-calm').click();
@@ -62,7 +62,7 @@ test('flow 2: custom life with every field set', async ({ page }) => {
   await expect(page.getByTestId('stat-health-value')).toHaveText('34');
   await expect(page.getByTestId('stat-smarts-value')).toHaveText('56');
   await expect(page.getByTestId('stat-looks-value')).toHaveText('78');
-  await expect(page.getByTestId('header').locator('.avatar')).toContainText('🏾');
+  await expect(page.getByTestId('header-portrait')).toHaveAttribute('data-skin', '5');
   await expect(page.getByTestId('header')).toHaveAttribute('data-gender', 'nonbinary');
   await expect(page.getByTestId('header')).toHaveAttribute('data-attraction', 'everyone');
   await expect(page.getByTestId('header')).toHaveAttribute('data-wealth', 'rich');
@@ -100,8 +100,21 @@ test('full customization: look, family, talent, preview, and the life that follo
   await page.getByTestId('f-first').fill('Isolde');
   await page.getByTestId('f-last').fill('Marchetti');
   await page.getByTestId('f-gender').selectOption('female');
-  await page.getByTestId('f-tone-3').click();
-  await page.getByTestId('f-hair-red').click();
+  // The look builder: every option is drawn on your own face.
+  await page.getByTestId('look-opt-skin-3').click();
+  await page.getByTestId('look-freckles').check();
+  await page.getByTestId('look-tab-hair').click();
+  await page.getByTestId('look-opt-hair-braids').click();
+  await page.getByTestId('look-opt-hairColor-red').click();
+  await page.getByTestId('look-tab-glasses').click();
+  await page.getByTestId('look-opt-glasses-cateye').click();
+  await expect(page.getByTestId('look-portrait')).toHaveAttribute('data-hair', 'braids');
+  await expect(
+    page.getByTestId('look-portrait').locator('[data-layer="glasses"]').first(),
+  ).toBeAttached();
+  await expect(
+    page.getByTestId('look-portrait').locator('[data-layer="freckles"]').first(),
+  ).toBeAttached();
   await page.getByTestId('f-country').selectOption('fr');
   await page.getByTestId('f-parents').selectOption('mother');
   await page.getByTestId('f-siblings').selectOption('2');
@@ -111,7 +124,9 @@ test('full customization: look, family, talent, preview, and the life that follo
   await expect(page.getByTestId('preview-summary')).toContainText('a single mother');
   await expect(page.getByTestId('preview-summary')).toContainText('2 siblings');
   await expect(page.getByTestId('preview-summary')).toContainText('A gift for instrument');
-  await expect(page.getByTestId('life-preview')).toContainText('👩🏽‍🦰');
+  // The preview shows them growing up and growing old.
+  await expect(page.getByTestId('preview-age-30')).toHaveAttribute('data-hair', 'braids');
+  await expect(page.getByTestId('preview-age-1').locator('[data-layer="glasses"]')).toHaveCount(0);
   // A section's dice changes that section only.
   await page.getByTestId('dice-stats').click();
   await expect(page.getByTestId('preview-name')).toHaveText('Isolde Marchetti');
@@ -120,10 +135,13 @@ test('full customization: look, family, talent, preview, and the life that follo
   await expect(page.getByTestId('game-screen')).toBeVisible();
   await expect(page.getByTestId('log-line').first()).toContainText('raised by your mother');
   await expect(page.getByTestId('talent-instrument')).toBeVisible();
+  await expect(page.getByTestId('header-portrait')).toHaveAttribute('data-hair', 'braids');
   await page.getByTestId('tab-relationships').click();
   await expect(
     page.locator('[data-testid^="npc-"]').filter({ hasText: /brother|sister|sibling/ }),
   ).toHaveCount(2);
+  // Family members have drawn faces too.
+  await expect(page.locator('.npc-row .portrait').first()).toBeVisible();
 });
 
 test('roll everything fills every section', async ({ page }) => {

@@ -1,18 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { act, avatarEmoji, newLife, runCheat, type GameState } from '../../src/engine';
 import { migrate } from '../../src/engine/save';
-import { HAIR_STYLES } from '../../src/engine/avatar';
 
 describe('character customization', () => {
-  it('hair shows on teen and adult avatars, with the skin tone, and not on babies', () => {
-    expect(avatarEmoji(30, 'female', '🏽', false, 'red')).toBe('👩🏽‍🦰');
-    expect(avatarEmoji(30, 'male', '', false, 'blond')).toBe('👱‍♂️');
-    expect(avatarEmoji(30, 'nonbinary', '🏿', false, 'curly')).toBe('🧑🏿‍🦱');
-    expect(avatarEmoji(20, 'male', '', false, 'bald')).toBe('👨‍🦲');
-    expect(avatarEmoji(1, 'female', '', false, 'red')).toBe('👶');
-    expect(avatarEmoji(70, 'female', '', false, 'red')).toBe('👵');
-    expect(avatarEmoji(30, 'female', '', false, 'default')).toBe('👩');
-    expect(HAIR_STYLES.length).toBeGreaterThanOrEqual(6);
+  it('the emoji avatar still follows age, gender and skin tone (log lines, fallbacks)', () => {
+    expect(avatarEmoji(30, 'female', '🏽')).toBe('👩🏽');
+    expect(avatarEmoji(30, 'nonbinary', '🏿')).toBe('🧑🏿');
+    expect(avatarEmoji(1, 'female', '')).toBe('👶');
+    expect(avatarEmoji(70, 'female', '')).toBe('👵');
+    expect(avatarEmoji(30, 'male', '', true)).toBe('🪦');
   });
 
   it('family background: parents together or apart, a single parent, and a chosen number of siblings', () => {
@@ -57,8 +53,15 @@ describe('character customization', () => {
       age: 30,
     }).state;
     s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 5000 }).state;
-    s = act(s, { type: 'activity', id: 'new_look', params: { hair: 'curly' } }).state;
-    expect(s.player.hair).toBe('curly');
+    const face = s.player.look.face;
+    s = act(s, {
+      type: 'activity',
+      id: 'new_look',
+      params: { hair: 'mohawk', hairColor: 'green', glasses: 'round', face: 'square' },
+    }).state;
+    expect(s.player.look).toMatchObject({ hair: 'mohawk', hairColor: 'green', glasses: 'round' });
+    // A salon can't change the shape of your face.
+    expect(s.player.look.face).toBe(face);
     s = act(s, {
       type: 'activity',
       id: 'change_name',
@@ -71,16 +74,16 @@ describe('character customization', () => {
     ).toThrow();
   });
 
-  it('old saves load with default hair and no talent', () => {
+  it('old saves load with no talent', () => {
     const s = newLife({}, 8);
     const raw = JSON.parse(JSON.stringify(s)) as Record<string, unknown> & {
       player: Record<string, unknown>;
     };
-    delete raw.player['hair'];
+    delete raw.player['look'];
     delete raw.player['talent'];
     raw['schemaVersion'] = 3;
     const up = migrate(raw) as unknown as GameState;
-    expect(up.player.hair).toBe('default');
+    expect(up.player.look.hair).toBeTruthy();
     expect(up.player.talent).toBeNull();
   });
 });

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { npcLook } from '../../../engine/look';
+import { Portrait } from '../../portrait/Portrait';
 import { formatMoney, interactionsFor, money, type GameState } from '../../../engine';
 import { WEDDING_COST } from '../../../engine/systems/romance';
 import { relLabel } from '../../../engine/npc';
@@ -53,7 +55,15 @@ export function NpcPanel({
     <Modal title={`${n.first} ${n.last}`} testId="npc-panel" onClose={close} wide>
       <div className="npc-panel">
         <div className="npc-head">
-          <div>
+          <Portrait
+            look={npcLook(game, n)}
+            age={n.age}
+            gender={n.gender}
+            dead={!n.alive}
+            size={72}
+            testId="npc-portrait"
+          />
+          <div className="grow">
             <div className="muted">
               {relLabel(n).replace(/^your /, '')} ·{' '}
               {n.alive

@@ -4,7 +4,7 @@ import type {
   ChainStep,
   DeathInfo,
   Gender,
-  HairStyle,
+  Look,
   GenerationRecord,
   LogEntry,
   Npc,
@@ -38,7 +38,8 @@ export type Player = {
   gender: Gender;
   attraction: Attraction;
   appearance: string;
-  hair: HairStyle;
+  /** The drawn portrait. `appearance` is kept as the matching emoji skin tone. */
+  look: Look;
   /** A skill you were born with a gift for: it grows faster with practice. */
   talent: string | null;
   age: number;

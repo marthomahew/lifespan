@@ -589,5 +589,10 @@
     "title": "Free time: a yearly activity budget shaped by work, study, children and retirement",
     "passes": true,
     "evidence": "tests/engine/free-time.test.ts; e2e/customize.spec.ts (free time)"
+  },
+  "S23": {
+    "title": "Drawn portraits: a layered SVG character builder, ageing, family resemblance, makeovers",
+    "passes": true,
+    "evidence": "tests/engine/look.test.ts; tests/integration/portrait.test.ts; tests/engine/customization.test.ts; e2e/new-life.spec.ts (full customization); e2e/customize.spec.ts; e2e/obituary.spec.ts"
   }
 }

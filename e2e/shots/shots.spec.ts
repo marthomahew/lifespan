@@ -47,6 +47,9 @@ for (const size of SIZES) {
       await shot('01-start');
       await page.getByTestId('btn-new-life').click();
       await shot('02-new-life');
+      await page.getByTestId('look-tab-hair').click();
+      await page.getByTestId('look-portrait').scrollIntoViewIfNeeded();
+      await shot('28-look-builder');
       await page.getByTestId('btn-challenges').click();
       await page.getByTestId('challenge-picker').waitFor();
       await shot('27-challenges');
@@ -82,6 +85,10 @@ for (const size of SIZES) {
       await page.keyboard.press('Escape');
       await page.getByTestId('tab-activities').click();
       await shot('12-activities');
+      await page.getByTestId('act-new_look').click();
+      await page.getByTestId('look-builder').waitFor();
+      await shot('29-makeover');
+      await page.keyboard.press('Escape');
       await page.getByTestId('tab-occupation').click();
       await shot('13-occupation');
       await page.getByTestId('btn-job-listings').click();

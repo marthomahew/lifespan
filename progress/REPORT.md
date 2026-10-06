@@ -42,6 +42,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **Feedback and motion (S20):** a result card after every choice that shows what changed and why; stat deltas for the year; fresh log lines highlighted; short entrances, all off with reduced motion.
 - **Callbacks (S21):** 18 events bring old choices back years later (the band you quit, the country you left, the record you carry, the ex you never called).
 - **Free time (S22):** a year holds only so many activities. You get 7 out of work and 9 when retired; full-time work costs 2, studies 1, and small children 1. Health care, paperwork and prison life are free. The Activities tab shows what's left and why, so casual play rarely hits the limit, but you can't do everything every year.
+- **Drawn portraits (S23):** layered SVG faces replace the emoji avatars. The New Life builder has 10 tabs: skin and freckles, 5 face shapes, 13 haircuts in 13 colours, 5 eye shapes in 6 colours, 6 brows, 6 noses, 5 mouths, 6 kinds of facial hair, 5 glasses and 5 tops in 10 colours. Every option is drawn on your own face, and the preview shows you at 1, 8, 30 and 75. Portraits age, from a baby's round face and blush to greying hair and lines. Everyone in your life has a face: blood relatives take after you, and your children mix you and their other parent. An heir keeps the face they had as your child. A makeover (hair, colour, facial hair, glasses, clothes) shows a live preview. Save v6 builds a portrait for older saves from their old hair and skin tone.
 
 ## Late life (S16)
 
@@ -241,6 +242,8 @@ What changed:
 | `25-goals` | Life goal picker |
 | `26-result` | Result card after a choice |
 | `27-challenges` | Challenge picker |
+| `28-look-builder` | Character builder: the hair grid, every option drawn on your own face |
+| `29-makeover` | Get a new look: hair, facial hair, glasses and clothes |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

@@ -1,7 +1,7 @@
 import { COUNTRIES } from '../../../content/countries';
 import { SKILL_BY_ID } from '../../../content/skills';
 import { TRAIT_BY_ID } from '../../../content/traits';
-import { avatarEmoji } from '../../../engine';
+import { Portrait } from '../../portrait/Portrait';
 import type { Draft } from './useNewLife';
 
 const WEALTH: Record<string, string> = {
@@ -42,10 +42,19 @@ export function Preview({
         : `${d.siblings} sibling${d.siblings === '1' ? '' : 's'}`;
   return (
     <aside className="card pad nl-preview" data-testid="life-preview" aria-label="Your new life">
-      <div className="nl-avatars" aria-hidden="true">
-        <span>{avatarEmoji(0, g, d.tone)}</span>
-        <span className="nl-arrow">→</span>
-        <span>{avatarEmoji(30, g, d.tone, false, d.hair || 'default')}</span>
+      <div className="nl-avatars" aria-label="Through the years">
+        {[1, 8, 30, 75].map((age) => (
+          <figure key={age}>
+            <Portrait
+              look={d.look}
+              age={age}
+              gender={g}
+              size={age === 30 ? 72 : 52}
+              testId={`preview-age-${age}`}
+            />
+            <figcaption className="muted small">{age}</figcaption>
+          </figure>
+        ))}
       </div>
       <h2 data-testid="preview-name">{name}</h2>
       <p className="nl-summary" data-testid="preview-summary">
