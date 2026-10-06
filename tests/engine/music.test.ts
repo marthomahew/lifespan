@@ -37,6 +37,10 @@ describe('music and fame (M6.8)', () => {
     expect(s.music.label).not.toBeNull();
     expect(s.music.releases.length).toBeGreaterThan(0);
     expect(s.player.stats.fame).toBeGreaterThan(0);
+    // Tours need an audience first.
+    const unknown = { ...s, player: { ...s.player, stats: { ...s.player.stats, fame: 10 } } };
+    expect(() => act(unknown, { type: 'music', id: 'tour' })).toThrow(/audience/);
+    s = { ...s, player: { ...s.player, stats: { ...s.player.stats, fame: 40 } } };
     const cash = s.money.cash;
     s = act(s, { type: 'music', id: 'tour' }).state;
     expect(s.money.cash).toBeGreaterThan(cash);
