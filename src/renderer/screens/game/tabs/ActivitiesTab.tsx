@@ -96,6 +96,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
                       </span>
                     </span>
                     {a.cost > 0 && <span className="muted small">{formatMoney(game, a.cost)}</span>}
+                    {a.parentsPay && <span className="muted small">Parents pay</span>}
                   </button>
                 </li>
               ))}

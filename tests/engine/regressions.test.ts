@@ -46,7 +46,8 @@ describe('money and education fixes', () => {
   });
 
   it('tuition never wipes out existing debt', () => {
-    let s = act(forced(runCheat(adult(5, 18), 'stat.set', { stat: 'smarts', value: 80 }).state), {
+    const smart = runCheat(adult(5, 18), 'stat.set', { stat: 'smarts', value: 80 }).state;
+    let s = act(forced({ ...smart, education: { ...smart.education, grade: 80 } }), {
       type: 'enroll',
       kind: 'university',
       programId: 'history',

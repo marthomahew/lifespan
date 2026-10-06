@@ -1,4 +1,5 @@
 import { Rng } from './rng';
+import type { Candidate } from './systems/dating';
 import type { GameState, LogCategory, LogEntry, Toast } from './types';
 
 /**
@@ -12,6 +13,8 @@ export class Ctx {
   readonly toasts: Toast[] = [];
   /** When set, the year's phases are recorded in order (tests). */
   trace: string[] | null = null;
+  /** The person you picked to date, if any: a successful 'meet' brings them into your life. */
+  meet: Candidate | null = null;
 
   constructor(draft: GameState) {
     this.s = draft;

@@ -28,7 +28,7 @@ test('flow 4: cheat to 18, apply for a job, get hired, see it under Occupation',
 
 test('university: enroll from the Occupation tab', async ({ page }) => {
   await startSeeded(page, 405);
-  await cheat(page, 'age set 18', 'forcesuccess on', 'money add 500000');
+  await cheat(page, 'age set 18', 'forcesuccess on', 'money add 500000', 'grade 85');
   await clearPopups(page);
   await page.getByTestId('tab-occupation').click();
   await page.getByTestId('enroll-kind').selectOption('university');

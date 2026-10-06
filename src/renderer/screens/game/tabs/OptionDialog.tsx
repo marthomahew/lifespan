@@ -6,6 +6,7 @@ import { Portrait } from '../../../portrait/Portrait';
 import { PetPicker } from './PetPicker';
 import { EscapeGame } from './EscapeGame';
 import { CasinoTable } from './CasinoTable';
+import { DatePicker } from './DatePicker';
 import { Modal } from '../../../components/Modal';
 
 /** Activities that need you to pick something first. */
@@ -18,6 +19,8 @@ export const OPTION_ACTIVITIES = [
   'adopt_pet',
   'prison_escape',
   'casino',
+  'find_date',
+  'dating_app',
 ];
 
 /** What a salon, a razor, an optician and a shop can change. */
@@ -39,6 +42,8 @@ const TITLE: Record<string, string> = {
   adopt_pet: 'Who is coming home?',
   prison_escape: 'Tonight, the yard',
   casino: 'The card tables',
+  find_date: 'Who catches your eye?',
+  dating_app: 'Tonight’s matches',
 };
 
 /** Pick what the activity is about, right where you chose it. */
@@ -58,7 +63,12 @@ export function OptionDialog({
   const [last, setLast] = useState(p.last);
   const [look, setLook] = useState(p.look);
   return (
-    <Modal title={TITLE[activity] ?? 'Choose'} testId="option-dialog" onClose={onClose}>
+    <Modal
+      title={TITLE[activity] ?? 'Choose'}
+      testId="option-dialog"
+      onClose={onClose}
+      wide={activity === 'find_date' || activity === 'dating_app'}
+    >
       {activity === 'practice_skill' && (
         <div className="option-grid">
           {SKILLS.map((k) => (
@@ -175,6 +185,9 @@ export function OptionDialog({
       {activity === 'adopt_pet' && <PetPicker game={game} onRun={onRun} />}
       {activity === 'prison_escape' && <EscapeGame game={game} onRun={onRun} />}
       {activity === 'casino' && <CasinoTable game={game} onRun={onRun} />}
+      {(activity === 'find_date' || activity === 'dating_app') && (
+        <DatePicker game={game} activity={activity} onRun={onRun} />
+      )}
       {activity === 'change_name' && (
         <form
           className="buy-form"

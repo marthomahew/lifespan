@@ -29,6 +29,28 @@ export function applyStatusEffect(
         ctx.log('romance', `You start seeing ${npc.first} ${npc.last}.`, true);
         return;
       }
+      // The person you chose from tonight's candidates, if you chose.
+      const c = ctx.meet;
+      if (c) {
+        const n = addNpc(ctx, {
+          role: 'partner',
+          gender: c.gender,
+          age: c.age,
+          first: c.first,
+          last: c.last,
+          rel: ctx.rng.int(60, 80),
+          traits: c.traits,
+          job: c.job,
+          lookSeed: c.lookSeed,
+        });
+        n.romance = { stage: 'dating', since: s.year, prenup: false };
+        if (!c.wantsKids) n.flags.push('no_kids');
+        if (!c.wantsMarriage) n.flags.push('no_marriage');
+        remember(s, n, 'how you met', 5);
+        ctx.log('romance', `You start seeing ${n.first} ${n.last}.`, true);
+        ctx.meet = null;
+        return;
+      }
       const age = Math.max(18, p.age + ctx.rng.int(-5, 5));
       const n = addNpc(ctx, {
         role: 'partner',

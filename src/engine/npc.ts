@@ -19,6 +19,7 @@ export type NpcSpec = {
   traits?: string[];
   money?: number;
   job?: string | null;
+  lookSeed?: number;
 };
 
 export function randomName(ctx: Ctx, countryId: string, gender: Gender): string {
@@ -99,6 +100,7 @@ export function addNpc(ctx: Ctx, spec: NpcSpec): Npc {
     attraction: randomAttraction(ctx, gender),
     fertility: startFertility(r.int(40, 90), spec.age, gender),
   };
+  if (spec.lookSeed !== undefined) npc.lookSeed = spec.lookSeed;
   s.npcs.push(npc);
   return npc;
 }

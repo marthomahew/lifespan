@@ -77,7 +77,21 @@ test('activities: find a date, then propose and plan the wedding from the NPC pa
   await consoleCmd(page, 'money add 1000000');
   await page.getByTestId('tab-activities').click();
   await page.getByTestId('act-find_date').click();
+  // Three people to choose from, each with a face and what they want from life.
+  await expect(page.getByTestId('date-2')).toBeVisible();
+  await expect(page.getByTestId('date-0').locator('.portrait')).toBeVisible();
+  // Ask out someone open to marriage, for the wedding below.
+  let pick = 0;
+  for (let i = 0; i < 3; i++)
+    if ((await page.getByTestId(`date-${i}`).textContent())?.includes('open to marriage')) {
+      pick = i;
+      break;
+    }
+  const name =
+    (await page.getByTestId(`date-${pick}`).locator('strong').textContent())?.split(' ')[0] ?? '';
+  await page.getByTestId(`date-pick-${pick}`).click();
   await expect(page.getByTestId('fact-relationship')).toContainText('Seeing');
+  await expect(page.getByTestId('fact-relationship')).toContainText(name);
   await page.getByTestId('tab-relationships').click();
   const partnerRow = page
     .locator('[data-testid^="npc-"]')

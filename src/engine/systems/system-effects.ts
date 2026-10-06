@@ -30,6 +30,9 @@ export function applySystemEffect(
     case 'recapture':
       recapture(ctx);
       return;
+    case 'move_out':
+      if (s.assets.housing === 'parents') s.assets.housing = 'renting';
+      return;
     case 'hire': {
       const jobId = arg ?? (typeof payload['jobId'] === 'string' ? payload['jobId'] : undefined);
       if (jobId) hire(ctx, jobId);

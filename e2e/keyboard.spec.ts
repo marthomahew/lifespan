@@ -88,3 +88,19 @@ test('the log is searchable and filterable; the timeline lists milestones', asyn
   await expect(page.getByTestId('timeline-item').first()).toContainText('You are born');
   expect(await page.getByTestId('timeline-item').count()).toBeGreaterThan(3);
 });
+
+test('Space ages up even when a button kept focus after a dialog closed', async ({ page }) => {
+  await startSeeded(page, 4545);
+  await cheat(page, 'age set 20');
+  await clearPopups(page);
+  await page.getByTestId('tab-occupation').click();
+  await page.getByTestId('btn-job-listings').click();
+  await expect(page.getByTestId('job-listings')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('job-listings')).toHaveCount(0);
+  const before = Number((await page.getByTestId('header-age').textContent())?.replace(/\D/g, ''));
+  await page.keyboard.press(' ');
+  await expect(page.getByTestId('job-listings')).toHaveCount(0);
+  await clearPopups(page);
+  await expect(page.getByTestId('header-age')).toContainText(String(before + 1));
+});

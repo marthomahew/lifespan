@@ -83,8 +83,17 @@ for (const size of SIZES) {
       await page.getByTestId('btn-family-tree').click();
       await shot('11-family-tree');
       await page.keyboard.press('Escape');
+      // Enough money for every activity on show, whatever the life has earned.
+      await page.keyboard.press('`');
+      await page.getByTestId('console-input').fill('money add 100000');
+      await page.getByTestId('console-input').press('Enter');
+      await page.getByTestId('cheat-close').click();
       await page.getByTestId('tab-activities').click();
       await shot('12-activities');
+      await page.getByTestId('act-find_date').click();
+      await page.getByTestId('date-2').waitFor();
+      await shot('34-dating');
+      await page.keyboard.press('Escape');
       await page.getByTestId('act-new_look').click();
       await page.getByTestId('look-builder').waitFor();
       await shot('29-makeover');

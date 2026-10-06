@@ -644,5 +644,15 @@
     "title": "On the run: years owed, no papers for jobs, recapture risk fading over 20 years, turning yourself in, four fugitive events; prison.send cheat",
     "passes": true,
     "evidence": "tests/engine/escape.test.ts (on the run); tests/engine/cheats/health.test.ts; sim invariants"
+  },
+  "S34": {
+    "title": "UX fixes: Space always ages up outside dialogs, age-relative school grades, parents pay for children, heirs keep their job, lease moves you out, grade cheat",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts; e2e/keyboard.spec.ts; tests/engine/cheats/character.test.ts"
+  },
+  "S35": {
+    "title": "Dating: three drawn candidates with jobs, traits and wishes; the face on the card is the one you get",
+    "passes": true,
+    "evidence": "tests/engine/dating.test.ts; e2e/relationships.spec.ts"
   }
 }

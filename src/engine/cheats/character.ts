@@ -174,6 +174,18 @@ export const CHARACTER_CHEATS: CheatDef[] = [
     },
   },
   {
+    id: 'grade.set',
+    group: 'character',
+    label: 'Set school average',
+    syntax: 'grade {value}',
+    help: 'Set your school average, 0–100 (universities want 70). Example: grade 85',
+    params: [value],
+    run: (ctx, p) => {
+      ctx.s.education.grade = clampStat(Number(p['value']));
+      return `School average: ${ctx.s.education.grade}`;
+    },
+  },
+  {
     id: 'language.set',
     group: 'character',
     label: 'Set language fluency',

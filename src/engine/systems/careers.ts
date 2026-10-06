@@ -493,3 +493,20 @@ export function rememberBoss(ctx: Ctx, delta: number, text: string): void {
   const boss = ctx.s.npcs.find((n) => n.alive && n.roles.includes('boss'));
   if (boss) remember(ctx.s, boss, text, delta);
 }
+
+/** An heir carries on the working life they already had: the job, at their level, quietly. */
+export function takeOverJob(ctx: Ctx, jobId: string, level: number): void {
+  const job = JOB_BY_ID[jobId];
+  if (!job || job.partTime) return;
+  const s = ctx.s;
+  if (jobId === 'doctor' && !s.player.flags.includes('residency_done'))
+    s.player.flags.push('residency_done');
+  hire(ctx, jobId);
+  const c = s.career;
+  c.level = Math.min(job.titles.length - 1, Math.max(0, level));
+  c.salary = salaryFor(ctx, job, c.level);
+  c.since = s.year - ctx.rng.int(2, 10);
+  const rec = c.history[c.history.length - 1];
+  if (rec) rec.title = job.titles[c.level] ?? rec.title;
+  s.education.residency = 0;
+}

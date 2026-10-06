@@ -4,7 +4,7 @@ import { app } from '../store/app';
 export const SHORTCUTS: [string, string][] = [
   ['Space', 'Age Up'],
   ['1 – 4', 'Choose in a popup'],
-  ['Esc', 'Close the top modal or panel'],
+  ['Esc', 'Close the top window or panel (event popups need an answer)'],
   ['⌘1 – ⌘4', 'Switch tabs (Occupation, Assets, Relationships, Activities)'],
   ['⌘K', 'Command palette: find any action'],
   ['⌘S', 'Save'],

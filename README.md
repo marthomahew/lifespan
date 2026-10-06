@@ -52,6 +52,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `trait add {trait}` | Add a trait; conflicting traits are removed. |
 | `trait remove {trait}` | Remove one of your traits. |
 | `skill {skill} {value}` | Set a skill to 0–100. Example: skill instrument 80 |
+| `grade {value}` | Set your school average, 0–100 (universities want 70). Example: grade 85 |
 | `language {language} {value}` | Set fluency 0–100 in a language. Example: language japanese 90 |
 | `fame {value}` | Set fame (0–100). |
 | `notoriety {value}` | Set notoriety (0–100). |
@@ -148,7 +149,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `state size` | How big the current save is. |
 | `deathbot` | Let the default sim bot play the rest of this life. |
 
-70 commands in all. Every one is also a form in the cheat panel.
+71 commands in all. Every one is also a form in the cheat panel.
 
 <!-- cheats:end -->
 

@@ -17,13 +17,6 @@ function typing(t: EventTarget | null): boolean {
 }
 
 /** Space on a focused button or link should press it, not age up. */
-function pressable(t: EventTarget | null): boolean {
-  const el = t as HTMLElement | null;
-  const tag = el?.tagName?.toLowerCase();
-  return (
-    (tag === 'button' && el?.dataset['testid'] !== 'age-up') || tag === 'a' || tag === 'summary'
-  );
-}
 
 export function toggleCheats(): void {
   const s = app.get();
@@ -47,6 +40,7 @@ export function onKeyDown(e: KeyboardEvent): void {
     else if (s.overlay) app.set({ overlay: null });
     else if (s.cheatsOpen) app.set({ cheatsOpen: false });
     else if (s.npcId !== null) app.set({ npcId: null });
+    else if (s.petId !== null) app.set({ petId: null });
     else if (s.screen === 'settings' || s.screen === 'lives')
       go(s.game ? (s.game.death ? 'obituary' : 'game') : 'start');
     return;
@@ -115,13 +109,9 @@ export function onKeyDown(e: KeyboardEvent): void {
     if (key === ' ') e.preventDefault();
     return;
   }
-  // Never age up underneath an open dialog (pickers, the escape plan, a pet's panel).
-  if (
-    key === ' ' &&
-    !s.cheatsOpen &&
-    !pressable(e.target) &&
-    !document.querySelector('[role="dialog"]')
-  ) {
+  // Space is the game's main key: it ages up even when a button kept focus after a dialog closed
+  // (Enter still presses buttons). Never underneath an open dialog, though.
+  if (key === ' ' && !s.cheatsOpen && !document.querySelector('[role="dialog"]')) {
     e.preventDefault();
     doAgeUp();
   }

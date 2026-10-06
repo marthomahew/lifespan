@@ -117,6 +117,8 @@ export function treat(
   if (s.legal.prison && method !== 'doctor')
     throw new EngineError('the prison doctor is all there is');
   const cost = treatmentCost(s, def, method);
+  // A child's treatment is the parents' bill.
+  if (s.player.age < 18) opts = { ...opts, free: true };
   if (!opts.free && s.money.cash < cost)
     throw new EngineError(`treatment costs ${formatMoney(s, cost)}`);
   if (!opts.free) s.money.cash -= cost;

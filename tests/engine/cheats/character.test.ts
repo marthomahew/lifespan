@@ -57,6 +57,10 @@ describe('character cheats', () => {
     ).toBe(90);
   });
 
+  it("'grade.set' sets the school average", () => {
+    expect(runCheat(base, 'grade.set', { value: 85 }).state.education.grade).toBe(85);
+  });
+
   it("'fame.set', 'notoriety.set' and 'karma.set' set hidden stats", () => {
     expect(runCheat(base, 'fame.set', { value: 60 }).state.player.stats.fame).toBe(60);
     expect(runCheat(base, 'notoriety.set', { value: 40 }).state.player.stats.notoriety).toBe(40);

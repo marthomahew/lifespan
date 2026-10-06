@@ -345,7 +345,7 @@ function natural(l: Look): Look {
  * Blood relatives resemble the player; your children take after you and their other parent.
  */
 export function npcLook(s: GameState, npc: Npc, depth = 0): Look {
-  const r = lookRng(s.seed, npc.id);
+  const r = lookRng(s.seed, npc.lookSeed ?? npc.id);
   const own = randomLook(r, npc.gender);
   const isRelative = npc.roles.some((x) => BLOOD.has(x));
   if (!isRelative || depth > 1) return own;

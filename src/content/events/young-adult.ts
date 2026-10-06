@@ -9,6 +9,8 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
     ages: [18, 24],
     weight: 9,
     once: true,
+    // Only while still living at home: signing is moving out.
+    when: (s) => s.assets.housing === 'parents',
     text: "The landlord calls the flat 'cosy.' The shower is in the kitchen and the window faces a wall painted to look like a window.",
     choices: [
       {
@@ -23,6 +25,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
               { money: -1500 },
               { stat: 'happiness', delta: 6 },
               { stat: 'discipline', delta: 3 },
+              { system: 'move_out' },
             ],
           },
         ],

@@ -6,7 +6,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
 - **Content:** 538 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
-- **Cheats:** a full cheat menu (70 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
+- **Cheats:** a full cheat menu (71 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
 
 ## Installing the Mac app
@@ -61,6 +61,14 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - An escape leaves you a fugitive. The years you still owe follow you, and you can't take a job without papers (false ones can be bought, at a risk).
   - Each year the chance of a 6 a.m. knock fades. After twenty years nobody is looking, and turning yourself in takes two years off.
   - Four events cover your face on the news, false papers, a police checkpoint and the quiet life.
+- **UX fixes (S34):** from a second reviewer who played the app in a browser:
+  - Space always ages up, even when a button still has focus after a dialog closes.
+  - Grades compare you with children your age (an average child earns a C), report cards start at 9, and universities want a B.
+  - Parents pay for a child's doctor, lessons and treatments.
+  - An adult heir keeps their job, and their diploma matches their grades.
+  - The lease event really moves you out; no imaginary family dog; "your share of the estate".
+- **Dating (S35):** Find a date and dating apps offer three drawn people, each with a job, two traits, a line about them, and whether they want children or marriage. The face on the card is the face you get. Relationships get serious more surely the longer and warmer they are.
+
 
 ## Late life (S16)
 
@@ -225,7 +233,7 @@ What changed:
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |
-  | Cheat commands | 70 |
+  | Cheat commands | 71 |
 
 ## Screenshots
 
@@ -266,6 +274,7 @@ What changed:
 | `31-pet` | A pet's panel: bond, health, play, walk, vet |
 | `32-blackjack` | The casino's blackjack table |
 | `33-escape` | The prison-yard escape mini-game |
+| `34-dating` | Find a date: three people, their faces, and what they want |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

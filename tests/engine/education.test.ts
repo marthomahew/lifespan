@@ -52,8 +52,11 @@ describe('school (M6.1)', () => {
 });
 
 describe('university (M6.2)', () => {
-  const grad18 = (seed: number, country = 'us'): GameState =>
-    runCheat(life(seed, country), 'age.set', { age: 18 }).state;
+  // A good student: universities want a B average.
+  const grad18 = (seed: number, country = 'us'): GameState => {
+    const s = runCheat(life(seed, country), 'age.set', { age: 18 }).state;
+    return { ...s, education: { ...s.education, grade: 80 } };
+  };
 
   it('has 12+ majors and 4 graduate programs', () => {
     expect(MAJORS.length).toBeGreaterThanOrEqual(12);

@@ -135,7 +135,9 @@ export function romanceTick(ctx: Ctx): void {
   const p = currentPartner(ctx);
   if (p && p.romance) {
     const together = s.year - p.romance.since;
-    if (p.romance.stage === 'dating' && together >= 1 && p.rel >= 55 && r.chance(0.5)) {
+    // The longer and warmer it goes, the likelier it gets serious; years at "dating" are rare.
+    const serious = Math.min(0.95, 0.35 + together * 0.15 + (p.rel - 55) * 0.005);
+    if (p.romance.stage === 'dating' && together >= 1 && p.rel >= 55 && r.chance(serious)) {
       p.romance.stage = 'serious';
       ctx.log(
         'romance',

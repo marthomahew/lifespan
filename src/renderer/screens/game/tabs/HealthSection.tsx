@@ -37,7 +37,7 @@ export function HealthSection({
                   onError(doAct({ type: 'treat', illness: i.illness, method: o.method }))
                 }
               >
-                {o.method} · {formatMoney(game, o.cost)}
+                {o.method} · {game.player.age < 18 ? 'parents pay' : formatMoney(game, o.cost)}
               </button>
             ))}
           </li>
@@ -68,7 +68,7 @@ export function HealthSection({
                   onError(doAct({ type: 'treat_injury', index: idx, method: o.method }))
                 }
               >
-                {o.method} · {formatMoney(game, o.cost)}
+                {o.method} · {game.player.age < 18 ? 'parents pay' : formatMoney(game, o.cost)}
               </button>
             ))}
           </li>

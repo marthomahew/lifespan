@@ -10,21 +10,27 @@ import { hasEducation } from './careers';
 import { borrowForStudy, startStudentRepayment } from './loans';
 import { playerOdds } from './odds';
 
-export const UNIVERSITY_MIN_GRADE = 55;
+export const UNIVERSITY_MIN_GRADE = 70;
 
 export const inSchoolAge = (s: GameState): boolean =>
   s.player.age >= 6 && s.player.age <= 17 && !s.education.droppedOut;
 
+/** Smarts a typical child has at this age (it grows through the school years). */
+export function expectedSmarts(age: number): number {
+  return 20 + 1.6 * Math.min(age, 22);
+}
+
+/** Grades compare you with your classmates, not with adults: an average child earns a C. */
 function gradeTarget(s: GameState): number {
   const st = s.player.stats;
   const studied = s.education.studyYear === s.year - 1 || s.education.studyYear === s.year;
   return (
-    st.smarts * 0.55 +
-    st.discipline * 0.3 +
-    (studied ? 15 : 0) +
+    60 +
+    (st.smarts - expectedSmarts(s.player.age)) * 1.1 +
+    (st.discipline - 50) * 0.3 +
+    (studied ? 12 : 0) +
     playerOdds(s, 'study') * 60 -
-    Math.max(0, st.stress - 70) * 0.3 +
-    5
+    Math.max(0, st.stress - 70) * 0.3
   );
 }
 
@@ -56,7 +62,8 @@ export function schoolTick(ctx: Ctx): void {
   }
   if (inSchoolAge(s) && !s.legal.prison) {
     e.grade = clampStat(e.grade + (gradeTarget(s) - e.grade) * 0.4 + ctx.rng.int(-5, 5));
-    if (age % 3 === 0) ctx.log('school', reportCard(ctx));
+    // Report cards at 9, 12 and 15: not on the first day of school.
+    if (age % 3 === 0 && age > 6) ctx.log('school', reportCard(ctx));
   }
   if (age === 18 && !e.droppedOut && !e.degrees.some((d) => d.level === 'high_school'))
     graduateHighSchool(ctx);
@@ -185,7 +192,7 @@ export function enrollReason(
     if (!major) return 'unknown major';
     // Universities want a passing high-school average; community colleges take anyone.
     if (kind === 'university' && e.grade < UNIVERSITY_MIN_GRADE && !e.veteranBenefit)
-      return `needs a school average of ${UNIVERSITY_MIN_GRADE} (try community college)`;
+      return `needs a school average of ${UNIVERSITY_MIN_GRADE}; yours is ${Math.round(e.grade)} (try community college)`;
     if (
       e.degrees.some(
         (d) =>
@@ -214,7 +221,7 @@ export function enroll(
   let odds = 1;
   if (kind === 'university') {
     const major = MAJOR_BY_ID[programId];
-    odds = 0.35 + (st.smarts - (major?.smarts ?? 50)) * 0.02 + (grade - 60) * 0.01;
+    odds = 0.35 + (st.smarts - (major?.smarts ?? 50)) * 0.02 + (grade - 74) * 0.012;
   } else if (kind === 'grad') {
     const g = GRAD_BY_ID[programId];
     odds = 0.3 + (st.smarts - (g?.smarts ?? 60)) * 0.025 + (grade - 60) * 0.005;
@@ -331,7 +338,7 @@ export function educationCatchUp(ctx: Ctx, from: number, to: number): void {
     !s.education.droppedOut &&
     !s.education.degrees.some((d) => d.level === 'high_school')
   ) {
-    s.education.grade = clampStat(Math.max(s.education.grade, s.player.stats.smarts * 0.8));
+    s.education.grade = clampStat(Math.max(s.education.grade, gradeTarget({ ...s, player: { ...s.player, age: 17 } })));
     graduateHighSchool(ctx);
   }
 }

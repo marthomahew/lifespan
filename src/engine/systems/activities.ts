@@ -12,7 +12,13 @@ import { markUsed, usedThisYear } from './usage';
 import { runSpecial, specialReason } from './activity-specials';
 import { escapeMap, parseMoves, simulate } from './escape';
 import { betOptions, parsePlan, playSession, shoeFor } from './blackjack';
+import { dateCandidates } from './dating';
 import { clampOdds, playerOdds } from './odds';
+
+/** Under 18, your parents pay for health care, lessons and the like; holidays are theirs to plan. */
+export function parentsPay(s: GameState, def: ActivityDef): boolean {
+  return s.player.age < 18 && def.group !== 'travel' && !s.legal.prison;
+}
 
 export type ActivityView = {
   id: string;
@@ -23,6 +29,8 @@ export type ActivityView = {
   enabled: boolean;
   reason: string;
   cost: number;
+  /** A child's parents cover the cost. */
+  parentsPay: boolean;
 };
 
 /** Groups and specials that never cost free time: paperwork, prison life and health care. */
@@ -88,7 +96,8 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
     const min = countryOf(s).ages.driving;
     if (age < min) return `driving age here is ${min}`;
   }
-  if (def.cost && s.money.cash < money(s, def.cost))
+  if (def.group === 'travel' && age < 18) return 'your family plans the holidays';
+  if (def.cost && !parentsPay(s, def) && s.money.cash < money(s, def.cost))
     return `costs ${formatMoney(s, money(s, def.cost))}`;
 
   return null;
@@ -105,7 +114,8 @@ export function activitiesFor(s: GameState): ActivityView[] {
       description: def.description,
       enabled: why === null,
       reason: why ?? '',
-      cost: def.cost ? money(s, def.cost) : 0,
+      cost: def.cost && !parentsPay(s, def) ? money(s, def.cost) : 0,
+      parentsPay: !!def.cost && parentsPay(s, def),
     };
   });
 }
@@ -118,11 +128,17 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   if (!def) throw new EngineError(`unknown activity ${id}`);
   const why = activityReason(s, def);
   if (why) throw new EngineError(`${def.label}: ${why}`);
+  // Tonight's dates are drawn for this outing, so read them before it is counted.
+  if (def.special === 'meet' && params['pick'] !== undefined) {
+    const pick = dateCandidates(s, def.id)[Number(params['pick'])];
+    if (!pick) throw new EngineError(`${def.label}: pick someone`);
+    ctx.meet = pick;
+  }
   // The casino shoe is shuffled for this visit, so read it before the visit is counted.
   const shoe = def.special === 'casino' && params['plan'] !== undefined ? shoeFor(s) : null;
   markUsed(s, `a:${def.id}`);
   if (costsFreeTime(def)) markUsed(s, 'a:total');
-  if (def.cost) s.money.cash -= money(s, def.cost);
+  if (def.cost && !parentsPay(s, def)) s.money.cash -= money(s, def.cost);
 
   let outcomes = def.outcomes;
   if (def.special === 'meet') {

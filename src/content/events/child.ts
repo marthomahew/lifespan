@@ -9,7 +9,7 @@ export const CHILD_EVENTS: EventDef[] = [
     ages: [3, 6],
     weight: 10,
     once: true,
-    text: 'You have drawn a mural of the family dog across the hallway wall. In permanent marker. It is, honestly, a good likeness.',
+    text: 'You have drawn a mural of the whole family across the hallway wall. In permanent marker. It is, honestly, a good likeness of everyone’s nose.',
     choices: [
       {
         id: 'confess',
@@ -32,11 +32,11 @@ export const CHILD_EVENTS: EventDef[] = [
       },
       {
         id: 'blame',
-        label: 'Blame the dog',
+        label: 'Blame your imaginary friend',
         outcomes: [
           {
             chance: 0.4,
-            text: 'Somehow, it works. The dog is unbothered.',
+            text: 'Somehow, it works. Your imaginary friend is sent to the naughty step and takes it very well.',
             effects: [
               { stat: 'happiness', delta: 3 },
               { stat: 'karma', delta: -3 },
@@ -44,9 +44,9 @@ export const CHILD_EVENTS: EventDef[] = [
           },
           {
             chance: 0.6,
-            text: 'The dog cannot hold a marker. Everyone knows this.',
+            text: 'Imaginary friends cannot hold markers. Everyone knows this.',
             effects: [
-              { rel: 'mother', delta: -4, memory: 'the time you blamed the dog' },
+              { rel: 'mother', delta: -4, memory: 'the time you blamed your imaginary friend' },
               { stat: 'happiness', delta: -3 },
             ],
           },

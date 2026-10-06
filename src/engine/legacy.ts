@@ -1,3 +1,7 @@
+import { PARENT_JOB_LINK } from '../content/family';
+import { takeOverJob } from './systems/careers';
+import { withArticle } from './text';
+import { formatMoney } from './economy';
 import { npcLook, toneOf } from './look';
 import { COUNTRY_BY_ID } from '../content/countries';
 import { TRAIT_BY_ID } from '../content/traits';
@@ -178,16 +182,17 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
     if (lvl >= 50 && !(lang in p.languages)) p.languages[lang] = 50;
   p.wealth = heir.money > 1_000_000 ? 'rich' : heir.money > 100_000 ? 'comfortable' : 'middle';
   next.money.cash = Math.max(0, Math.round(heir.money));
+  // The heir's school record, consistent with the GPA the diploma shows.
+  next.education.grade = clampStat(60 + (heir.stats.smarts - 50) * 0.8);
   if (p.age >= 18) {
     next.education.degrees.push({
       level: 'high_school',
       field: 'general',
-      gpa: 3,
+      gpa: Math.round((next.education.grade / 25) * 100) / 100,
       year: s.year - (p.age - 18),
     });
     next.assets.housing = 'renting';
   }
-  next.education.grade = clampStat(heir.stats.smarts * 0.8);
   next.lifeId = `${input.lifeId.replace(/-g\d+$/, '').slice(0, 50)}-g${next.generation}`;
   ctx.log(
     'family',
@@ -195,7 +200,19 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
     true,
   );
   if (next.money.cash > 0)
-    ctx.log('money', `Your inheritance arrives: everything ${parentNpc.first} left you.`);
+    ctx.log(
+      'money',
+      `Your share of ${parentNpc.first}’s estate arrives: ${formatMoney(next, next.money.cash)}.`,
+    );
+  // An adult heir already had a working life; they keep it.
+  const link = heir.job ? PARENT_JOB_LINK[heir.job] : undefined;
+  if (link && p.age >= 22 && p.age < 66) {
+    takeOverJob(ctx, link[0], link[1]);
+    ctx.log(
+      'work',
+      `You still work as ${withArticle(next.career.history.at(-1)?.title ?? 'worker')}. Monday comes whatever happens.`,
+    );
+  }
   recordStatHistory(next);
   return ctx.finish().state;
 }

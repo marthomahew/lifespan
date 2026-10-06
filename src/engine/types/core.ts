@@ -182,6 +182,8 @@ export type Npc = {
   money: number;
   attraction: Attraction;
   fertility: number;
+  /** Seeds their portrait (else their id): someone you met as a drawn candidate keeps that face. */
+  lookSeed?: number;
 };
 
 export const PLAYER_ID = 0;

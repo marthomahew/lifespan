@@ -109,8 +109,10 @@ export function treatInjury(ctx: Ctx, index: number, method: 'physio' | 'surgery
   if (!opt) throw new EngineError(`${method} won't help a ${injuryLabel(i)}`);
   if (method === 'physio' && i.physioYear === s.year)
     throw new EngineError('you have already done physio this year');
-  if (s.money.cash < opt.cost) throw new EngineError(`${method} costs ${formatMoney(s, opt.cost)}`);
-  s.money.cash -= opt.cost;
+  // A child's treatment is the parents' bill.
+  const cost = s.player.age < 18 ? 0 : opt.cost;
+  if (s.money.cash < cost) throw new EngineError(`${method} costs ${formatMoney(s, cost)}`);
+  s.money.cash -= cost;
   if (method === 'physio') {
     i.physioYear = s.year;
     i.healsIn = Math.max(1, i.healsIn - 1);

@@ -148,10 +148,79 @@ describe('life inside comes back outside', () => {
       ['prison_trade_cert', 'rel2_trade_trial'],
     ];
     for (const [flag, id] of pairs) {
-      const s = { ...base, player: { ...base.player, flags: [...base.player.flags, 'ex_con', flag] } };
+      const s = {
+        ...base,
+        player: { ...base.player, flags: [...base.player.flags, 'ex_con', flag] },
+      };
       const e = EVENT_BY_ID[id];
       expect(e?.when?.(s), id).toBe(true);
       expect(e?.when?.(base), `${id} without the flag`).toBe(false);
     }
+  });
+});
+
+describe('school grades', () => {
+  it('an ordinary child earns ordinary grades, not an F from day one', async () => {
+    const { ageUp } = await import('../../src/engine');
+    const grades: number[] = [];
+    const firstDay: string[] = [];
+    for (let seed = 30; seed < 50; seed++) {
+      let s = newLife({ birthYear: 2000 }, seed);
+      for (let a = 0; a < 12; a++) s = ageUp({ ...s, pending: [] }).state;
+      grades.push(s.education.grade);
+      firstDay.push(
+        ...s.log.filter((l) => l.age === 6 && /report card/.test(l.text)).map((l) => l.text),
+      );
+    }
+    const mean = grades.reduce((a, b) => a + b, 0) / grades.length;
+    expect(mean).toBeGreaterThan(52);
+    expect(mean).toBeLessThan(78);
+    expect(grades.filter((g) => g >= 55).length).toBeGreaterThan(grades.length / 2);
+    expect(firstDay).toEqual([]);
+  });
+});
+
+describe('heirs', () => {
+  it('an adult heir keeps the job they had, and their diploma matches their grades', async () => {
+    const { continueAsChild } = await import('../../src/engine');
+    let s = runCheat(newLife({ birthYear: 1950, gender: 'female' }, 15), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'age.set', { age: 70 }).state;
+    const kid = s.npcs.find((n) => n.roles.includes('child'));
+    if (!kid) throw new Error('no child');
+    s = {
+      ...s,
+      pending: [],
+      npcs: s.npcs.map((n) => (n.id === kid.id ? { ...n, job: 'Nurse' } : n)),
+    };
+    s = runCheat(s, 'deathbot', {}).state;
+    const heir = s.npcs.find((n) => n.id === kid.id);
+    if (!heir?.alive) return;
+    const next = continueAsChild(s, kid.id);
+    const { PARENT_JOB_LINK } = await import('../../src/content/family');
+    const link = heir.job ? PARENT_JOB_LINK[heir.job] : undefined;
+    if (link && next.player.age >= 22 && next.player.age < 66)
+      expect(next.career.jobId).toBe(link[0]);
+    const hs = next.education.degrees.find((d) => d.level === 'high_school');
+    if (hs) expect(hs.gpa).toBeCloseTo(next.education.grade / 25, 1);
+  });
+});
+
+describe('a child’s costs', () => {
+  it('parents pay for the doctor and lessons; holidays are theirs to plan', async () => {
+    const { act, activitiesFor } = await import('../../src/engine');
+    let kid = runCheat(newLife({ birthYear: 2000, country: 'us' }, 16), 'age.set', {
+      age: 9,
+    }).state;
+    kid = { ...kid, pending: [], money: { ...kid.money, cash: 0 } };
+    const views = activitiesFor(kid);
+    const doc = views.find((a) => a.id === 'doctor_visit');
+    expect(doc?.enabled).toBe(true);
+    expect(doc?.parentsPay).toBe(true);
+    expect(views.find((a) => a.id === 'vacation')?.reason).toMatch(/family plans/);
+    const after = act(kid, { type: 'activity', id: 'doctor_visit' }).state;
+    expect(after.money.cash).toBe(0);
   });
 });
