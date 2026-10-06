@@ -59,3 +59,7 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - S67 novel querying ends after eight rounds (drawer, odds floor); S68 short stories while a book is out.
 - Fourth transcript playtest (12 lives): S69/S70 fixed 15 findings: liquid-first wealth losses and no bankruptcy when assets cover debt; stale random popups pruned; situational gates; injuries match the story; sealed records; stale prison-deferred chains expire; office-only events; text agreement; variety.
 - stats health-trend test now averages 120 lives (was 40; noise). DONE §8 re-run clean at 6fabee2.
+
+## 2026-10-06 (S71–S72)
+- Fifth transcript playtest (12 lives), 15 findings fixed in two batches: fugitive state, cellmate gender, injury reading, named friends/enemies, -es verb check in content:check, placeholders, sibling weddings, housing on marriage; living costs vs local wages (debt spiral in ng/mx/br/se), pension taper, warm cities, diagnosis gating, chronic illness, music variety, office gating, boss continuity.
+- Coverage 590/600 (98.3%); sim bands all pass.
