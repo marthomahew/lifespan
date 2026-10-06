@@ -48,3 +48,22 @@ describe('career crossroads', () => {
     expect(left.money.cash - s.money.cash).toBeGreaterThanOrEqual(Math.round(salary * 0.9));
   });
 });
+
+describe('the crossroads clock', () => {
+  it('no crossroads in a job’s first three years, and promotions don’t reset the clock', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { crossroadsTick } = await import('../../src/engine/systems/crossroads');
+    const s = structuredClone(worker(72));
+    for (let y = 0; y < 3; y++) {
+      const ctx = new Ctx(s);
+      crossroadsTick(ctx);
+      expect(s.pending.some((p) => p.eventId.startsWith('xr_'))).toBe(false);
+      s.year += 1;
+    }
+    // Ten years in, with a promotion last year: the fork still comes.
+    s.year += 7;
+    s.career.since = s.year - 1;
+    crossroadsTick(new Ctx(s));
+    expect(s.pending.some((p) => p.eventId.startsWith('xr_'))).toBe(true);
+  });
+});

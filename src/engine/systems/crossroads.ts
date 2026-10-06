@@ -10,8 +10,11 @@ export function crossroadsTick(ctx: Ctx): void {
   const s = ctx.s;
   const c = s.career;
   if (!c.jobId || s.legal.prison || s.player.age < 26 || s.player.age > 62) return;
-  const last = c.crossroadsYear ?? c.since;
-  if (s.year - last < 5 || !ctx.rng.chance(s.year - last >= 8 ? 1 : 0.35)) return;
+  // The clock starts when you're hired (promotions don't reset it), and never in the first three years.
+  const hired = c.history.at(-1)?.from ?? c.since;
+  const last = Math.max(c.crossroadsYear ?? hired, hired);
+  if (s.year - hired < 3 || s.year - last < 5 || !ctx.rng.chance(s.year - last >= 8 ? 1 : 0.35))
+    return;
   c.crossroadsYear = s.year;
   const fresh = CROSSROADS.filter((id) => !(s.events.counts[id] ?? 0));
   const def = EVENT_BY_ID[ctx.rng.pick(fresh.length ? fresh : CROSSROADS)];

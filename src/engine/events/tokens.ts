@@ -101,6 +101,11 @@ export function resolveToken(
       return p.city;
     case 'country':
       return countryOf(s).name;
+    case 'countryThe': {
+      // After a preposition: "across the United States", "in France".
+      const name = countryOf(s).name;
+      return /^United /.test(name) ? `the ${name}` : name;
+    }
     case 'year':
       return String(s.year);
   }

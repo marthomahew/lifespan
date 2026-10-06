@@ -240,7 +240,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
     ages: [26, 60],
     weight: 8,
     chainOnly: true,
-    text: 'Councillor {first} {last} must now deliver the street party that won the election. The road closure is approved, the bunting is ordered, and the forecast is "changeable," which in {country} means anything.',
+    text: 'Councillor {first} {last} must now deliver the street party that won the election. The road closure is approved, the bunting is ordered, and the forecast is "changeable," which in {countryThe} means anything.',
     choices: [
       {
         id: 'everything',
@@ -500,7 +500,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
     weight: 5,
     cooldownYears: 10,
     when: hasJob,
-    text: 'A nationwide general strike shuts the trains, the buses and half the ferries across {country}. Your commute is now a theoretical concept.',
+    text: 'A nationwide general strike shuts the trains, the buses and half the ferries across {countryThe}. Your commute is now a theoretical concept.',
     choices: [
       {
         id: 'cycle',

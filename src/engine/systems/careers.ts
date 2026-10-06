@@ -452,7 +452,16 @@ export function careerAction(ctx: Ctx, id: string): void {
       if (ctx.roll(clampOdds(0.1 + (c.performance - 60) * 0.015 + (s.year - c.since) * 0.04)))
         promote(ctx, job);
       else {
-        ctx.log('work', 'You ask for the promotion. Someone from another department gets it.');
+        ctx.log(
+          'work',
+          pickFresh(ctx, [
+            'You ask for the promotion. Someone from another department gets it.',
+            'The promotion goes to a person who laughs at all the director’s jokes. You make a note to be funnier.',
+            'You are told you are “on the radar”. The radar, it turns out, is a very large screen.',
+            'They promote from outside. You are asked to help the new hire settle in.',
+            'Not this round, says your boss, which is what your boss said last round.',
+          ]),
+        );
         addStat(s, 'happiness', -4);
       }
       return;

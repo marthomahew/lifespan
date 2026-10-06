@@ -123,3 +123,21 @@ describe('threads', () => {
     expect(openThreads(jailed).some((t) => t.id === 'prison')).toBe(true);
   });
 });
+
+describe('more books', () => {
+  it('every book gets its own title', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { writeNovel } = await import('../../src/engine/systems/projects');
+    const s = structuredClone(writer(94));
+    const titles: string[] = [];
+    for (let b = 0; b < 6; b++) {
+      s.projects = {
+        ...(s.projects ?? {}),
+        novel: s.projects?.novel ? { ...s.projects.novel, stage: 'published' } : null,
+      };
+      writeNovel(new Ctx(s), 0);
+      titles.push(s.projects?.novel?.title ?? '');
+    }
+    expect(new Set(titles).size).toBe(6);
+  });
+});

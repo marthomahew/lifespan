@@ -150,3 +150,6 @@ export const worthAtLeast =
   (ref: number) =>
   (s: GameState): boolean =>
     netWorthRef(s) >= ref;
+
+/** Out of work and short of money: someone with a fortune isn't offered shifts at the corner shop. */
+export const needsWork = (s: GameState): boolean => netWorthRef(s) < 150_000;

@@ -16,7 +16,8 @@ export function memoryTick(ctx: Ctx): void {
   if (s.year - last < 6 || !ctx.rng.chance(0.2)) return;
   let best: { id: number; text: string; delta: number } | null = null;
   for (const n of s.npcs) {
-    if (!n.alive || n.age < 10) continue;
+    // Not the people you live with: they bring things up at breakfast, not out of the blue.
+    if (!n.alive || n.age < 10 || n.roles.some((r) => r === 'spouse' || r === 'partner')) continue;
     for (const m of n.memory)
       if (
         s.year - m.year >= 3 &&
@@ -27,5 +28,9 @@ export function memoryTick(ctx: Ctx): void {
   }
   if (!best) return;
   const def = EVENT_BY_ID[best.delta > 0 ? 'mem_gratitude' : 'mem_grudge'];
-  if (def) fireEvent(ctx, def, 'system', { memory: best.text }, { who: best.id });
+  if (!def || !fireEvent(ctx, def, 'system', { memory: best.text }, { who: best.id })) return;
+  // Once it's been brought back, it's settled: it won't come round again.
+  const n = s.npcs.find((x) => x.id === best.id);
+  const m = n?.memory.find((x) => x.text === best.text && x.delta === best.delta);
+  if (m) m.delta = Math.sign(m.delta) * 4;
 }

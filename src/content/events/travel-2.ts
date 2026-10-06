@@ -11,7 +11,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
     weight: 8,
     cooldownYears: 5,
     when: livesAbroad,
-    text: 'It hits you in a supermarket aisle in {city}: a craving so specific it has a smell. The dish your family made on cold evenings, and nobody in {country} has heard of it.',
+    text: 'It hits you in a supermarket aisle in {city}: a craving so specific it has a smell. The dish your family made on cold evenings, and nobody in {countryThe} has heard of it.',
     choices: [
       {
         id: 'cook',
@@ -195,7 +195,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
           {
             chance: 1,
             success: true,
-            text: 'Lunch lasts six hours. Her grandmother interrogates you about your intentions in {country}, then hands you leftovers in a tub you are expected to return. You have a friend here now.',
+            text: 'Lunch lasts six hours. Her grandmother interrogates you about your intentions in {countryThe}, then hands you leftovers in a tub you are expected to return. You have a friend here now.',
             effects: [{ stat: 'happiness', delta: 9 }, { status: 'friend' }],
           },
         ],

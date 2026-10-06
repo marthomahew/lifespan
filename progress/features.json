@@ -764,5 +764,10 @@
     "title": "Memories drive events (gratitude and grudges come back); era gates for modern tech with a content rule; activity line variants",
     "passes": true,
     "evidence": "tests/engine/memories.test.ts; tests/content/conditions.test.ts (eras); content:check"
+  },
+  "S58": {
+    "title": "Fixes from the re-measurement: unique book titles, tenure clock for crossroads, settled memories, engagement nudge, flag follow-ups, needs-work job leads, varied failure lines, countryThe token",
+    "passes": true,
+    "evidence": "tests/engine/projects.test.ts (more books); tests/engine/crossroads.test.ts (clock); tests/engine/memories.test.ts (settled); content:check"
   }
 }

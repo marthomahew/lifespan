@@ -9,7 +9,9 @@ const withMemory = (delta: number, seed: number): GameState => {
   const text = delta > 0 ? 'the night you drove her to hospital' : 'the wedding you missed';
   return {
     ...s,
-    npcs: s.npcs.map((n) => (n.id === mum.id ? { ...n, memory: [...n.memory, { year: s.year - 6, text, delta }] } : n)),
+    npcs: s.npcs.map((n) =>
+      n.id === mum.id ? { ...n, memory: [...n.memory, { year: s.year - 6, text, delta }] } : n,
+    ),
   };
 };
 
@@ -34,3 +36,15 @@ function currentPopupText(s: GameState, id: string): string {
   const t = { ...s, pending: [s.pending[i]!, ...s.pending.filter((_, j) => j !== i)] };
   return currentPopup(t)?.text ?? '';
 }
+
+describe('settled memories', () => {
+  it('once brought back, the same memory doesn’t come round again', () => {
+    let s = withMemory(20, 81);
+    let times = 0;
+    for (let y = 0; y < 40; y++) {
+      s = ageUp({ ...s, pending: [] }).state;
+      times += s.pending.filter((p) => p.eventId === 'mem_gratitude').length;
+    }
+    expect(times).toBeLessThanOrEqual(1);
+  });
+});

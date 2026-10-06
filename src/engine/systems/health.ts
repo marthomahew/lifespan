@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { ILLNESS_BY_ID, ILLNESSES } from '../../content/illnesses';
 import type { IllnessDef, Treatment } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -152,7 +153,12 @@ export function treat(
       'health',
       method === 'alternative'
         ? `The healer's tea smells of moss and does nothing for your ${label}.`
-        : `The ${method} doesn't help your ${label} this time.`,
+        : pickFresh(ctx, [
+            `The ${method} doesn't help your ${label} this time.`,
+            `Another round of the ${method}, another set of numbers that refuse to move. The ${label} digs in.`,
+            `The ${label} has a bad year whatever the ${method} says. You start asking about other options.`,
+            `The specialist calls the result "stable", in the voice people use for weather that won't change.`,
+          ]),
     );
     addStat(s, 'happiness', -3);
   }

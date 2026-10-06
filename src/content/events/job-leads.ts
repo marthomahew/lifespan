@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { all, outOfWork } from './conditions';
+import { all, needsWork, outOfWork } from './conditions';
 import type { GameState } from '../../engine/types';
 
 const atLeast = (age: number) => (s: GameState) => s.player.age >= age;
@@ -13,7 +13,7 @@ export const JOB_LEAD_EVENTS: EventDef[] = [
     ages: [19, 58],
     weight: 14,
     cooldownYears: 3,
-    when: outOfWork,
+    when: all(outOfWork, needsWork),
     text: 'A handwritten sign in the corner shop window says STAFF WANTED, NO EXPERIENCE, MUST LIKE PEOPLE (MOSTLY). The owner is restocking the crisps and looks up hopefully.',
     choices: [
       {
@@ -51,7 +51,7 @@ export const JOB_LEAD_EVENTS: EventDef[] = [
     ages: [19, 55],
     weight: 14,
     cooldownYears: 3,
-    when: outOfWork,
+    when: all(outOfWork, needsWork),
     text: 'A foreman with a clipboard and a voice built for motorways shouts across the building site fence: a labourer has quit, and you look like you can carry things.',
     choices: [
       {
@@ -89,7 +89,7 @@ export const JOB_LEAD_EVENTS: EventDef[] = [
     ages: [19, 62],
     weight: 12,
     cooldownYears: 3,
-    when: outOfWork,
+    when: all(outOfWork, needsWork),
     text: 'Your neighbour’s gardening round has grown too big for one van. He asks if you would like half of it: twelve gardens, one temperamental hedge trimmer, cash every Friday.',
     choices: [
       {
@@ -127,7 +127,7 @@ export const JOB_LEAD_EVENTS: EventDef[] = [
     ages: [21, 50],
     weight: 12,
     cooldownYears: 3,
-    when: all(outOfWork, atLeast(21)),
+    when: all(outOfWork, needsWork, atLeast(21)),
     text: 'The bar on the corner is a person down for the weekend rush. The manager asks if you can pour a pint without making it look like a crime scene.',
     choices: [
       {

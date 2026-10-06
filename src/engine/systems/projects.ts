@@ -19,10 +19,10 @@ export type NovelProject = {
   publishedYear?: number;
   reviewed?: boolean;
 };
-export type Projects = { novel?: NovelProject | null; books?: number };
+export type Projects = { novel?: NovelProject | null; books?: number; titles?: string[] };
 
 export type NovelOp =
-  'revise' | 'submit' | 'shelve' | 'accept' | 'holdout' | 'selfpub' | 'keep_trying';
+  'revise' | 'submit' | 'shelve' | 'accept' | 'holdout' | 'selfpub' | 'keep_trying' | 'revive';
 
 const TITLES = [
   'The Lighthouse at Low Tide',
@@ -53,8 +53,13 @@ export function writeNovel(ctx: Ctx, outcomeIndex: number): void {
   const p: Projects = (s.projects ??= {});
   let n = p.novel ?? null;
   if (!n || n.stage === 'published') {
-    const used = new Set([n?.title]);
-    const title = ctx.rng.pick(TITLES.filter((t) => !used.has(t)));
+    // Every book gets its own title.
+    const used = new Set([n?.title, ...(p.titles ?? [])]);
+    const free = TITLES.filter((t) => !used.has(t));
+    const title = free.length
+      ? ctx.rng.pick(free)
+      : `${ctx.rng.pick(TITLES)}, Part ${(p.books ?? 0) + 1}`;
+    p.titles = [...(p.titles ?? []), title];
     n = { title, stage: 'drafting', progress: 0, quality: clampStat(w * 0.6), rejections: 0 };
     p.novel = n;
     ctx.log('fame', `📖 You start a new novel. Working title: ${title}.`, true);
@@ -95,6 +100,21 @@ function fire(ctx: Ctx, id: string): void {
 /** Choices about the book, from its events. */
 export function novelOp(ctx: Ctx, op: NovelOp): void {
   const s = ctx.s;
+  if (op === 'revive') {
+    // The book from the drawer, back on the desk: most of a draft, better than you remembered.
+    const p: Projects = (s.projects ??= {});
+    if (p.novel) return;
+    const w = s.player.skills['writing'] ?? 0;
+    p.novel = {
+      title: 'The Drawer Book',
+      stage: 'drafting',
+      progress: 70,
+      quality: clampStat(w * 0.7 + 10),
+      rejections: 0,
+    };
+    s.player.flags = s.player.flags.filter((f) => f !== 'novel_in_drawer');
+    return;
+  }
   const n = novelOf(s);
   if (!n) return;
   const p = s.projects as Projects;
