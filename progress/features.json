@@ -874,5 +874,10 @@
     "title": "Fixes from the S73–S78 review: business currency on emigration, random lives roll backgrounds, talent matters for the top milestones, family business inheritance, luck covers arrests and sport hiring, consistent background setup, product names",
     "passes": true,
     "evidence": "tests/engine/review-s78.test.ts"
+  },
+  "S80": {
+    "title": "Help explains the systems (focus, gifts, luck, business, backgrounds, chains, cheats); tabs open at their top",
+    "passes": true,
+    "evidence": "e2e/keyboard.spec.ts; e2e/focus.spec.ts"
   }
 }

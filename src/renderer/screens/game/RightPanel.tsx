@@ -23,6 +23,10 @@ export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
   useEffect(() => {
     if (feedback) panel.current?.scrollTo({ top: 0 });
   }, [feedback]);
+  // Each tab opens at its top, not wherever the last one was scrolled to.
+  useEffect(() => {
+    panel.current?.scrollTo({ top: 0 });
+  }, [tab]);
   return (
     <aside className="right card" aria-label="Life panels">
       <div className="tabs" role="tablist">

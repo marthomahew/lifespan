@@ -27,3 +27,17 @@ test('a prodigy with a focus: picked at the start, shown in skills, and costing 
     .poll(async () => Number(await page.getByTestId('skill-instrument').textContent()))
     .toBeGreaterThan(level + 20);
 });
+
+test('switching tabs opens the new tab at its top', async ({ page }) => {
+  await startSeeded(page, 4343);
+  for (let i = 0; i < 20; i++) {
+    await page.getByTestId('age-up').click();
+    await clearPopups(page);
+  }
+  await page.getByTestId('tab-activities').click();
+  await page.getByTestId('panel-activities').evaluate((el) => el.scrollTo({ top: 600 }));
+  await page.getByTestId('tab-occupation').click();
+  await expect
+    .poll(() => page.getByTestId('panel-occupation').evaluate((el) => el.scrollTop))
+    .toBe(0);
+});

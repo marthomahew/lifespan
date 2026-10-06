@@ -21,6 +21,9 @@ test('the full keyboard map works and is listed in Help', async ({ page }) => {
   const table = page.getByTestId('shortcut-table');
   for (const k of ['Space', '1 – 4', 'Esc', '⌘1 – ⌘4', '⌘K', '⌘S', '⌘L', '⌘,', '?', '` or ⇧⌘K'])
     await expect(table).toContainText(k);
+  // And a short guide to the systems that aren't obvious from the screen.
+  for (const k of ['A focus', 'Luck', 'Your own business', 'Backgrounds'])
+    await expect(page.getByTestId('help-guide')).toContainText(k);
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('help')).toHaveCount(0);
   await page.keyboard.press('Control+s');
