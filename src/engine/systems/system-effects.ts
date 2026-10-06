@@ -21,12 +21,17 @@ import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
 
-const LABELS = [
-  'Gravel Hill Records',
-  'Lanternfish Music',
-  'Northbound Sound',
-  'Pocket Moon Records',
-  'Tin Roof Recordings',
+/** Real record labels, each from the year it was founded. */
+const LABELS: { name: string; from: number }[] = [
+  { name: 'Columbia Records', from: 1889 },
+  { name: 'Decca Records', from: 1929 },
+  { name: 'Atlantic Records', from: 1947 },
+  { name: 'Motown', from: 1959 },
+  { name: 'Island Records', from: 1959 },
+  { name: 'Def Jam Recordings', from: 1984 },
+  { name: 'Sub Pop', from: 1986 },
+  { name: 'XL Recordings', from: 1989 },
+  { name: 'Warp Records', from: 1989 },
 ];
 
 /** Effects that hand off to a system: hiring after an interview, conscription, record deals... */
@@ -127,7 +132,10 @@ export function applySystemEffect(
       return;
     }
     case 'sign_label':
-      signRecordDeal(ctx, arg ?? ctx.rng.pick(LABELS));
+      signRecordDeal(
+        ctx,
+        arg ?? ctx.rng.pick(LABELS.filter((l) => l.from <= s.year).map((l) => l.name)),
+      );
       return;
     case 'dishonorable':
       if (s.military?.active) discharge(ctx, 'dishonorable');

@@ -142,5 +142,8 @@ test('a gift can be money or something you own', async ({ page }) => {
   await page.getByTestId('gift-kind').selectOption({ index: 2 });
   await page.getByTestId('gift-go').click();
   await page.keyboard.press('Escape');
-  await expect(page.getByTestId('log-line').filter({ hasText: /your gold watch/i })).toHaveCount(1);
+  // Named by its real make for the year (a Rolex, an Omega, an Audemars Piguet).
+  await expect(
+    page.getByTestId('log-line').filter({ hasText: /You give .* your (Rolex|Omega|Audemars)/ }),
+  ).toHaveCount(1);
 });

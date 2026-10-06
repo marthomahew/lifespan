@@ -1,3 +1,4 @@
+import { itemName } from '../../../engine/systems/assets';
 import { useState } from 'react';
 import { formatMoney, money, type GameState } from '../../../engine';
 import { PRESENT_REF, type GiftParams } from '../../../engine/systems/gifts';
@@ -33,8 +34,7 @@ export function GiftForm({
           <option value="money">Money</option>
           {game.assets.possessions.map((p) => (
             <option key={p.id} value={`item:${p.id}`}>
-              {POSSESSION_BY_ID[p.item]?.emoji} {POSSESSION_BY_ID[p.item]?.label ?? p.item} ·{' '}
-              {formatMoney(game, p.value)}
+              {POSSESSION_BY_ID[p.item]?.emoji} {itemName(p)} · {formatMoney(game, p.value)}
             </option>
           ))}
         </select>

@@ -1,4 +1,11 @@
-import { HOME_TYPE_BY_ID, HOME_TYPES, POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../content/assets';
+import {
+  HOME_TYPE_BY_ID,
+  HOME_TYPES,
+  POSSESSION_BY_ID,
+  VEHICLE_BY_ID,
+  productName,
+  onSale,
+} from '../../content/assets';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
@@ -8,7 +15,7 @@ import { clampStat } from '../util';
 import { hasAdultRecord } from './careers';
 import { addLoan, annuityPayment } from './loans';
 import { addSkill } from './skills';
-import { withArticle } from '../text';
+import { article, withArticle } from '../text';
 import { addInjury } from './injuries';
 
 const conditionMult = (c: number): number => 0.6 + c / 250;
@@ -165,6 +172,7 @@ export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean): void {
   const s = ctx.s;
   const v = VEHICLE_BY_ID[modelId];
   if (!v) throw new EngineError('unknown vehicle');
+  if (!onSale(v, s.year)) throw new EngineError(`not on sale until ${v.from}`);
   if (s.player.age < 16) throw new EngineError('from age 16');
   const price = money(s, v.price);
   const id = s.assets.nextAssetId++;
@@ -186,7 +194,7 @@ export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean): void {
     condition: 100,
     bought: s.year,
   });
-  ctx.log('money', `You buy a ${v.label}. ${v.description}`, true);
+  ctx.log('money', `You buy ${productPhrase(v, s.year)}. ${v.description}`, true);
   addStat(s, 'happiness', 5);
 }
 
@@ -194,6 +202,7 @@ export function buyPossession(ctx: Ctx, itemId: string): void {
   const s = ctx.s;
   const p = POSSESSION_BY_ID[itemId];
   if (!p) throw new EngineError('unknown item');
+  if (!onSale(p, s.year)) throw new EngineError(`not on sale until ${p.from}`);
   const price = money(s, p.price);
   if (s.money.cash < price) throw new EngineError(`you need ${formatMoney(s, price)}`);
   s.money.cash -= price;
@@ -205,7 +214,7 @@ export function buyPossession(ctx: Ctx, itemId: string): void {
     condition: 100,
     bought: s.year,
   });
-  ctx.log('money', `You buy ${withArticle(p.label)}. ${p.description}`);
+  ctx.log('money', `You buy ${productPhrase(p, s.year)}. ${p.description}`);
   addStat(s, 'happiness', 3);
 }
 
@@ -227,10 +236,8 @@ export function sellAsset(ctx: Ctx, id: number): number {
   s.money.loans = s.money.loans.filter((l) => l.balance > 0);
   s.assets.vehicles = s.assets.vehicles.filter((x) => x.id !== id);
   s.assets.possessions = s.assets.possessions.filter((x) => x.id !== id);
-  const label = v
-    ? (VEHICLE_BY_ID[v.model]?.label ?? 'vehicle')
-    : (POSSESSION_BY_ID[p?.item ?? '']?.label ?? 'item');
-  ctx.log('money', `You sell the ${label.toLowerCase()} for ${formatMoney(s, proceeds)}.`);
+  const label = v ? vehicleName(v) : p ? itemName(p) : 'item';
+  ctx.log('money', `You sell the ${label} for ${formatMoney(s, proceeds)}.`);
   return proceeds;
 }
 
@@ -288,14 +295,11 @@ function vehicleAccidents(ctx: Ctx): void {
     addInjury(ctx, ctx.rng.int(15, 35));
     ctx.log(
       'health',
-      `You crash the ${def?.label ?? 'car'} on a wet road. You wake up in hospital with a cast and a lot of paperwork.`,
+      `You crash the ${vehicleName(car)} on a wet road. You wake up in hospital with a cast and a lot of paperwork.`,
       true,
     );
   } else
-    ctx.log(
-      'random',
-      `You scrape the ${def?.label ?? 'car'} along a bollard. The bollard is fine.`,
-    );
+    ctx.log('random', `You scrape the ${vehicleName(car)} along a bollard. The bollard is fine.`);
   if (!s.assets.licence && ctx.rng.chance(0.5)) {
     s.money.cash -= money(s, 800);
     ctx.log('crime', 'The police note you have no licence. The fine is not small.');
@@ -346,4 +350,24 @@ export function downsizeHome(ctx: Ctx): void {
     livingIn: true,
   });
   s.assets.housing = 'owning';
+}
+
+/** An owned vehicle's model: the one on sale the year you bought it. */
+export function vehicleName(v: { model: string; bought: number }): string {
+  const def = VEHICLE_BY_ID[v.model];
+  return def ? productName(def, v.bought) : 'vehicle';
+}
+/** An owned possession's make: the one on sale the year you got it. */
+export function itemName(p: { item: string; bought: number }): string {
+  const def = POSSESSION_BY_ID[p.item];
+  return def ? productName(def, p.bought) : 'item';
+}
+
+/** "a Volkswagen Golf" (a brand keeps its capitals), or "an oil painting" (a plain thing doesn't). */
+export function productPhrase(
+  def: { label: string; eras?: { from: number; name: string }[] },
+  year: number,
+): string {
+  const name = productName(def, year);
+  return def.eras?.length ? `${article(name)} ${name}` : withArticle(name);
 }

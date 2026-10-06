@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { POSSESSIONS, VEHICLES } from '../../../../content/assets';
+import { POSSESSIONS, VEHICLES, onSale, productName } from '../../../../content/assets';
 import { formatMoney, money, type GameState, type PlayerAction } from '../../../../engine';
 import { mortgageQuote, type Financing } from '../../../../engine/systems/assets';
 import { annuityPayment } from '../../../../engine/systems/loans';
@@ -160,7 +160,8 @@ function HomeForm({ game, index, onBuy }: FormProps & { index: number }): React.
 }
 
 function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
-  const [model, setModel] = useState(VEHICLES[0]?.id ?? '');
+  const forSale = VEHICLES.filter((x) => onSale(x, game.year));
+  const [model, setModel] = useState(forSale[0]?.id ?? '');
   const [financed, setFinanced] = useState(false);
   const v = VEHICLES.find((x) => x.id === model);
   const price = v ? money(game, v.price) : 0;
@@ -188,9 +189,10 @@ function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
           value={model}
           onChange={(e) => setModel(e.target.value)}
         >
-          {VEHICLES.map((x) => (
+          {forSale.map((x) => (
             <option key={x.id} value={x.id}>
-              {x.emoji} {x.label} · {formatMoney(game, money(game, x.price))}
+              {x.emoji} {productName(x, game.year)} ({x.label.toLowerCase()}) ·{' '}
+              {formatMoney(game, money(game, x.price))}
             </option>
           ))}
         </select>
@@ -220,7 +222,8 @@ function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
 }
 
 function ItemForm({ game, onBuy }: FormProps): React.JSX.Element {
-  const [item, setItem] = useState(POSSESSIONS[0]?.id ?? '');
+  const forSale = POSSESSIONS.filter((x) => onSale(x, game.year));
+  const [item, setItem] = useState(forSale[0]?.id ?? '');
   const p = POSSESSIONS.find((x) => x.id === item);
   return (
     <form
@@ -233,9 +236,11 @@ function ItemForm({ game, onBuy }: FormProps): React.JSX.Element {
       <label>
         Item
         <select data-testid="item-select" value={item} onChange={(e) => setItem(e.target.value)}>
-          {POSSESSIONS.map((x) => (
+          {forSale.map((x) => (
             <option key={x.id} value={x.id}>
-              {x.emoji} {x.label} · {formatMoney(game, money(game, x.price))}
+              {x.emoji} {productName(x, game.year)}
+              {x.eras?.length ? ` (${x.label.toLowerCase()})` : ''} ·{' '}
+              {formatMoney(game, money(game, x.price))}
             </option>
           ))}
         </select>

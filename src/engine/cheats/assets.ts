@@ -1,3 +1,4 @@
+import { itemName, vehicleName } from '../systems/assets';
 import {
   HOME_TYPE_BY_ID,
   HOME_TYPES,
@@ -22,11 +23,11 @@ const assetIds = (
   ...s.assets.homes.map((h) => ({ value: String(h.id), label: `${h.id}: ${h.name}` })),
   ...s.assets.vehicles.map((v) => ({
     value: String(v.id),
-    label: `${v.id}: ${VEHICLE_BY_ID[v.model]?.label ?? v.model}`,
+    label: `${v.id}: ${vehicleName(v)}`,
   })),
   ...s.assets.possessions.map((p) => ({
     value: String(p.id),
-    label: `${p.id}: ${POSSESSION_BY_ID[p.item]?.label ?? p.item}`,
+    label: `${p.id}: ${itemName(p)}`,
   })),
 ];
 

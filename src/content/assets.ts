@@ -70,11 +70,18 @@ export const HOME_TYPES: HomeTypeDef[] = [
   },
 ];
 
-/** Vehicle models, all invented (SPEC §5.7). */
+/** Vehicles by kind, with real models by era (the model on sale in a given year). */
 export const VEHICLES: VehicleDef[] = [
   {
     id: 'pelican_runabout',
-    label: 'Pelican Runabout',
+    label: 'Small hatchback',
+    eras: [
+      { from: 1959, name: 'Austin Mini' },
+      { from: 1974, name: 'Volkswagen Golf' },
+      { from: 1990, name: 'Renault Clio' },
+      { from: 2001, name: 'Honda Jazz' },
+      { from: 2014, name: 'Volkswagen Polo' },
+    ],
     emoji: '🚗',
     price: 16000,
     safety: 55,
@@ -82,7 +89,14 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'brisk_sedan',
-    label: 'Brisk Sedan',
+    label: 'Family saloon',
+    eras: [
+      { from: 1955, name: 'Chevrolet Bel Air' },
+      { from: 1966, name: 'Toyota Corolla' },
+      { from: 1983, name: 'Toyota Camry' },
+      { from: 2003, name: 'Honda Accord' },
+      { from: 2018, name: 'Toyota Camry Hybrid' },
+    ],
     emoji: '🚘',
     price: 24000,
     safety: 65,
@@ -90,7 +104,13 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'okapi_wagon',
-    label: 'Okapi Wagon',
+    label: 'Estate car',
+    eras: [
+      { from: 1956, name: 'Volvo Amazon Estate' },
+      { from: 1974, name: 'Volvo 240 Estate' },
+      { from: 1995, name: 'Subaru Outback' },
+      { from: 2016, name: 'Volvo V90' },
+    ],
     emoji: '🚙',
     price: 31000,
     safety: 72,
@@ -98,7 +118,13 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'tundra_hauler',
-    label: 'Tundra Hauler',
+    label: 'Pickup truck',
+    eras: [
+      { from: 1948, name: 'Ford F-1' },
+      { from: 1975, name: 'Ford F-150' },
+      { from: 2000, name: 'Toyota Tundra' },
+      { from: 2019, name: 'Ram 1500' },
+    ],
     emoji: '🛻',
     price: 42000,
     safety: 70,
@@ -106,7 +132,15 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'volta_e2',
-    label: 'Volta E2',
+    label: 'Electric car',
+    from: 1996,
+    eras: [
+      { from: 1996, name: 'GM EV1' },
+      { from: 2008, name: 'Tesla Roadster' },
+      { from: 2010, name: 'Nissan Leaf' },
+      { from: 2012, name: 'Tesla Model S' },
+      { from: 2017, name: 'Tesla Model 3' },
+    ],
     emoji: '🔋',
     price: 39000,
     safety: 80,
@@ -114,7 +148,14 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'meridian_gt',
-    label: 'Meridian GT',
+    label: 'Sports car',
+    eras: [
+      { from: 1953, name: 'Chevrolet Corvette' },
+      { from: 1964, name: 'Porsche 911' },
+      { from: 1984, name: 'Ferrari Testarossa' },
+      { from: 2004, name: 'Ferrari F430' },
+      { from: 2015, name: 'Ferrari 488 GTB' },
+    ],
     emoji: '🏎️',
     price: 95000,
     safety: 60,
@@ -122,7 +163,13 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'cormorant_minivan',
-    label: 'Cormorant Minivan',
+    label: 'Minivan',
+    eras: [
+      { from: 1950, name: 'Volkswagen Kombi' },
+      { from: 1984, name: 'Dodge Caravan' },
+      { from: 1999, name: 'Honda Odyssey' },
+      { from: 2017, name: 'Chrysler Pacifica' },
+    ],
     emoji: '🚐',
     price: 36000,
     safety: 78,
@@ -130,7 +177,13 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'sable_luxe',
-    label: 'Sable Luxe',
+    label: 'Luxury saloon',
+    eras: [
+      { from: 1954, name: 'Cadillac Fleetwood' },
+      { from: 1972, name: 'Mercedes-Benz S-Class' },
+      { from: 1989, name: 'Lexus LS 400' },
+      { from: 2013, name: 'BMW 7 Series' },
+    ],
     emoji: '🚖',
     price: 78000,
     safety: 85,
@@ -138,7 +191,12 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'dart_scooter',
-    label: 'Dart Scooter',
+    label: 'Scooter',
+    eras: [
+      { from: 1946, name: 'Vespa' },
+      { from: 1958, name: 'Honda Super Cub' },
+      { from: 2003, name: 'Vespa GTS' },
+    ],
     emoji: '🛵',
     price: 3500,
     safety: 20,
@@ -146,7 +204,13 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'ridgeback_motorbike',
-    label: 'Ridgeback Motorbike',
+    label: 'Motorbike',
+    eras: [
+      { from: 1959, name: 'Triumph Bonneville' },
+      { from: 1969, name: 'Honda CB750' },
+      { from: 1993, name: 'Ducati Monster' },
+      { from: 2016, name: 'Triumph Bonneville T120' },
+    ],
     emoji: '🏍️',
     price: 12000,
     safety: 15,
@@ -154,7 +218,11 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'bramble_classic',
-    label: 'Bramble Classic',
+    label: 'Classic roadster',
+    eras: [
+      { from: 1950, name: 'MG TD' },
+      { from: 1962, name: 'MGB Roadster' },
+    ],
     emoji: '🚕',
     price: 28000,
     safety: 35,
@@ -162,7 +230,12 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'atlas_camper',
-    label: 'Atlas Camper',
+    label: 'Camper van',
+    eras: [
+      { from: 1951, name: 'Volkswagen Westfalia' },
+      { from: 1979, name: 'Volkswagen Vanagon Westfalia' },
+      { from: 2007, name: 'Mercedes-Benz Sprinter camper' },
+    ],
     emoji: '🚌',
     price: 64000,
     safety: 62,
@@ -174,7 +247,13 @@ export const VEHICLES: VehicleDef[] = [
 export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'acoustic_guitar',
-    label: 'Acoustic guitar',
+    label: 'Guitar',
+    eras: [
+      { from: 1934, name: 'Martin D-28' },
+      { from: 1954, name: 'Fender Stratocaster' },
+      { from: 1969, name: 'Gibson Les Paul Custom' },
+      { from: 2000, name: 'Taylor 814ce' },
+    ],
     emoji: '🎸',
     kind: 'instrument',
     price: 450,
@@ -185,6 +264,10 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'upright_piano',
     label: 'Upright piano',
+    eras: [
+      { from: 1900, name: 'Steinway upright' },
+      { from: 1959, name: 'Yamaha U1' },
+    ],
     emoji: '🎹',
     kind: 'instrument',
     price: 5500,
@@ -205,6 +288,11 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'studio_microphone',
     label: 'Studio microphone',
+    eras: [
+      { from: 1949, name: 'Neumann U 47' },
+      { from: 1966, name: 'Shure SM58' },
+      { from: 1985, name: 'Neumann U 87 Ai' },
+    ],
     emoji: '🎙️',
     kind: 'instrument',
     price: 900,
@@ -215,6 +303,7 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'diamond_ring',
     label: 'Diamond ring',
+    eras: [{ from: 1886, name: 'Tiffany solitaire ring' }],
     emoji: '💍',
     kind: 'jewelry',
     price: 6000,
@@ -224,6 +313,12 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'gold_watch',
     label: 'Gold watch',
+    eras: [
+      { from: 1953, name: 'Rolex Submariner' },
+      { from: 1957, name: 'Omega Speedmaster' },
+      { from: 1976, name: 'Audemars Piguet Royal Oak' },
+      { from: 2000, name: 'Rolex Daytona' },
+    ],
     emoji: '⌚',
     kind: 'jewelry',
     price: 12000,
@@ -251,6 +346,13 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'gaming_laptop',
     label: 'Gaming laptop',
+    from: 1996,
+    eras: [
+      { from: 1996, name: 'Toshiba Satellite' },
+      { from: 2002, name: 'Alienware laptop' },
+      { from: 2013, name: 'Razer Blade' },
+      { from: 2019, name: 'ASUS ROG Zephyrus' },
+    ],
     emoji: '💻',
     kind: 'electronics',
     price: 2200,
@@ -261,6 +363,12 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'big_tv',
     label: 'Huge television',
+    eras: [
+      { from: 1968, name: 'Sony Trinitron' },
+      { from: 2005, name: 'Sony Bravia' },
+      { from: 2013, name: 'LG OLED TV' },
+      { from: 2020, name: 'Samsung Neo QLED' },
+    ],
     emoji: '📺',
     kind: 'electronics',
     price: 1500,
@@ -270,6 +378,17 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'game_console',
     label: 'Game console',
+    from: 1977,
+    eras: [
+      { from: 1977, name: 'Atari 2600' },
+      { from: 1985, name: 'Nintendo Entertainment System' },
+      { from: 1995, name: 'Sony PlayStation' },
+      { from: 2000, name: 'PlayStation 2' },
+      { from: 2005, name: 'Xbox 360' },
+      { from: 2013, name: 'PlayStation 4' },
+      { from: 2017, name: 'Nintendo Switch' },
+      { from: 2020, name: 'PlayStation 5' },
+    ],
     emoji: '🎮',
     kind: 'electronics',
     price: 500,
@@ -288,6 +407,12 @@ export const POSSESSIONS: PossessionDef[] = [
   {
     id: 'racing_bike',
     label: 'Racing bike',
+    eras: [
+      { from: 1950, name: 'Raleigh racer' },
+      { from: 1976, name: 'Trek road bike' },
+      { from: 1995, name: 'Specialized Allez' },
+      { from: 2010, name: 'Pinarello Dogma' },
+    ],
     emoji: '🚲',
     kind: 'sport',
     price: 2500,
@@ -306,3 +431,16 @@ export const VEHICLE_BY_ID: Record<string, VehicleDef> = Object.fromEntries(
 export const POSSESSION_BY_ID: Record<string, PossessionDef> = Object.fromEntries(
   POSSESSIONS.map((p) => [p.id, p]),
 );
+
+/** The real model on sale in a year (the latest era not after it), or the generic label. */
+export function productName(
+  def: { label: string; eras?: { from: number; name: string }[] },
+  year: number,
+): string {
+  const era = [...(def.eras ?? [])].reverse().find((e) => e.from <= year) ?? def.eras?.[0];
+  return era?.name ?? def.label;
+}
+
+/** On sale in this year: not before it was invented. */
+export const onSale = (def: { from?: number }, year: number): boolean =>
+  !def.from || year >= def.from;

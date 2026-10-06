@@ -864,5 +864,10 @@
     "title": "Luck gifts by area (money, career, sport, music, crime, business, charmed) and the gift cheat",
     "passes": true,
     "evidence": "tests/engine/luck.test.ts"
+  },
+  "S78": {
+    "title": "Real product names by era: vehicles, possessions, record labels",
+    "passes": true,
+    "evidence": "tests/engine/products.test.ts"
   }
 }

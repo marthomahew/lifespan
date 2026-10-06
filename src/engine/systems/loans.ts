@@ -1,4 +1,4 @@
-import { VEHICLE_BY_ID } from '../../content/assets';
+import { vehicleName } from './assets';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
 import { addStat } from '../stats';
@@ -128,11 +128,7 @@ function repossess(ctx: Ctx, l: Loan): void {
     ctx.log('money', `The bank repossesses ${home.name}. You watch a man change the locks.`, true);
   } else if (car) {
     s.assets.vehicles = s.assets.vehicles.filter((v) => v.id !== car.id);
-    ctx.log(
-      'money',
-      `A tow truck takes the ${VEHICLE_BY_ID[car.model]?.label ?? 'car'} in the night.`,
-      true,
-    );
+    ctx.log('money', `A tow truck takes the ${vehicleName(car)} in the night.`, true);
   }
   const left = sale - l.balance;
   if (left > 0) {

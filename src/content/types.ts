@@ -335,6 +335,10 @@ export type HomeTypeDef = {
 export type VehicleDef = {
   id: string;
   label: string;
+  /** Real models by era: the one on sale is the latest whose year has come. */
+  eras?: { from: number; name: string }[];
+  /** Not on sale before this year. */
+  from?: number;
   emoji: string;
   price: number;
   /** Safety 0..100 lowers accident harm. */ safety: number;
@@ -343,6 +347,10 @@ export type VehicleDef = {
 export type PossessionDef = {
   id: string;
   label: string;
+  /** Real models by era: the one on sale is the latest whose year has come. */
+  eras?: { from: number; name: string }[];
+  /** Not on sale before this year. */
+  from?: number;
   emoji: string;
   kind: 'instrument' | 'jewelry' | 'art' | 'electronics' | 'collectible' | 'sport';
   price: number;
