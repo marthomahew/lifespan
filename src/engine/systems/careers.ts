@@ -359,6 +359,8 @@ export function unemploymentBenefit(s: GameState): number {
   if (c.jobId || c.partTimeId || c.retired || s.education.enrollment) return 0;
   // Support needs papers; someone on the run can't sign on.
   if (s.legal.prison || s.military?.active || s.legal.fugitive) return 0;
+  // Means-tested: savings above a modest cushion mean you live on those first.
+  if (s.money.cash + s.money.savings > money(s, 30000)) return 0;
   return money(s, 7000, 'wage');
 }
 

@@ -317,3 +317,22 @@ describe('the heir’s wider family', () => {
       expect(auntOrUncle).toBeDefined();
   });
 });
+
+describe('money that matters', () => {
+  it('rent at your parents’ from 23; support is means-tested; the gap year happens once', async () => {
+    const { runFinances } = await import('../../src/engine/systems/finance');
+    const { unemploymentBenefit } = await import('../../src/engine/systems/careers');
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { EVENTS } = await import('../../src/content/events');
+    const base = runCheat(newLife({ birthYear: 1990, country: 'us' }, 23), 'age.set', {
+      age: 25,
+    }).state;
+    const s = structuredClone({ ...base, money: { ...base.money, cash: 50_000, savings: 0 } });
+    s.assets.housing = 'parents';
+    runFinances(new Ctx(s), { salary: 0, other: 0 });
+    expect(s.money.cash).toBeLessThan(50_000);
+    expect(unemploymentBenefit({ ...base, money: { ...base.money, cash: 5_000_000 } })).toBe(0);
+    const gap = EVENTS.filter((e) => e.group === 'gap_year').map((e) => e.id);
+    expect(gap.length).toBeGreaterThanOrEqual(3);
+  });
+});

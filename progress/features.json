@@ -729,5 +729,10 @@
     "title": "Holidays: pick from twelve destinations with their own lines; Passport Stamps achievement",
     "passes": true,
     "evidence": "tests/engine/free-time.test.ts (holidays); e2e/customize.spec.ts (holiday)"
+  },
+  "S51": {
+    "title": "Money matters longer: board at your parents’ from 23, means-tested support; event groups (one gap year per life)",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts (money that matters); sim"
   }
 }

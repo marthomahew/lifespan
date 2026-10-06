@@ -490,6 +490,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
   },
   {
     id: 'trv2_backpacking_year',
+    group: 'gap_year',
     kind: 'choice',
     category: 'travel',
     ages: [18, 30],

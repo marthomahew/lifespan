@@ -113,6 +113,8 @@ export function eligibility(
     if (!opts.chain) {
       if (def.once && (s.events.counts[def.id] ?? 0) > 0)
         return { ok: false, reason: 'already happened (once only)' };
+      if (def.group && groupFired(s, def.group))
+        return { ok: false, reason: `something like it already happened (${def.group})` };
       const last = s.events.lastFired[def.id];
       const cd = def.cooldownYears ?? DEFAULT_COOLDOWN;
       if (last !== undefined && s.year - last < cd)
@@ -184,6 +186,11 @@ export function bindNpcs(
 }
 
 /** An event is "bad" when every outcome leaves you worse off (no-bad-events cheat). */
+/** Whether any event of a group has fired in this life. */
+function groupFired(s: GameState, group: string): boolean {
+  return EVENTS.some((e) => e.group === group && (s.events.counts[e.id] ?? 0) > 0);
+}
+
 const JOB_OFFERS = new Map<string, boolean>();
 /** Whether any outcome of an event hires you into a job. */
 function offersJob(def: EventDef): boolean {

@@ -67,6 +67,8 @@ describe('annual finances (M7.1)', () => {
     const s = clone(adult(3));
     s.money.cash = -5000;
     s.assets.housing = 'parents';
+    // Under 23, a room at your parents' is free, which keeps this about the debt alone.
+    s.player.age = 21;
     runFinances(new Ctx(s), { salary: 0, other: 0 });
     expect(s.money.cash).toBe(0);
     const debt = s.money.loans.find((l) => l.kind === 'debt');
@@ -126,6 +128,8 @@ describe('savings and investments (M7.3)', () => {
   it('savings earn 1–4%', () => {
     let s = clone(adult(6));
     s.money.savings = 100000;
+    // Living costs come out of cash, so the savings are left to grow.
+    s.money.cash = 1_000_000;
     for (let i = 0; i < 20; i++) {
       s = ageUp({ ...s, pending: [] }).state;
       expect(s.money.savingsRate).toBeGreaterThanOrEqual(0.01);

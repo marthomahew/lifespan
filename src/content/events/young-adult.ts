@@ -366,6 +366,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
   },
   {
     id: 'ya_backpacking_trip',
+    group: 'gap_year',
     kind: 'choice',
     category: 'travel',
     ages: [18, 26],

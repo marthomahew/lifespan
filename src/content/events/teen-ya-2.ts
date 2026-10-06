@@ -839,6 +839,7 @@ export const TEEN_YA_EVENTS_2: EventDef[] = [
   },
   {
     id: 'ya2_gap_year',
+    group: 'gap_year',
     kind: 'choice',
     category: 'travel',
     ages: [18, 22],

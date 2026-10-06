@@ -35,6 +35,8 @@ describe('money fixes', () => {
     const s = clone(adult(2));
     s.money.cash = -10000;
     s.assets.housing = 'parents';
+    // Under 23, a room at your parents' is free, which keeps this about the debt alone.
+    s.player.age = 21;
     runFinances(new Ctx(s), { salary: 0, other: 0 });
     s.money.cash = -20000;
     runFinances(new Ctx(s), { salary: 0, other: 0 });

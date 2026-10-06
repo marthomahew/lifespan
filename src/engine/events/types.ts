@@ -122,6 +122,8 @@ export type EventDef = {
   when?: (s: GameState) => boolean;
   bind?: Record<string, NpcQuery>;
   once?: boolean;
+  /** Events sharing a group are alternatives: at most one of them happens in a life. */
+  group?: string;
   cooldownYears?: number;
   adultsOnly?: boolean;
   /** Only reachable as a chain step or from code (interviews, trials, ...). */
