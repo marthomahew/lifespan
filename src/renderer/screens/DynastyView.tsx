@@ -1,3 +1,4 @@
+import { netWorth } from '../../engine/networth';
 import { Portrait } from '../portrait/Portrait';
 import { formatMoney, legacyScore, type GameState } from '../../engine';
 import { refToLocal } from '../../engine/economy';
@@ -52,6 +53,25 @@ export function DynastyView({ game }: { game: GameState }): React.JSX.Element {
                   <td>{g.cause}</td>
                 </tr>
               ))}
+              {!game.death && (
+                <tr data-testid="dynasty-current" className="dynasty-current">
+                  <th scope="row">
+                    <span className="dynasty-who">
+                      <Portrait
+                        look={game.player.look}
+                        age={game.player.age}
+                        gender={game.player.gender}
+                        size={30}
+                      />
+                      {game.player.first} {game.player.last}
+                    </span>
+                  </th>
+                  <td>{game.player.birthYear}–</td>
+                  <td className="muted">Still writing it</td>
+                  <td>{formatMoney(game, netWorth(game))}</td>
+                  <td className="muted">Alive, age {game.player.age}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

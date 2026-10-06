@@ -24,6 +24,7 @@ export function PetPanel({
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [openedAt] = useState(game.log.length);
+  const [start] = useState(() => game.pets.find((p) => p.id === petId));
   const pet = game.pets.find((p) => p.id === petId);
   if (!pet) return null;
   const def = PET_BY_ID[pet.kind];
@@ -52,8 +53,8 @@ export function PetPanel({
         </div>
         {pet.alive && (
           <>
-            <Meter label="Bond" value={pet.bond} testId="pet-bond" />
-            <Meter label="Health" value={pet.health} testId="pet-health" />
+            <Meter label="Bond" value={pet.bond} was={start?.bond} testId="pet-bond" />
+            <Meter label="Health" value={pet.health} was={start?.health} testId="pet-health" />
             <div className="row wrap">
               {ACTIONS.filter((a) => a.id !== 'walk' || def?.walks).map((a) => {
                 const why = petActionReason(game, pet, a.id);
@@ -110,12 +111,15 @@ export function PetPanel({
 function Meter({
   label,
   value,
+  was,
   testId,
 }: {
   label: string;
   value: number;
+  was?: number | undefined;
   testId: string;
 }): React.JSX.Element {
+  const d = was === undefined ? 0 : value - was;
   return (
     <div className="pet-meter">
       <span className="small">{label}</span>
@@ -127,7 +131,15 @@ function Meter({
       >
         <span className={`bar-fill ${barColour(value)}`} style={{ width: `${value}%` }} />
       </span>
-      <span className="muted small">{value}</span>
+      <span className="muted small">
+        {value}
+        {d !== 0 && (
+          <span className={d > 0 ? 'delta up' : 'delta down'} data-testid={`${testId}-delta`}>
+            {' '}
+            {d > 0 ? `+${d}` : d}
+          </span>
+        )}
+      </span>
     </div>
   );
 }

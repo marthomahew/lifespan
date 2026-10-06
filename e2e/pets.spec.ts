@@ -27,6 +27,7 @@ test('adopt a dog, name it, play and walk, and say goodbye', async ({ page }) =>
   await expect(page.getByTestId('pet-last')).toBeVisible();
   await page.getByTestId('pet-act-walk').click();
   expect(Number(await page.getByTestId('pet-bond').getAttribute('data-value'))).toBeGreaterThan(bond);
+  await expect(page.getByTestId('pet-bond-delta')).toContainText('+');
   await expect(page.getByTestId('pet-act-play')).toBeDisabled();
   await page.getByTestId('pet-act-rehome').click();
   await page.getByTestId('pet-rehome-yes').click();
