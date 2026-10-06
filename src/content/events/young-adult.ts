@@ -549,6 +549,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
   },
   {
     id: 'ya_partner_job_offer_away',
+    fromYear: 2008,
     kind: 'choice',
     category: 'romance',
     ages: [21, 29],

@@ -493,6 +493,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
   },
   {
     id: 'wld2_general_strike',
+    fromYear: 2008,
     kind: 'choice',
     category: 'world',
     ages: [18, 57],

@@ -438,6 +438,7 @@ export const PET_EVENTS: EventDef[] = [
   },
   {
     id: 'pet_cat_laptop',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [18, 80],

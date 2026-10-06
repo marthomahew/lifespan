@@ -72,7 +72,7 @@ export function bindingQueries(def: EventDef): Record<string, NpcQuery> {
 }
 
 export function matches(s: GameState, n: Npc, q: NpcQuery, adultsOnly: boolean): boolean {
-  if (!n.alive || !n.roles.includes(q.role)) return false;
+  if (!n.alive || (!q.anyRole && !n.roles.includes(q.role))) return false;
   if (q.minRelationship !== undefined && n.rel < q.minRelationship) return false;
   if (q.maxRelationship !== undefined && n.rel > q.maxRelationship) return false;
   if (q.minAge !== undefined && n.age < q.minAge) return false;
@@ -123,6 +123,8 @@ export function eligibility(
         return { ok: false, reason: 'category switched off' };
     }
     if (s.legal.prison && !def.inPrison) return { ok: false, reason: 'not while in prison' };
+    if (def.fromYear && s.year < def.fromYear)
+      return { ok: false, reason: `not until ${def.fromYear}` };
     if (s.legal.fugitive && !s.player.flags.includes('false_papers') && offersJob(def))
       return { ok: false, reason: 'job offers want papers you cannot show' };
     if (
@@ -139,7 +141,7 @@ export function eligibility(
       const n = s.npcs.find((x) => x.id === pre);
       if (!n || !n.alive) return { ok: false, reason: `{${name}} is no longer around` };
       if (adultsOnly && n.age < 18) return { ok: false, reason: 'adults only' };
-      if (!n.roles.includes(q.role))
+      if (!q.anyRole && !n.roles.includes(q.role))
         return { ok: false, reason: `{${name}} is no longer your ${q.role}` };
       continue;
     }
@@ -164,7 +166,11 @@ export function bindNpcs(
   for (const [name, q] of Object.entries(bindingQueries(def))) {
     const pre = preset[name];
     const preNpc = pre === undefined ? undefined : s.npcs.find((n) => n.id === pre);
-    const roleQ: NpcQuery = { role: q.role, ...(q.gender ? { gender: q.gender } : {}) };
+    const roleQ: NpcQuery = {
+      role: q.role,
+      ...(q.anyRole ? { anyRole: true } : {}),
+      ...(q.gender ? { gender: q.gender } : {}),
+    };
     if (
       preNpc &&
       preNpc.alive &&

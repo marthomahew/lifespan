@@ -209,6 +209,8 @@ export type ActivityGroup =
 export type ActivityOutcome = {
   chance: number;
   text: string;
+  /** Other ways the same outcome can read; one not seen lately is picked. */
+  texts?: string[];
   /** Effects in the same shape as event effects. */
   effects: import('../engine/events/types').Effect[];
   success?: boolean;

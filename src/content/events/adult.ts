@@ -70,6 +70,7 @@ export const ADULT_EVENTS: EventDef[] = [
   },
   {
     id: 'adult_sibling_food_truck',
+    fromYear: 2008,
     kind: 'choice',
     category: 'money',
     ages: [30, 45],

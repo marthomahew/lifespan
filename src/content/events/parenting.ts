@@ -229,6 +229,7 @@ export const PARENTING_EVENTS: EventDef[] = [
   },
   {
     id: 'par_small_school_play',
+    fromYear: 2008,
     kind: 'choice',
     category: 'family',
     ages: [25, 47],
@@ -659,6 +660,7 @@ export const PARENTING_EVENTS: EventDef[] = [
   },
   {
     id: 'par_teen_first_car',
+    fromYear: 2008,
     kind: 'choice',
     category: 'family',
     weight: 1,
@@ -854,6 +856,7 @@ export const PARENTING_EVENTS: EventDef[] = [
   },
   {
     id: 'par_grown_moves_abroad',
+    fromYear: 2008,
     kind: 'choice',
     category: 'family',
     ages: [45, 65],

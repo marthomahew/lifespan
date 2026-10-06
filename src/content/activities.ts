@@ -78,16 +78,34 @@ const BASE_ACTIVITIES: ActivityDef[] = [
         chance: 0.25,
         success: true,
         text: 'Someone laughs at your terrible dance move and asks you to teach it to them. You keep talking until closing.',
+        texts: [
+          'A stranger at the bar settles your argument about the best crisp flavour, wrongly, and charmingly. You swap numbers before last orders.',
+          'You both reach for the last stool and both refuse it. By the time the lights come up, you have talked through three bands.',
+          'Someone compliments your jacket, which you bought by mistake. The conversation that follows is the best of your year.',
+          'Out on the terrace, a stranger asks if you are also hiding from the DJ. You are, and you hide together until closing.',
+        ],
         effects: [{ status: 'meet' }, { stat: 'happiness', delta: 6 }],
       },
       {
         chance: 0.3,
         text: 'You end the night with a new best friend whose name you are only fairly sure of.',
+        texts: [
+          'You and a stranger share a taxi, a portion of chips and a full life story. You save them in your phone as ‘Chips’.',
+          'Somewhere between the second club and the night bus, you gain a best friend. They text the next morning to check you got home.',
+          'A stranger rescues you from a terrible conversation, and you rescue them back. By two a.m. you are planning a holiday together.',
+          'You meet someone in the bathroom queue who agrees with every opinion you have. Friendship is sealed over a shared hair tie.',
+        ],
         effects: [{ status: 'friend' }, { stat: 'happiness', delta: 5 }],
       },
       {
         chance: 0.3,
         text: 'A great night. Your feet disagree.',
+        texts: [
+          'You dance until the floor is sticky and your shirt is a rumour. Tomorrow you will walk like a newborn deer, happily.',
+          'Every song is your song tonight. Your calves file a formal complaint in the morning.',
+          'A night of loud music and louder laughing. Your ears ring all the way home, which feels like applause.',
+          'You get home as the birds start up, grinning. Your body charges you interest for the next two days.',
+        ],
         effects: [
           { stat: 'happiness', delta: 6 },
           { stat: 'health', delta: -1 },
@@ -96,6 +114,12 @@ const BASE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.15,
         text: 'The queue takes an hour, the club takes your coat, and the night takes your dignity.',
+        texts: [
+          'The bouncer turns you away for your shoes. The next place lets you in, then plays the same song four times.',
+          'You spend the whole night trying to find your friends, who have gone home. The kebab is cold and so is the walk.',
+          'Drinks cost more than your shoes, the DJ hates joy, and you lose a sock somehow. You were wearing shoes.',
+          'You fall asleep in the corner booth at eleven and wake up to the cleaners. They are kinder than you deserve.',
+        ],
         effects: [{ stat: 'happiness', delta: -3 }],
       },
     ],
@@ -206,6 +230,12 @@ const BASE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.45,
         text: 'You study for hours and something finally clicks.',
+        texts: [
+          'Halfway through your third page of notes, the whole topic suddenly makes sense. You sit back, smug and slightly dizzy.',
+          'You work until the librarian dims the lights, and leave understanding something you did not this morning.',
+          'Your pen runs out, you borrow another, and keep going. By closing time the hard chapter feels almost easy.',
+          'You explain the topic out loud to an empty chair and the chair, for once, would be convinced.',
+        ],
         effects: [
           { stat: 'smarts', delta: 3 },
           { stat: 'discipline', delta: 2 },
@@ -214,6 +244,12 @@ const BASE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.35,
         text: 'You read the same page eleven times and then, on the twelfth, it makes sense.',
+        texts: [
+          'You underline everything, which means nothing is underlined. By evening one stubborn idea finally sticks.',
+          'The radiator ticks, the clock ticks, and eventually something in your head ticks too. Slow progress, but progress.',
+          'You make flashcards, lose them, and make them again. The second batch is better, and so is your memory.',
+          'Your notes look like a crime scene, but the answer is in there somewhere. You find most of it by home time.',
+        ],
         effects: [
           { stat: 'smarts', delta: 2 },
           { stat: 'discipline', delta: 1 },
@@ -222,6 +258,12 @@ const BASE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.2,
         text: 'You fall asleep on a textbook and wake up with a diagram printed on your cheek.',
+        texts: [
+          'You open the book, read the first line, and blink. It is suddenly dark outside and you have learned one word.',
+          'You spend more time rearranging your highlighters than reading. They look fantastic. You look tired.',
+          'The person at the next table eats crisps very slowly for three hours. You absorb almost nothing but rage.',
+          'You doodle a small, detailed castle in the margin of every page. Your revision covers the first paragraph.',
+        ],
         effects: [
           { stat: 'smarts', delta: 1 },
           { stat: 'happiness', delta: -1 },

@@ -338,6 +338,7 @@ export const WORK_EVENTS: EventDef[] = [
   },
   {
     id: 'work_ya_team_building',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [18, 29],

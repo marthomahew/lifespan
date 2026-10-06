@@ -1,4 +1,5 @@
 import { petsTick } from './pets';
+import { memoryTick } from './memories';
 import { crossroadsTick } from './crossroads';
 import { projectsTick } from './projects';
 import type { Ctx } from '../ctx';
@@ -92,6 +93,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   assetsTick(ctx);
   npcLifecycle(ctx);
   petsTick(ctx);
+  memoryTick(ctx);
   projectsTick(ctx);
   romanceTick(ctx);
   // 5. Chain steps due this year.

@@ -43,6 +43,7 @@ import { PROJECT_EVENTS } from './projects';
 import { CROSSROADS_EVENTS } from './crossroads';
 import { WEALTH_EVENTS } from './wealth';
 import { DIAGNOSIS_EVENTS } from './diagnosis';
+import { MEMORY_EVENTS } from './memories';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -70,6 +71,7 @@ export const EVENTS: EventDef[] = [
   ...CROSSROADS_EVENTS,
   ...WEALTH_EVENTS,
   ...DIAGNOSIS_EVENTS,
+  ...MEMORY_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

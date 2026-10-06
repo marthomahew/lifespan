@@ -653,6 +653,7 @@ export const TEEN_EVENTS: EventDef[] = [
   },
   {
     id: 'teen_missed_curfew',
+    fromYear: 2008,
     kind: 'choice',
     category: 'family',
     ages: [14, 17],

@@ -759,5 +759,10 @@
     "title": "A serious diagnosis is a decision (hard road, gentle road, second opinion); children follow the face you were born with",
     "passes": true,
     "evidence": "tests/engine/health.test.ts (serious diagnosis); tests/engine/look.test.ts (family faces); e2e/playthrough.spec.ts"
+  },
+  "S57": {
+    "title": "Memories drive events (gratitude and grudges come back); era gates for modern tech with a content rule; activity line variants",
+    "passes": true,
+    "evidence": "tests/engine/memories.test.ts; tests/content/conditions.test.ts (eras); content:check"
   }
 }

@@ -6,6 +6,7 @@ export const CAREER_OFFICE_EVENTS: EventDef[] = [
   // ---------- technology ----------
   {
     id: 'car_tech_outage_pager',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [22, 60],
@@ -82,6 +83,7 @@ export const CAREER_OFFICE_EVENTS: EventDef[] = [
   },
   {
     id: 'car_tech_legacy_module',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [22, 60],

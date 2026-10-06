@@ -683,6 +683,7 @@ export const HEALTH_EVENTS: EventDef[] = [
   },
   {
     id: 'hl_ad_after_work_round',
+    fromYear: 2008,
     kind: 'choice',
     category: 'health',
     ages: [30, 49],

@@ -54,3 +54,15 @@ describe('career conditions for events', () => {
     );
   });
 });
+
+describe('eras', () => {
+  it('a video-call event can’t happen in 1995', async () => {
+    const { EVENT_BY_ID } = await import('../../src/content/events');
+    const { eligibility } = await import('../../src/engine/events/select');
+    const { newLife, runCheat } = await import('../../src/engine');
+    const e = EVENT_BY_ID['wld2_general_strike'];
+    if (!e) throw new Error('missing');
+    const old = runCheat(newLife({ birthYear: 1960 }, 3), 'age.set', { age: 35 }).state;
+    expect(eligibility(old, e).reason).toMatch(/not until/);
+  });
+});

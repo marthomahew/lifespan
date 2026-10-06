@@ -418,6 +418,7 @@ export const CAREER_FIELD_EVENTS: EventDef[] = [
   },
   {
     id: 'car_sport_wedding_suit',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [19, 60],

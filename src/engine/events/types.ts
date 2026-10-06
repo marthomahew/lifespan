@@ -4,6 +4,8 @@ import type { Gender, Category, ChainPayload, GameState, Role, StatKey, ViceKey 
 /** Who an event talks about. If a binding can't be filled, the event is ineligible. */
 export type NpcQuery = {
   role: Role;
+  /** Anyone at all (for system events that name a specific person). */
+  anyRole?: boolean;
   minRelationship?: number;
   maxRelationship?: number;
   minAge?: number;
@@ -130,6 +132,8 @@ export type EventDef = {
   when?: (s: GameState) => boolean;
   bind?: Record<string, NpcQuery>;
   once?: boolean;
+  /** The earliest world year this can happen (phones, apps, video calls...). */
+  fromYear?: number;
   /** Events sharing a group are alternatives: at most one of them happens in a life. */
   group?: string;
   cooldownYears?: number;

@@ -142,6 +142,7 @@ export const SENIOR_EVENTS_2: EventDef[] = [
   },
   {
     id: 'sr2_video_call_forehead',
+    fromYear: 2008,
     kind: 'choice',
     category: 'family',
     ages: [65, 95],

@@ -854,6 +854,7 @@ export const CALLBACK_EVENTS: EventDef[] = [
   },
   {
     id: 'cb_biker_jacket_grandchild',
+    fromYear: 2008,
     kind: 'choice',
     category: 'random',
     ages: [55, 90],

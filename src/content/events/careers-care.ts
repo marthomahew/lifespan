@@ -259,6 +259,7 @@ export const CAREER_CARE_EVENTS: EventDef[] = [
   // ---------- education ----------
   {
     id: 'car_edu_parents_evening',
+    fromYear: 2008,
     kind: 'choice',
     category: 'work',
     ages: [21, 60],

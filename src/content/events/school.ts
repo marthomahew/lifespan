@@ -1457,6 +1457,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
   },
   {
     id: 'school_s_phone_confiscated',
+    fromYear: 2008,
     kind: 'notice',
     category: 'school',
     ages: [12, 17],

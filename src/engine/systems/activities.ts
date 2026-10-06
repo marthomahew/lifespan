@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
 import type { ActivityDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -195,7 +196,15 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   }
   const o = pickOutcome(ctx, outcomes);
   if (!o) return;
-  ctx.log('activity', `${def.emoji} ${renderText(s, o.text)}`);
+  // Activity outcomes may carry variants; pick one the log hasn't shown lately.
+  const variants = (o as { texts?: string[] }).texts ?? [];
+  const line = variants.length
+    ? pickFresh(
+        ctx,
+        [o.text, ...variants].map((x) => renderText(s, x)),
+      )
+    : renderText(s, o.text);
+  ctx.log('activity', `${def.emoji} ${line}`);
   for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id);
 
   if (def.special === 'fertility' && o.success) {

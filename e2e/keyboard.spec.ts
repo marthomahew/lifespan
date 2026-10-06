@@ -56,7 +56,8 @@ test('⌘K finds and runs any available action', async ({ page }) => {
   await expect(
     page
       .getByTestId('log-line')
-      .filter({ hasText: /study|page|textbook|clicks/i })
+      // The study line comes in several wordings; its emoji is constant.
+      .filter({ hasText: '📖' })
       .last(),
   ).toBeVisible();
   // People and navigation are in there too.

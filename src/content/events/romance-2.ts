@@ -299,6 +299,7 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
   },
   {
     id: 'rom2_distance_reckoning',
+    fromYear: 2008,
     kind: 'choice',
     category: 'romance',
     adultsOnly: true,

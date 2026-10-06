@@ -632,6 +632,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
   },
   {
     id: 'late_reunion',
+    fromYear: 2008,
     kind: 'choice',
     category: 'social',
     ages: [60, 85],

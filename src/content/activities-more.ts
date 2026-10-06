@@ -240,6 +240,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
         chance: 0.45,
         success: true,
         text: 'You practise until it stops feeling like practice. Something that used to be hard is now just a thing you do.',
+        texts: [
+          'Hours pass without you noticing. When you look up, the thing that used to defeat you just happens on its own.',
+          'You repeat the hard part until it gets bored of resisting. It is yours now, and it feels great.',
+          'You put in the dull, honest hours. One day you realise you have not had to think about the basics in weeks.',
+          'Your practice log fills up page after page. Reading it back, you can see yourself getting good.',
+        ],
         effects: [
           { stat: 'happiness', delta: 3 },
           { stat: 'discipline', delta: 2 },
@@ -249,6 +255,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
         chance: 0.35,
         success: true,
         text: 'Progress is slow and invisible until one evening it suddenly is not. You do a small victory lap of the kitchen.',
+        texts: [
+          'For weeks nothing changes. Then on an ordinary Tuesday you get it right three times in a row and tell the cat.',
+          'You record yourself and wince. A month later you record again and only half-wince, which is basically a medal.',
+          'Your teacher says ‘better’ in a tone that sounds almost surprised. You will be thinking about it all week.',
+          'A friend watches you and asks when you got good. You were not aware you had, but you will take it.',
+        ],
         effects: [
           { stat: 'happiness', delta: 2 },
           { stat: 'discipline', delta: 1 },
@@ -257,6 +269,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.2,
         text: 'You plateau for months and nearly quit twice. You keep going out of sheer stubbornness.',
+        texts: [
+          'You make the same mistake every day for a month. You show up again anyway, mostly to spite it.',
+          'Everyone online seems better after a week than you are after a year. You close the laptop and practise.',
+          'You get worse before you get better, and currently you are in the worse. You keep turning up.',
+          'Nothing improves, your patience wears thin, and you hate every minute. You still do the minutes.',
+        ],
         effects: [
           { stat: 'happiness', delta: -1 },
           { stat: 'discipline', delta: 3 },
@@ -279,18 +297,36 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
         chance: 0.4,
         success: true,
         text: 'Your tutor stops correcting every second word and starts correcting every fifth. You count this as fluency.',
+        texts: [
+          'You hold an entire conversation with your tutor before realising you never once switched back. You both pretend that was the plan.',
+          'You finally understand the grammar rule you have been dodging for months. It is still unfair, but now it is yours.',
+          'You dream in your new language for the first time. Mostly you are asking where the station is, but still.',
+          'A native speaker answers you in their language instead of switching to yours. You feel knighted.',
+        ],
         effects: [{ stat: 'smarts', delta: 2 }],
       },
       {
         chance: 0.35,
         success: true,
         text: 'A cartoon owl reminds you to practise 300 days in a row. You can now order soup and apologise for the soup.',
+        texts: [
+          'Your flashcard deck reaches four hundred words. Three hundred of them are foods, which is the right priority.',
+          'You can now introduce yourself, ask for the bill and explain that your cousin is a teacher. You do not have a cousin.',
+          'You learn the word for ‘umbrella’ and then use it in every sentence you can. Progress is progress.',
+          'You master numbers up to a thousand and practise them loudly at shop prices. The shop does not appreciate it.',
+        ],
         effects: [{ stat: 'smarts', delta: 1 }],
       },
       {
         chance: 0.25,
         success: true,
         text: 'You watch a film without subtitles and understand most of the jokes, if not the plot.',
+        texts: [
+          'You overhear strangers on a bus and understand that one of them is cross about a sofa. Eavesdropping has never felt so earned.',
+          'You read a whole children’s book in your new language and feel like a scholar. The rabbit gets home safely.',
+          'A song you have loved for years finally makes sense. It turns out to be about a goat, which only makes it better.',
+          'You make a joke in your new language and someone laughs on purpose. You walk taller for a day.',
+        ],
         effects: [
           { stat: 'smarts', delta: 2 },
           { stat: 'happiness', delta: 2 },
@@ -348,6 +384,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.45,
         text: 'Outside in the cold, the first drag settles your nerves. For five minutes everything is fine. It is not fine.',
+        texts: [
+          'You stand by the bins with a cigarette and watch your breath and the smoke get mixed up. Your shoulders drop an inch, and your lungs pay the bill.',
+          'A cigarette on the back step quiets your head for a while. The cough you get on the way in is less quiet.',
+          'The lighter takes four tries in the wind. The calm lasts about as long as the cigarette, and the smell lasts longer.',
+          'You smoke one in the rain under a too-small awning. It helps, briefly, the way a bad idea helps.',
+        ],
         effects: [
           { stat: 'stress', delta: -4 },
           { stat: 'health', delta: -2 },
@@ -356,6 +398,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.3,
         text: 'You bond with the smokers out back, the most honest people in any building. Your clothes smell of it for days.',
+        texts: [
+          'Out by the fire door, a colleague tells you the real story behind the reorganisation. You come back in knowing everything and smelling of ashtray.',
+          'A stranger asks for a light and you end up swapping holiday disasters. Nice chat, though your jacket will remember it longer than you.',
+          'The smoking shelter has its own little society, complete with gossip and a resident pigeon. You are a member now, which your chest notes.',
+          'You and the smokers out back grumble about the weather in perfect harmony. Back inside, someone sniffs pointedly as you pass.',
+        ],
         effects: [
           { stat: 'stress', delta: -3 },
           { stat: 'happiness', delta: 1 },
@@ -365,6 +413,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.25,
         text: 'A coughing fit on the stairs makes you stop halfway. You stand there a long moment, thinking about it.',
+        texts: [
+          'You run for a bus and miss it by a wheeze. Standing there catching your breath, you count how many years you have been doing this.',
+          'Your morning cough has started arriving before the alarm. You light one anyway, then stub it out halfway and stare at it.',
+          'The stairs to your own flat leave you clinging to the banister, lungs whistling. You stand there a while, doing the maths.',
+          'The doctor’s leaflet stays on the kitchen table all week. You smoke next to it and pretend not to read it.',
+        ],
         effects: [
           { stat: 'stress', delta: -1 },
           { stat: 'health', delta: -3 },
@@ -387,16 +441,34 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
         chance: 0.3,
         success: true,
         text: 'Luck loves you tonight. A small crowd gathers to watch you win, and you leave before it can love you less.',
+        texts: [
+          'The dice listen to you for one shining hour. You cash out with your pockets full and the good sense to stop.',
+          'You place one nervous bet on a colour and the wheel agrees with you three times. You leave while it still likes you.',
+          'The machine plays a little song and spits out more than you put in. You tip the barman and float out to the car park.',
+          'You win a hand you had no business winning, and a stranger high-fives you. You call it a night while you are ahead.',
+        ],
         effects: [{ stat: 'happiness', delta: 6 }],
       },
       {
         chance: 0.45,
         text: 'You lose steadily, politely, and all at once. The dealer gives you a sympathetic look that is probably in the training.',
+        texts: [
+          'Your stack of chips shrinks with the quiet efficiency of a well-run business. The business is not yours.',
+          'You decide the next hand will turn things around about nine times. It does not, and the free drinks feel less free.',
+          'You lose at three different tables to be fair to all of them. The walk to the taxi rank is long.',
+          'The wheel picks every number except yours with real dedication. You leave lighter in every way that counts.',
+        ],
         effects: [{ stat: 'happiness', delta: -5 }],
       },
       {
         chance: 0.25,
         text: 'Up, down, up, down. You walk out at three in the morning with exactly what you came in with and no idea where the night went.',
+        texts: [
+          'You win a bit, lose a bit, and win it back. You leave with the same money and a free pen.',
+          'Your chips go up and down like a lift all evening. In the end you break even and the sunrise surprises you.',
+          'Hours of small wins and small losses cancel out precisely. You have nothing to show but a story and sore eyes.',
+          'You end the night exactly level, which feels like beating the house. The house does not notice.',
+        ],
         effects: [{ stat: 'happiness', delta: 1 }],
       },
     ],
@@ -445,6 +517,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
         chance: 0.5,
         success: true,
         text: 'Sun, salt, long lunches, and a phone you forget to charge. You come home a different colour and a calmer person.',
+        texts: [
+          'Days of warm sea, cheap wine and reading in the shade. By the end you have forgotten your own email password, which feels like a win.',
+          'You find a little café that does one perfect breakfast and go every day. The staff wave you off like family.',
+          'You hike a hill, swim a lake and nap in a hammock the colour of a postcard. Home feels gentler when you get back.',
+          'Two weeks of no alarm clocks and very good bread. You come home tanned, rested and slightly worried about the bread at home.',
+        ],
         effects: [
           { stat: 'happiness', delta: 15 },
           { stat: 'stress', delta: -12 },
@@ -453,6 +531,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.3,
         text: 'It rains for eleven of fourteen days. You become an expert on the local museum and its one café.',
+        texts: [
+          'A storm keeps you indoors for most of the trip. You play every board game in the guesthouse and win most of them.',
+          'The beach is closed for wind, so you tour a cheese factory twice. It is not the holiday you planned, but it is still a holiday.',
+          'Fog swallows the famous view every single day. You buy the postcard of it instead and enjoy the hot chocolate.',
+          'Your hotel is next to a building site that starts at seven. You still sleep better than at home, and the pool is lovely.',
+        ],
         effects: [
           { stat: 'happiness', delta: 8 },
           { stat: 'stress', delta: -5 },
@@ -461,6 +545,12 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.2,
         text: 'The airline sends your suitcase to a different continent. You spend the week in souvenir T-shirts and make it work.',
+        texts: [
+          'Your hotel has no record of you, so you end up in a farmhouse down the road. The owner’s dog adopts you and it is honestly better.',
+          'You miss your connecting train and spend a day in a town you had never heard of. It turns out to be the best day of the trip.',
+          'You get sunburned on the first afternoon in a shape that cannot be explained. You spend the rest of the week in a hat, cheerful anyway.',
+          'A wrong turn strands you in a village with no bus until Tuesday. The locals feed you and you leave with a recipe.',
+        ],
         effects: [
           { stat: 'happiness', delta: 9 },
           { stat: 'stress', delta: -4 },

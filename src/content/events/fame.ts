@@ -6,6 +6,7 @@ export const FAME_EVENTS: EventDef[] = [
   // ---------- 18–29 ----------
   {
     id: 'fame_ya_dentist_fan',
+    fromYear: 2008,
     kind: 'notice',
     category: 'fame',
     ages: [18, 29],
@@ -430,6 +431,7 @@ export const FAME_EVENTS: EventDef[] = [
   },
   {
     id: 'fame_ad_talk_show',
+    fromYear: 2008,
     kind: 'choice',
     category: 'fame',
     ages: [30, 49],

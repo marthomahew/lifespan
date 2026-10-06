@@ -238,6 +238,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
   },
   {
     id: 'trv2_abroad_parent_ageing',
+    fromYear: 2008,
     kind: 'choice',
     category: 'travel',
     ages: [25, 64],
@@ -440,6 +441,7 @@ export const TRAVEL_EVENTS_2: EventDef[] = [
   },
   {
     id: 'trv2_solo_trip',
+    fromYear: 2008,
     kind: 'choice',
     category: 'travel',
     ages: [20, 59],

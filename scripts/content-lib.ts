@@ -12,6 +12,7 @@ import { ALL_STATS, CATEGORIES, VICES } from '../src/engine/types';
 import { bindingQueries, ROLES } from '../src/engine/events/select';
 import { tokensIn } from '../src/engine/events/tokens';
 import { PET_KINDS } from '../src/content/pets';
+import { ERA_WORDS } from '../src/content/era';
 import type { EventDef, Effect, OutcomeDef } from '../src/engine/events/types';
 import { extraContent, type ExtraContent } from './content-extra';
 
@@ -195,6 +196,9 @@ export function validateEvents(
     const tokenTexts: [string, string][] = [[e.id, e.text]];
     for (const c of e.choices ?? []) tokenTexts.push([at(`.${c.id}`), c.label]);
     allOutcomes(e).forEach((o, i) => tokenTexts.push([at(`#${i}`), o.text]));
+    // Phones, apps and video calls only exist from the late 2000s.
+    if (!(e.fromYear && e.fromYear >= 2005) && tokenTexts.some(([, t]) => ERA_WORDS.test(t)))
+      err(e.id, 'mentions modern tech (an app, a video call...) without fromYear ≥ 2005');
     for (const [where, t] of tokenTexts) {
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
