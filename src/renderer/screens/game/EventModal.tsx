@@ -2,6 +2,8 @@ import { currentPopup, type GameState } from '../../../engine';
 import { continueResult, doChoose, useApp } from '../../store/app';
 import type { ChoiceResult } from '../../store/result';
 import { Modal } from '../../components/Modal';
+import { npcLook } from '../../../engine/look';
+import { Portrait } from '../../portrait/Portrait';
 import { EVENT_BY_ID } from '../../../content/events';
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -29,8 +31,25 @@ export function EventModal({ game }: { game: GameState }): React.JSX.Element | n
   return (
     <Modal title="Something happens" testId="event-modal" hideTitle>
       <div className="event" data-event-id={popup.eventId}>
-        <div className="event-emoji" aria-hidden="true">
-          {popup.emoji}
+        <div className="event-head">
+          <div className="event-emoji" aria-hidden="true">
+            {popup.emoji}
+          </div>
+          {popup.npcIds.map((id) => {
+            const n = game.npcs.find((x) => x.id === id);
+            return n ? (
+              <figure key={id} className="event-face" data-testid="event-face">
+                <Portrait
+                  look={npcLook(game, n)}
+                  age={n.age}
+                  gender={n.gender}
+                  happiness={n.stats.happiness}
+                  size={56}
+                />
+                <figcaption className="muted small">{n.first}</figcaption>
+              </figure>
+            ) : null;
+          })}
         </div>
         <p className="event-context muted small" data-testid="event-context">
           {CATEGORY_LABEL[EVENT_BY_ID[popup.eventId]?.category ?? ''] ?? 'Life'} · Age{' '}

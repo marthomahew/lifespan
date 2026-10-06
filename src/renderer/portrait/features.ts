@@ -16,17 +16,25 @@ export function eyeSize(e: Look['eyes']): [number, number] {
   }
 }
 
-export function brow(kind: Look['brows'], x: number, y: number, side: number, hex: string): Shape {
+/** A brow; `lift` raises the inner end, for worry. */
+export function brow(
+  kind: Look['brows'],
+  x: number,
+  y: number,
+  side: number,
+  hex: string,
+  lift = 0,
+): Shape {
   const m = (dx: number): number => x + side * dx;
   const w = { thick: 2.8, thin: 0.9, straight: 1.7, soft: 1.5, arched: 1.4, angled: 1.6 }[kind];
   const d =
     kind === 'straight'
-      ? `M ${m(-4.5)} ${y + 0.4} L ${m(4.8)} ${y}`
+      ? `M ${m(-4.5)} ${y - lift + 0.4} L ${m(4.8)} ${y}`
       : kind === 'arched'
-        ? `M ${m(-4.5)} ${y + 1.2} Q ${m(0)} ${y - 3} ${m(5)} ${y + 1}`
+        ? `M ${m(-4.5)} ${y - lift + 1.2} Q ${m(0)} ${y - 3} ${m(5)} ${y + 1}`
         : kind === 'angled'
-          ? `M ${m(-4.5)} ${y + 1.4} L ${m(2.2)} ${y - 1.4} L ${m(5)} ${y + 0.4}`
-          : `M ${m(-4.5)} ${y + 0.9} Q ${m(0)} ${y - 1.6} ${m(5)} ${y + 0.6}`;
+          ? `M ${m(-4.5)} ${y - lift + 1.4} L ${m(2.2)} ${y - 1.4} L ${m(5)} ${y + 0.4}`
+          : `M ${m(-4.5)} ${y - lift + 0.9} Q ${m(0)} ${y - 1.6} ${m(5)} ${y + 0.6}`;
   return { layer: 'brows', d, stroke: hex, sw: w };
 }
 
@@ -71,7 +79,12 @@ export function nose(kind: Look['nose'], y: number, shade: string): Shape[] {
   }
 }
 
-export function mouth(kind: Look['mouth'], y: number, skin: string, small: boolean): Shape[] {
+export function mouth(
+  kind: Look['mouth'] | 'frown',
+  y: number,
+  skin: string,
+  small: boolean,
+): Shape[] {
   const lip = mix(skin, '#a3424a', 0.45);
   const w = small ? 4.2 : 5.5;
   const line = { layer: 'mouth', stroke: mix(skin, '#5a1f22', 0.6), sw: 1.3 };
@@ -87,6 +100,13 @@ export function mouth(kind: Look['mouth'], y: number, skin: string, small: boole
           layer: 'mouth',
           d: `M ${CX - w + 0.5} ${y - 0.6} L ${CX + w - 0.5} ${y - 0.6} L ${CX + w - 1.6} ${y + 1.2} L ${CX - w + 1.6} ${y + 1.2} Z`,
           fill: '#ffffff',
+        },
+      ];
+    case 'frown':
+      return [
+        {
+          ...line,
+          d: `M ${CX - w + 0.5} ${y + 1.6} Q ${CX} ${y - 2.4} ${CX + w - 0.5} ${y + 1.6}`,
         },
       ];
     case 'neutral':

@@ -1,3 +1,4 @@
+import { Portrait } from '../portrait/Portrait';
 import { useEffect, useState } from 'react';
 import { makeSaveFile, parseSaveFile } from '../../engine';
 import { app, go, importSave, loadLife, saveStore, showError, useApp } from '../store/app';
@@ -83,6 +84,15 @@ export function LivesScreen(): React.JSX.Element {
       <ul className="lives-list">
         {rows?.map((r) => (
           <li key={r.id} className="card life-row" data-testid={`life-${r.id}`}>
+            {r.summary.look && (
+              <Portrait
+                look={r.summary.look}
+                age={r.summary.age}
+                gender={r.summary.gender ?? 'nonbinary'}
+                dead={r.summary.dead}
+                size={44}
+              />
+            )}
             <div className="grow">
               {renaming === r.id ? (
                 <form
@@ -106,7 +116,7 @@ export function LivesScreen(): React.JSX.Element {
               ) : (
                 <>
                   <div className="life-name" data-testid="life-name">
-                    {r.summary.dead ? '🪦' : '🌱'} {r.summary.name}
+                    {!r.summary.look && (r.summary.dead ? '🪦' : '🌱')} {r.summary.name}
                     {r.summary.cheated && settings.cheatBadge && (
                       <span className="badge cheat small">🎩</span>
                     )}

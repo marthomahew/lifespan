@@ -60,6 +60,8 @@ export function NpcPanel({
             age={n.age}
             gender={n.gender}
             dead={!n.alive}
+            happiness={n.stats.happiness}
+            ill={n.alive && n.stats.health < 30}
             size={72}
             testId="npc-portrait"
           />

@@ -17,6 +17,8 @@ export type PopupView = {
   category: string;
   text: string;
   choices: { id: string; label: string; enabled: boolean }[];
+  /** The people the event is about (living NPCs bound to its roles), first two. */
+  npcIds: number[];
 };
 
 export function pendingDef(s: GameState, pe: PendingEvent): EventDef {
@@ -65,6 +67,9 @@ export function popupView(s: GameState, pe: PendingEvent): PopupView | null {
       label: renderText(s, c.label, pe.bindings, pe.payload),
       enabled: selectable.has(c.id),
     })),
+    npcIds: [...new Set(Object.values(pe.bindings))]
+      .filter((id) => s.npcs.some((n) => n.id === id && n.alive))
+      .slice(0, 2),
   };
 }
 

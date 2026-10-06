@@ -22,6 +22,8 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
         gender={p.gender}
         dead={game.death !== null}
         size={52}
+        happiness={p.stats.happiness}
+        ill={p.stats.health < 30}
         testId="header-portrait"
       />
       <div className="who">

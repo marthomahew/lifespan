@@ -1,3 +1,4 @@
+import type { Gender, Look } from './types';
 import { deserialize, SaveError } from './save';
 import type { GameState } from './types';
 import { JOB_BY_ID } from '../content/jobs';
@@ -17,6 +18,8 @@ export type SaveSummary = {
   /** For the Lives list; absent in older saves. */
   job?: string;
   place?: string;
+  look?: Look;
+  gender?: Gender;
 };
 
 export type SaveFile = { format: typeof SAVE_FORMAT; summary: SaveSummary; state: GameState };
@@ -38,6 +41,8 @@ export function summarize(s: GameState, name: string, savedAt: number): SaveSumm
         ? 'Retired'
         : '',
     place: s.player.city,
+    look: s.player.look,
+    gender: s.player.gender,
   };
 }
 

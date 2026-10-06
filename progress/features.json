@@ -594,5 +594,10 @@
     "title": "Drawn portraits: a layered SVG character builder, ageing, family resemblance, makeovers",
     "passes": true,
     "evidence": "tests/engine/look.test.ts; tests/integration/portrait.test.ts; tests/engine/customization.test.ts; e2e/new-life.spec.ts (full customization); e2e/customize.spec.ts; e2e/obituary.spec.ts"
+  },
+  "S24": {
+    "title": "Faces everywhere: expressions follow happiness and health; faces in event popups, family tree, lives list and Continue",
+    "passes": true,
+    "evidence": "tests/integration/portrait.test.ts (expressions); e2e/event-popup.spec.ts (event face)"
   }
 }

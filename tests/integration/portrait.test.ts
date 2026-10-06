@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_LOOK, LOOK_PARTS, SKIN_COLORS, TOP_COLORS } from '../../src/engine/look';
 import type { Look } from '../../src/engine/types';
-import { hairHex, portraitShapes, stageOf } from '../../src/renderer/portrait/parts';
+import { hairHex, moodOf, portraitShapes, stageOf } from '../../src/renderer/portrait/parts';
 
 const draw = (l: Partial<Look>, age = 30): string =>
   portraitShapes({ ...DEFAULT_LOOK, ...l }, age, 'male')
@@ -40,5 +40,21 @@ describe('portraits', () => {
     expect(hairHex({ ...DEFAULT_LOOK, hairColor: 'black' }, 75)).not.toBe('#1f1a17');
     expect(hairHex({ ...DEFAULT_LOOK, hairColor: 'blue' }, 75)).toBe('#3d6fd8');
     expect([0, 5, 15, 40, 80].map(stageOf)).toEqual(['baby', 'child', 'teen', 'adult', 'senior']);
+  });
+});
+
+describe('expressions', () => {
+  it('the face follows happiness and health', () => {
+    const at = (mood: 'glad' | 'fine' | 'low' | 'sad', ill = false): string =>
+      portraitShapes({ ...DEFAULT_LOOK, mouth: 'grin' }, 30, 'female', { mood, ill })
+        .map((s) => `${s.layer}|${s.d}|${s.fill ?? ''}`)
+        .join('\n');
+    expect(at('fine')).toBe(at('glad'));
+    expect(at('low')).not.toBe(at('fine'));
+    expect(at('sad')).not.toBe(at('low'));
+    expect(at('sad')).toContain('tired');
+    expect(at('fine', true)).toContain('tired');
+    expect(at('fine', true)).not.toContain(SKIN_COLORS[DEFAULT_LOOK.skin]?.hex);
+    expect([5, 30, 60, 90].map(moodOf)).toEqual(['sad', 'low', 'fine', 'glad']);
   });
 });

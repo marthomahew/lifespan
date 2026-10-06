@@ -62,6 +62,8 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
                     age={n.age}
                     gender={n.gender}
                     dead={!n.alive}
+                    happiness={n.stats.happiness}
+                    ill={n.alive && n.stats.health < 30}
                     size={36}
                   />
                   <span className="grow npc-name">

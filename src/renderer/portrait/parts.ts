@@ -42,11 +42,30 @@ const LINE = '#3a2a22';
  * Every shape in a portrait, back to front. Pure: the same look and age always draw the same
  * picture, so the React component only maps these to SVG paths.
  */
-export function portraitShapes(look: Look, age: number, gender: Gender): Shape[] {
+export type Mood = 'glad' | 'fine' | 'low' | 'sad';
+
+/** How a face reads from happiness: the drawn expression follows the life. */
+export function moodOf(happiness: number): Mood {
+  if (happiness < 20) return 'sad';
+  if (happiness < 40) return 'low';
+  if (happiness >= 80) return 'glad';
+  return 'fine';
+}
+
+export function portraitShapes(
+  look: Look,
+  age: number,
+  gender: Gender,
+  opts: { mood?: Mood; ill?: boolean } = {},
+): Shape[] {
+  const mood = opts.mood ?? 'fine';
   const stage = stageOf(age);
   const small = stage === 'baby' || stage === 'child';
   const skin = SKIN_COLORS[look.skin] ?? SKIN_COLORS[2];
-  const skinHex = skin?.hex ?? '#e2b48d';
+  // Illness drains the colour from a face.
+  const skinHex = opts.ill
+    ? mix(skin?.hex ?? '#e2b48d', '#c9cdb8', 0.28)
+    : (skin?.hex ?? '#e2b48d');
   const shade = skin?.shade ?? '#cc966d';
   const hair = hairHex(look, age);
   const g = faceGeom(stage === 'baby' ? 'round' : look.face, stage);
@@ -169,7 +188,28 @@ export function portraitShapes(look: Look, age: number, gender: Gender): Shape[]
   // Brows.
   const browHex = mix(hair, '#2a1d15', 0.25);
   for (const side of [-1, 1])
-    out.push(brow(look.brows, CX + side * ex, ey - 6.5 * eyeScale, side, browHex));
+    out.push(
+      brow(
+        look.brows,
+        CX + side * ex,
+        ey - 6.5 * eyeScale,
+        side,
+        browHex,
+        mood === 'sad' ? 2.2 : 0,
+      ),
+    );
+  // Tired eyes when ill or miserable.
+  if ((opts.ill || mood === 'sad') && stage !== 'baby')
+    for (const side of [-1, 1])
+      add(
+        'tired',
+        `M ${CX + side * ex - 3.5} ${ey + 3.6} Q ${CX + side * ex} ${ey + 5.4} ${CX + side * ex + 3.5} ${ey + 3.6}`,
+        {
+          stroke: shade,
+          sw: 1,
+          opacity: 0.7,
+        },
+      );
 
   // Nose and mouth.
   if (stage === 'baby')
@@ -178,7 +218,20 @@ export function portraitShapes(look: Look, age: number, gender: Gender): Shape[]
       sw: 1.1,
     });
   else out.push(...nose(look.nose, g.noseY, shade));
-  out.push(...mouth(stage === 'baby' ? 'smile' : look.mouth, g.mouthY, skinHex, small));
+  const cheerful = look.mouth === 'smile' || look.mouth === 'grin';
+  const shown =
+    stage === 'baby'
+      ? mood === 'sad'
+        ? 'frown'
+        : 'smile'
+      : mood === 'sad'
+        ? 'frown'
+        : mood === 'low' && cheerful
+          ? 'neutral'
+          : mood === 'glad' && look.mouth === 'neutral'
+            ? 'smile'
+            : look.mouth;
+  out.push(...mouth(shown, g.mouthY, skinHex, small));
 
   // Hair over the forehead, then glasses on top of everything.
   for (const h of hairShapes(look, stage, g, hair).front) out.push(h);

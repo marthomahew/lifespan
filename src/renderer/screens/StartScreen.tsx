@@ -1,3 +1,4 @@
+import { Portrait } from '../portrait/Portrait';
 import { useEffect, useState } from 'react';
 import { parseSaveFile, type SaveSummary } from '../../engine';
 import { go, loadLife, saveStore, useApp } from '../store/app';
@@ -47,6 +48,14 @@ export function StartScreen(): React.JSX.Element {
               data-testid="btn-continue"
               onClick={() => void loadLife(latest.id)}
             >
+              {latest.summary.look && (
+                <Portrait
+                  look={latest.summary.look}
+                  age={latest.summary.age}
+                  gender={latest.summary.gender ?? 'nonbinary'}
+                  size={28}
+                />
+              )}
               Continue as {latest.summary.first} {latest.summary.last}, {latest.summary.age}
             </button>
           )}

@@ -1,6 +1,6 @@
 import { memo, useId } from 'react';
 import type { Gender, Look } from '../../engine/types';
-import { FRAME, portraitShapes } from './parts';
+import { FRAME, moodOf, portraitShapes } from './parts';
 
 /** A drawn, layered portrait of a character at an age. */
 export const Portrait = memo(function Portrait({
@@ -12,6 +12,8 @@ export const Portrait = memo(function Portrait({
   label,
   testId,
   className = '',
+  happiness,
+  ill = false,
 }: {
   look: Look;
   age: number;
@@ -21,8 +23,12 @@ export const Portrait = memo(function Portrait({
   label?: string;
   testId?: string;
   className?: string;
+  /** When given, the expression follows it. */
+  happiness?: number;
+  ill?: boolean;
 }): React.JSX.Element {
-  const shapes = portraitShapes(look, age, gender);
+  const mood = happiness === undefined ? undefined : moodOf(happiness);
+  const shapes = portraitShapes(look, age, gender, { ...(mood ? { mood } : {}), ill });
   const clip = `pc${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   return (
     <svg
@@ -36,6 +42,7 @@ export const Portrait = memo(function Portrait({
       data-testid={testId}
       data-hair={look.hair}
       data-skin={look.skin}
+      data-mood={mood ?? 'fine'}
       data-stage={age}
     >
       <defs>

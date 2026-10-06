@@ -1,3 +1,5 @@
+import { npcLook } from '../../engine/look';
+import { Portrait } from '../portrait/Portrait';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { familyTree, type GameState } from '../../engine';
 import { treeLayout } from '../../engine/family-tree';
@@ -111,6 +113,7 @@ export function FamilyTree({ game }: { game: GameState }): React.JSX.Element {
                     onBlur={() => setFocus(null)}
                     onClick={() => app.set({ overlay: null, npcId: n.id })}
                   >
+                    <TreeFace game={game} id={n.id} age={n.age} dead={!n.alive} />
                     <span className="tree-name">{n.name}</span>
                     <span className="muted small">
                       {n.label}, {n.alive ? n.age : '✝'}
@@ -124,4 +127,22 @@ export function FamilyTree({ game }: { game: GameState }): React.JSX.Element {
       </div>
     </Modal>
   );
+}
+
+function TreeFace({
+  game,
+  id,
+  age,
+  dead,
+}: {
+  game: GameState;
+  id: number;
+  age: number;
+  dead: boolean;
+}): React.JSX.Element | null {
+  const npc = game.npcs.find((n) => n.id === id);
+  const look = id === 0 ? game.player.look : npc ? npcLook(game, npc) : null;
+  if (!look) return null;
+  const gender = id === 0 ? game.player.gender : (npc?.gender ?? 'nonbinary');
+  return <Portrait look={look} age={age} gender={gender} dead={dead} size={34} />;
 }

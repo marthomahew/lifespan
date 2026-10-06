@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { headerAge, startSeeded } from './helpers';
+import { cheat, clearPopups, headerAge, startSeeded } from './helpers';
 import type { Page } from '@playwright/test';
 
 async function ageUntilPopup(page: Page): Promise<void> {
@@ -72,4 +72,15 @@ test('after Age Up, a line sums up what this year has done', async ({ page }) =>
   // The same year shows beside the stats, and this year's log lines are marked.
   expect(await page.locator('[data-testid$="-delta"]').count()).toBeGreaterThan(0);
   expect(await page.locator('.log-line.fresh').count()).toBeGreaterThan(0);
+});
+
+test('an event about someone shows their face', async ({ page }) => {
+  await startSeeded(page, 3131, async (p) => {
+    await p.getByTestId('f-parents').selectOption('together');
+  });
+  await cheat(page, 'age set 7');
+  await clearPopups(page);
+  await cheat(page, 'event fire child_lemonade_stand on');
+  await expect(page.getByTestId('event-modal')).toBeVisible();
+  await expect(page.getByTestId('event-face').first()).toBeVisible();
 });

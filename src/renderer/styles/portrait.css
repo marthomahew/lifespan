@@ -107,3 +107,35 @@
     position: static;
   }
 }
+.event-head {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+.event-face {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.tree .tree-node {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 8px;
+  text-align: left;
+}
+.tree .tree-node .portrait {
+  grid-row: span 2;
+}
+.life-row {
+  align-items: center;
+  gap: 12px;
+}
+[data-testid='btn-continue'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
