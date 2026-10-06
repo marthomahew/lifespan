@@ -6,18 +6,30 @@ import { Portrait } from '../../../portrait/Portrait';
 import { Modal } from '../../../components/Modal';
 
 /** Activities that need you to pick something first. */
-export const OPTION_ACTIVITIES = ['practice_skill', 'learn_language', 'new_look', 'change_name'];
+export const OPTION_ACTIVITIES = [
+  'practice_skill',
+  'learn_language',
+  'new_look',
+  'change_name',
+  'plastic_surgery',
+];
 
 /** What a salon, a razor, an optician and a shop can change. */
 const MAKEOVER_TABS = LOOK_TABS.filter((t) =>
   ['hair', 'facialHair', 'glasses', 'top'].includes(t.id),
 );
 
+/** What a surgeon can change (eye colour stays yours). */
+const SURGERY_TABS = LOOK_TABS.filter((t) =>
+  ['face', 'eyes', 'brows', 'nose', 'mouth'].includes(t.id),
+).map(({ colors: _colors, ...t }) => t);
+
 const TITLE: Record<string, string> = {
   practice_skill: 'Practise which skill?',
   learn_language: 'Learn which language?',
   new_look: 'Pick a new look',
   change_name: 'Your new name',
+  plastic_surgery: 'What would you like changed?',
 };
 
 /** Pick what the activity is about, right where you chose it. */
@@ -106,6 +118,46 @@ export function OptionDialog({
             }
           >
             Book it
+          </button>
+        </div>
+      )}
+      {activity === 'plastic_surgery' && (
+        <div className="makeover">
+          <Portrait
+            look={look}
+            age={p.age}
+            gender={p.gender}
+            size={110}
+            label="The face you are asking for"
+            testId="surgery-portrait"
+          />
+          <LookBuilder
+            look={look}
+            age={p.age}
+            gender={p.gender}
+            tabs={SURGERY_TABS}
+            onChange={setLook}
+          />
+          <p className="muted small">
+            Most patients get what they asked for. Some get a long nap and a bill. A few get
+            complications.
+          </p>
+          <button
+            className="primary"
+            type="button"
+            data-testid="opt-surgery-go"
+            disabled={JSON.stringify(look) === JSON.stringify(p.look)}
+            onClick={() =>
+              onRun({
+                face: look.face,
+                eyes: look.eyes,
+                brows: look.brows,
+                nose: look.nose,
+                mouth: look.mouth,
+              })
+            }
+          >
+            Book the operation
           </button>
         </div>
       )}

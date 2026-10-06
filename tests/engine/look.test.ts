@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { continueAsChild, newLife, runCheat, type GameState, type Npc } from '../../src/engine';
+import {
+  act,
+  continueAsChild,
+  newLife,
+  runCheat,
+  type GameState,
+  type Npc,
+} from '../../src/engine';
 import {
   cleanLook,
   DEFAULT_LOOK,
@@ -98,5 +105,38 @@ describe('looks', () => {
     expect(up.player.look.hairColor).toBe('red');
     expect(toneOf(up.player.look)).toBe('🏼');
     expect('hair' in up.player).toBe(false);
+  });
+});
+
+describe('cosmetic surgery', () => {
+  it('a good result gives the face you picked; complications pick a nose for you', () => {
+    const seen = new Set<string>();
+    for (let seed = 40; seed < 70; seed++) {
+      let s = runCheat(newLife({ birthYear: 1980, country: 'us' }, seed), 'age.set', {
+        age: 35,
+      }).state;
+      s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 50000 }).state;
+      const before = s.player.look;
+      const wanted = { nose: before.nose === 'roman' ? 'button' : 'roman', face: 'heart' };
+      const after = act(s, { type: 'activity', id: 'plastic_surgery', params: wanted }).state;
+      const text = after.log
+        .slice(s.log.length)
+        .map((e) => e.text)
+        .join(' ');
+      const l = after.player.look;
+      if (/mirror is kind/.test(text)) {
+        expect(l).toMatchObject(wanted);
+        seen.add('good');
+      } else if (/long nap/.test(text)) {
+        expect(l).toEqual(before);
+        seen.add('none');
+      } else if (/opinions of its own/.test(text)) {
+        expect(l.face).toBe('heart');
+        seen.add('bad');
+      }
+      // Hair is not a surgeon's job.
+      expect(l.hair).toBe(before.hair);
+    }
+    expect(seen.has('good') && seen.has('none')).toBe(true);
   });
 });

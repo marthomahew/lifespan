@@ -599,5 +599,10 @@
     "title": "Faces everywhere: expressions follow happiness and health; faces in event popups, family tree, lives list and Continue",
     "passes": true,
     "evidence": "tests/integration/portrait.test.ts (expressions); e2e/event-popup.spec.ts (event face)"
+  },
+  "S25": {
+    "title": "Cosmetic surgery uses the builder: pick a face, nose, eyes, brows or mouth; results vary",
+    "passes": true,
+    "evidence": "tests/engine/look.test.ts (cosmetic surgery); e2e/customize.spec.ts (cosmetic surgery)"
   }
 }

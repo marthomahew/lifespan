@@ -13,7 +13,7 @@ import { ILLNESS_BY_ID } from '../../content/illnesses';
 import { addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
-import { cleanLook } from '../look';
+import { cleanLook, NOSES } from '../look';
 import type { Look } from '../types';
 import { EngineError } from '../errors';
 
@@ -82,9 +82,15 @@ export function runSpecial(
     case 'bucket_list':
       s.player.flags.push('bucket_item');
       return;
-    case 'plastic_surgery':
+    case 'plastic_surgery': {
       s.health.surgeryCount += 1;
+      const wanted = cleanLook(pickKeys(params, SURGERY), s.player.look);
+      // 0: what you asked for. 1: nobody notices. 2: complications, and a nose you did not pick.
+      if (outcomeIndex === 0) s.player.look = wanted;
+      if (outcomeIndex === 2)
+        s.player.look = { ...wanted, nose: ctx.rng.pick(NOSES.map((n) => n.id)) };
       return;
+    }
     case 'practice': {
       const skill = typeof params['skill'] === 'string' ? params['skill'] : 'instrument';
       const cur = s.player.skills[skill] ?? 0;
@@ -253,6 +259,9 @@ export function runSpecial(
     }
   }
 }
+
+/** Features a surgeon can change. */
+export const SURGERY = ['face', 'nose', 'eyes', 'brows', 'mouth'] as const;
 
 /** Features you can change in a year without surgery. */
 export const MAKEOVER = ['hair', 'hairColor', 'facialHair', 'glasses', 'top', 'topColor'] as const;

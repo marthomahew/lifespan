@@ -54,3 +54,26 @@ test('free time: a year holds only so many activities, and a birthday refills it
   await page.getByTestId('tab-activities').click();
   await expect(meter).not.toHaveAttribute('data-left', '0');
 });
+
+test('cosmetic surgery: pick the face you want, and take your chances', async ({ page }) => {
+  await startSeeded(page, 6262, async (p) => {
+    await p.getByTestId('f-country').selectOption('us');
+  });
+  await cheat(page, 'age set 30', 'money add 50000');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await page.getByTestId('act-plastic_surgery').click();
+  await expect(page.getByTestId('look-tab-hair')).toHaveCount(0);
+  await page.getByTestId('look-tab-nose').click();
+  const current = await page
+    .getByTestId('look-builder')
+    .locator('.look-option.active')
+    .getAttribute('data-testid');
+  const pick = current === 'look-opt-nose-roman' ? 'look-opt-nose-button' : 'look-opt-nose-roman';
+  await page.getByTestId(pick).click();
+  await page.getByTestId('opt-surgery-go').click();
+  await expect(page.getByTestId('option-dialog')).toHaveCount(0);
+  await expect(
+    page.getByTestId('log-line').filter({ hasText: /mirror is kind|long nap|Complications/ }),
+  ).toHaveCount(1);
+});
