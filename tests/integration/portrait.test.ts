@@ -72,3 +72,18 @@ describe('accessories', () => {
     expect(draw({ hat: 'headscarf', hair: 'long' })).toBe(draw({ hat: 'headscarf', hair: 'afro' }));
   });
 });
+
+describe('pets, drawn', () => {
+  it('every animal draws cleanly in more than one coat', async () => {
+    const { coatOf, petShapes } = await import('../../src/renderer/portrait/PetPortrait');
+    const { PET_KINDS } = await import('../../src/content/pets');
+    for (const k of PET_KINDS) {
+      const coats = new Set([1, 2, 3, 4, 5, 6, 7, 8].map((id) => coatOf(k.id, id)));
+      expect(coats.size, k.id).toBeGreaterThan(1);
+      for (const c of coats) expect(c).toMatch(/^#[0-9a-f]{6}$/);
+      const pic = petShapes(k.id, coatOf(k.id, 1)).map((s) => s.d).join(' ');
+      expect(pic).not.toMatch(/NaN|undefined/);
+      expect(petShapes(k.id, '#808080').length).toBeGreaterThan(4);
+    }
+  });
+});

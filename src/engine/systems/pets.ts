@@ -120,10 +120,9 @@ export function petAction(ctx: Ctx, petId: number, id: PetActionId): void {
       addStat(s, 'happiness', r.int(2, 4));
       ctx.log(
         'family',
-        `${def?.emoji ?? '🐾'} ${r.pick(PLAY_LINES[pet.kind] ?? PLAY_LINES['any'] ?? [''])}`.replace(
-          '{name}',
-          pet.name,
-        ),
+        `${def?.emoji ?? '🐾'} ${r.pick(PLAY_LINES[pet.kind] ?? PLAY_LINES['any'] ?? [''])}`
+          .split('{name}')
+          .join(pet.name),
       );
       break;
     case 'walk':
@@ -132,7 +131,10 @@ export function petAction(ctx: Ctx, petId: number, id: PetActionId): void {
       pet.lastPlay = s.year;
       addStat(s, 'health', 2);
       addStat(s, 'happiness', 1);
-      ctx.log('family', `${def?.emoji ?? '🐾'} ${r.pick(WALK_LINES)}`.replace('{name}', pet.name));
+      ctx.log(
+        'family',
+        `${def?.emoji ?? '🐾'} ${r.pick(WALK_LINES)}`.split('{name}').join(pet.name),
+      );
       break;
     case 'vet': {
       const cost = vetCost(s, pet);

@@ -664,5 +664,10 @@
     "title": "Side columns fade at the bottom edge when there is more to scroll; the family tree gets edge shadows",
     "passes": true,
     "evidence": "npm run shots (05-main-adult at 1024); e2e/layout.spec.ts"
+  },
+  "S38": {
+    "title": "Drawn pets (eight animals, varied coats) in the list, panel and picker; partners show their wishes; pet lines name the pet everywhere",
+    "passes": true,
+    "evidence": "tests/integration/portrait.test.ts (pets, drawn); tests/engine/pets.test.ts (pet lines); e2e/pets.spec.ts; e2e/relationships.spec.ts"
   }
 }

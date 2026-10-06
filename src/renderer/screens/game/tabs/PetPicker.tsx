@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PET_BY_ID, PET_KINDS } from '../../../../content/pets';
 import { cap } from '../../../components/text';
+import { PetPortrait } from '../../../portrait/PetPortrait';
 import { formatMoney, type GameState } from '../../../../engine';
 import { refToLocal } from '../../../../engine/economy';
 import { adoptReason } from '../../../../engine/systems/pets';
@@ -40,9 +41,7 @@ export function PetPicker({
               title={why ?? k.blurb}
               onClick={() => setKind(k.id)}
             >
-              <span className="pet-tile-emoji" aria-hidden="true">
-                {k.emoji}
-              </span>
+              <PetPortrait kind={k.id} id={k.id.length} size={48} />
               <span>{k.label}</span>
               <span className="muted small">
                 {child ? 'Parents pay' : formatMoney(game, refToLocal(game, k.adoptCost))}

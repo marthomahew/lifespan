@@ -124,3 +124,15 @@ describe('pet tokens after a loss', () => {
     expect(renderText(s, '{pet} the {pet.kind}, {cat}')).toBe('Gus the cat, Gus');
   });
 });
+
+describe('pet lines', () => {
+  it('every play and walk line names the pet, with no placeholders left', () => {
+    for (let seed = 80; seed < 100; seed++) {
+      let s = adopt(adult(seed), seed % 2 ? 'dog' : 'cat', 'Pickle');
+      const id = s.pets[0]?.id ?? 0;
+      s = act(s, { type: 'pet', petId: id, id: 'play' }).state;
+      if (seed % 2) s = act(s, { type: 'pet', petId: id, id: 'walk' }).state;
+      for (const l of s.log) expect(l.text).not.toContain('{');
+    }
+  });
+});

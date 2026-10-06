@@ -68,6 +68,11 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - An adult heir keeps their job, and their diploma matches their grades.
   - The lease event really moves you out; no imaginary family dog; "your share of the estate".
 - **Dating (S35):** Find a date and dating apps offer three drawn people, each with a job, two traits, a line about them, and whether they want children or marriage. The face on the card is the face you get. Relationships get serious more surely the longer and warmer they are.
+- **Polish (S36–S38):**
+  - Panels show what an action did; children can study harder from the Occupation tab; buying a car warns about a missing licence.
+  - The side columns fade where there is more below.
+  - Partners' panels say whether they want children or marriage.
+  - Pets are drawn too: eight animals in varied coats, in the list, the panel and the adoption picker.
 
 
 ## Late life (S16)

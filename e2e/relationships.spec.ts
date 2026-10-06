@@ -98,6 +98,10 @@ test('activities: find a date, then propose and plan the wedding from the NPC pa
     .filter({ hasText: /boyfriend|girlfriend|partner/ })
     .first();
   // Proposals wait until things are serious: age up a few years, keeping the relationship warm.
+  await partnerRow.click();
+  // What they want from life, as the date card said.
+  await expect(page.getByTestId('npc-wishes')).toContainText('open to marriage');
+  await page.keyboard.press('Escape');
   for (let i = 0; i < 8; i++) {
     await partnerRow.click();
     if (await page.getByTestId('int-propose').isVisible()) break;

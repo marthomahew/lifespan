@@ -1,4 +1,5 @@
 import { PET_BY_ID } from '../../../../content/pets';
+import { PetPortrait } from '../../../portrait/PetPortrait';
 import type { GameState, Npc } from '../../../../engine';
 import { npcLook } from '../../../../engine/look';
 import { Portrait } from '../../../portrait/Portrait';
@@ -121,9 +122,7 @@ function PetList({ game }: { game: GameState }): React.JSX.Element {
               data-testid={`pet-${p.id}`}
               onClick={() => app.set({ petId: p.id })}
             >
-              <span className="pet-row-emoji" aria-hidden="true">
-                {PET_BY_ID[p.kind]?.emoji ?? '🐾'}
-              </span>
+              <PetPortrait kind={p.kind} id={p.id} size={36} gone={!p.alive} />
               <span className="grow npc-name">
                 <span>{p.name}</span>
                 <span className="muted small">

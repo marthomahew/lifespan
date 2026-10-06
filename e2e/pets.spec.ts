@@ -21,6 +21,7 @@ test('adopt a dog, name it, play and walk, and say goodbye', async ({ page }) =>
   await expect(row).toContainText('dog');
   await row.click();
   await expect(page.getByTestId('pet-panel')).toBeVisible();
+  await expect(page.getByTestId('pet-portrait')).toHaveAttribute('data-kind', 'dog');
   const bond = Number(await page.getByTestId('pet-bond').getAttribute('data-value'));
   await page.getByTestId('pet-act-play').click();
   await expect(page.getByTestId('pet-last')).toBeVisible();

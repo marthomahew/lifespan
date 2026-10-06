@@ -3,6 +3,7 @@ import { PET_BY_ID } from '../../../content/pets';
 import { formatMoney, type GameState } from '../../../engine';
 import { petActionReason, vetCost, type PetActionId } from '../../../engine/systems/pets';
 import { Modal } from '../../components/Modal';
+import { PetPortrait } from '../../portrait/PetPortrait';
 import { barColour } from '../../components/StatBar';
 import { app, doAct } from '../../store/app';
 
@@ -34,9 +35,13 @@ export function PetPanel({
     <Modal title={pet.name} testId="pet-panel" onClose={close}>
       <div className="pet-panel">
         <div className="pet-head">
-          <span className="pet-emoji" aria-hidden="true">
-            {def?.emoji ?? '🐾'}
-          </span>
+          <PetPortrait
+            kind={pet.kind}
+            id={pet.id}
+            size={84}
+            gone={!pet.alive}
+            testId="pet-portrait"
+          />
           <div className="grow">
             <div className="muted">
               {def?.label ?? pet.kind} ·{' '}

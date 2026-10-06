@@ -81,6 +81,15 @@ export function NpcPanel({
                 </span>
               ))}
             </div>
+            {n.alive && (n.roles.includes('partner') || n.roles.includes('spouse')) && (
+              <div className="muted small" data-testid="npc-wishes">
+                {n.flags.includes('no_kids') ? 'Doesn’t want children' : 'Would like children'}
+                {!n.roles.includes('spouse') &&
+                  (n.flags.includes('no_marriage')
+                    ? ' · not the marrying kind'
+                    : ' · open to marriage')}
+              </div>
+            )}
           </div>
           {n.alive && (
             <div className="npc-rel">
