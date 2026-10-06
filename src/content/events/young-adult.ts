@@ -495,7 +495,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
     weight: 8,
     cooldownYears: 3,
     adultsOnly: true,
-    when: single,
+    when: (s) => single(s) && s.assets.housing === 'renting',
     text: 'Your roommate insists on writing your dating profile. The draft opens with "Owns a colander."',
     choices: [
       {

@@ -47,8 +47,7 @@ describe('stats (M1.4)', () => {
     const N = 120;
     const avg = (age: number): number => {
       let t = 0;
-      for (let seed = 1; seed <= N; seed++)
-        t += playYears(immortal(seed), age).player.stats.health;
+      for (let seed = 1; seed <= N; seed++) t += playYears(immortal(seed), age).player.stats.health;
       return t / N;
     };
     const h25 = avg(25);

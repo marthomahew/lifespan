@@ -1442,7 +1442,7 @@ export const WORK_EVENTS: EventDef[] = [
     cooldownYears: 8,
     when: hasJob,
     bind: { boss: { role: 'boss' } },
-    text: '{boss.first} wants you to write down "everything you know" before you inevitably leave. You are the only person who understands the invoicing system from 1998.',
+    text: '{boss.first} wants you to write down "everything you know" before you inevitably leave. You are the only person who understands the invoicing system, which is older than half the staff.',
     choices: [
       {
         id: 'write',

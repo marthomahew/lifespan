@@ -26,6 +26,7 @@ export function moneyAction(ctx: Ctx, a: MoneyAction): void {
   switch (a.op) {
     case 'deposit': {
       const n = Math.min(positive(a.amount), Math.max(0, m.cash));
+      if (n <= 0) return;
       m.cash -= n;
       m.savings += n;
       ctx.log('money', `You put ${formatMoney(s, n)} in savings.`);

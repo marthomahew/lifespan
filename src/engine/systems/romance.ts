@@ -24,6 +24,8 @@ export function marry(ctx: Ctx, n: Npc, prenup: boolean): void {
   setRoles(n, ['partner'], 'spouse');
   n.romance = { stage: 'married', since: s.year, prenup };
   if (!s.player.flags.includes('ever_married')) s.player.flags.push('ever_married');
+  // Married people set up home together, not in their old bedroom.
+  if (s.assets.housing === 'parents' && s.player.age >= 18) s.assets.housing = 'renting';
 }
 
 /** Divorce: split assets (prenup-aware), set alimony, decide custody (SPEC §5.1). */

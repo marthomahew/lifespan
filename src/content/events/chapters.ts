@@ -235,7 +235,7 @@ export const MARRIAGE_EVENTS: EventDef[] = [
             text: 'Twelve Tuesday evenings in a room with a box of tissues and a very calm woman. You both say the hard things. It turns out you still want the same life.',
             effects: [
               { money: -1500, kind: 'price' },
-              { rel: 'sp', delta: 18, memory: 'the counselling that saved us' },
+              { rel: 'sp', delta: 18, memory: 'the counselling that saved your marriage' },
               { stat: 'stress', delta: -6 },
             ],
             success: true,

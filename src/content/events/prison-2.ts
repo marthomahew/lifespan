@@ -501,7 +501,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
     cooldownYears: 8,
     inPrison: true,
     when: servedAtLeast(1),
-    bind: { sib: { role: 'sibling', minAge: 20, minRelationship: 30 } },
+    bind: { sib: { role: 'sibling', minAge: 20, minRelationship: 30, notFlag: 'npc_married' } },
     text: '{sib.first} is getting married in the spring. The application for day release comes back stamped “not approved” in red, in a box too small for reasons.',
     choices: [
       {
@@ -512,6 +512,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             chance: 1,
             text: 'Your cousin reads it out between the main course and the cake. {sib.first} writes afterwards to say the room cried twice and laughed once, in the right places.',
             effects: [
+              { npcFlag: 'sib', flag: 'npc_married' },
               { rel: 'sib', delta: 10, memory: 'the speech read out at the wedding' },
               { skill: 'writing', delta: 4 },
               { stat: 'happiness', delta: 4 },
@@ -527,6 +528,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             chance: 0.6,
             text: 'You get four minutes on the landing phone during the reception. Over the music you hear {sib.first} shout that it is not the same without you.',
             effects: [
+              { npcFlag: 'sib', flag: 'npc_married' },
               { rel: 'sib', delta: 6, memory: 'the call from inside on the wedding day' },
               { stat: 'happiness', delta: 2 },
             ],
@@ -535,6 +537,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             chance: 0.4,
             text: 'The phone is out of order all afternoon. You find out about the first dance from a photograph a month later.',
             effects: [
+              { npcFlag: 'sib', flag: 'npc_married' },
               { rel: 'sib', delta: 1, memory: 'missing the wedding' },
               { stat: 'happiness', delta: -6 },
             ],

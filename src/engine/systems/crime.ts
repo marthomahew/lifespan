@@ -202,6 +202,13 @@ export function resolveCase(ctx: Ctx, plea: boolean): void {
 
 export function imprison(ctx: Ctx, crimeId: string, years: number, juvenile = false): void {
   const s = ctx.s;
+  // Caught for something new while on the run: the old years come due too, and the run is over.
+  const f = s.legal.fugitive;
+  if (f) {
+    years += f.owed;
+    s.legal.fugitive = null;
+    s.player.flags = s.player.flags.filter((x) => x !== 'fugitive' && x !== 'false_papers');
+  }
   s.legal.prison = { years, served: 0, crimeId, behaviour: 50 };
   s.assets.housing = 'prison';
   if (!s.player.flags.includes('ever_imprisoned')) s.player.flags.push('ever_imprisoned');
@@ -217,6 +224,8 @@ export function imprison(ctx: Ctx, crimeId: string, years: number, juvenile = fa
   if (!s.npcs.some((n) => n.alive && n.roles.includes('cellmate'))) {
     const mate = addNpc(ctx, {
       role: 'cellmate',
+      // Prisons are single-sex; a nonbinary player's cellmate could be either.
+      ...(s.player.gender === 'nonbinary' ? {} : { gender: s.player.gender }),
       age: Math.max(s.player.age, 18) + ctx.rng.int(-3, 15),
       rel: ctx.rng.int(30, 60),
     });

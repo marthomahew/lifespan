@@ -348,7 +348,7 @@ export const SENIOR_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You thank {kid.first}, then prove your independence by changing a lightbulb while {kid.they} watch{kid.s} nervously.',
+            text: 'You thank {kid.first}, then prove your independence by changing a lightbulb while {kid.first} looks on nervously.',
             effects: [
               { stat: 'happiness', delta: 3 },
               { rel: 'kid', delta: -1, memory: 'the lightbulb demonstration' },

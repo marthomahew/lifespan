@@ -317,7 +317,7 @@ export const SERVICE_EVENTS: EventDef[] = [
             effects: [
               { conduct: -15 },
               { injury: 5 },
-              { status: 'enemy' },
+              { status: 'enemy', gender: 'male' },
               { stat: 'stress', delta: 5 },
             ],
           },

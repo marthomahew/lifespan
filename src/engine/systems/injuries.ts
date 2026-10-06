@@ -45,8 +45,13 @@ const PARTS: [RegExp, Record<InjuryTier, string>][] = [
     /shoulder/,
     { minor: 'pulled shoulder', major: 'dislocated shoulder', serious: 'shattered shoulder' },
   ],
-  [/\bback\b/, { minor: 'pulled back', major: 'back injury', serious: 'spinal injury' }],
-  [/\b(arm|elbow)/, { minor: 'sprained arm', major: 'broken arm', serious: 'shattered arm' }],
+  [/\bhips?\b/, { minor: 'bruised hip', major: 'broken hip', serious: 'shattered hip' }],
+  [/\b(arm|elbow)s?\b/, { minor: 'sprained arm', major: 'broken arm', serious: 'shattered arm' }],
+  // The body part, not "get back" or "thrown back".
+  [
+    /\b(your|my|his|her|their|lower|bad) back\b|\bback (seizes|goes|injury|pain|spasm)|\bspine\b/,
+    { minor: 'pulled back', major: 'back injury', serious: 'spinal injury' },
+  ],
   [/\b(leg|shin)/, { minor: 'pulled hamstring', major: 'broken leg', serious: 'shattered leg' }],
   [
     /collarbone/,
@@ -60,17 +65,19 @@ const PARTS: [RegExp, Record<InjuryTier, string>][] = [
   [/\bnose\b/, { minor: 'bloody nose', major: 'broken nose', serious: 'broken nose' }],
 ];
 
-/** The injury a story describes, if it names a body part. */
+/** The injury a story describes, if it names a body part. A break is never just a sprain. */
 export function injuryFromText(text: string, tier: InjuryTier): string | null {
   const t = text.toLowerCase();
-  return PARTS.find(([re]) => re.test(t))?.[1][tier] ?? null;
+  const broke = /\b(break|breaks|broke|broken|fracture|fractured|snap|snapped)\b|\bcast\b/.test(t);
+  const hit = PARTS.find(([re]) => re.test(t))?.[1];
+  return hit ? hit[broke && tier === 'minor' ? 'major' : tier] : null;
 }
 
 /**
  * Record an injury from an event, an accident, a fight, or a deployment. Under 6 is just a bruise.
  * The story's own text, when given, decides what was hurt; otherwise the log says.
  */
-export function addInjury(ctx: Ctx, amount: number, story?: string): void {
+export function addInjury(ctx: Ctx, amount: number, story: string[] = []): void {
   const s = ctx.s;
   const n = Math.abs(amount);
   addStat(s, 'health', -n);
@@ -78,7 +85,9 @@ export function addInjury(ctx: Ctx, amount: number, story?: string): void {
   if (n < 6) return;
   const tier: InjuryTier = n >= 20 ? 'serious' : n >= 12 ? 'major' : 'minor';
   const t = TIERS[tier];
-  const named = story ? injuryFromText(story, tier) : null;
+  // The outcome's own words first, then the situation that led to it.
+  let named: string | null = null;
+  for (const st of story) named ??= injuryFromText(st, tier);
   const kind = named ?? ctx.rng.pick(t.kinds);
   if (!named) ctx.log('health', `🩹 The damage: ${kind.endsWith('ribs') ? kind : `a ${kind}`}.`);
   s.health.injuryList.push({

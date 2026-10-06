@@ -110,6 +110,19 @@ export function applyStatusEffect(
     }
     case 'friend':
     case 'enemy': {
+      // Someone the story already named: they become the friend (or the enemy).
+      if (npc) {
+        const r = kind === 'friend' ? 'friend' : 'enemy';
+        if (!npc.roles.includes(r)) npc.roles.push(r);
+        npc.rel = kind === 'friend' ? Math.max(npc.rel, 55) : Math.min(npc.rel, 25);
+        ctx.log(
+          'social',
+          kind === 'friend'
+            ? `${npc.first} becomes a friend.`
+            : `${npc.first} has it in for you now.`,
+        );
+        return;
+      }
       const near = Math.max(5, p.age + ctx.rng.int(-3, 3));
       const n = addNpc(ctx, {
         role: role ?? (kind === 'friend' ? 'friend' : 'enemy'),

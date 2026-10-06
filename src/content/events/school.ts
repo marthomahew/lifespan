@@ -174,7 +174,10 @@ export const SCHOOL_EVENTS: EventDef[] = [
           {
             chance: 0.4,
             text: 'Mr Fennimore has a quiet word, and Dorian decides you are his new hobby.',
-            effects: [{ stat: 'happiness', delta: -4 }, { status: 'enemy' }],
+            effects: [
+              { stat: 'happiness', delta: -4 },
+              { status: 'enemy', first: 'Dorian', gender: 'male' },
+            ],
           },
         ],
       },
@@ -194,7 +197,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
             chance: 0.6,
             text: "A shoving match ends with both of you outside the head teacher's office and a feud that will outlive the coat.",
             effects: [
-              { status: 'enemy' },
+              { status: 'enemy', first: 'Dorian', gender: 'male' },
               { stat: 'happiness', delta: -3 },
               { flag: 'juvenile_warning' },
             ],
@@ -703,7 +706,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
             chance: 0.8,
             text: 'Tomasz turns out to be ruthless at tag and very funny once he trusts you. You have a new best mate.',
             effects: [
-              { status: 'friend' },
+              { status: 'friend', first: 'Tomasz', gender: 'male' },
               { stat: 'karma', delta: 4 },
               { stat: 'happiness', delta: 4 },
             ],

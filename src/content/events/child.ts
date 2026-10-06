@@ -838,7 +838,10 @@ export const CHILD_EVENTS: EventDef[] = [
           {
             chance: 0.5,
             text: '{classmate.first} produces a photo from the last sleepover. The rabbit is named. The rabbit is famous.',
-            effects: [{ stat: 'happiness', delta: -6 }, { status: 'enemy' }],
+            effects: [
+              { stat: 'happiness', delta: -6 },
+              { status: 'enemy', with: 'classmate' },
+            ],
           },
         ],
       },

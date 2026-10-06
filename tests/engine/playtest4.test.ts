@@ -54,12 +54,18 @@ describe('fixes from the fourth transcript playtest', () => {
     const { addInjury, injuryFromText } = await import('../../src/engine/systems/injuries');
     expect(injuryFromText('Your ankle goes like snapping celery.', 'minor')).toBe('sprained ankle');
     expect(injuryFromText('You break your wrist on the ice.', 'major')).toBe('broken wrist');
+    // A break is a break even when the hit is small; "get back" isn't a back.
+    expect(injuryFromText('You break your wrist. Six weeks in a cast.', 'minor')).toBe(
+      'broken wrist',
+    );
+    expect(injuryFromText('You get back on the dance floor too early.', 'minor')).toBeNull();
+    expect(injuryFromText('Your lower back seizes.', 'minor')).toBe('pulled back');
     const s = structuredClone(adult(703));
-    addInjury(new Ctx(s), 14, 'You land badly and hear your wrist go.');
+    addInjury(new Ctx(s), 14, ['You land badly and hear your wrist go.']);
     expect(s.health.injuryList.at(-1)?.kind).toBe('broken wrist');
     // No body part in the story: the log says what it was.
     const before = s.log.length;
-    addInjury(new Ctx(s), 8, 'It all goes wrong at once.');
+    addInjury(new Ctx(s), 8, ['It all goes wrong at once.']);
     expect(s.log.slice(before).some((l) => l.text.startsWith('🩹 The damage:'))).toBe(true);
     const { ILLNESS_BY_ID } = await import('../../src/content/illnesses');
     expect(ILLNESS_BY_ID['migraines']?.plural).toBe(true);

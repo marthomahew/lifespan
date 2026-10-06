@@ -501,7 +501,7 @@ export const CHILDHOOD_3_EVENTS: EventDef[] = [
           {
             chance: oddsBy('smarts', 0.45),
             success: true,
-            text: 'By the third hand you beat {gran.first} fair and square. {gran.They} look{gran.s} delighted and immediately demand a rematch for the honour of the family.',
+            text: 'By the third hand you beat {gran.first} fair and square. {gran.They} look{gran.s} delighted and immediately demand{gran.s} a rematch for the honour of the family.',
             effects: [
               { stat: 'smarts', delta: 4 },
               { stat: 'happiness', delta: 4 },

@@ -183,6 +183,7 @@ export const ROMANCE_EVENTS: EventDef[] = [
               { rel: 'pt', delta: 8, memory: 'moving in together' },
               { stat: 'happiness', delta: 5 },
               { flag: 'cohabiting' },
+              { system: 'move_out' },
             ],
           },
         ],

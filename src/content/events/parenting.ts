@@ -700,7 +700,7 @@ export const PARENTING_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: '{kid.first} works weekends for eight months and buys a much duller car with {kid.their} own money. {kid.They} wash{kid.s} it every Sunday.',
+            text: '{kid.first} works weekends for eight months and buys a much duller car with {kid.their} own money. It gets washed every Sunday.',
             effects: [
               { npcStat: 'kid', stat: 'smarts', delta: 3 },
               { rel: 'kid', delta: 1, memory: 'saving up for the first car' },

@@ -243,6 +243,7 @@ export function runSpecial(
     case 'prison:allies': {
       const ally = addNpc(ctx, {
         role: 'cellmate',
+        ...(s.player.gender === 'nonbinary' ? {} : { gender: s.player.gender }),
         age: Math.max(18, s.player.age + ctx.rng.int(-10, 10)),
         rel: ctx.rng.int(55, 80),
       });

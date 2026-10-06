@@ -25,7 +25,9 @@ describe('a mid-life chapter', () => {
   });
 
   it('comes round every six years or so between 38 and 62', () => {
-    let s = runCheat(newLife({ birthYear: 1975, country: 'us' }, 101), 'age.set', { age: 38 }).state;
+    let s = runCheat(newLife({ birthYear: 1975, country: 'us' }, 101), 'age.set', {
+      age: 38,
+    }).state;
     s = { ...s, pending: [], cheats: { ...s.cheats, immortal: true } };
     let seen = 0;
     for (let y = 0; y < 25; y++) {

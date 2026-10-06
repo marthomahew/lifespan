@@ -20,7 +20,7 @@ export const TEEN_PARENTING_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: '{kid.first} creeps in at two, sees you on the sofa, and goes white. In the morning you talk, calmly, about what the waiting felt like. {kid.They} never do it again.',
+            text: '{kid.first} creeps in at two, sees you on the sofa, and goes white. In the morning you talk, calmly, about what the waiting felt like. It never happens again.',
             effects: [
               { stat: 'stress', delta: 5 },
               { rel: 'kid', delta: 5, memory: 'the night you waited up and didn’t shout' },

@@ -203,6 +203,9 @@ export function validateEvents(
     if (!(e.fromYear && e.fromYear >= 2005) && tokenTexts.some(([, t]) => ERA_WORDS.test(t)))
       err(e.id, 'mentions modern tech (an app, a video call...) without fromYear ≥ 2005');
     for (const [where, t] of tokenTexts) {
+      // "watch{x.s}" renders "watchs": these verbs need rewording.
+      const bad = /(ch|sh|ss|x|zz)\{[a-z]+\.s\}/.exec(t);
+      if (bad) err(where, `"${bad[0]}" renders a verb without its -es`);
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;

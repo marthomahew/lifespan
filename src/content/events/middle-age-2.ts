@@ -278,7 +278,7 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
             effects: [
               { stat: 'happiness', delta: 6 },
               { skill: 'writing', delta: 3 },
-              { status: 'friend' },
+              { status: 'friend', first: 'Ingrid', gender: 'female' },
             ],
           },
           {
@@ -299,7 +299,11 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
           {
             chance: 1,
             text: 'She meets you at the station holding a sign with your name spelled wrong. You talk until two in the morning and find you have the same laugh.',
-            effects: [{ money: -1200 }, { stat: 'happiness', delta: 8 }, { status: 'friend' }],
+            effects: [
+              { money: -1200 },
+              { stat: 'happiness', delta: 8 },
+              { status: 'friend', first: 'Ingrid', gender: 'female' },
+            ],
           },
         ],
       },

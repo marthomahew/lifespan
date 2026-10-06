@@ -67,8 +67,8 @@ export function applyEffect(
   bindings: Record<string, number>,
   payload: ChainPayload,
   source: string,
-  /** The outcome's text, so an injury matches what the story says happened. */
-  story?: string,
+  /** The outcome's text and its prompt, so an injury matches what the story says happened. */
+  story: string[] = [],
 ): void {
   const s = ctx.s;
   const p = s.player;
@@ -205,7 +205,7 @@ export function applyOutcome(
     });
   for (const e of o.effects) {
     if (s.death) break;
-    applyEffect(ctx, e, bindings, payload, def.id.replace(/_/g, ' '), text);
+    applyEffect(ctx, e, bindings, payload, def.id.replace(/_/g, ' '), [text, prompt]);
   }
   if (o.next && !s.death) {
     const [lo, hi] =

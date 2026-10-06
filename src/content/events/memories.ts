@@ -81,7 +81,7 @@ export const MEMORY_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You explain why you did it. {who.first} explains why it still hurts. Neither of you is wrong, and that is the worst part.',
             effects: [
-              { rel: 'who', delta: -8, memory: 'the argument about the old thing' },
+              { rel: 'who', delta: -8, memory: 'the argument about {$memory}' },
               { stat: 'stress', delta: 5 },
             ],
           },

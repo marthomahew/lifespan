@@ -829,5 +829,10 @@
     "title": "Playtest 4 fixes, batch 2: injuries match the story, sealed records, Robin, stale chains, office-only events, plural illnesses, interaction age limits, music and freelance variety",
     "passes": true,
     "evidence": "tests/engine/playtest4.test.ts"
+  },
+  "S71": {
+    "title": "Playtest 5 fixes, batch 1: fugitive ends on a new arrest, same-sex cellmates, injuries read the prompt, named friends and enemies, -es verb check, memory and date placeholders, sibling weddings, housing on marriage",
+    "passes": true,
+    "evidence": "tests/engine/playtest5.test.ts; tests/engine/playtest4.test.ts; content:check"
   }
 }

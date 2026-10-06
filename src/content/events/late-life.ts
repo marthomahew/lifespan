@@ -545,7 +545,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
               { money: 2500 },
               { stat: 'karma', delta: 4 },
               { stat: 'happiness', delta: 4 },
-              { status: 'friend' },
+              { status: 'friend', first: 'Priyanka', gender: 'female' },
             ],
           },
         ],
@@ -749,7 +749,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
     weight: 7,
     once: true,
     bind: { flame: { role: 'ex', minAge: 55 } },
-    text: 'A small parcel arrives from {flame.full}. Inside is a scarf you left in {flame.their} car more than forty years ago, folded neatly, and a note that says only: "Thought it was time."',
+    text: 'A small parcel arrives from {flame.full}. Inside is a scarf you left in {flame.their} car a lifetime ago, folded neatly, and a note that says only: "Thought it was time."',
     choices: [
       {
         id: 'write',
@@ -972,7 +972,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
     weight: 8,
     once: true,
     when: ownsHome,
-    text: 'The house has more rooms than you use and a loft you have not entered since the last century. Everyone has opinions about whether you should move somewhere smaller.',
+    text: 'The house has more rooms than you use and a loft you have not entered in years. Everyone has opinions about whether you should move somewhere smaller.',
     choices: [
       {
         id: 'clear',
