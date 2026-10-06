@@ -58,3 +58,17 @@ describe('expressions', () => {
     expect([5, 30, 60, 90].map(moodOf)).toEqual(['sad', 'low', 'fine', 'glad']);
   });
 });
+
+describe('accessories', () => {
+  it('hats tuck tall hair away, a headscarf hides it and the earrings, babies wear neither', () => {
+    const layers = (l: Partial<Look>, age = 30): string[] =>
+      portraitShapes({ ...DEFAULT_LOOK, ...l }, age, 'female').map((s) => s.layer);
+    expect(layers({ hat: 'beanie' })).toContain('hat');
+    expect(layers({ hat: 'beanie' }, 1)).not.toContain('hat');
+    expect(layers({ earrings: 'hoops' })).toContain('earrings');
+    expect(layers({ earrings: 'hoops' }, 3)).not.toContain('earrings');
+    expect(layers({ earrings: 'hoops', hat: 'headscarf' })).not.toContain('earrings');
+    expect(draw({ hat: 'cap', hair: 'mohawk' })).toBe(draw({ hat: 'cap', hair: 'short' }));
+    expect(draw({ hat: 'headscarf', hair: 'long' })).toBe(draw({ hat: 'headscarf', hair: 'afro' }));
+  });
+});

@@ -1,6 +1,7 @@
 import { EYE_COLORS, HAIR_COLORS, SKIN_COLORS, TOP_COLORS } from '../../engine/look';
 import type { Gender, Look } from '../../engine/types';
 import { hairShapes } from './hair';
+import { earrings, hatHides, headwear } from './accessories';
 import { CX, ellipse, faceGeom, mix, type Shape } from './geom';
 import {
   brow,
@@ -75,7 +76,14 @@ export function portraitShapes(
   };
 
   // Hair that falls behind the head and shoulders.
-  for (const h of hairShapes(look, stage, g, hair).back) out.push(h);
+  // Headwear (from age 4) tucks some cuts away; a headscarf hides the hair and drapes behind.
+  const hatOn = stage !== 'baby' && age >= 4 ? look.hat : 'none';
+  const hatHex = TOP_COLORS[(look.topColor + 3) % TOP_COLORS.length] ?? '#7a4fc4';
+  const cut = { ...look, hair: hatHides(hatOn, look.hair) };
+  const hat = headwear({ ...cut, hat: hatOn }, g, hatHex);
+  const hairParts = hairShapes(cut, stage, g, hair);
+  out.push(...hat.back);
+  for (const h of hairParts.back) out.push(h);
 
   // Shoulders and top.
   const top = TOP_COLORS[look.topColor] ?? TOP_COLORS[0] ?? '#3b6db3';
@@ -234,7 +242,10 @@ export function portraitShapes(
   out.push(...mouth(shown, g.mouthY, skinHex, small));
 
   // Hair over the forehead, then glasses on top of everything.
-  for (const h of hairShapes(look, stage, g, hair).front) out.push(h);
+  for (const h of hairParts.front) out.push(h);
+  out.push(...hat.front);
+  if (look.earrings !== 'none' && hatOn !== 'headscarf' && age >= 6)
+    out.push(...earrings(look.earrings, g));
   if (look.glasses !== 'none' && stage !== 'baby' && age >= 6)
     out.push(...glasses(look.glasses, ey, ex));
   return out;

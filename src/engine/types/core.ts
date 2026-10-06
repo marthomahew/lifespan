@@ -1,6 +1,6 @@
 import type { RngState } from '../rng';
 
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 export const VISIBLE_STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export const HIDDEN_STATS = [
@@ -64,6 +64,8 @@ export type MouthShape = 'smile' | 'grin' | 'neutral' | 'smirk' | 'full';
 export type FacialHair = 'none' | 'stubble' | 'moustache' | 'goatee' | 'beard' | 'longbeard';
 export type Glasses = 'none' | 'round' | 'square' | 'cateye' | 'sunglasses';
 export type TopStyle = 'tee' | 'hoodie' | 'shirt' | 'sweater' | 'vneck';
+export type Earrings = 'none' | 'studs' | 'hoops' | 'drops' | 'gems';
+export type Headwear = 'none' | 'beanie' | 'cap' | 'bucket' | 'fedora' | 'headscarf';
 
 /** How a character looks, drawn as a layered portrait. Ageing (grey, lines) is applied when drawn. */
 export type Look = {
@@ -83,6 +85,8 @@ export type Look = {
   top: TopStyle;
   /** Index into TOP_COLORS. */
   topColor: number;
+  earrings: Earrings;
+  hat: Headwear;
 };
 export type ParentSetup = 'together' | 'apart' | 'mother' | 'father';
 export type Attraction = 'men' | 'women' | 'everyone';

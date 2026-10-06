@@ -146,6 +146,18 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
   },
   // v7: pets.
   6: (raw) => ({ ...raw, pets: raw['pets'] ?? [] }),
+  // v8: earrings and headwear.
+  7: (raw) => {
+    const player = (raw['player'] ?? {}) as Record<string, unknown>;
+    const look = (player['look'] ?? {}) as Record<string, unknown>;
+    return {
+      ...raw,
+      player: {
+        ...player,
+        look: { ...look, earrings: look['earrings'] ?? 'none', hat: look['hat'] ?? 'none' },
+      },
+    };
+  },
 };
 
 export class SaveError extends Error {}

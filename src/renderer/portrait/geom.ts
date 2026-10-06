@@ -9,6 +9,8 @@ export type Shape = {
   sw?: number;
   opacity?: number;
   fillOpacity?: number;
+  /** Fill with a hole (a scarf around the face). */
+  evenOdd?: boolean;
 };
 
 export const CX = 60;

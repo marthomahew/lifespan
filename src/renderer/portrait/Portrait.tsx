@@ -59,6 +59,7 @@ export const Portrait = memo(function Portrait({
             data-layer={s.layer}
             fill={s.fill ?? 'none'}
             fillOpacity={s.fillOpacity}
+            fillRule={s.evenOdd ? 'evenodd' : undefined}
             stroke={s.stroke}
             strokeWidth={s.sw}
             strokeLinecap="round"

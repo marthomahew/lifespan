@@ -19,7 +19,22 @@ import {
 } from '../../src/engine/look';
 import { migrate } from '../../src/engine/save';
 
-const features = (l: object): string[] => Object.entries(l).map(([k, v]) => `${k}:${String(v)}`);
+// What a child inherits (clothes, glasses and jewellery are choices, not genes).
+const INHERITED = [
+  'skin',
+  'face',
+  'hairColor',
+  'eyes',
+  'eyeColor',
+  'brows',
+  'nose',
+  'mouth',
+  'freckles',
+];
+const features = (l: object): string[] =>
+  Object.entries(l)
+    .filter(([k]) => INHERITED.includes(k))
+    .map(([k, v]) => `${k}:${String(v)}`);
 const shared = (a: object, b: object): number => {
   const fb = new Set(features(b));
   return features(a).filter((f) => fb.has(f)).length;

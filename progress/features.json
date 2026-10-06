@@ -609,5 +609,10 @@
     "title": "Pets: eight animals, bond and health, care actions, ageing and loss, inheritance, 20 pet events",
     "passes": true,
     "evidence": "tests/engine/pets.test.ts; tests/content/pets-content.test.ts; e2e/pets.spec.ts; sim invariants"
+  },
+  "S27": {
+    "title": "Accessories: earrings and headwear (beanie, cap, bucket hat, fedora, headscarf) in the builder and makeovers",
+    "passes": true,
+    "evidence": "tests/integration/portrait.test.ts (accessories); tests/engine/look.test.ts; e2e/customize.spec.ts"
   }
 }

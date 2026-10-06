@@ -23,6 +23,9 @@ test('in life: practise a picked skill, get a new look, change your name', async
   await page.getByTestId('look-opt-hairColor-green').click();
   await page.getByTestId('look-tab-facialHair').click();
   await page.getByTestId('look-opt-facialHair-goatee').click();
+  await page.getByTestId('look-tab-hat').click();
+  await page.getByTestId('look-opt-hat-beanie').click();
+  await expect(page.getByTestId('makeover-portrait').locator('[data-layer="hat"]').first()).toBeAttached();
   await expect(page.getByTestId('makeover-portrait')).toHaveAttribute('data-hair', 'mohawk');
   await page.getByTestId('opt-look-go').click();
   await expect(page.getByTestId('header-portrait')).toHaveAttribute('data-hair', 'mohawk');

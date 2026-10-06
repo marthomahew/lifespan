@@ -1,6 +1,8 @@
 import { Rng, seedRng } from './rng';
 import type {
   BrowShape,
+  Earrings,
+  Headwear,
   EyeColor,
   EyeShape,
   FaceShape,
@@ -139,6 +141,23 @@ export const TOPS: Opt<TopStyle>[] = [
   { id: 'vneck', label: 'V-neck' },
 ];
 
+export const EARRINGS: Opt<Earrings>[] = [
+  { id: 'none', label: 'None' },
+  { id: 'studs', label: 'Studs' },
+  { id: 'hoops', label: 'Hoops' },
+  { id: 'drops', label: 'Drops' },
+  { id: 'gems', label: 'Gems' },
+];
+
+export const HEADWEAR: Opt<Headwear>[] = [
+  { id: 'none', label: 'None' },
+  { id: 'beanie', label: 'Beanie' },
+  { id: 'cap', label: 'Cap' },
+  { id: 'bucket', label: 'Bucket hat' },
+  { id: 'fedora', label: 'Fedora' },
+  { id: 'headscarf', label: 'Headscarf' },
+];
+
 export const TOP_COLORS = [
   '#3b6db3',
   '#c2453d',
@@ -165,6 +184,8 @@ export const LOOK_PARTS = {
   facialHair: FACIAL_HAIR,
   glasses: GLASSES,
   top: TOPS,
+  earrings: EARRINGS,
+  hat: HEADWEAR,
 } as const;
 
 export const DEFAULT_LOOK: Look = {
@@ -182,6 +203,8 @@ export const DEFAULT_LOOK: Look = {
   freckles: false,
   top: 'tee',
   topColor: 0,
+  earrings: 'none',
+  hat: 'none',
 };
 
 const ids = <T>(o: Opt<T>[]): T[] => o.map((x) => x.id);
@@ -228,6 +251,12 @@ export function randomLook(r: Rng, gender: Gender, skin?: number): Look {
     freckles: s <= 2 && r.chance(0.25),
     top: r.pick(ids(TOPS)),
     topColor: r.int(0, TOP_COLORS.length - 1),
+    earrings: r.chance(gender === 'female' ? 0.35 : 0.08)
+      ? r.pick(['studs', 'studs', 'hoops', 'drops'] as const)
+      : 'none',
+    hat: r.chance(0.06)
+      ? r.pick(['beanie', 'cap', 'bucket', 'fedora', 'headscarf'] as const)
+      : 'none',
   };
 }
 
@@ -262,6 +291,8 @@ export function cleanLook(raw: unknown, fallback: Look): Look {
     freckles: typeof o['freckles'] === 'boolean' ? o['freckles'] : fallback.freckles,
     top: pick('top'),
     topColor: num(o['topColor'], TOP_COLORS.length, fallback.topColor),
+    earrings: pick('earrings'),
+    hat: pick('hat'),
   };
 }
 

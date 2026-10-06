@@ -18,7 +18,7 @@ export const OPTION_ACTIVITIES = [
 
 /** What a salon, a razor, an optician and a shop can change. */
 const MAKEOVER_TABS = LOOK_TABS.filter((t) =>
-  ['hair', 'facialHair', 'glasses', 'top'].includes(t.id),
+  ['hair', 'facialHair', 'glasses', 'top', 'hat', 'earrings'].includes(t.id),
 );
 
 /** What a surgeon can change (eye colour stays yours). */
@@ -117,6 +117,8 @@ export function OptionDialog({
                 glasses: look.glasses,
                 top: look.top,
                 topColor: look.topColor,
+                earrings: look.earrings,
+                hat: look.hat,
               })
             }
           >

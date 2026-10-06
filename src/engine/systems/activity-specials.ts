@@ -277,7 +277,16 @@ export function runSpecial(
 export const SURGERY = ['face', 'nose', 'eyes', 'brows', 'mouth'] as const;
 
 /** Features you can change in a year without surgery. */
-export const MAKEOVER = ['hair', 'hairColor', 'facialHair', 'glasses', 'top', 'topColor'] as const;
+export const MAKEOVER = [
+  'hair',
+  'hairColor',
+  'facialHair',
+  'glasses',
+  'top',
+  'topColor',
+  'earrings',
+  'hat',
+] as const;
 
 function pickKeys(
   o: Record<string, unknown>,

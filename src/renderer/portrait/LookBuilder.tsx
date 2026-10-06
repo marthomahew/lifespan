@@ -22,6 +22,8 @@ export const LOOK_TABS: Tab[] = [
   { id: 'facialHair', label: 'Facial hair', shape: 'facialHair' },
   { id: 'glasses', label: 'Glasses', shape: 'glasses' },
   { id: 'top', label: 'Clothes', shape: 'top', colors: 'topColor' },
+  { id: 'hat', label: 'Hats', shape: 'hat' },
+  { id: 'earrings', label: 'Earrings', shape: 'earrings' },
 ];
 
 const SWATCHES: Record<
