@@ -1,3 +1,4 @@
+import { freeTime } from './activities';
 import { pickFresh } from '../fresh';
 import { EVENT_BY_ID } from '../../content/events';
 import type { Ctx } from '../ctx';
@@ -63,6 +64,8 @@ export function musicReason(s: GameState, id: MusicActionId): string | null {
   if (s.legal.prison) return 'not from prison';
   if (usedThisYear(s, `m:${id}`) >= (id === 'busk' || id === 'gig' ? 2 : 1))
     return 'done this year';
+  // Music takes time like anything else you do with a year.
+  if (s.settings.freeTime !== false && freeTime(s).left <= 0) return 'no free time left this year';
   switch (id) {
     case 'busk':
       return skill < 10 ? 'needs instrument or voice 10' : null;
@@ -86,7 +89,13 @@ export function musicReason(s: GameState, id: MusicActionId): string | null {
     case 'release':
       return !m.act ? 'form a band or go solo first' : m.stage < 3 ? 'play local gigs first' : null;
     case 'tour':
-      return m.stage < 4 ? 'needs a record deal' : s.player.age < 18 ? 'adults only' : null;
+      return m.stage < 4
+        ? 'needs a record deal'
+        : s.player.age < 18
+          ? 'adults only'
+          : s.player.stats.fame < 25
+            ? 'needs more of an audience (fame 25)'
+            : null;
   }
 }
 
@@ -96,6 +105,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
   const why = musicReason(s, id);
   if (why) throw new EngineError(why);
   markUsed(s, `m:${id}`);
+  markUsed(s, 'a:total');
   const m = s.music;
   const r = ctx.rng;
   const skill = musicSkill(s);
@@ -148,7 +158,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       s.money.cash += pay;
       addSkill(s, key, 2);
       m.stage = Math.max(m.stage, 3);
-      addStat(s, 'fame', skill > 60 ? 3 : 1);
+      addStat(s, 'fame', skill > 70 ? 2 : 1);
       ctx.log(
         'fame',
         `A paid gig at a pub with sticky floors: ${formatMoney(s, pay)} and a regular slot.`,
@@ -174,18 +184,22 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       return;
     }
     case 'release': {
+      // Rushing records out hurts them: last year's release costs this one.
+      const rushed = m.releases.filter((x) => x.year >= s.year - 1).length * 10;
       const quality = clampStat(
-        skill * 0.7 + r.int(0, 40) + (s.player.traits.includes('creative') ? 8 : 0),
+        skill * 0.55 + r.int(0, 45) + (s.player.traits.includes('creative') ? 8 : 0) - rushed,
       );
       const title = `${r.pick(TITLE_A)} ${r.pick(TITLE_B)}`;
       m.releases.push({ year: s.year, title, quality });
-      const fameGain = Math.round(quality / 10) + (m.label ? 6 : 1);
-      addStat(s, 'fame', quality > 70 ? fameGain + 6 : fameGain);
+      const fameGain = Math.round(quality / 16) + (m.label ? 3 : 1);
+      // A flop costs you: the audience drifts and the critics are unkind.
+      addStat(s, 'fame', quality < 45 ? -4 : quality > 70 ? fameGain + 3 : fameGain);
+      if (quality < 45) addStat(s, 'happiness', -6);
       const pay = money(s, quality * (m.label ? 600 : 60) * (1 + s.player.stats.fame / 25), 'wage');
       s.money.cash += pay;
       ctx.log(
         'fame',
-        `You release "${title}". ${quality > 80 ? 'Critics call it a masterpiece; your mum agrees.' : quality > 55 ? 'It finds an audience and keeps it.' : 'It finds an audience of about forty people.'} It earns ${formatMoney(s, pay)}.`,
+        `You release "${title}". ${quality > 80 ? 'Critics call it a masterpiece; your mum agrees.' : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? 'It finds an audience of about forty people.' : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
       if (!m.label && quality >= 60 && m.stage === 3) {
@@ -196,9 +210,25 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
     }
     case 'tour': {
       const fame = s.player.stats.fame;
+      // A quarter of tours go wrong: cancelled dates, a voice that gives out, a van in a ditch.
+      if (r.chance(0.25)) {
+        const pay = money(s, 5000 + fame * 600, 'wage');
+        s.money.cash += pay;
+        addStat(s, 'health', -8);
+        addStat(s, 'stress', 10);
+        addStat(s, 'fame', -2);
+        m.touring = true;
+        m.stage = Math.max(m.stage, 5);
+        ctx.log(
+          'fame',
+          `Half the tour is cancelled when your voice gives out in the third city. It still pays ${formatMoney(s, pay)}, and a lot of refunds.`,
+          true,
+        );
+        return;
+      }
       const pay = money(s, 20000 + fame * 3000, 'wage');
       s.money.cash += pay;
-      addStat(s, 'fame', 5);
+      addStat(s, 'fame', 3);
       addStat(s, 'health', -4);
       addStat(s, 'stress', 6);
       m.touring = true;

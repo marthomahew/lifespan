@@ -739,5 +739,10 @@
     "title": "The novel as a multi-year project with decisions at each stage; a Threads card for open storylines; Shortlisted achievement",
     "passes": true,
     "evidence": "tests/engine/projects.test.ts; e2e/customize.spec.ts (novel thread); sim invariants"
+  },
+  "S53": {
+    "title": "Music as a career, not a slot machine: free time, flops, rushed records, risky tours, slower fame (bot fame-90 age 21 → 31)",
+    "passes": true,
+    "evidence": "tests/engine/music.test.ts; sim"
   }
 }
