@@ -28,7 +28,7 @@ export type Threshold = {
 const PLAYER_TOKENS = new Set(['first', 'last', 'age', 'city', 'country', 'countryThe', 'year']);
 export const PET_TOKENS = new Set(['pet', 'pet.kind', ...PET_KINDS.map((k) => k.id)]);
 /** The novel in progress (project events only). */
-const PROJECT_TOKENS = new Set(['novel']);
+const PROJECT_TOKENS = new Set(['novel', 'business']);
 const NPC_FIELDS = new Set([
   'first',
   'last',

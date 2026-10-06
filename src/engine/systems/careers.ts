@@ -156,6 +156,11 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
     return;
   }
   if (c.jobId) endJob(ctx, 'moved on');
+  // A full-time job and your own shop don't both fit in a day: a manager takes over.
+  if (s.business?.hands === 'self') {
+    s.business.hands = 'manager';
+    if (!quiet) ctx.log('work', `A manager takes over the day to day at ${s.business.name}.`);
+  }
   leaveCoworkers(ctx);
   c.jobId = job.id;
   c.level = 0;
@@ -359,7 +364,7 @@ export function unemploymentBenefit(s: GameState): number {
   const c = s.career;
   const p = s.player;
   if (p.age < 18 || p.age >= countryOf(s).ages.retirement) return 0;
-  if (c.jobId || c.partTimeId || c.retired || s.education.enrollment) return 0;
+  if (c.jobId || c.partTimeId || c.retired || s.education.enrollment || s.business) return 0;
   // Support needs papers; someone on the run can't sign on.
   if (s.legal.prison || s.military?.active || s.legal.fugitive) return 0;
   // Means-tested: savings above a modest cushion mean you live on those first.

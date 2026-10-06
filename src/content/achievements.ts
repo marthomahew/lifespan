@@ -354,6 +354,20 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Earned the highest title in chess.',
     check: (s) => flag(s, 'chess_gm'),
   },
+  {
+    id: 'founder',
+    label: 'Founder',
+    emoji: '🏪',
+    description: 'Opened a business of your own.',
+    check: (s) => flag(s, 'founded_business'),
+  },
+  {
+    id: 'household_name',
+    label: 'Household Name',
+    emoji: '🏙️',
+    description: 'Grew a business into a household name.',
+    check: (s) => (s.business?.level ?? 0) >= 5,
+  },
 ];
 
 export const ACHIEVEMENT_BY_ID: Record<string, AchievementDef> = Object.fromEntries(

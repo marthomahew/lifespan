@@ -14,6 +14,7 @@ import { caseStep, recapture } from './crime';
 import { scaleSalary, takePackage } from './crossroads';
 import { illnessPlan } from './illness';
 import { addHolidayHome, downsizeHome } from './assets';
+import { businessEffect } from './business';
 import { netWorth } from '../networth';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
@@ -59,6 +60,12 @@ export function applySystemEffect(
       );
       return;
     }
+    case 'biz_health':
+    case 'biz_sell':
+    case 'biz_expand':
+    case 'biz_manager':
+      businessEffect(ctx, kind, Number(arg ?? 0));
+      return;
     case 'focus_off':
       s.player.focus = null;
       return;

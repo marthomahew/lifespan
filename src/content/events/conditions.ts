@@ -49,6 +49,13 @@ export const officeJob = (s: GameState): boolean => {
   const job = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
   return !!job && (OFFICE_FIELDS.includes(job.field) || OFFICE_JOBS.includes(job.id));
 };
+/** You own a business (of these kinds, if given). */
+export const hasBusiness =
+  (...kinds: string[]) =>
+  (s: GameState): boolean =>
+    !!s.business && (!kinds.length || kinds.includes(s.business.kind));
+/** You run your business yourself. */
+export const runsOwnBusiness = (s: GameState): boolean => s.business?.hands === 'self';
 /** Working full-time as one particular job. */
 export const isJob =
   (...ids: string[]) =>

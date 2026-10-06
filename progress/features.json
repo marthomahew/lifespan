@@ -849,5 +849,10 @@
     "title": "Prodigy paths: chess skill and tournaments, chess and music milestones, art/sport/code/writing/cooking prodigies, burnout, Wunderkind and Grandmaster",
     "passes": true,
     "evidence": "tests/engine/prodigy.test.ts; content:check"
+  },
+  "S75": {
+    "title": "Your own business: eight kinds, momentum and profit, expand, invest, manager, sell, events, achievements",
+    "passes": true,
+    "evidence": "tests/engine/business.test.ts; e2e/business.spec.ts; content:check"
   }
 }

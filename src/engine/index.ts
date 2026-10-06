@@ -64,3 +64,13 @@ export { treatmentsFor, type TreatmentView } from './systems/health';
 export { VICE_LABEL } from './systems/vices';
 export { emigrateReason, speaksLocal, MOVE_COST } from './systems/emigration';
 export { continueAsChild, heirOptions, legacyScore, type HeirOption } from './legacy';
+export {
+  businessOf,
+  expandCost,
+  investCost,
+  kindOf,
+  levelName,
+  startReason,
+  type Business,
+  type BusinessOp,
+} from './systems/business';

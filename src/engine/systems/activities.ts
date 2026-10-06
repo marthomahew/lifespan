@@ -52,7 +52,7 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
   const why: string[] = [];
   let total = s.player.age < 13 ? 4 : 6;
   if (s.player.age >= 18) {
-    if (s.career.jobId || s.military?.active) {
+    if (s.career.jobId || s.military?.active || s.business?.hands === 'self') {
       total -= 2;
       why.push('full-time work');
     } else if (s.career.partTimeId) {

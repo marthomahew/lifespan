@@ -82,6 +82,10 @@ export type Effect =
         | 'near_family'
         | 'retire'
         | 'focus_off'
+        | 'biz_health'
+        | 'biz_sell'
+        | 'biz_expand'
+        | 'biz_manager'
         | 'retrain'
         | 'move_city'
         | 'severance';

@@ -8,6 +8,7 @@ const NULLABLE: RegExp[] = [
   /^\$\.death$/,
   /^\$\.player\.(talent|focus)$/,
   /^\$\.challenge$/,
+  /^\$\.business$/,
   /^\$\.legal\.fugitive$/,
   /^\$\.projects\.novel$/,
   /^\$\.career\.(jobId|partTimeId)$/,

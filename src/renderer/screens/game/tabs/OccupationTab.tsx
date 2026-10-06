@@ -5,6 +5,7 @@ import { CareerSection } from '../occupation/CareerSection';
 import { EducationSection } from '../occupation/EducationSection';
 import { MilitarySection, MusicSection } from '../occupation/ServiceSection';
 import { LegalSection } from '../occupation/LegalSection';
+import { BusinessSection } from '../occupation/BusinessSection';
 
 export function OccupationTab({ game }: { game: GameState }): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       )}
       <EducationSection game={game} onError={setError} />
       <CareerSection game={game} onError={setError} />
+      <BusinessSection game={game} onError={setError} />
       <MilitarySection game={game} onError={setError} />
       <MusicSection game={game} onError={setError} />
       <LegalSection game={game} />

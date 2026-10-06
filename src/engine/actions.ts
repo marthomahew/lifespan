@@ -30,6 +30,7 @@ import { treatInjury } from './systems/injuries';
 import { checkAspirations, chooseAspiration, dropAspiration } from './systems/aspirations';
 import { checkChallenge } from './systems/challenge';
 import { setFocus } from './systems/focus';
+import { businessAction, type BusinessOp } from './systems/business';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -54,7 +55,8 @@ export type PlayerAction =
   | { type: 'aspiration'; op: 'choose' | 'drop'; id: string }
   | { type: 'emigrate'; country: string; city?: string }
   | { type: 'pet'; petId: number; id: PetActionId }
-  | { type: 'focus'; target: string | null };
+  | { type: 'focus'; target: string | null }
+  | { type: 'business'; action: BusinessOp };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -131,6 +133,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'focus':
       setFocus(ctx, action.target);
+      break;
+    case 'business':
+      businessAction(ctx, action.action);
       break;
   }
   prunePending(ctx.s);

@@ -50,6 +50,8 @@ export const ASPIRATIONS: AspirationDef[] = [
     description: 'Chief executive, or owner of your own business.',
     done: (s) =>
       job(s, 'corporate_executive', 4) ||
+      // Your own business, past its third birthday.
+      (!!s.business && s.year - s.business.founded >= 3) ||
       ['plumber', 'florist', 'photographer', 'personal_trainer', 'landscaper'].some((j) =>
         job(s, j, 3),
       ),

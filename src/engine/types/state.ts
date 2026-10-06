@@ -1,4 +1,5 @@
 import type { Projects } from '../systems/projects';
+import type { Business } from '../systems/business';
 import type {
   Attraction,
   CheatState,
@@ -88,6 +89,8 @@ export type GameState = {
   pets: Pet[];
   /** Long projects (a novel in progress); absent in older saves. */
   projects?: Projects;
+  /** A business of your own (one at a time). */
+  business?: Business | null;
   nextNpcId: number;
   log: LogEntry[];
   pending: PendingEvent[];

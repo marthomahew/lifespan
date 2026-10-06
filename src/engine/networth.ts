@@ -11,7 +11,8 @@ export function netWorth(s: GameState): number {
     sum(Object.values(m.holdings)) +
     sum(a.homes.map((h) => h.value)) +
     sum(a.vehicles.map((v) => v.value)) +
-    sum(a.possessions.map((p) => p.value));
+    sum(a.possessions.map((p) => p.value)) +
+    (s.business?.value ?? 0);
   const debts = sum(m.loans.map((l) => l.balance));
   return Math.round(assets - debts);
 }

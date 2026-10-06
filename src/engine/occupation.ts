@@ -8,6 +8,7 @@ export function occupationLabel(s: GameState): string {
   if (s.legal.fugitive && !s.career.jobId && !s.career.partTimeId) return 'On the run';
   if (s.military?.active) return `Serving in the ${s.military.branch}`;
   if (s.career.jobId) return s.career.history.at(-1)?.title ?? 'Working';
+  if (s.business?.hands === 'self') return `Running ${s.business.name}`;
   if (s.education.enrollment) return 'At university';
   if (age < 3) return 'Being a baby';
   if (age < 6) return 'Preschool';

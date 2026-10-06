@@ -131,6 +131,17 @@ export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
       },
     });
   if (p.age >= 16 && rng.chance(0.3)) cur = tryAct(cur, { type: 'career', id: 'freelance' });
+  // Some careerists go it alone in their thirties, and grow it when it's going well.
+  if (p.age >= 30 && p.age <= 55 && !cur.business && rng.chance(0.08))
+    cur = tryAct(cur, {
+      type: 'business',
+      action: {
+        op: 'start',
+        kind: rng.pick(['cafe', 'shop', 'firm', 'studio', 'tech', 'builders']),
+      },
+    });
+  if (cur.business && cur.business.health >= 60 && rng.chance(0.3))
+    cur = tryAct(cur, { type: 'business', action: { op: 'expand' } });
   cur = buyAHome(cur, tryAct);
   return treatEverything(cur, tryAct);
 }
