@@ -49,3 +49,8 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Three transcript playtests + two browser UX reviews by subagents; ~60 fixes (names, fertility, grades, heirs, fugitives, pay caps, repetition, layout cues)
 - Verify: green in ~105 s (unit 454, e2e ~65, electron 3, sim 300/300 0 violations); coverage 535/542; final check clean at bd92001
 - Next: fold in the second browser review, re-run the final check
+
+## 2026-10-06 (S63–S66)
+- S63 long-marriage check-in (dates, counselling, coasting); S64 five teen-parenting decisions; S65 wealth follow-ups (loan repaid, startup news); S66 later-life chapter (downsize, near family, abroad, stay).
+- Measure (default bot, 40 lives): real decisions 35–65 0.68→0.77/yr; 65+ lasting choices 22→28%, stat-only 42→34%.
+- DONE §8 final check re-run clean after S66; release/ matches 4adcd06.
