@@ -386,7 +386,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.3,
         success: true,
-        text: 'The dice love you tonight. A small crowd gathers to watch you win, and you leave before they can love you less.',
+        text: 'Luck loves you tonight. A small crowd gathers to watch you win, and you leave before it can love you less.',
         effects: [{ stat: 'happiness', delta: 6 }],
       },
       {
@@ -1045,7 +1045,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
       {
         chance: 0.2,
-        text: 'It is not quite what you asked for. Three people at work say "oh!" in the same careful voice.',
+        text: 'It is not quite what you asked for. Three people in one day say "oh!" in the same careful voice.',
         effects: [
           { stat: 'happiness', delta: -2 },
           { stat: 'looks', delta: -1 },

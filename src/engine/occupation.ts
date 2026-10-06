@@ -5,6 +5,7 @@ export function occupationLabel(s: GameState): string {
   const age = s.player.age;
   if (s.death) return 'Deceased';
   if (s.legal.prison) return 'In prison';
+  if (s.legal.fugitive && !s.career.jobId && !s.career.partTimeId) return 'On the run';
   if (s.military?.active) return `Serving in the ${s.military.branch}`;
   if (s.career.jobId) return s.career.history.at(-1)?.title ?? 'Working';
   if (s.education.enrollment) return 'At university';

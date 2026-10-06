@@ -1,4 +1,4 @@
-import { imprison } from '../systems/crime';
+import { escapePrison, imprison } from '../systems/crime';
 import { addIllness } from '../systems/illness';
 import type { ViceKey } from '../types';
 import { clampStat } from '../util';
@@ -125,6 +125,19 @@ export const HEALTH_CHEATS: CheatDef[] = [
       if (ctx.s.player.age < 10) return 'Too young for prison';
       imprison(ctx, 'burglary', Number(p['years']));
       return `Sentenced to ${Number(p['years'])} years`;
+    },
+  },
+  {
+    id: 'prison.escape',
+    group: 'health',
+    label: 'Escape from prison',
+    syntax: 'prison escape',
+    help: 'Over the fence, no plan needed. You will be on the run.',
+    params: [],
+    run: (ctx) => {
+      if (!ctx.s.legal.prison) return 'You are not in prison';
+      escapePrison(ctx);
+      return 'Escaped';
     },
   },
   {

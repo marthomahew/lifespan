@@ -319,3 +319,17 @@ export function recapture(ctx: Ctx, surrendered = false): void {
   imprison(ctx, f.crimeId, years);
   if (!surrendered && s.legal.prison) s.legal.prison.behaviour = 25;
 }
+
+/** Over the fence: free, with the years still owed and every siren for company. */
+export function escapePrison(ctx: Ctx): void {
+  const s = ctx.s;
+  const p = s.legal.prison;
+  if (!p) return;
+  const owed = Math.max(1, p.years - p.served) + 3;
+  release(ctx, false, true);
+  s.legal.fugitive = { since: s.year, owed, crimeId: p.crimeId };
+  if (!s.player.flags.includes('fugitive')) s.player.flags.push('fugitive');
+  if (!s.player.flags.includes('escaped_once')) s.player.flags.push('escaped_once');
+  addStat(s, 'notoriety', 15);
+  ctx.log('crime', 'You are free, technically. Every siren is about you now.', true);
+}

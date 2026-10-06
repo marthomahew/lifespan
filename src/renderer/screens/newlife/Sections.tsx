@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { COUNTRIES } from '../../../content/countries';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
@@ -5,7 +6,7 @@ import { WEALTH_TIERS, type Attraction, type Gender, type WealthTier } from '../
 import { LookBuilder } from '../../portrait/LookBuilder';
 import { Portrait } from '../../portrait/Portrait';
 import type { ParentSetup } from '../../../engine/types';
-import { DICE, STATS, toggleTrait, type Draft } from './useNewLife';
+import { DICE, shownLook, STATS, toggleTrait, type Draft } from './useNewLife';
 
 type Props = { d: Draft; set: (patch: Partial<Draft> | ((d: Draft) => Draft)) => void };
 
@@ -97,11 +98,12 @@ export function IdentitySection({ d, set }: Props): React.JSX.Element {
 }
 
 export function LookSection({ d, set }: Props): React.JSX.Element {
+  const look = useMemo(() => shownLook(d), [d]);
   return (
     <Section title="Look" dice="look" set={set}>
       <div className="nl-look">
         <Portrait
-          look={d.look}
+          look={look}
           age={30}
           gender={d.gender || 'nonbinary'}
           size={132}
@@ -109,9 +111,9 @@ export function LookSection({ d, set }: Props): React.JSX.Element {
           testId="look-portrait"
         />
         <LookBuilder
-          look={d.look}
+          look={look}
           gender={d.gender || 'nonbinary'}
-          onChange={(look) => set({ look })}
+          onChange={(look) => set({ look, lookSet: true })}
         />
       </div>
     </Section>

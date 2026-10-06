@@ -69,8 +69,9 @@ test('school: the average is shown, and a child can study harder from the Occupa
   await cheat(page, 'age set 13');
   await clearPopups(page);
   await page.getByTestId('tab-occupation').click();
-  await expect(page.getByTestId('school-grade')).toContainText(/average \d+; universities want 70/);
+  await expect(page.getByTestId('school-grade')).toContainText(/average \d+, updated each birthday; universities want 70/);
   await page.getByTestId('btn-study').click();
   await expect(page.getByTestId('act-feedback')).toBeVisible();
   await expect(page.getByTestId('btn-study')).toBeDisabled();
+  await expect(page.getByTestId('btn-study')).toContainText('Studied this year');
 });

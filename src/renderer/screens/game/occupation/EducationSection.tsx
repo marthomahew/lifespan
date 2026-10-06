@@ -44,7 +44,7 @@ export function EducationSection({
           <span className="grow" data-testid="school-grade">
             {age < 12 ? 'Primary' : 'Secondary'} school · grade {letterGrade(e.grade)}{' '}
             <span className="muted small">
-              (average {Math.round(e.grade)}
+              (average {Math.round(e.grade)}, updated each birthday
               {age >= 12 ? `; universities want ${UNIVERSITY_MIN_GRADE}` : ''})
             </span>
           </span>
@@ -57,7 +57,11 @@ export function EducationSection({
               }
               onClick={() => onError(doAct({ type: 'activity', id: 'study' }))}
             >
-              Study harder
+              {study.enabled
+                ? 'Study harder'
+                : study.reason === 'done enough this year'
+                  ? 'Studied this year ✓'
+                  : 'Study harder'}
             </button>
           )}
           {age >= leave && (

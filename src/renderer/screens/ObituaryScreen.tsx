@@ -1,13 +1,14 @@
-import { formatMoney, obituary, type GameState } from '../../engine';
+import { formatMoney, heirOptions, obituary, type GameState } from '../../engine';
 import { Portrait } from '../portrait/Portrait';
 import { refToLocal } from '../../engine/economy';
-import { app, go, useApp } from '../store/app';
+import { app, continueAs, go, useApp } from '../store/app';
 import { ContinueAsChild } from './ContinueAsChild';
 import { barColour } from '../components/StatBar';
 
 export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element {
   const settings = useApp((s) => s.settings);
   const ob = obituary(game);
+  const heir = heirOptions(game)[0];
   if (!ob) return <div />;
   return (
     <div className="screen obituary" data-testid="obituary-screen">
@@ -80,7 +81,20 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
         )}
         <ContinueAsChild game={game} />
         <div className="row center-row obit-actions">
-          <button className="primary" data-testid="btn-obit-new-life" onClick={() => go('new')}>
+          {heir && (
+            <button
+              className="primary"
+              data-testid="btn-obit-continue"
+              onClick={() => continueAs(heir.id)}
+            >
+              Continue as {heir.name.split(' ')[0]}
+            </button>
+          )}
+          <button
+            className={heir ? '' : 'primary'}
+            data-testid="btn-obit-new-life"
+            onClick={() => go('new')}
+          >
             New Life
           </button>
           <button data-testid="btn-obit-lives" onClick={() => go('lives')}>

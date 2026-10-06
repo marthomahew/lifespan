@@ -57,6 +57,14 @@ describe('health and legal cheats', () => {
     expect(runCheat(jailed, 'probation.end', {}).state.legal.probation).toBe(0);
   });
 
+  it("'prison.escape' puts you on the run", () => {
+    const free = runCheat(newLife({ birthYear: 1990 }, 4), 'age.set', { age: 25 }).state;
+    const inside = runCheat({ ...free, pending: [] }, 'prison.send', { years: 5 }).state;
+    const out = runCheat(inside, 'prison.escape', {}).state;
+    expect(out.legal.prison).toBeNull();
+    expect(out.legal.fugitive?.owed).toBe(8);
+  });
+
   it("'prison.send' starts a sentence on the spot", () => {
     const free = runCheat(newLife({ birthYear: 1990 }, 4), 'age.set', { age: 25 }).state;
     const inside = runCheat({ ...free, pending: [] }, 'prison.send', { years: 5 }).state;

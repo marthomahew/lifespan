@@ -59,11 +59,13 @@ function remapRoles(n: Npc, heir: Npc, oldPlayerId: number): Role[] | null {
     )
       ? ['sibling']
       : ['acquaintance'];
-  if (r.has('grandchild')) return n.parentIds.includes(heir.id) ? ['child'] : ['acquaintance'];
+  // The late player's grandchildren are the heir's children, or nephews and nieces.
+  if (r.has('grandchild')) return n.parentIds.includes(heir.id) ? ['child'] : ['nibling'];
   if (r.has('mother') || r.has('father')) return ['grandparent'];
   if (r.has('grandparent')) return ['great_grandparent'];
   if (r.has('great_grandparent')) return null;
-  if (r.has('sibling') || r.has('stepparent')) return ['acquaintance'];
+  if (r.has('sibling')) return ['aunt_uncle'];
+  if (r.has('stepparent')) return ['acquaintance'];
   if ([...r].every((x) => FRIENDLY_ROLES.has(x))) return null;
   return ['acquaintance'];
 }

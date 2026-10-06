@@ -417,3 +417,62 @@
   align-items: flex-end;
   gap: 6px;
 }
+.casino .row button {
+  white-space: nowrap;
+}
+/* On the game screen too, toasts sit bottom-right, clear of the log's search and the stats. */
+.toasts {
+  top: auto;
+  left: auto;
+  right: 16px;
+  bottom: 16px;
+  transform: none;
+  width: min(320px, 30vw);
+}
+.act-feedback {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.look-tabs .chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+.look-option .now {
+  font-size: 0.72em;
+  color: var(--text-2);
+}
+.escape-win {
+  font-size: 1.25em;
+  font-weight: 700;
+  color: var(--green);
+}
+.nl-look .look-builder {
+  min-height: 230px;
+}
+.mood-dot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  font-size: 15px;
+  line-height: 1;
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.4));
+}
+.avatar-wrap {
+  position: relative;
+  flex: none;
+}
+.escape-cell {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+.g-arrow {
+  position: absolute;
+  right: 2px;
+  bottom: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+}

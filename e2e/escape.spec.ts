@@ -27,3 +27,15 @@ test('the escape plan: move with the keys, guards light the yard, losing your ne
   await clearPopups(page);
   await expect(page.getByTestId('log-line').filter({ hasText: 'laundry room' })).toHaveCount(1);
 });
+
+test('on the run, the game says so: the sidebar, the Occupation tab, no university', async ({
+  page,
+}) => {
+  await startSeeded(page, 8282);
+  await cheat(page, 'age set 25', 'prison send 6', 'prison escape');
+  await clearPopups(page);
+  await expect(page.getByTestId('stats-col')).toContainText('On the run');
+  await page.getByTestId('tab-occupation').click();
+  await expect(page.getByTestId('on-the-run')).toContainText('years still owed');
+  await expect(page.getByTestId('btn-enroll')).toBeDisabled();
+});

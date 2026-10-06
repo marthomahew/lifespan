@@ -94,7 +94,7 @@ export function pushToasts(toasts: Toast[]): void {
   if (!toasts.length) return;
   const items = toasts.map((t) => ({ ...t, id: toastSeq++ }));
   app.set((s) => ({ toasts: [...s.toasts, ...items].slice(-2) }));
-  for (const it of items) setTimeout(() => dismissToast(it.id), 3000);
+  for (const it of items) setTimeout(() => dismissToast(it.id), 2500);
 }
 
 export function dismissToast(id: number): void {

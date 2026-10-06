@@ -150,6 +150,9 @@ export type Role =
   | 'bandmate'
   | 'stepparent'
   | 'grandchild'
+  /** A sibling's child, and a parent's sibling (after you continue as an heir). */
+  | 'nibling'
+  | 'aunt_uncle'
   | 'acquaintance';
 
 export type RomanceStage = 'dating' | 'serious' | 'engaged' | 'married';

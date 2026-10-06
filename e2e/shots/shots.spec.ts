@@ -90,10 +90,14 @@ for (const size of SIZES) {
       await page.getByTestId('cheat-close').click();
       await page.getByTestId('tab-activities').click();
       await shot('12-activities');
-      await page.getByTestId('act-find_date').click();
-      await page.getByTestId('date-2').waitFor();
-      await shot('34-dating');
-      await page.keyboard.press('Escape');
+      // (Only while single: someone already seeing a person can't look for dates.)
+      const dates = page.getByTestId('act-find_date');
+      if ((await dates.count()) && (await dates.isEnabled())) {
+        await dates.click();
+        await page.getByTestId('date-2').waitFor();
+        await shot('34-dating');
+        await page.keyboard.press('Escape');
+      }
       await page.getByTestId('act-new_look').click();
       await page.getByTestId('look-builder').waitFor();
       await shot('29-makeover');

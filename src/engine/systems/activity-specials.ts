@@ -6,7 +6,7 @@ import { addNpc } from '../npc';
 import { addStat } from '../stats';
 import type { GameState, ViceKey } from '../types';
 import { clampStat } from '../util';
-import { recapture, release } from './crime';
+import { escapePrison, recapture, release } from './crime';
 import { graduateHighSchool } from './education';
 import { treat } from './health';
 import { ILLNESS_BY_ID } from '../../content/illnesses';
@@ -265,13 +265,7 @@ export function runSpecial(
       if (!success && outcomeIndex === 2) return;
       s.legal.escapes += 1;
       if (success) {
-        const owed = Math.max(1, p.years - p.served) + 3;
-        release(ctx, false, true);
-        s.legal.fugitive = { since: s.year, owed, crimeId: p.crimeId };
-        s.player.flags.push('fugitive');
-        if (!s.player.flags.includes('escaped_once')) s.player.flags.push('escaped_once');
-        addStat(s, 'notoriety', 15);
-        ctx.log('crime', 'You are free, technically. Every siren is about you now.', true);
+        escapePrison(ctx);
       } else {
         p.years += 2;
         p.behaviour = clampStat(p.behaviour - 30);

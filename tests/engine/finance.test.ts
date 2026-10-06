@@ -314,7 +314,10 @@ describe('homes (M7.5)', () => {
     expect(sold.money.loans.find((l) => l.kind === 'mortgage')).toBeUndefined();
     // Appreciation over decades, maintenance and condition decay, for a home in decent shape
     // (a fixer-upper below 25 loses value until it is renovated).
-    const good = Math.max(0, s.assets.listings.findIndex((l) => l.condition >= 60));
+    const good = Math.max(
+      0,
+      s.assets.listings.findIndex((l) => l.condition >= 60),
+    );
     const decent = act(s, { type: 'buy_home', index: good, financing: { kind: 'cash' } }).state;
     s = decent;
     const v0 = s.assets.homes[0]?.value ?? 0;

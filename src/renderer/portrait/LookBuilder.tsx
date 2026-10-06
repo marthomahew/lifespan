@@ -43,12 +43,15 @@ export function LookBuilder({
   age = 30,
   tabs = LOOK_TABS,
   onChange,
+  original,
 }: {
   look: Look;
   gender: Gender;
   age?: number;
   tabs?: Tab[];
   onChange: (next: Look) => void;
+  /** The look you have now, marked "now" in each tab (makeovers, surgery). */
+  original?: Look;
 }): React.JSX.Element {
   const [tabId, setTab] = useState(tabs[0]?.id ?? 'skin');
   const tab = tabs.find((t) => t.id === tabId) ?? tabs[0];
@@ -93,6 +96,7 @@ export function LookBuilder({
                   {...(key === 'earrings' ? { viewBox: '68 48 26 26' } : {})}
                 />
                 <span className="small">{o.label}</span>
+                {original && original[key] === o.id && <span className="now">now</span>}
               </button>
             );
           })}

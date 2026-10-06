@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
 import { COUNTRIES } from '../../../content/countries';
 import { SKILL_BY_ID } from '../../../content/skills';
 import { TRAIT_BY_ID } from '../../../content/traits';
 import { Portrait } from '../../portrait/Portrait';
-import type { Draft } from './useNewLife';
+import { shownLook, type Draft } from './useNewLife';
 
 const WEALTH: Record<string, string> = {
   poor: 'poor',
@@ -31,6 +32,7 @@ export function Preview({
 }): React.JSX.Element {
   const c = COUNTRIES.find((x) => x.id === d.country);
   const g = d.gender || 'nonbinary';
+  const look = useMemo(() => shownLook(d), [d]);
   const name = [d.first.trim(), d.last.trim()].filter(Boolean).join(' ') || 'A new person';
   const traits = d.traits.map((t) => TRAIT_BY_ID[t]?.label.toLowerCase()).filter(Boolean);
   const talent = d.talent ? SKILL_BY_ID[d.talent] : undefined;
@@ -46,7 +48,7 @@ export function Preview({
         {[1, 8, 30, 75].map((age) => (
           <figure key={age}>
             <Portrait
-              look={d.look}
+              look={look}
               age={age}
               gender={g}
               size={age === 30 ? 72 : 52}

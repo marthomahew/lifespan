@@ -116,6 +116,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `release` | Walk out of prison today. |
 | `sentence {years}` | Change the years left on your sentence (0 releases you). |
 | `prison send {years}` | Start a prison sentence now, no trial needed. Example: prison send 5 |
+| `prison escape` | Over the fence, no plan needed. You will be on the run. |
 | `probation end` | Finish any probation immediately. |
 
 ### Events
@@ -151,7 +152,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `state size` | How big the current save is. |
 | `deathbot` | Let the default sim bot play the rest of this life. |
 
-71 commands in all. Every one is also a form in the cheat panel.
+72 commands in all. Every one is also a form in the cheat panel.
 
 <!-- cheats:end -->
 

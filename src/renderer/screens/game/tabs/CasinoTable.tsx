@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { formatMoney, type GameState } from '../../../../engine';
 import { money } from '../../../../engine/economy';
 import {
@@ -45,6 +45,33 @@ export function CasinoTable({
   const [bet, setBet] = useState<number | null>(null);
   const [plan, setPlan] = useState('');
   const session = playSession(shoe, plan);
+  // Walking away mid-hand stands on it: closing the table can't undo a bad deal.
+  const live = useRef({ bet, plan, waiting: session.waiting, done: false });
+  live.current = { ...live.current, bet, plan, waiting: session.waiting };
+  useEffect(
+    () => () => {
+      const l = live.current;
+      if (l.done || l.bet === null) return;
+      onRun({ plan: l.waiting ? `${l.plan}S` : l.plan, bet: l.bet });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once, on leaving the table
+    [],
+  );
+  // H, S and D play the hand from the keyboard.
+  useEffect(() => {
+    const h = (e: KeyboardEvent): void => {
+      const k = e.key.toLowerCase();
+      if (!live.current.waiting || !['h', 's', 'd'].includes(k)) return;
+      e.preventDefault();
+      setPlan((p) => p + k.toUpperCase());
+    };
+    window.addEventListener('keydown', h, { capture: true });
+    return () => window.removeEventListener('keydown', h, { capture: true });
+  }, []);
+  const finish = (): void => {
+    live.current.done = true;
+    if (bet !== null) onRun({ plan, bet });
+  };
   const hand = session.hands.at(-1);
   const add = (m: Move): void => setPlan((p) => p + m);
   if (bet === null)
@@ -62,7 +89,7 @@ export function CasinoTable({
               {formatMoney(game, b)} a hand
             </button>
           ))}
-          <button className="quiet-danger" data-testid="bj-dice" onClick={() => onRun({})}>
+          <button className="ghost" data-testid="bj-dice" onClick={() => onRun({})}>
             Skip the cards, try the dice
           </button>
         </div>
@@ -105,7 +132,7 @@ export function CasinoTable({
       <div className="row wrap">
         {playing ? (
           <>
-            <button data-testid="bj-hit" onClick={() => add('H')}>
+            <button data-testid="bj-hit" autoFocus onClick={() => add('H')}>
               Hit
             </button>
             <button data-testid="bj-stand" onClick={() => add('S')}>
@@ -128,7 +155,7 @@ export function CasinoTable({
                 Deal another
               </button>
             )}
-            <button data-testid="bj-cashout" onClick={() => onRun({ plan, bet })}>
+            <button data-testid="bj-cashout" onClick={finish}>
               Cash out
             </button>
           </>

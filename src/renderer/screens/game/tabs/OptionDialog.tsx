@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { LANGUAGES, SKILLS } from '../../../../content/skills';
-import type { GameState } from '../../../../engine';
+import { formatMoney, type GameState } from '../../../../engine';
+import { money } from '../../../../engine/economy';
+import { ACTIVITY_BY_ID } from '../../../../content/activities';
 import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
 import { Portrait } from '../../../portrait/Portrait';
 import { PetPicker } from './PetPicker';
@@ -62,6 +64,10 @@ export function OptionDialog({
   const [first, setFirst] = useState(p.first);
   const [last, setLast] = useState(p.last);
   const [look, setLook] = useState(p.look);
+  const price = (id: string): string => {
+    const c = ACTIVITY_BY_ID[id]?.cost ?? 0;
+    return game.player.age < 18 ? 'parents pay' : formatMoney(game, money(game, c));
+  };
   return (
     <Modal
       title={TITLE[activity] ?? 'Choose'}
@@ -119,6 +125,7 @@ export function OptionDialog({
             gender={p.gender}
             tabs={MAKEOVER_TABS}
             onChange={setLook}
+            original={p.look}
           />
           <button
             className="primary"
@@ -138,7 +145,7 @@ export function OptionDialog({
               })
             }
           >
-            Book it
+            Book it · {price('new_look')}
           </button>
         </div>
       )}
@@ -158,6 +165,7 @@ export function OptionDialog({
             gender={p.gender}
             tabs={SURGERY_TABS}
             onChange={setLook}
+            original={p.look}
           />
           <p className="muted small">
             Most patients get what they asked for. Some get a long nap and a bill. A few get
@@ -178,7 +186,7 @@ export function OptionDialog({
               })
             }
           >
-            Book the operation
+            Book the operation · {price('plastic_surgery')}
           </button>
         </div>
       )}

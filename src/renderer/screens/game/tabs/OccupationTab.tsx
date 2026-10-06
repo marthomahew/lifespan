@@ -13,6 +13,15 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       <section className="panel-section">
         <h3 className="section-title">Now</h3>
         <p data-testid="occupation-now">{occupationLabel(game)}</p>
+        {game.legal.fugitive && (
+          <p className="muted small" data-testid="on-the-run">
+            {`Out since ${game.legal.fugitive.since}, with ${game.legal.fugitive.owed} years still owed. `}
+            {game.player.flags.includes('false_papers')
+              ? 'Your new papers open doors, carefully.'
+              : 'No papers: only cash-in-hand work, no benefits, no borders.'}{' '}
+            The longer you stay out, the colder the trail. You can turn yourself in from Activities.
+          </p>
+        )}
         {game.player.age < 5 && (
           <p className="muted small empty-hint">
             School starts at 5, jobs at 14, and the rest of life after that. For now, the Activities

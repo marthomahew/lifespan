@@ -19,6 +19,8 @@ const FAMILY = [
   'great_grandparent',
   'child',
   'grandchild',
+  'nibling',
+  'aunt_uncle',
   'spouse',
   'stepparent',
 ];

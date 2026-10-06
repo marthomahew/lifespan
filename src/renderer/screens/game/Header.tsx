@@ -1,5 +1,6 @@
 import { countryOf, formatMoneyShort, formatMoney, type GameState } from '../../../engine';
 import { Portrait } from '../../portrait/Portrait';
+import { moodOf } from '../../portrait/parts';
 import { go, persist, useApp, app } from '../../store/app';
 
 export function Header({ game }: { game: GameState }): React.JSX.Element {
@@ -15,17 +16,27 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       data-attraction={p.attraction}
       data-wealth={p.wealth}
     >
-      <Portrait
-        className="avatar"
-        look={p.look}
-        age={p.age}
-        gender={p.gender}
-        dead={game.death !== null}
-        size={52}
-        happiness={p.stats.happiness}
-        ill={p.stats.health < 30}
-        testId="header-portrait"
-      />
+      <span className="avatar-wrap">
+        <Portrait
+          className="avatar"
+          look={p.look}
+          age={p.age}
+          gender={p.gender}
+          dead={game.death !== null}
+          size={52}
+          happiness={p.stats.happiness}
+          ill={p.stats.health < 30}
+          testId="header-portrait"
+        />
+        <span
+          className="mood-dot"
+          data-testid="mood-dot"
+          title={`Mood: ${moodOf(p.stats.happiness)}`}
+          aria-hidden="true"
+        >
+          {MOOD_FACE[moodOf(p.stats.happiness)]}
+        </span>
+      </span>
       <div className="who">
         <div className="name" data-testid="player-name">
           {p.first} {p.last}
@@ -128,3 +139,5 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
     </header>
   );
 }
+
+const MOOD_FACE = { glad: '😄', fine: '🙂', low: '😕', sad: '😢' } as const;

@@ -8,7 +8,10 @@ import { barColour } from '../../../components/StatBar';
 import { app } from '../../../store/app';
 
 const GROUPS: { label: string; roles: string[] }[] = [
-  { label: 'Family', roles: ['mother', 'father', 'stepparent', 'sibling', 'grandparent'] },
+  {
+    label: 'Family',
+    roles: ['mother', 'father', 'stepparent', 'sibling', 'grandparent', 'aunt_uncle', 'nibling'],
+  },
   { label: 'Love', roles: ['spouse', 'partner'] },
   { label: 'Children', roles: ['child', 'grandchild'] },
   { label: 'Friends', roles: ['friend', 'bandmate'] },

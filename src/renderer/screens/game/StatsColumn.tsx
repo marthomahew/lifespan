@@ -28,7 +28,7 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
   const yearStart = useApp((x) => x.yearStart);
   const since = yearStart && yearStart.lifeId === game.lifeId ? yearStart.player.stats : null;
   return (
-    <aside className="stats-col" aria-label="Stats">
+    <aside className="stats-col" aria-label="Stats" data-testid="stats-col">
       <section className="card pad">
         {STATS.map((s) => (
           <StatBar

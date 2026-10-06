@@ -6,6 +6,7 @@ import {
   WEALTH_TIERS,
   type Attraction,
   type Gender,
+  newLife,
   type NewLifeOptions,
   type WealthTier,
 } from '../../../engine';
@@ -25,6 +26,8 @@ export type Draft = {
   city: string;
   birthYear: number;
   look: Look;
+  /** Whether the player shaped the look (else a seeded life rolls its own). */
+  lookSet: boolean;
   traits: string[];
   stats: Record<StatKey, number>;
   wealth: WealthTier;
@@ -43,6 +46,7 @@ export const START: Draft = {
   city: '',
   birthYear: 2000,
   look: DEFAULT_LOOK,
+  lookSet: false,
   traits: [],
   stats: { happiness: 80, health: 90, smarts: 20, looks: 50 },
   wealth: 'middle',
@@ -87,7 +91,7 @@ export const DICE = {
       attraction: pick(['men', 'women', 'everyone'] as const),
     };
   },
-  look: (d: Draft): Draft => ({ ...d, look: rollLook(d.gender || 'nonbinary') }),
+  look: (d: Draft): Draft => ({ ...d, look: rollLook(d.gender || 'nonbinary'), lookSet: true }),
   origins: (d: Draft): Draft => ({
     ...d,
     country: pick(COUNTRIES).id,
@@ -117,7 +121,8 @@ export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
   const opts: NewLifeOptions = {
     country: d.country,
     birthYear: d.birthYear,
-    look: d.look,
+    // A seed replays a whole life, face included, unless you shaped the face yourself.
+    ...(d.lookSet || !d.seed.trim() ? { look: d.look } : {}),
     traits: d.traits,
     stats: d.stats,
     wealth: d.wealth,
@@ -139,4 +144,15 @@ export function useNewLife(): [Draft, (patch: Partial<Draft> | ((d: Draft) => Dr
   const update = (patch: Partial<Draft> | ((d: Draft) => Draft)): void =>
     setD((cur) => (typeof patch === 'function' ? patch(cur) : { ...cur, ...patch }));
   return [d, update];
+}
+
+/** The face the life will start with: yours if you shaped it, else the one the seed rolls. */
+export function shownLook(d: Draft): Look {
+  const { opts, seed } = toOptions(d);
+  if (d.lookSet || seed === undefined) return d.look;
+  try {
+    return newLife(opts, seed).player.look;
+  } catch {
+    return d.look;
+  }
 }

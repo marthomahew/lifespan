@@ -157,6 +157,10 @@ export function relLabel(n: Npc): string {
       return pick('your son', 'your daughter', 'your child');
     case 'grandchild':
       return pick('your grandson', 'your granddaughter', 'your grandchild');
+    case 'nibling':
+      return pick('your nephew', 'your niece', 'your sibling’s child');
+    case 'aunt_uncle':
+      return pick('your uncle', 'your aunt', 'your parent’s sibling');
     case 'partner':
       return pick('your boyfriend', 'your girlfriend', 'your partner');
     case 'spouse':

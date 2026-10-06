@@ -192,6 +192,8 @@ export function enrollReason(
     const major = MAJOR_BY_ID[programId];
     if (!major) return 'unknown major';
     // Universities want a passing high-school average; community colleges take anyone.
+    if (s.legal.fugitive && !s.player.flags.includes('false_papers'))
+      return 'enrolment needs papers you cannot show while on the run';
     if (kind === 'university' && e.grade < UNIVERSITY_MIN_GRADE && !e.veteranBenefit)
       return `needs a school average of ${UNIVERSITY_MIN_GRADE}; yours is ${Math.round(e.grade)} (try community college)`;
     if (

@@ -289,3 +289,31 @@ describe('third playtest', () => {
     }
   });
 });
+
+describe('the heir’s wider family', () => {
+  it('a sibling’s child is a nephew or niece; the late player’s siblings are aunts and uncles', async () => {
+    const { continueAsChild } = await import('../../src/engine');
+    let s = runCheat(newLife({ birthYear: 1960, gender: 'female', siblings: 1 }, 22), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
+    const kids = s.npcs.filter((n) => n.roles.includes('child') && n.alive);
+    if (kids.length < 2) return;
+    const grand = {
+      ...kids[1]!,
+      id: 9999,
+      first: 'Pip',
+      roles: ['grandchild' as const],
+      parentIds: [kids[1]!.id],
+      age: 4,
+    };
+    s = { ...s, npcs: [...s.npcs, grand] };
+    const next = continueAsChild(s, kids[0]!.id);
+    expect(next.npcs.find((n) => n.first === 'Pip')?.roles).toEqual(['nibling']);
+    const auntOrUncle = next.npcs.find((n) => n.roles.includes('aunt_uncle'));
+    if (s.npcs.some((n) => n.roles.includes('sibling') && n.alive))
+      expect(auntOrUncle).toBeDefined();
+  });
+});

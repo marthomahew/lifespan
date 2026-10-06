@@ -31,16 +31,19 @@ for (const size of [
     expect(log.width).toBeGreaterThan(right.width);
     await expect(page.getByTestId('tab-occupation')).toBeVisible();
     await expect(page.getByTestId('tab-activities')).toBeVisible();
-    // Achievement toasts land over the top of the log, never over the stats or the panels.
+    // Achievement toasts land bottom-right: never over the stats, the log's search, or Age Up.
     await page.getByTestId('age-up').click();
     const toast = page.getByTestId('toast').first();
     await expect(toast).toBeVisible();
     const t = await toast.boundingBox();
     expect(t).not.toBeNull();
     if (t) {
-      expect(t.x).toBeGreaterThanOrEqual(log.x);
-      expect(t.x + t.width).toBeLessThanOrEqual(log.x + log.width);
-      expect(t.y).toBeLessThan(log.y + 80);
+      expect(t.x).toBeGreaterThanOrEqual(stats.x + stats.width);
+      expect(t.y).toBeGreaterThan(log.y + 80);
+      expect(t.x + t.width).toBeLessThanOrEqual(size.width);
+      expect(t.y + t.height).toBeLessThanOrEqual(size.height);
+      const a = age;
+      expect(t.x >= a.x + a.width || t.y + t.height <= a.y || t.y >= a.y + a.height).toBe(true);
     }
   });
 }

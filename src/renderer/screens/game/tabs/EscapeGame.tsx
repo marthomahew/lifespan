@@ -42,10 +42,14 @@ export function EscapeGame({
   });
   const at = (x: number, y: number): string => {
     if (st.pos[0] === x && st.pos[1] === y) return over && st.status !== 'escaped' ? '🚨' : '🧍';
-    if (st.guards.some((g) => g.at[0] === x && g.at[1] === y)) return '👮';
+    if (st.guards.some((q) => q.at[0] === x && q.at[1] === y)) return '👮';
     if (map.exit[0] === x && map.exit[1] === y) return '🕳️';
     if (map.walls.some((w) => w[0] === x && w[1] === y)) return '📦';
     return '';
+  };
+  const guardArrow = (x: number, y: number): string => {
+    const g = st.guards.find((q) => q.at[0] === x && q.at[1] === y);
+    return g ? (ARROW[`${g.facing[0]},${g.facing[1]}`] ?? '') : '';
   };
   const lit = (x: number, y: number): boolean => st.seen.some((c) => c[0] === x && c[1] === y);
   return (
@@ -71,14 +75,18 @@ export function EscapeGame({
               data-y={y}
             >
               {at(x, y)}
+              {guardArrow(x, y) && <span className="g-arrow">{guardArrow(x, y)}</span>}
             </span>
           )),
         )}
       </div>
       <div className="escape-bar">
-        <span className="small" data-testid="escape-turn">
+        <span
+          className={st.status === 'escaped' ? 'escape-win' : 'small'}
+          data-testid="escape-turn"
+        >
           {st.status === 'escaped'
-            ? 'Through the fence!'
+            ? '🎉 Through the fence and into the dark!'
             : st.status === 'caught'
               ? 'A torch in your face. Caught.'
               : st.status === 'dawn'
@@ -106,6 +114,7 @@ export function EscapeGame({
           <button
             className="primary"
             data-testid="escape-done"
+            autoFocus
             onClick={() => onRun({ moves: moves.join('') })}
           >
             {st.status === 'escaped'
@@ -130,5 +139,7 @@ export function EscapeGame({
   );
 }
 
+/** Which way each guard walks next. */
+const ARROW: Record<string, string> = { '1,0': '→', '-1,0': '←', '0,1': '↓', '0,-1': '↑' };
 const ICONS: Record<Dir, string> = { L: '←', U: '↑', D: '↓', R: '→', W: '⏸' };
 const NAMES: Record<Dir, string> = { L: 'Left', U: 'Up', D: 'Down', R: 'Right', W: 'Wait' };

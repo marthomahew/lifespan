@@ -9,6 +9,7 @@ test('a life ends in an obituary with a cause, a title and a New Life action', a
   await expect(page.getByTestId('obit-cause')).toContainText('Cause of death:');
   await expect(page.getByTestId('obit-portrait')).toHaveClass(/dead/);
   await expect(page.getByTestId('obit-years').locator('.portrait').first()).toBeVisible();
+  await expect(page.getByTestId('btn-obit-new-life')).toBeInViewport();
   await expect(page.getByTestId('obit-title')).not.toBeEmpty();
   await expect(page.getByTestId('obit-summary').locator('li').first()).toBeVisible();
   await page.getByTestId('btn-obit-new-life').click();

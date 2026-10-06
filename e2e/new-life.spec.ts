@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { answerPopup, clearPopups, headerAge } from './helpers';
+import { answerPopup, clearPopups, headerAge, startSeeded } from './helpers';
 
 test('flow 1: new random life, age to 5 with the button and Space', async ({ page }) => {
   await page.goto('/');
@@ -152,4 +152,14 @@ test('roll everything fills every section', async ({ page }) => {
   await expect(page.getByTestId('f-parents')).not.toHaveValue('');
   await page.getByTestId('btn-begin').click();
   await expect(page.getByTestId('game-screen')).toBeVisible();
+});
+
+test('a seed replays the same face unless you shape it', async ({ page }) => {
+  const faces: string[] = [];
+  for (let i = 0; i < 2; i++) {
+    await startSeeded(page, 4242);
+    const p = page.getByTestId('header-portrait');
+    faces.push(`${await p.getAttribute('data-hair')}/${await p.getAttribute('data-skin')}`);
+  }
+  expect(faces[0]).toBe(faces[1]);
 });

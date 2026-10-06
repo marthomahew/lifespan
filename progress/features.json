@@ -709,5 +709,10 @@
     "title": "Free time can be switched off; records across lives on the start screen; pet faces in pet popups; drawn start-screen strip; 20 childhood events (ages 3–12)",
     "passes": true,
     "evidence": "tests/engine/free-time.test.ts; e2e/settings.spec.ts; e2e/obituary.spec.ts (records); tests/engine/pets.test.ts (pet popups); content:check"
+  },
+  "S47": {
+    "title": "Second browser review fixes: seeds replay faces, no undoing a blackjack hand, nephews and aunts for heirs, visible life on the run, Continue as… in the obituary bar, toasts bottom-right, sticky feedback, clearer look dialogs with prices, mood dot, keyboard play for blackjack, guard arrows, prison.escape cheat",
+    "passes": true,
+    "evidence": "e2e/new-life.spec.ts (seed face); e2e/casino.spec.ts (walking away); e2e/escape.spec.ts (on the run); e2e/layout.spec.ts (toasts); e2e/obituary.spec.ts; tests/engine/playtest-fixes.test.ts (wider family); tests/engine/cheats/health.test.ts"
   }
 }
