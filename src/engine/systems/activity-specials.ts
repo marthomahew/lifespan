@@ -7,6 +7,7 @@ import { addStat } from '../stats';
 import type { GameState, ViceKey } from '../types';
 import { clampStat } from '../util';
 import { escapePrison, recapture, release } from './crime';
+import { novelReason, writeNovel } from './projects';
 import { graduateHighSchool } from './education';
 import { treat } from './health';
 import { ILLNESS_BY_ID } from '../../content/illnesses';
@@ -34,6 +35,10 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
   if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
+  if (sp === 'novel') {
+    const why = novelReason(s);
+    if (why) return why;
+  }
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
     if (reasons.every((r) => r !== null)) return reasons.find((r) => r) ?? 'not now';
@@ -216,21 +221,9 @@ export function runSpecial(
       }
       return;
     }
-    case 'novel': {
-      const w = s.player.skills['writing'] ?? 0;
-      if (w >= 40 && ctx.rng.chance(0.15 + w / 300)) {
-        const advance = money(s, 2000 + w * 400, 'wage');
-        s.money.cash += advance;
-        if (!s.player.flags.includes('published_novel')) s.player.flags.push('published_novel');
-        addStat(s, 'fame', w > 70 ? 6 : 2);
-        ctx.log(
-          'fame',
-          `A publisher buys your novel for ${formatMoney(s, advance)}. Your mother tells everyone at church.`,
-          true,
-        );
-      }
+    case 'novel':
+      writeNovel(ctx, outcomeIndex);
       return;
-    }
     case 'rehab':
     case 'support': {
       const which =

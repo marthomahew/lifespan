@@ -9,6 +9,7 @@ const NULLABLE: RegExp[] = [
   /^\$\.player\.talent$/,
   /^\$\.challenge$/,
   /^\$\.legal\.fugitive$/,
+  /^\$\.projects\.novel$/,
   /^\$\.career\.(jobId|partTimeId)$/,
   /^\$\.career\.history\[\]\.to$/,
   /^\$\.education\.enrollment$/,

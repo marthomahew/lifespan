@@ -26,6 +26,8 @@ export type Threshold = {
 
 const PLAYER_TOKENS = new Set(['first', 'last', 'age', 'city', 'country', 'year']);
 export const PET_TOKENS = new Set(['pet', 'pet.kind', ...PET_KINDS.map((k) => k.id)]);
+/** The novel in progress (project events only). */
+const PROJECT_TOKENS = new Set(['novel']);
 const NPC_FIELDS = new Set([
   'first',
   'last',
@@ -198,7 +200,7 @@ export function validateEvents(
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;
         // Pet tokens; tests/content/pets-content.test.ts checks such events need a pet.
-        if (PET_TOKENS.has(tok)) continue;
+        if (PET_TOKENS.has(tok) || PROJECT_TOKENS.has(tok)) continue;
         if (
           /^money:\$[a-z_]+$/.test(tok) ||
           /^cash:\$[a-z_]+$/.test(tok) ||

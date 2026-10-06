@@ -1,4 +1,5 @@
 import { petsTick } from './pets';
+import { projectsTick } from './projects';
 import type { Ctx } from '../ctx';
 import { drawRandomEvents, runDueChains } from '../events/select';
 import type { Circumstances } from '../stats';
@@ -89,6 +90,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   assetsTick(ctx);
   npcLifecycle(ctx);
   petsTick(ctx);
+  projectsTick(ctx);
   romanceTick(ctx);
   // 5. Chain steps due this year.
   ctx.phase('chains');

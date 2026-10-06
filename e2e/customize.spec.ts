@@ -107,3 +107,13 @@ test('a holiday: pick where, and the log says what happened there', async ({ pag
   await clearPopups(page);
   await expect(page.getByTestId('log-line').filter({ hasText: '🇮🇸' })).toHaveCount(1);
 });
+
+test('writing a novel starts a thread you can follow in the left column', async ({ page }) => {
+  await startSeeded(page, 2626);
+  await cheat(page, 'age set 30', 'skill writing 60');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await page.getByTestId('act-write_novel').click();
+  await clearPopups(page);
+  await expect(page.getByTestId('thread-novel')).toContainText('% of a draft');
+});

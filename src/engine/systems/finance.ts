@@ -79,9 +79,7 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     const own = housing === 'renting' || housing === 'owning';
     // From 23, staying at your parents' means paying your way: board, not rent.
     const full =
-      housing === 'parents' && s.player.age >= 23
-        ? money(s, 5000)
-        : money(s, LIVING[housing] ?? 0);
+      housing === 'parents' && s.player.age >= 23 ? money(s, 5000) : money(s, LIVING[housing] ?? 0);
     const base = own ? Math.min(full, Math.max(money(s, 6000), Math.round(income * 0.45))) : full;
     report.living = Math.round(base * LIFESTYLE_MULT[m.lifestyle]);
     if (housing === 'renting')

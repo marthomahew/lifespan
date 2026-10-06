@@ -734,5 +734,10 @@
     "title": "Money matters longer: board at your parents’ from 23, means-tested support; event groups (one gap year per life)",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts (money that matters); sim"
+  },
+  "S52": {
+    "title": "The novel as a multi-year project with decisions at each stage; a Threads card for open storylines; Shortlisted achievement",
+    "passes": true,
+    "evidence": "tests/engine/projects.test.ts; e2e/customize.spec.ts (novel thread); sim invariants"
   }
 }

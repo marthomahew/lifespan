@@ -1,3 +1,4 @@
+import type { Projects } from '../systems/projects';
 import type {
   Attraction,
   CheatState,
@@ -77,6 +78,8 @@ export type GameState = {
   player: Player;
   npcs: Npc[];
   pets: Pet[];
+  /** Long projects (a novel in progress); absent in older saves. */
+  projects?: Projects;
   nextNpcId: number;
   log: LogEntry[];
   pending: PendingEvent[];

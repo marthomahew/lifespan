@@ -1,4 +1,5 @@
 import { favouritePet, givePet } from '../systems/pets';
+import { novelOp } from '../systems/projects';
 import { TRAIT_BY_ID } from '../../content/traits';
 import { eventEdge, tiltWeights } from './skill-check';
 import type { Ctx } from '../ctx';
@@ -143,6 +144,8 @@ export function applyEffect(
       s.legal.prison.behaviour = clampStat(s.legal.prison.behaviour + e.behaviour);
   } else if ('conduct' in e) {
     if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
+  } else if ('novel' in e) {
+    novelOp(ctx, e.novel);
   } else if ('pet' in e && e.pet === 'adopt') {
     givePet(ctx, e.kind, e.name);
   } else if ('pet' in e) {

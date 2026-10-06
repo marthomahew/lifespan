@@ -1,3 +1,4 @@
+import type { NovelOp } from '../systems/projects';
 import type { Gender, Category, ChainPayload, GameState, Role, StatKey, ViceKey } from '../types';
 
 /** Who an event talks about. If a binding can't be filled, the event is ineligible. */
@@ -84,7 +85,9 @@ export type Effect =
   | { pet: 'bond' | 'health'; delta: number; kind?: string }
   | { pet: 'lose'; fate: string; kind?: string }
   /** A new animal joins the family (no shop, no fee: an event already paid). */
-  | { pet: 'adopt'; kind: string; name: string };
+  | { pet: 'adopt'; kind: string; name: string }
+  /** A step for the novel in progress. */
+  | { novel: NovelOp };
 
 export type ChainStepDef = {
   eventId: string;

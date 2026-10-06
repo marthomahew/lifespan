@@ -481,7 +481,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.4,
         success: true,
-        text: 'Every morning before work, a page. By December you have a stack you are almost not embarrassed by.',
+        text: 'Every morning before anyone else is up, a page. By December the stack has grown a good deal.',
         effects: [
           { skill: 'writing', delta: 6 },
           { stat: 'happiness', delta: 4 },
@@ -498,7 +498,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       {
         chance: 0.25,
         success: true,
-        text: 'You type the last line of a full draft at two in the morning and sit in the dark grinning at nothing.',
+        text: 'A breakthrough: three chapters in a fortnight, written at the kitchen table with the radio on. The book suddenly knows what it is about.',
         effects: [
           { skill: 'writing', delta: 8 },
           { stat: 'happiness', delta: 8 },

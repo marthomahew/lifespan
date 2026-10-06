@@ -321,6 +321,12 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (s) => s.player.flags.includes('file_cold'),
   },
   {
+    id: 'shortlisted',
+    label: 'Shortlisted',
+    emoji: '🏅',
+    description: 'A novel of yours was shortlisted for a prize.',
+  },
+  {
     id: 'passport_stamps',
     label: 'Passport Stamps',
     emoji: '🧳',

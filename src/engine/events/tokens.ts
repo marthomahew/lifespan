@@ -104,6 +104,7 @@ export function resolveToken(
     case 'year':
       return String(s.year);
   }
+  if (token === 'novel') return s.projects?.novel?.title ?? null;
   // {pet} and {pet.kind} name your favourite animal; {dog}, {cat}... a particular one.
   if (token === 'pet' || token === 'pet.kind' || PET_BY_ID[token]) {
     const kind = PET_BY_ID[token] ? token : undefined;
