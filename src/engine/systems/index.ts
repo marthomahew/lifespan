@@ -1,6 +1,6 @@
 import { petsTick } from './pets';
 import { memoryTick } from './memories';
-import { crossroadsTick, lifeChapterTick } from './crossroads';
+import { crossroadsTick, lifeChapterTick, marriageTick } from './crossroads';
 import { projectsTick } from './projects';
 import type { Ctx } from '../ctx';
 import { drawRandomEvents, runDueChains } from '../events/select';
@@ -86,6 +86,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   careerTick(ctx);
   crossroadsTick(ctx);
   lifeChapterTick(ctx);
+  marriageTick(ctx);
   militaryTick(ctx);
   fameTick(ctx);
   healthTick(ctx);

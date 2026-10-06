@@ -45,3 +45,16 @@ export function lifeChapterTick(ctx: Ctx): void {
   const def = EVENT_BY_ID['mid_chapter'];
   if (def) fireEvent(ctx, def, 'system');
 }
+
+/** Married seven years or more: every eight years or so, the marriage asks for attention. */
+export function marriageTick(ctx: Ctx): void {
+  const s = ctx.s;
+  if (s.legal.prison || s.player.age < 28 || s.player.age > 75) return;
+  const sp = s.npcs.find((n) => n.alive && n.roles.includes('spouse'));
+  if (!sp?.romance || s.year - sp.romance.since < 7) return;
+  const last = s.events.lastFired['mar_checkin'];
+  if (last !== undefined && s.year - last < 8) return;
+  if (!ctx.rng.chance(0.25)) return;
+  const def = EVENT_BY_ID['mar_checkin'];
+  if (def) fireEvent(ctx, def, 'system', { years: s.year - sp.romance.since }, { sp: sp.id });
+}

@@ -195,3 +195,72 @@ export const UNI_EVENTS: EventDef[] = [
     ],
   },
 ];
+
+/** A long marriage asks for attention (fired by the marriage system). */
+export const MARRIAGE_EVENTS: EventDef[] = [
+  {
+    id: 'mar_checkin',
+    kind: 'choice',
+    category: 'romance',
+    adultsOnly: true,
+    ages: [28, 80],
+    weight: 1,
+    chainOnly: true,
+    bind: { sp: { role: 'spouse', minAge: 18 } },
+    text: '{$years} years married. Some evenings you and {sp.first} talk about everything; lately, mostly about bins. {sp.They} look{sp.s} up at you across the kitchen, and you both know it.',
+    choices: [
+      {
+        id: 'invest',
+        label: 'Make time: a real date, every week',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'Thursdays become yours again: a walk, a cheap restaurant, the long talks you forgot you liked. {sp.first} laughs at your terrible jokes like it is the first year.',
+            effects: [
+              { rel: 'sp', delta: 12, memory: 'Thursday nights, again' },
+              { stat: 'happiness', delta: 6 },
+              { flag: 'marriage_tended' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'counsel',
+        label: 'Suggest couples counselling',
+        requires: canAfford(1500),
+        outcomes: [
+          {
+            chance: (st) => 0.7 + (st.player.stats.karma - 50) / 300,
+            text: 'Twelve Tuesday evenings in a room with a box of tissues and a very calm woman. You both say the hard things. It turns out you still want the same life.',
+            effects: [
+              { money: -1500, kind: 'price' },
+              { rel: 'sp', delta: 18, memory: 'the counselling that saved us' },
+              { stat: 'stress', delta: -6 },
+            ],
+            success: true,
+          },
+          {
+            chance: (st) => 0.3 - (st.player.stats.karma - 50) / 300,
+            text: 'In the fifth session you both realise, at the same moment, that you are trying to save something that ended a while ago. It is sad, and kind, and very clear.',
+            effects: [
+              { money: -1500, kind: 'price' },
+              { status: 'divorce', with: 'sp' },
+              { stat: 'happiness', delta: -10 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'coast',
+        label: 'It’s fine. Everyone gets like this.',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You carry on as you are. It is fine, mostly. Some nights you both sit in the same room and are somewhere else entirely.',
+            effects: [{ rel: 'sp', delta: -10, memory: 'the years we drifted' }],
+          },
+        ],
+      },
+    ],
+  },
+];
