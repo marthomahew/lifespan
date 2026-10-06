@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { netWorth } from '../networth';
 import { favouritePet, givePet } from '../systems/pets';
 import { novelOp } from '../systems/projects';
@@ -174,7 +175,13 @@ export function applyOutcome(
   choiceLabel?: string,
 ): void {
   const s = ctx.s;
-  const text = renderText(s, o.text, bindings, payload);
+  // Variants of the same outcome: pick one the log hasn't shown lately.
+  const text = o.texts?.length
+    ? pickFresh(
+        ctx,
+        [o.text, ...o.texts].map((x) => renderText(s, x, bindings, payload)),
+      )
+    : renderText(s, o.text, bindings, payload);
   const prompt = renderText(s, def.text, bindings, payload);
   if (isNotice) ctx.log(def.category, `${prompt} ${text}`.trim());
   else

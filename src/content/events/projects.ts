@@ -18,6 +18,11 @@ export const PROJECT_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: 'Forty query letters, each one rewritten until it stops sounding desperate. You press send and then go for a long walk.',
+            texts: [
+              'You print the first chapter, read it aloud to an empty room, and send it to every agent who has ever said yes to anything like it.',
+              'This time you know the drill: a short letter, a clean synopsis, and no exclamation marks. Send, and then do something else entirely for a month.',
+              'You send it out with a note that mentions your last book, casually, as if you had not rewritten the sentence nine times.',
+            ],
             effects: [{ novel: 'submit' }, { stat: 'stress', delta: 4 }],
           },
         ],
@@ -62,6 +67,10 @@ export const PROJECT_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: 'You make a spreadsheet of rejections and decide, defiantly, that it is a list of people who will regret this.',
+            texts: [
+              'You pin the rejections to a corkboard. It is a very full corkboard. You buy a second one.',
+              'Somewhere out there is the right agent. You send it to twenty more and stop reading the replies before breakfast.',
+            ],
             effects: [
               { novel: 'keep_trying' },
               { stat: 'happiness', delta: -3 },

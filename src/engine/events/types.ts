@@ -106,6 +106,8 @@ export type OutcomeDef = {
   /** Relative weight; a function lets stats, traits, and skills shift the odds. */
   chance: number | ((s: GameState, payload: ChainPayload) => number);
   text: string;
+  /** Other wordings of the same outcome (for events that recur). */
+  texts?: string[];
   effects: Effect[];
   next?: ChainStepDef;
   /** Counts as the "it worked" outcome for the force-success cheat. */

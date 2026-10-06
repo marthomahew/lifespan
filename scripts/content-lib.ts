@@ -195,7 +195,10 @@ export function validateEvents(
     const queries = bindingQueries(e);
     const tokenTexts: [string, string][] = [[e.id, e.text]];
     for (const c of e.choices ?? []) tokenTexts.push([at(`.${c.id}`), c.label]);
-    allOutcomes(e).forEach((o, i) => tokenTexts.push([at(`#${i}`), o.text]));
+    allOutcomes(e).forEach((o, i) => {
+      tokenTexts.push([at(`#${i}`), o.text]);
+      (o.texts ?? []).forEach((v, j) => tokenTexts.push([at(`#${i}.${j}`), v]));
+    });
     // Phones, apps and video calls only exist from the late 2000s.
     if (!(e.fromYear && e.fromYear >= 2005) && tokenTexts.some(([, t]) => ERA_WORDS.test(t)))
       err(e.id, 'mentions modern tech (an app, a video call...) without fromYear ≥ 2005');

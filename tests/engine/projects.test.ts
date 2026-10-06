@@ -141,3 +141,26 @@ describe('more books', () => {
     expect(new Set(titles).size).toBe(6);
   });
 });
+
+describe('a writing career', () => {
+  it('a backlist earns every year, and a track record raises the advance', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { novelOp, projectsTick } = await import('../../src/engine/systems/projects');
+    const s = structuredClone(writer(95));
+    s.projects = { books: 3, novel: null };
+    const cash = s.money.cash;
+    projectsTick(new Ctx(s));
+    expect(s.money.cash).toBeGreaterThan(cash);
+    const advance = (books: number): number => {
+      const t = structuredClone(writer(95));
+      t.projects = {
+        books,
+        novel: { title: 'X', stage: 'querying', progress: 100, quality: 60, rejections: 0 },
+      };
+      const before = t.money.cash;
+      novelOp(new Ctx(t), 'accept');
+      return t.money.cash - before;
+    };
+    expect(advance(3)).toBeGreaterThan(advance(0) * 1.8);
+  });
+});

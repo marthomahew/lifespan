@@ -75,6 +75,9 @@ export function writeNovel(ctx: Ctx, outcomeIndex: number): void {
 /** The year's news for a book out in the world. */
 export function projectsTick(ctx: Ctx): void {
   const s = ctx.s;
+  // The backlist keeps selling, a little, every year.
+  const books = s.projects?.books ?? 0;
+  if (books > 0 && !s.death) s.money.cash += money(s, 250 * books, 'wage');
   const n = novelOf(s);
   if (!n || s.death) return;
   if (n.stage === 'querying') {
@@ -146,7 +149,8 @@ export function novelOp(ctx: Ctx, op: NovelOp): void {
         return;
       }
       const w = s.player.skills['writing'] ?? 0;
-      const base = 3000 + n.quality * 400 + w * 100;
+      // A track record pays: each earlier book raises the next advance.
+      const base = (3000 + n.quality * 400 + w * 100) * (1 + 0.35 * (p.books ?? 0));
       const advance = money(s, op === 'holdout' ? base * 1.8 : base, 'wage');
       publish(ctx, n, advance, `a publisher, for ${formatMoney(s, advance)}`);
       return;

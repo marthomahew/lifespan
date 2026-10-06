@@ -769,5 +769,10 @@
     "title": "Fixes from the re-measurement: unique book titles, tenure clock for crossroads, settled memories, engagement nudge, flag follow-ups, needs-work job leads, varied failure lines, countryThe token",
     "passes": true,
     "evidence": "tests/engine/projects.test.ts (more books); tests/engine/crossroads.test.ts (clock); tests/engine/memories.test.ts (settled); content:check"
+  },
+  "S59": {
+    "title": "Event outcome variants (checked by content:check); a writing career: advances grow with books, the backlist pays each year",
+    "passes": true,
+    "evidence": "tests/engine/projects.test.ts (writing career); content:check"
   }
 }
