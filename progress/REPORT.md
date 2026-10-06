@@ -68,7 +68,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - An adult heir keeps their job, and their diploma matches their grades.
   - The lease event really moves you out; no imaginary family dog; "your share of the estate".
 - **Dating (S35):** Find a date and dating apps offer three drawn people, each with a job, two traits, a line about them, and whether they want children or marriage. The face on the card is the face you get. Relationships get serious more surely the longer and warmer they are.
-- **Deeper arcs (S51–S57), from a game-design review:**
+- **Deeper arcs (S51–S60), from a game-design review and a re-measurement:**
   - A novel is now a multi-year project. You draft year by year, then revise, send it out or shelve it. Rejections can mean revising or self-publishing, an offer can be taken or held out on (risky), and reviews follow.
   - A new Threads card in the left column keeps open storylines in view: the book, a baby on the way, prison time, life on the run, studies, and things still unfolding with someone.
   - Music takes free time and can flop, tours can go wrong, and fame comes slower (the musician bot reaches fame 90 at 31 instead of 21).
@@ -78,6 +78,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - People act on what they remember: someone with a strong memory of you, a kindness or a wound, brings it back years later.
   - Events that need phones, apps or video calls only happen from 2008, and the content check enforces it. The most-repeated activity lines have four variants each (the worst repeat per life fell from 38 to 10).
   - A re-measurement found the gains: lasting choices up across adulthood, mid-life decisions up, the musician's fame at 27 instead of 19, and the worst repeated line per life down from 39 to 11. Its bugs are fixed: unique book titles, a tenure clock for crossroads, settled memories, a long-engagement nudge, follow-ups for the holiday home, the foundation and the drawer novel, no corner-shop job offers for the rich, varied failed-treatment and refused-promotion lines, and "across the United States".
+  - Writing is a career: advances grow with each earlier book and the backlist pays every year. Event outcomes can now vary their wording (the content check validates the variants). Two failed treatments in a row bring a rethink: a specialist, a different approach, or learning to live with it.
   - Every five to eight years in a job brings a crossroads: take the team or stay hands-on, a rival's offer (take it, counter, or stay), a redundancy package, or a sabbatical.
   - Living with your parents costs board from 23; unemployment support is means-tested; alternative events (three gap years) happen at most once.
 - **More to do (S39–S49):**
