@@ -33,6 +33,8 @@ export function die(ctx: Ctx, cause: string): void {
     achievements: s.player.achievements.length,
     fame: s.player.stats.fame,
     children: s.npcs.filter((n) => n.roles.includes('child')).length,
+    look: s.player.look,
+    gender: s.player.gender,
   });
   ctx.log('death', `You died at ${s.player.age}. Cause: ${cause}.`, true);
 }

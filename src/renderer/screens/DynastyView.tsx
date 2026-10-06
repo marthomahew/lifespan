@@ -1,3 +1,4 @@
+import { Portrait } from '../portrait/Portrait';
 import { formatMoney, legacyScore, type GameState } from '../../engine';
 import { refToLocal } from '../../engine/economy';
 import { Modal } from '../components/Modal';
@@ -31,7 +32,17 @@ export function DynastyView({ game }: { game: GameState }): React.JSX.Element {
               {gens.map((g, i) => (
                 <tr key={`${g.first}-${g.birthYear}-${i}`} data-testid="dynasty-row">
                   <th scope="row">
-                    {g.first} {g.last}
+                    <span className="dynasty-who">
+                      {g.look && (
+                        <Portrait
+                          look={g.look}
+                          age={g.deathYear - g.birthYear}
+                          gender={g.gender ?? 'nonbinary'}
+                          size={30}
+                        />
+                      )}
+                      {g.first} {g.last}
+                    </span>
                   </th>
                   <td>
                     {g.birthYear}–{g.deathYear}

@@ -20,6 +20,7 @@ test('flow 10: death via cheats, obituary, continue as a child', async ({ page }
   // History carries over: the dynasty lists the late parent.
   await page.getByTestId('btn-dynasty').click();
   await expect(page.getByTestId('dynasty-row').first()).toContainText('Ottoline');
+  await expect(page.getByTestId('dynasty-row').first().locator('.portrait')).toBeVisible();
   await expect(page.getByTestId('legacy-score')).toContainText('Legacy score');
   await page.keyboard.press('Escape');
   await page.getByTestId('tab-relationships').click();

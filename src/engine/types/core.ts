@@ -247,6 +247,9 @@ export type GenerationRecord = {
   achievements: number;
   fame: number;
   children: number;
+  /** Their portrait, for the dynasty (absent in older saves). */
+  look?: Look;
+  gender?: Gender;
 };
 
 export type CheatState = {

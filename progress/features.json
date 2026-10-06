@@ -684,5 +684,10 @@
     "title": "Obituary shows the life through the years: the portrait at 1, 10, 25, 50 and 75",
     "passes": true,
     "evidence": "e2e/obituary.spec.ts"
+  },
+  "S42": {
+    "title": "Dynasty rows show each generation’s portrait",
+    "passes": true,
+    "evidence": "e2e/legacy.spec.ts"
   }
 }
