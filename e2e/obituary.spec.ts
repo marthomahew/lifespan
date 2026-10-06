@@ -14,3 +14,15 @@ test('a life ends in an obituary with a cause, a title and a New Life action', a
   await page.getByTestId('btn-obit-new-life').click();
   await expect(page.getByTestId('new-life-screen')).toBeVisible();
 });
+
+test('a finished life goes into the records on the start screen', async ({ page }) => {
+  await startSeeded(page, 6);
+  await page.keyboard.press('`');
+  await page.getByTestId('console-input').fill('deathbot');
+  await page.getByTestId('console-input').press('Enter');
+  await page.getByTestId('cheat-close').click();
+  await expect(page.getByTestId('obituary-screen')).toBeVisible();
+  await page.goto('/');
+  await expect(page.getByTestId('records')).toContainText('1 life lived');
+  await expect(page.getByTestId('records')).toContainText('Oldest');
+});

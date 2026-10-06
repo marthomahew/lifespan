@@ -8,6 +8,8 @@ export type Settings = {
   cheatBadge: boolean;
   autosave: boolean;
   reducedMotion: boolean;
+  /** A yearly budget for activities (off: do as much as you like). */
+  freeTime: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -17,6 +19,7 @@ export const DEFAULT_SETTINGS: Settings = {
   cheatBadge: true,
   autosave: true,
   reducedMotion: false,
+  freeTime: true,
 };
 
 const KEY = 'lifespan.settings';
@@ -35,6 +38,7 @@ export function loadSettings(): Settings {
     if (typeof v.cheatBadge === 'boolean') out.cheatBadge = v.cheatBadge;
     if (typeof v.autosave === 'boolean') out.autosave = v.autosave;
     if (typeof v.reducedMotion === 'boolean') out.reducedMotion = v.reducedMotion;
+    if (typeof v.freeTime === 'boolean') out.freeTime = v.freeTime;
     return out;
   } catch {
     return { ...DEFAULT_SETTINGS };

@@ -13,7 +13,7 @@ Start a **random life** or build one: name, gender, attraction, country, city, b
 
 Everyone ages on screen, from baby to grey, and their faces follow their mood. Pets (dogs, cats, rabbits, hamsters, parrots, goldfish, tortoises and horses) have their own bond, health and lifespan.
 
-When you die you get an obituary with a life title, and you can continue as any living child. The Dynasty view keeps every generation and a legacy score.
+When you die you get an obituary with a life title and your face through the years, and you can continue as any living child. The Dynasty view keeps every generation and a legacy score, and the start screen keeps records across every life (oldest, richest, most children, most achievements). The free-time limit can be switched off in Settings.
 
 Romance, dating, and pregnancy are for adults only and fade to black. Crime and drugs stay abstract.
 

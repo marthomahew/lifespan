@@ -37,6 +37,8 @@ export type NewLifeOptions = {
   stats?: Partial<Record<VisibleStat, number>>;
   wealth?: WealthTier;
   popupsPerYear?: number;
+  /** Off lifts the yearly free-time budget for activities. */
+  freeTime?: boolean;
   /** Any features picked in the builder; the rest are rolled. */
   look?: Partial<Look>;
   /** A skill you were born with a gift for. */
@@ -325,6 +327,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   st.stress = r.int(0, 15);
   if (opts.popupsPerYear !== undefined)
     s.settings.popupsPerYear = Math.min(5, Math.max(1, Math.round(opts.popupsPerYear)));
+  if (opts.freeTime === false) s.settings.freeTime = false;
 
   generateFamily(ctx, opts);
   if (opts.challenge && CHALLENGE_BY_ID[opts.challenge])

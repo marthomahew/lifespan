@@ -37,3 +37,14 @@ describe('free time', () => {
     expect(freeTime(s).left).toBe(freeTime(s).total);
   });
 });
+
+describe('free time can be switched off', () => {
+  it('with the setting off, a year holds as many activities as you like', () => {
+    let s = runCheat(adult(5), 'job.set', { job: 'accountant' }).state;
+    s = { ...s, settings: { ...s.settings, freeTime: false } };
+    for (const id of ['gym', 'meditate', 'nightlife', 'volunteer', 'join_club', 'study'])
+      s = act({ ...s, pending: [] }, { type: 'activity', id }).state;
+    expect(s.player.age).toBe(30);
+    expect(newLife({ freeTime: false }, 6).settings.freeTime).toBe(false);
+  });
+});

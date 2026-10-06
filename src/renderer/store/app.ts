@@ -20,6 +20,7 @@ import { createStore, useStore } from './store';
 import { applySettingsToDocument, loadSettings, saveSettings, type Settings } from './settings';
 import { choiceResult, type ChoiceResult } from './result';
 import { markCompleted } from './challenges';
+import { recordLife } from './records';
 
 export type Screen = 'start' | 'new' | 'game' | 'obituary' | 'lives' | 'settings';
 export type Tab = 'occupation' | 'assets' | 'relationships' | 'activities';
@@ -134,6 +135,8 @@ export function applyStep(step: Step, opts: { autosave?: boolean } = {}): void {
   // Remember a won challenge across lives.
   if (game.challenge?.status === 'won' && prev?.challenge?.status !== 'won')
     markCompleted(game.challenge.id);
+  // A life just ended: fold it into the records across lives.
+  if (game.death && prev && !prev.death) recordLife(game);
   const newYear = !prev || prev.year !== game.year || game.death !== prev.death;
   if ((opts.autosave ?? true) && app.get().settings.autosave && newYear) void persist(game);
 }
@@ -141,7 +144,7 @@ export function applyStep(step: Step, opts: { autosave?: boolean } = {}): void {
 export function startLife(opts: NewLifeOptions, seed?: number): void {
   const s = app.get().settings;
   const game = newLife(
-    { ...opts, popupsPerYear: s.popupsPerYear },
+    { ...opts, popupsPerYear: s.popupsPerYear, freeTime: s.freeTime },
     seed ?? Math.floor(Math.random() * 2 ** 31),
   );
   app.set({
@@ -205,12 +208,17 @@ export function updateSettings(patch: Partial<Settings>): void {
   saveSettings(settings);
   applySettingsToDocument(settings);
   const g = app.get().game;
-  if (
-    g &&
-    patch.popupsPerYear !== undefined &&
-    g.settings.popupsPerYear !== settings.popupsPerYear
-  ) {
-    app.set({ game: { ...g, settings: { ...g.settings, popupsPerYear: settings.popupsPerYear } } });
+  if (g && (patch.popupsPerYear !== undefined || patch.freeTime !== undefined)) {
+    app.set({
+      game: {
+        ...g,
+        settings: {
+          ...g.settings,
+          popupsPerYear: settings.popupsPerYear,
+          freeTime: settings.freeTime,
+        },
+      },
+    });
   }
   app.set({ settings });
 }

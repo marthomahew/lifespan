@@ -1,3 +1,5 @@
+import { loadRecords } from '../store/records';
+import { DEFAULT_LOOK } from '../../engine/look';
 import { Portrait } from '../portrait/Portrait';
 import { useEffect, useState } from 'react';
 import { parseSaveFile, type SaveSummary } from '../../engine';
@@ -38,7 +40,15 @@ export function StartScreen(): React.JSX.Element {
         </div>
         <h1>Lifespan</h1>
         <p className="life-strip" aria-hidden="true">
-          👶 <span>·</span> 🧒 <span>·</span> 🧑 <span>·</span> 🧓
+          {[1, 8, 30, 75].map((age) => (
+            <Portrait
+              key={age}
+              look={STRIP_LOOK}
+              age={age}
+              gender="female"
+              size={age === 30 ? 44 : 36}
+            />
+          ))}
         </p>
         <p className="muted">A whole life, one year at a time.</p>
         <div className="col start-actions">
@@ -79,8 +89,55 @@ export function StartScreen(): React.JSX.Element {
             </button>
           </div>
         </div>
+        <RecordsCard />
       </div>
       <p className="start-foot muted small">No ads, no timers, no paywalls. Just a life.</p>
     </div>
   );
 }
+
+/** The best marks across every life lived here. */
+function RecordsCard(): React.JSX.Element | null {
+  const r = loadRecords();
+  if (!r.lives) return null;
+  const rows: [string, string][] = [];
+  if (r.oldest) rows.push(['Oldest', `${r.oldest.value}, ${r.oldest.who}`]);
+  if (r.richest) rows.push(['Richest', `${formatRef(r.richest.value)}, ${r.richest.who}`]);
+  if (r.mostChildren)
+    rows.push(['Most children', `${r.mostChildren.value}, ${r.mostChildren.who}`]);
+  if (r.mostAchievements)
+    rows.push(['Most achievements', `${r.mostAchievements.value}, ${r.mostAchievements.who}`]);
+  return (
+    <section className="records card pad" data-testid="records" aria-label="Records">
+      <h2 className="section-title">
+        Records · {r.lives} {r.lives === 1 ? 'life' : 'lives'} lived
+      </h2>
+      <dl>
+        {rows.map(([k, v]) => (
+          <div key={k}>
+            <dt className="muted small">{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+}
+
+/** Today's dollars, short. */
+function formatRef(v: number): string {
+  const a = Math.abs(v);
+  const s =
+    a >= 1e6 ? `$${(a / 1e6).toFixed(1)}M` : a >= 1e3 ? `$${Math.round(a / 1e3)}k` : `$${a}`;
+  return v < 0 ? `−${s}` : s;
+}
+
+/** One face for the strip, growing up and growing old. */
+const STRIP_LOOK = {
+  ...DEFAULT_LOOK,
+  skin: 3,
+  hair: 'curly',
+  hairColor: 'auburn',
+  eyeColor: 'green',
+  topColor: 2,
+} as const;

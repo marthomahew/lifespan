@@ -64,7 +64,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
-      {!game.legal.prison && <FreeTime game={game} />}
+      {!game.legal.prison && game.settings.freeTime !== false && <FreeTime game={game} />}
       {error && (
         <p className="error small" role="alert" data-testid="activity-error">
           {error}

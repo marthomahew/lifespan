@@ -4,6 +4,7 @@ import type { ChoiceResult } from '../../store/result';
 import { Modal } from '../../components/Modal';
 import { npcLook } from '../../../engine/look';
 import { Portrait } from '../../portrait/Portrait';
+import { PetPortrait } from '../../portrait/PetPortrait';
 import { EVENT_BY_ID } from '../../../content/events';
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -50,6 +51,7 @@ export function EventModal({ game }: { game: GameState }): React.JSX.Element | n
               </figure>
             ) : null;
           })}
+          {popup.petId !== null && <PetFace game={game} id={popup.petId} />}
         </div>
         <p className="event-context muted small" data-testid="event-context">
           {CATEGORY_LABEL[EVENT_BY_ID[popup.eventId]?.category ?? ''] ?? 'Life'} · Age{' '}
@@ -132,5 +134,16 @@ function ResultCard({ result, more }: { result: ChoiceResult; more: number }): R
         </div>
       </div>
     </Modal>
+  );
+}
+
+function PetFace({ game, id }: { game: GameState; id: number }): React.JSX.Element | null {
+  const pet = game.pets.find((p) => p.id === id);
+  if (!pet) return null;
+  return (
+    <figure className="event-face" data-testid="event-pet">
+      <PetPortrait kind={pet.kind} id={pet.id} size={56} />
+      <figcaption className="muted small">{pet.name}</figcaption>
+    </figure>
   );
 }

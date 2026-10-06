@@ -136,3 +136,14 @@ describe('pet lines', () => {
     }
   });
 });
+
+describe('pet popups', () => {
+  it('an event about your pet carries the pet, so the popup can show its face', async () => {
+    const { currentPopup } = await import('../../src/engine');
+    let s = adopt(adult(60), 'dog', 'Rufus');
+    s = runCheat({ ...s, pending: [] }, 'event.fire', { event: 'pet_dog_park', force: 'on' }).state;
+    const p = currentPopup(s);
+    expect(p?.petId).toBe(s.pets[0]?.id);
+    expect(p?.npcIds).toEqual([]);
+  });
+});

@@ -43,3 +43,9 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Measured 60 passive lives + read lives as a player; fixed: no feedback after choices, outcomes context-free in the log, dice-only choices, log noise/repeats, dead years, empty baby years, broke-renter bankruptcy loop
 - Added: result card, This-year summary, skill checks with reasons, baby pack, job leads + benefit, affordable housing, empty-nest move-out, goals prompt
 - Verify: green in ~88 s (unit 386, e2e 48, electron 3, sim 300/300 0 violations); coverage 444/454
+
+## 2026-10-06 · Overnight S16–S45 (owner: "UI pass and a full character customization run", "keep going")
+- Done: drawn SVG portraits + builder (ageing, moods, family resemblance, accessories, surgery), pets (drawn, 8 kinds), mini-games (escape, blackjack), life on the run, dating candidates, free time (switchable), challenges, callbacks, records, toddler activities
+- Three transcript playtests + two browser UX reviews by subagents; ~60 fixes (names, fertility, grades, heirs, fugitives, pay caps, repetition, layout cues)
+- Verify: green in ~105 s (unit 454, e2e ~65, electron 3, sim 300/300 0 violations); coverage 535/542; final check clean at bd92001
+- Next: fold in the second browser review, re-run the final check

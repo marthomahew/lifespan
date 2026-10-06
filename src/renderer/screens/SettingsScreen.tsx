@@ -64,6 +64,15 @@ export function SettingsScreen(): React.JSX.Element {
         <label className="setting check">
           <input
             type="checkbox"
+            data-testid="set-free-time"
+            checked={s.freeTime}
+            onChange={(e) => updateSettings({ freeTime: e.target.checked })}
+          />
+          <span>Free time: a year only holds so many activities</span>
+        </label>
+        <label className="setting check">
+          <input
+            type="checkbox"
             data-testid="set-cheat-badge"
             checked={s.cheatBadge}
             onChange={(e) => updateSettings({ cheatBadge: e.target.checked })}

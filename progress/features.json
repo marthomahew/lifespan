@@ -704,5 +704,10 @@
     "title": "Four more on-the-run events, including cash-in-hand work that hires you",
     "passes": true,
     "evidence": "content:check; sim:coverage; tests/engine/escape.test.ts"
+  },
+  "S46": {
+    "title": "Free time can be switched off; records across lives on the start screen; pet faces in pet popups; drawn start-screen strip; 20 childhood events (ages 3–12)",
+    "passes": true,
+    "evidence": "tests/engine/free-time.test.ts; e2e/settings.spec.ts; e2e/obituary.spec.ts (records); tests/engine/pets.test.ts (pet popups); content:check"
   }
 }

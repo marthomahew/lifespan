@@ -66,3 +66,16 @@ test('skill tooltips show the modifier at the current level', async ({ page }) =
   await expect(page.getByTestId('skill-tip-athletics')).toBeVisible();
   await expect(page.getByTestId('skill-tip-athletics')).toContainText('Athletic success +12%');
 });
+
+test('free time can be switched off in Settings', async ({ page }) => {
+  await startSeeded(page, 5656);
+  await cheat(page, 'age set 25');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await expect(page.getByTestId('free-time')).toBeVisible();
+  await page.getByTestId('btn-settings').click();
+  await page.getByTestId('set-free-time').uncheck();
+  await page.getByTestId('btn-back').click();
+  await page.getByTestId('tab-activities').click();
+  await expect(page.getByTestId('free-time')).toHaveCount(0);
+});

@@ -87,7 +87,8 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
   const special = specialReason(s, def);
   if (special) return special;
   if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
-  if (costsFreeTime(def) && freeTime(s).left <= 0) return 'no free time left this year';
+  if (costsFreeTime(def) && s.settings.freeTime !== false && freeTime(s).left <= 0)
+    return 'no free time left this year';
   if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
     return 'you are already seeing someone';
   if (def.special === 'fertility' && s.family.pregnancy) return 'a baby is already on the way';

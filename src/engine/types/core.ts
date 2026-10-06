@@ -262,6 +262,7 @@ export type CheatState = {
   disabledCategories: Category[];
 };
 
-export type SimSettings = { popupsPerYear: number };
+/** Per-life rules the player sets. `freeTime: false` lifts the yearly activity budget. */
+export type SimSettings = { popupsPerYear: number; freeTime?: boolean };
 
 export type { RngState };

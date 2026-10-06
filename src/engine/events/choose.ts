@@ -1,3 +1,6 @@
+import { PET_BY_ID } from '../../content/pets';
+import { favouritePet } from '../systems/pets';
+import { tokensIn } from './tokens';
 import { EVENT_BY_ID } from '../../content/events';
 import { EngineError } from '../errors';
 import { Ctx, type Step } from '../ctx';
@@ -19,6 +22,8 @@ export type PopupView = {
   choices: { id: string; label: string; enabled: boolean }[];
   /** The people the event is about (living NPCs bound to its roles), first two. */
   npcIds: number[];
+  /** The animal it is about, when its text names one. */
+  petId: number | null;
 };
 
 export function pendingDef(s: GameState, pe: PendingEvent): EventDef {
@@ -70,6 +75,7 @@ export function popupView(s: GameState, pe: PendingEvent): PopupView | null {
     npcIds: [...new Set(Object.values(pe.bindings))]
       .filter((id) => s.npcs.some((n) => n.id === id && n.alive))
       .slice(0, 2),
+    petId: popupPet(s, def.text),
   };
 }
 
@@ -106,4 +112,11 @@ export function choose(input: GameState, choiceId: string): Step {
   chooseInPlace(ctx, choiceId);
   checkAchievements(ctx);
   return ctx.finish();
+}
+
+/** The pet a text names ({pet}, {dog}, {cat}...), if any. */
+function popupPet(s: GameState, text: string): number | null {
+  const tok = tokensIn(text).find((t) => t === 'pet' || t === 'pet.kind' || PET_BY_ID[t]);
+  if (!tok) return null;
+  return favouritePet(s, PET_BY_ID[tok] ? tok : undefined)?.id ?? null;
 }

@@ -37,6 +37,7 @@ import { PET_EVENTS } from './pets';
 import { PRISON_2_EVENTS } from './prison-2';
 import { RELEASE_2_EVENTS } from './release-2';
 import { FUGITIVE_EVENTS } from './fugitive';
+import { CHILDHOOD_3_EVENTS } from './childhood-3';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -58,6 +59,7 @@ export const EVENTS: EventDef[] = [
   ...PRISON_2_EVENTS,
   ...RELEASE_2_EVENTS,
   ...FUGITIVE_EVENTS,
+  ...CHILDHOOD_3_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,
