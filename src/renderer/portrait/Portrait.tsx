@@ -14,6 +14,7 @@ export const Portrait = memo(function Portrait({
   className = '',
   happiness,
   ill = false,
+  viewBox,
 }: {
   look: Look;
   age: number;
@@ -26,6 +27,8 @@ export const Portrait = memo(function Portrait({
   /** When given, the expression follows it. */
   happiness?: number;
   ill?: boolean;
+  /** A closer crop (the builder zooms in on earrings). */
+  viewBox?: string;
 }): React.JSX.Element {
   const mood = happiness === undefined ? undefined : moodOf(happiness);
   const shapes = portraitShapes(look, age, gender, { ...(mood ? { mood } : {}), ill });
@@ -33,7 +36,7 @@ export const Portrait = memo(function Portrait({
   return (
     <svg
       className={`portrait${dead ? ' dead' : ''} ${className}`}
-      viewBox={FRAME.viewBox}
+      viewBox={viewBox ?? FRAME.viewBox}
       width={size}
       height={size}
       role={label ? 'img' : undefined}

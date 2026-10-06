@@ -175,6 +175,12 @@ function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
         onBuy({ type: 'buy_vehicle', model, financed: adult && financed });
       }}
     >
+      {!game.assets.licence && (
+        <p className="muted small" data-testid="no-licence-note">
+          You have no driving licence yet: you can own it, but someone else will be doing the
+          driving. The driving test is under Activities.
+        </p>
+      )}
       <label>
         Model
         <select

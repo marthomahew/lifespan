@@ -338,7 +338,9 @@ export function educationCatchUp(ctx: Ctx, from: number, to: number): void {
     !s.education.droppedOut &&
     !s.education.degrees.some((d) => d.level === 'high_school')
   ) {
-    s.education.grade = clampStat(Math.max(s.education.grade, gradeTarget({ ...s, player: { ...s.player, age: 17 } })));
+    s.education.grade = clampStat(
+      Math.max(s.education.grade, gradeTarget({ ...s, player: { ...s.player, age: 17 } })),
+    );
     graduateHighSchool(ctx);
   }
 }

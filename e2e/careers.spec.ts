@@ -61,3 +61,16 @@ test('perks say what they do, on listings and on the current job', async ({ page
   await expect(page.getByTestId('job-perks')).toContainText('summers off (less job stress)');
   await expect(page.getByTestId('job-perks')).toContainText('pension (pension +25%)');
 });
+
+test('school: the average is shown, and a child can study harder from the Occupation tab', async ({
+  page,
+}) => {
+  await startSeeded(page, 4747);
+  await cheat(page, 'age set 13');
+  await clearPopups(page);
+  await page.getByTestId('tab-occupation').click();
+  await expect(page.getByTestId('school-grade')).toContainText(/average \d+; universities want 70/);
+  await page.getByTestId('btn-study').click();
+  await expect(page.getByTestId('act-feedback')).toBeVisible();
+  await expect(page.getByTestId('btn-study')).toBeDisabled();
+});

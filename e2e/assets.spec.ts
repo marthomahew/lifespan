@@ -71,3 +71,18 @@ test('vehicles and possessions are bought through the buy dialog', async ({ page
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('buy-dialog')).toHaveCount(0);
 });
+
+test('an action in a panel says what it did, right there', async ({ page }) => {
+  await startSeeded(page, 6363, async (p) => {
+    await p.getByTestId('f-country').selectOption('us');
+  });
+  await cheat(page, 'age set 30', 'money add 50000', 'job set accountant');
+  await clearPopups(page);
+  await page.getByTestId('tab-occupation').click();
+  await page.getByTestId('btn-ask-raise').click();
+  await expect(page.getByTestId('act-feedback')).toBeVisible();
+  await expect(page.getByTestId('act-feedback')).toContainText(/raise|boss|budget|valued|revisit|HR/);
+  // Another tab, another story: the note stays with the panel it came from.
+  await page.getByTestId('tab-assets').click();
+  await expect(page.getByTestId('act-feedback')).toHaveCount(0);
+});

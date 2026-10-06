@@ -348,6 +348,13 @@ export const LIFE_TITLES: LifeTitleDef[] = [
     title: 'Gainfully Unemployed',
     when: (s) => s.player.age >= 30 && !flag(s, 'ever_employed_ft') && (s.military?.years ?? 0) < 4,
   },
-  { title: 'Married to the Job', when: (s) => s.career.yearsWorked >= 40 },
+  {
+    title: 'Married to the Job',
+    // Only for someone the job really was married to: no spouse, no children.
+    when: (s) =>
+      s.career.yearsWorked >= 40 &&
+      kids(s) === 0 &&
+      !s.npcs.some((n) => n.roles.includes('spouse') || n.flags.includes('was_spouse')),
+  },
   { title: 'Ordinary, in the Best Way', when: () => true },
 ];

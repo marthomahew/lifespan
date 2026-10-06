@@ -58,6 +58,8 @@ export type AppState = {
   result: ChoiceResult | null;
   /** The state just before the last Age Up, so the bar can say what this year has done so far. */
   yearStart: GameState | null;
+  /** What the last action from a panel did, shown at the top of that panel this year. */
+  feedback: { tab: Tab; year: number; lines: string[] } | null;
 };
 
 export const saveStore: SaveStore = createSaveStore();
@@ -77,6 +79,7 @@ export const app = createStore<AppState>({
   petId: null,
   savesVersion: 0,
   hiddenStats: false,
+  feedback: null,
   result: null,
   yearStart: null,
 });
@@ -267,7 +270,16 @@ export function doAct(action: PlayerAction): string | null {
   const g = app.get().game;
   if (!g) return 'No life is loaded';
   try {
-    applyStep(engineAct(g, action), { autosave: false });
+    const step = engineAct(g, action);
+    applyStep(step, { autosave: false });
+    // The action's own lines, not the achievements and nudges that follow it.
+    const lines = step.log
+      .filter((l) => l.cat !== 'system' && !/Achievement:/.test(l.text))
+      .map((l) => l.text)
+      .slice(0, 2);
+    app.set({
+      feedback: lines.length ? { tab: app.get().tab, year: step.state.year, lines } : null,
+    });
     return null;
   } catch (e) {
     return (e as Error).message;

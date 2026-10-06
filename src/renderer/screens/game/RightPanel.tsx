@@ -14,6 +14,9 @@ export const TABS: { id: Tab; label: string; emoji: string }[] = [
 
 export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
   const tab = useApp((s) => s.tab);
+  const feedback = useApp((s) => s.feedback);
+  const fresh =
+    feedback && feedback.tab === tab && feedback.year === game.year && !game.pending.length;
   return (
     <aside className="right card" aria-label="Life panels">
       <div className="tabs" role="tablist">
@@ -52,6 +55,22 @@ export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
         aria-labelledby={`tab-${tab}`}
         data-testid={`panel-${tab}`}
       >
+        {fresh && (
+          <div className="act-feedback" data-testid="act-feedback" role="status">
+            <div className="grow">
+              {feedback.lines.map((l) => (
+                <p key={l}>{l}</p>
+              ))}
+            </div>
+            <button
+              className="ghost small"
+              aria-label="Dismiss"
+              onClick={() => app.set({ feedback: null })}
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {tab === 'occupation' && <OccupationTab game={game} />}
         {tab === 'assets' && <AssetsTab game={game} />}
         {tab === 'relationships' && <RelationshipsTab game={game} />}

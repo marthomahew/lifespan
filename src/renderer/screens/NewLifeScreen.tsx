@@ -39,7 +39,7 @@ export function NewLifeScreen(): React.JSX.Element {
         <button className="ghost" data-testid="btn-roll-all" onClick={rollAll}>
           🎲 Roll everything
         </button>
-        <button className="primary" data-testid="btn-random-life" onClick={() => startLife({})}>
+        <button data-testid="btn-random-life" onClick={() => startLife({})}>
           🎲 Random life
         </button>
       </div>

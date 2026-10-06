@@ -654,5 +654,10 @@
     "title": "Dating: three drawn candidates with jobs, traits and wishes; the face on the card is the one you get",
     "passes": true,
     "evidence": "tests/engine/dating.test.ts; e2e/relationships.spec.ts"
+  },
+  "S36": {
+    "title": "Panel feedback after actions, Study harder and the school average on the Occupation tab, builder polish (steady height, zoomed earrings, secondary Random life), no-licence note, honest Married to the Job",
+    "passes": true,
+    "evidence": "e2e/assets.spec.ts (panel feedback); e2e/careers.spec.ts (school); verify"
   }
 }

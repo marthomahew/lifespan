@@ -5,10 +5,12 @@ import {
   enrollReason,
   formatMoney,
   letterGrade,
+  activitiesFor,
   tuitionFor,
   type GameState,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { UNIVERSITY_MIN_GRADE } from '../../../../engine/systems/education';
 import { cap } from '../../../components/text';
 
 type Kind = 'university' | 'community' | 'grad';
@@ -31,6 +33,7 @@ export function EducationSection({
   const prog = options.some((o) => o.id === program) ? program : (options[0]?.id ?? '');
   const reason = enrollReason(game, kind, prog);
   const inSchool = age >= 6 && age <= 17 && !e.droppedOut;
+  const study = activitiesFor(game).find((a) => a.id === 'study');
   const leave = countryOf(game).ages.schoolLeaving;
   if (age < 6) return null;
   return (
@@ -39,8 +42,24 @@ export function EducationSection({
       {inSchool && (
         <div className="row">
           <span className="grow" data-testid="school-grade">
-            {age < 12 ? 'Primary' : 'Secondary'} school · grade {letterGrade(e.grade)}
+            {age < 12 ? 'Primary' : 'Secondary'} school · grade {letterGrade(e.grade)}{' '}
+            <span className="muted small">
+              (average {Math.round(e.grade)}
+              {age >= 12 ? `; universities want ${UNIVERSITY_MIN_GRADE}` : ''})
+            </span>
           </span>
+          {study && (
+            <button
+              data-testid="btn-study"
+              disabled={!study.enabled}
+              title={
+                study.enabled ? 'A year of homework pays off in grades and smarts' : study.reason
+              }
+              onClick={() => onError(doAct({ type: 'activity', id: 'study' }))}
+            >
+              Study harder
+            </button>
+          )}
           {age >= leave && (
             <button data-testid="btn-drop-out" onClick={() => onError(doAct({ type: 'drop_out' }))}>
               Drop out

@@ -85,7 +85,13 @@ export function LookBuilder({
                 title={o.label}
                 onClick={() => set({ [key]: o.id } as Partial<Look>)}
               >
-                <Portrait look={{ ...look, [key]: o.id }} age={age} gender={gender} size={52} />
+                <Portrait
+                  look={{ ...look, [key]: o.id }}
+                  age={age}
+                  gender={gender}
+                  size={52}
+                  {...(key === 'earrings' ? { viewBox: '68 48 26 26' } : {})}
+                />
                 <span className="small">{o.label}</span>
               </button>
             );
