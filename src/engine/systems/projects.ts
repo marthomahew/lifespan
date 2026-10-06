@@ -83,7 +83,10 @@ export function projectsTick(ctx: Ctx): void {
   if (!n || s.death) return;
   if (n.stage === 'querying') {
     const fame = s.player.stats.fame;
-    const odds = Math.min(0.85, 0.12 + n.quality / 160 + fame / 300 - n.rejections * 0.02);
+    const odds = Math.min(
+      0.85,
+      Math.max(0.04, 0.12 + n.quality / 160 + fame / 300 - n.rejections * 0.02),
+    );
     const yes = ctx.rng.chance(odds);
     const def = EVENT_BY_ID[yes ? 'proj_novel_offer' : 'proj_novel_rejection'];
     if (def) fireEvent(ctx, def, 'system', { rejections: n.rejections + 1 });

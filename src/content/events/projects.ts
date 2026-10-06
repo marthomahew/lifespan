@@ -63,6 +63,8 @@ export const PROJECT_EVENTS: EventDef[] = [
       {
         id: 'again',
         label: 'Keep sending it out',
+        // Eight rounds is everyone worth asking: after that, rewrite it, publish it, or let it rest.
+        requires: (st) => (st.projects?.novel?.rejections ?? 0) < 7,
         outcomes: [
           {
             chance: 1,
@@ -98,6 +100,21 @@ export const PROJECT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You design the cover, upload the files and order a box of copies. Holding one is better than any email.',
             effects: [{ novel: 'selfpub' }, { stat: 'happiness', delta: 5 }],
+          },
+        ],
+      },
+      {
+        id: 'drawer',
+        label: 'Put it in a drawer and start something new',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You print it out, tie it with string and put it in the bottom drawer. It hurts for a week. Then a new idea arrives on the bus, and you are glad of the empty desk.',
+            effects: [
+              { novel: 'shelve' },
+              { stat: 'happiness', delta: -2 },
+              { skill: 'writing', delta: 2 },
+            ],
           },
         ],
       },

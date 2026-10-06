@@ -809,5 +809,10 @@
     "title": "Later-life chapter: downsize, move near family, retire abroad, or stay",
     "passes": true,
     "evidence": "tests/engine/late-chapter.test.ts; content:check; sim"
+  },
+  "S67": {
+    "title": "Novel querying ends after eight rounds (drawer choice, odds floor)",
+    "passes": true,
+    "evidence": "tests/engine/projects.test.ts; content:check"
   }
 }

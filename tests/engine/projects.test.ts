@@ -184,4 +184,29 @@ describe('one book at a time', () => {
     };
     expect(() => act(out, { type: 'activity', id: 'write_novel' })).toThrow(/reviews/);
   });
+
+  it('after eight rounds of no, nobody is left to ask: rewrite, publish, or the drawer', () => {
+    let s: GameState = {
+      ...writer(93),
+      projects: {
+        novel: {
+          title: 'Small Hours',
+          stage: 'querying',
+          progress: 100,
+          quality: 0,
+          rejections: 7,
+        },
+      },
+    };
+    // Quality 0 still has a floor of a chance; find a year that brings a no.
+    for (let y = 0; y < 20 && currentPopup(s)?.eventId !== 'proj_novel_rejection'; y++)
+      s = ageUp(answer(s, { proj_novel_rejection: 'again', proj_novel_offer: 'accept' })).state;
+    const p = currentPopup(s);
+    expect(p?.eventId).toBe('proj_novel_rejection');
+    expect(p?.choices.find((c) => c.id === 'again')?.enabled).toBe(false);
+    const drawer = choose(s, 'drawer').state;
+    expect(drawer.projects?.novel).toBeNull();
+    expect(drawer.player.flags).toContain('novel_in_drawer');
+    expect(() => act(drawer, { type: 'activity', id: 'write_novel' })).not.toThrow();
+  });
 });
