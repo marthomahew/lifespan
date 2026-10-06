@@ -79,7 +79,7 @@ export function healthTick(ctx: Ctx): void {
   const candidates = ILLNESSES.filter((d) => !h.illnesses.some((i) => i.id === d.id));
   for (const def of ctx.rng.shuffle(candidates)) {
     if (ctx.rng.chance(onsetChance(s, def))) {
-      addIllness(ctx, def.id);
+      addIllness(ctx, def.id, true);
       break;
     }
   }

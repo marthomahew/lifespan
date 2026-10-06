@@ -155,3 +155,21 @@ describe('cosmetic surgery', () => {
     expect(seen.has('good') && seen.has('none')).toBe(true);
   });
 });
+
+describe('family faces', () => {
+  it('a parent’s makeover or surgery doesn’t change the children’s faces', () => {
+    let s = runCheat(newLife({ birthYear: 1970, gender: 'female', country: 'us' }, 33), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 100000 }).state;
+    const kid = s.npcs.find((n) => n.roles.includes('child'));
+    if (!kid) throw new Error('no child');
+    const face = npcLook(s, kid);
+    const dyed = act(
+      { ...s, pending: [] },
+      { type: 'activity', id: 'new_look', params: { hairColor: 'green', hair: 'mohawk' } },
+    ).state;
+    expect(npcLook(dyed, kid)).toEqual(face);
+  });
+});

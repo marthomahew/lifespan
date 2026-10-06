@@ -7,6 +7,7 @@ import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
 import { caseStep, recapture } from './crime';
 import { scaleSalary, takePackage } from './crossroads';
+import { illnessPlan } from './illness';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -30,6 +31,10 @@ export function applySystemEffect(
   switch (kind) {
     case 'recapture':
       recapture(ctx);
+      return;
+    case 'illness_plan':
+      if (typeof payload['illness'] === 'string')
+        illnessPlan(ctx, arg ?? 'gentle', payload['illness']);
       return;
     case 'salary_mult':
       scaleSalary(ctx, Number(arg ?? 1));

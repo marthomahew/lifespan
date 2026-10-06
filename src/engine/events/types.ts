@@ -72,6 +72,7 @@ export type Effect =
         | 'recapture'
         | 'move_out'
         | 'salary_mult'
+        | 'illness_plan'
         | 'severance';
       arg?: string;
     }

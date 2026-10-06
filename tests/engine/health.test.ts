@@ -151,3 +151,25 @@ describe('health activities (M8.2)', () => {
     ).toThrow();
   });
 });
+
+describe('a serious diagnosis is a decision', () => {
+  it('a real diagnosis asks how to fight it; the hard road costs more and works harder', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { addIllness } = await import('../../src/engine/systems/illness');
+    const { choose, currentPopup } = await import('../../src/engine');
+    const s = structuredClone({ ...adult(4, 55), pending: [] });
+    s.money.cash = 100_000;
+    const ctx = new Ctx(s);
+    addIllness(ctx, 'heart_disease', true);
+    const st = ctx.finish().state;
+    expect(currentPopup(st)?.eventId).toBe('hl_serious_diagnosis');
+    const sev = st.health.illnesses[0]?.severity ?? 0;
+    const hard = choose(st, 'hard').state;
+    const gentle = choose(st, 'gentle').state;
+    const left = (g: typeof st): number =>
+      g.health.illnesses.find((i) => i.id === 'heart_disease')?.severity ?? 0;
+    expect(left(hard)).toBeLessThan(left(gentle));
+    expect(left(gentle)).toBeLessThan(sev);
+    expect(hard.money.cash).toBeLessThan(gentle.money.cash);
+  });
+});

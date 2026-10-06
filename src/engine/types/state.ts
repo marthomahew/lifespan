@@ -42,6 +42,8 @@ export type Player = {
   appearance: string;
   /** The drawn portrait. `appearance` is kept as the matching emoji skin tone. */
   look: Look;
+  /** The face you were born with (family resemblance follows this, not makeovers). */
+  birthLook?: Look;
   /** A skill you were born with a gift for: it grows faster with practice. */
   talent: string | null;
   age: number;

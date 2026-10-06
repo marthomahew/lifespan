@@ -40,6 +40,9 @@ test('flow 15: a 40+ year playthrough by hand with random choices', async ({ pag
     ageUps += 1;
   }
   expect(ageUps).toBeGreaterThanOrEqual(40);
-  await expect(page.getByTestId('game-screen')).toBeVisible();
+  // Forty-odd years in, the life may have ended: either screen is a finished playthrough.
+  await expect(
+    page.getByTestId('game-screen').or(page.getByTestId('obituary-screen')),
+  ).toBeVisible();
   expect(answered).toBeGreaterThan(5);
 });

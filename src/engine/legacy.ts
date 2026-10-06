@@ -151,6 +151,7 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
   p.attraction = heir.attraction;
   // The heir keeps the face they had as your child.
   p.look = npcLook(s, heir);
+  p.birthLook = p.look;
   p.appearance = toneOf(p.look);
   p.age = heir.age;
   p.birthYear = heir.birthYear;

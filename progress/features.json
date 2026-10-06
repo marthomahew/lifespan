@@ -754,5 +754,10 @@
     "title": "Wealth decisions with stakes as a share of net worth: a sibling’s deposit, a friend’s startup, a foundation, a lawsuit, a holiday home",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts (big money); content:check; sim"
+  },
+  "S56": {
+    "title": "A serious diagnosis is a decision (hard road, gentle road, second opinion); children follow the face you were born with",
+    "passes": true,
+    "evidence": "tests/engine/health.test.ts (serious diagnosis); tests/engine/look.test.ts (family faces); e2e/playthrough.spec.ts"
   }
 }

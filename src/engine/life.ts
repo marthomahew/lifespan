@@ -290,6 +290,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
     randomLook(lookRng(seed, lookSalt + 1), p.gender, opts.look?.skin ?? skinGuess),
   );
   p.appearance = toneOf(p.look);
+  p.birthLook = p.look;
   if (opts.talent && SKILL_BY_ID[opts.talent]) {
     p.talent = opts.talent;
     p.skills[opts.talent] = 8;

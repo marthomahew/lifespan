@@ -349,7 +349,8 @@ export function npcLook(s: GameState, npc: Npc, depth = 0): Look {
   const own = randomLook(r, npc.gender);
   const isRelative = npc.roles.some((x) => BLOOD.has(x));
   if (!isRelative || depth > 1) return own;
-  const me = natural(s.player.look);
+  // The face you were born with: makeovers and surgery don't change your children's.
+  const me = natural(s.player.birthLook ?? s.player.look);
   if (npc.roles.includes('child')) {
     const other = npc.parentIds.find((id) => id !== 0);
     const o = other !== undefined ? s.npcs.find((n) => n.id === other) : undefined;
