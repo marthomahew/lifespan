@@ -63,3 +63,8 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 ## 2026-10-06 (S71–S72)
 - Fifth transcript playtest (12 lives), 15 findings fixed in two batches: fugitive state, cellmate gender, injury reading, named friends/enemies, -es verb check in content:check, placeholders, sibling weddings, housing on marriage; living costs vs local wages (debt spiral in ng/mx/br/se), pension taper, warm cities, diagnosis gating, chronic illness, music variety, office gating, boss continuity.
 - Coverage 590/600 (98.3%); sim bands all pass.
+
+## 2026-10-07 (S73–S79)
+- Owner requests: S73 year focus + faster childhood learning + prodigy/quick-study gifts; S74 prodigy paths (chess skill and tournaments, chess/music milestones, other-skill prodigies, burnout); S75 own business; S76 eight backgrounds (off by default; Settings off/rare/common); S77 luck gifts by area; S78 real product names by era.
+- Reviewer pass on S73–S78: 13 findings, fixed in S79 (business currency on emigration, random-life background roll, talent caps, family-business inheritance, luck gaps, setup consistency, names).
+- Coverage 651/658 (98.9%) with backgrounds and prodigies in a share of coverage lives.
