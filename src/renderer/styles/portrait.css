@@ -371,3 +371,15 @@
     radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.18), transparent) right / 10px 100%
       no-repeat scroll;
 }
+.obit-years {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 8px;
+}
+.obit-years figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

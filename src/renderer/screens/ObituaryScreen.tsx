@@ -25,6 +25,16 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
         <p className="muted">
           {ob.born} – {ob.died} · aged {ob.age}
         </p>
+        <div className="obit-years" data-testid="obit-years" aria-label="Through the years">
+          {[1, 10, 25, 50, 75]
+            .filter((a) => a < game.player.age)
+            .map((a) => (
+              <figure key={a}>
+                <Portrait look={game.player.look} age={a} gender={game.player.gender} size={44} />
+                <figcaption className="muted small">{a}</figcaption>
+              </figure>
+            ))}
+        </div>
         <h2 className="obit-title" data-testid="obit-title">
           “{ob.title}”
         </h2>
