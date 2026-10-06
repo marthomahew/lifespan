@@ -689,5 +689,10 @@
     "title": "Dynasty rows show each generation’s portrait",
     "passes": true,
     "evidence": "e2e/legacy.spec.ts"
+  },
+  "S43": {
+    "title": "Toddler activities: blanket forts, asking why, kitchen dancing, digging for worms",
+    "passes": true,
+    "evidence": "e2e/customize.spec.ts (toddlers); content:check"
   }
 }

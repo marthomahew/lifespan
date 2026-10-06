@@ -1143,4 +1143,132 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
+  {
+    id: 'toddler_fort',
+    label: 'Build a blanket fort',
+    emoji: '🏰',
+    group: 'fun',
+    ages: [2, 6],
+    limitPerYear: 1,
+    description: 'Every cushion in the house, two chairs and a sheet. No grown-ups unless they know the password.',
+    outcomes: [
+      {
+        chance: 0.4,
+        text: 'The fort holds. You rule it for an afternoon and only let in the cat-shaped cushion and one biscuit.',
+        effects: [{ stat: 'happiness', delta: 5 }],
+      },
+      {
+        chance: 0.35,
+        text: 'The roof collapses twice. On the third try you add a broom for a pole, which is basically engineering.',
+        effects: [
+          { stat: 'happiness', delta: 3 },
+          { stat: 'smarts', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.25,
+        text: 'You fall asleep inside it. Someone carries you to bed and leaves the fort up until morning, as a kindness.',
+        effects: [{ stat: 'happiness', delta: 4 }],
+      },
+    ],
+  },
+  {
+    id: 'toddler_why',
+    label: 'Ask why',
+    emoji: '❓',
+    group: 'mind_body',
+    ages: [2, 6],
+    limitPerYear: 1,
+    description: 'Why is the sky blue? Why do dogs bark? Why is that the answer? Why?',
+    outcomes: [
+      {
+        chance: 0.4,
+        text: 'Forty-one whys in a row. By the end, everyone in the kitchen has learned something about rainbows.',
+        effects: [{ stat: 'smarts', delta: 2 }],
+      },
+      {
+        chance: 0.35,
+        text: 'The answer to the last why is "because I said so". You file this away as a very unsatisfying theory.',
+        effects: [
+          { stat: 'smarts', delta: 1 },
+          { stat: 'happiness', delta: -1 },
+        ],
+      },
+      {
+        chance: 0.25,
+        text: 'Someone gets the big picture book about space down from the shelf. You never quite stop thinking about the moon.',
+        effects: [
+          { stat: 'smarts', delta: 2 },
+          { stat: 'happiness', delta: 2 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'toddler_dance',
+    label: 'Dance in the kitchen',
+    emoji: '💃',
+    group: 'fun',
+    ages: [1, 6],
+    limitPerYear: 1,
+    description: 'Music on, socks on the tiles, no rhythm whatsoever.',
+    outcomes: [
+      {
+        chance: 0.45,
+        text: 'You spin until the room spins too, then sit down very suddenly and laugh about it for ten minutes.',
+        effects: [
+          { stat: 'happiness', delta: 4 },
+          { stat: 'health', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.3,
+        text: 'A grown-up joins in, badly. It becomes a tradition that lasts years longer than anyone admits.',
+        effects: [{ stat: 'happiness', delta: 5 }],
+      },
+      {
+        chance: 0.25,
+        text: 'You slide straight into the fridge. There are tears, then a plaster, then more dancing.',
+        effects: [
+          { stat: 'happiness', delta: 1 },
+          { stat: 'health', delta: -1 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'toddler_garden',
+    label: 'Dig in the garden',
+    emoji: '🪱',
+    group: 'mind_body',
+    ages: [2, 7],
+    limitPerYear: 1,
+    description: 'Mud, a small spade, and the serious work of finding worms.',
+    outcomes: [
+      {
+        chance: 0.4,
+        text: 'You find a worm, name it Gerald, and return it to the soil with a short speech.',
+        effects: [
+          { stat: 'happiness', delta: 4 },
+          { stat: 'smarts', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.35,
+        text: 'You come in brown from head to toe and very proud of a hole that reaches almost nowhere.',
+        effects: [
+          { stat: 'happiness', delta: 3 },
+          { stat: 'health', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.25,
+        text: 'You plant a single bean. It actually grows. You check on it every morning like a tiny farmer.',
+        effects: [
+          { stat: 'happiness', delta: 4 },
+          { stat: 'discipline', delta: 2 },
+        ],
+      },
+    ],
+  },
 ];

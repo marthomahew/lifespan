@@ -80,3 +80,15 @@ test('cosmetic surgery: pick the face you want, and take your chances', async ({
     page.getByTestId('log-line').filter({ hasText: /mirror is kind|long nap|Complications/ }),
   ).toHaveCount(1);
 });
+
+test('toddlers have things to do: forts, questions, dancing, worms', async ({ page }) => {
+  await startSeeded(page, 3434);
+  await cheat(page, 'age set 3');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  for (const id of ['toddler_fort', 'toddler_why', 'toddler_dance', 'toddler_garden'])
+    await expect(page.getByTestId(`act-${id}`)).toBeEnabled();
+  await page.getByTestId('act-toddler_fort').click();
+  await clearPopups(page);
+  await expect(page.getByTestId('act-toddler_fort')).toBeDisabled();
+});
