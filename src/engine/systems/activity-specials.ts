@@ -11,7 +11,7 @@ import { writeNovel } from './projects';
 import { graduateHighSchool } from './education';
 import { treat } from './health';
 import { ILLNESS_BY_ID } from '../../content/illnesses';
-import { addSkill } from './skills';
+import { addLanguage, addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
 import { cleanLook, NOSES } from '../look';
@@ -132,7 +132,8 @@ export function runSpecial(
       const cur = s.player.skills[skill] ?? 0;
       // Diminishing returns: the better you are, the slower it goes (SPEC §5.12); a talent goes further.
       const gain = Math.max(1, Math.round((100 - cur) / 12) + ctx.rng.int(0, 2));
-      addSkill(s, skill, s.player.talent === skill ? Math.round(gain * 1.5) : gain);
+      // (A gift, youth and a quick mind all speed it up: see learnRate.)
+      addSkill(s, skill, gain);
       return;
     }
     case 'new_look': {
@@ -167,10 +168,7 @@ export function runSpecial(
       const cur = s.player.languages[lang] ?? 0;
       if (cur >= 100)
         throw new EngineError(`you already speak ${LANGUAGE_BY_ID[lang]?.label ?? lang} fluently`);
-      s.player.languages[lang] = clampStat(
-        cur + Math.max(2, Math.round((100 - cur) / 8) + ctx.rng.int(0, 3)),
-      );
-      s.player.skillPractice[`lang:${lang}`] = s.year;
+      addLanguage(s, lang, Math.max(2, Math.round((100 - cur) / 8) + ctx.rng.int(0, 3)));
       ctx.log(
         'activity',
         `Your ${LANGUAGE_BY_ID[lang]?.label ?? lang} is now ${s.player.languages[lang]}/100.`,

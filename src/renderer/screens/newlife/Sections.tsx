@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { COUNTRIES } from '../../../content/countries';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
+import { GIFTS } from '../../../content/gifts';
 import { WEALTH_TIERS, type Attraction, type Gender, type WealthTier } from '../../../engine';
 import { LookBuilder } from '../../portrait/LookBuilder';
 import { Portrait } from '../../portrait/Portrait';
@@ -250,6 +251,37 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
           Starts a little ahead and grows half as fast again with practice.
         </span>
       </label>
+      {d.talent && (
+        <label className="nl-check">
+          <input
+            type="checkbox"
+            data-testid="f-prodigy"
+            checked={d.prodigy}
+            onChange={(e) => set({ prodigy: e.target.checked })}
+          />
+          🌟 A prodigy: starts further ahead and learns it three times as fast
+        </label>
+      )}
+      <div className="nl-gifts" role="group" aria-label="Gifts">
+        <span className="muted small">
+          Gifts (only if you pick them; the dice never roll these)
+        </span>
+        {GIFTS.map((g) => (
+          <label key={g.id} className="nl-check" title={g.description}>
+            <input
+              type="checkbox"
+              data-testid={`gift-${g.id}`}
+              checked={d.gifts.includes(g.id)}
+              onChange={(e) =>
+                set({
+                  gifts: e.target.checked ? [...d.gifts, g.id] : d.gifts.filter((x) => x !== g.id),
+                })
+              }
+            />
+            {g.emoji} {g.label} <span className="muted small">{g.description}</span>
+          </label>
+        ))}
+      </div>
     </Section>
   );
 }

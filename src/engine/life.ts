@@ -1,6 +1,7 @@
 import { COUNTRIES, COUNTRY_BY_ID } from '../content/countries';
 import { FAMILY_WEALTH, PARENT_JOBS, SKIN_TONES } from '../content/family';
 import { TRAIT_BY_ID } from '../content/traits';
+import { GIFT_BY_ID } from '../content/gifts';
 import { Ctx } from './ctx';
 import { addNpc, randomName, randomSurname, randomTraits } from './npc';
 import { seedRng } from './rng';
@@ -43,6 +44,10 @@ export type NewLifeOptions = {
   look?: Partial<Look>;
   /** A skill you were born with a gift for. */
   talent?: string;
+  /** How big that gift is (a prodigy's starts further ahead and grows twice as fast again). */
+  talentLevel?: 'gift' | 'prodigy';
+  /** Gifts picked at the start; never rolled. */
+  gifts?: string[];
   /** Who raised you. */
   parents?: ParentSetup;
   /** 0–4 older siblings and younger ones still to come are rolled as usual. */
@@ -293,8 +298,11 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   p.birthLook = p.look;
   if (opts.talent && SKILL_BY_ID[opts.talent]) {
     p.talent = opts.talent;
-    p.skills[opts.talent] = 8;
+    p.talentLevel = opts.talentLevel === 'prodigy' ? 'prodigy' : 'gift';
+    p.skills[opts.talent] = p.talentLevel === 'prodigy' ? 15 : 8;
   }
+  const gifts = (opts.gifts ?? []).filter((g, i, a) => GIFT_BY_ID[g] && a.indexOf(g) === i);
+  if (gifts.length) p.gifts = gifts;
   const chosen = opts.traits ? validTraits(opts.traits) : [];
   p.traits = chosen.length ? chosen : randomTraits(ctx, r.int(2, 3));
   // SPEC §3.1: 2–3 traits at birth. Top up a single pick with a compatible random one.
@@ -351,7 +359,9 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   if (p.talent && SKILL_BY_ID[p.talent])
     ctx.log(
       'system',
-      `⭐ You have a gift for ${SKILL_BY_ID[p.talent]?.label.toLowerCase()}. It will come easily, with practice.`,
+      p.talentLevel === 'prodigy'
+        ? `🌟 You are a born prodigy at ${SKILL_BY_ID[p.talent]?.label.toLowerCase()}. With practice, the world will notice early.`
+        : `⭐ You have a gift for ${SKILL_BY_ID[p.talent]?.label.toLowerCase()}. It will come easily, with practice.`,
     );
   for (const t of p.traits) {
     const tr = TRAIT_BY_ID[t];

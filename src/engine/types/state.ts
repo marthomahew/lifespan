@@ -46,6 +46,12 @@ export type Player = {
   birthLook?: Look;
   /** A skill you were born with a gift for: it grows faster with practice. */
   talent: string | null;
+  /** How big the gift is: a prodigy's grows twice as fast again. */
+  talentLevel?: 'gift' | 'prodigy';
+  /** Gifts picked at the start (quick study, and luck of various kinds). */
+  gifts?: string[];
+  /** What you devote your free time to, year after year: a skill id, or `lang:<id>`. */
+  focus?: string | null;
   age: number;
   birthYear: number;
   birthCountry: string;

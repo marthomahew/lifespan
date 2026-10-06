@@ -27,7 +27,13 @@ export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | n
                     data-testid={`talent-${id}`}
                   >
                     {' '}
-                    ★
+                    {game.player.talentLevel === 'prodigy' ? '🌟' : '★'}
+                  </span>
+                )}
+                {game.player.focus === id && (
+                  <span title="Your focus" data-testid={`focus-${id}`}>
+                    {' '}
+                    🎯
                   </span>
                 )}
                 {SKILL_BY_ID[id] && (
@@ -53,7 +59,10 @@ export function SkillsCard({ game }: { game: GameState }): React.JSX.Element | n
         ))}
         {langs.map(([id, v]) => (
           <div key={id} className="contents">
-            <dt>🗣️ {LANGUAGE_BY_ID[id]?.label ?? id}</dt>
+            <dt>
+              🗣️ {LANGUAGE_BY_ID[id]?.label ?? id}
+              {game.player.focus === `lang:${id}` && <span title="Your focus"> 🎯</span>}
+            </dt>
             <dd data-testid={`lang-${id}`}>{v}</dd>
           </div>
         ))}

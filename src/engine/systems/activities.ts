@@ -1,4 +1,5 @@
 import { novelReason } from './projects';
+import { FOCUS_COST } from './focus';
 import { pickFresh } from '../fresh';
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
 import type { ActivityDef } from '../../content/types';
@@ -72,7 +73,11 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
       why.push('small children');
     }
   }
-  total = Math.max(2, total);
+  if (s.player.focus && !s.legal.prison && s.player.age >= 4) {
+    total -= FOCUS_COST;
+    why.push(`your focus`);
+  }
+  total = Math.max(s.player.focus ? 1 : 2, total);
   return { total, left: Math.max(0, total - usedThisYear(s, 'a:total')), why };
 }
 

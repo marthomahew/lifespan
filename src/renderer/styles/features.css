@@ -558,3 +558,13 @@ button.quiet-danger {
   background: var(--accent);
   border-color: var(--accent);
 }
+.focus-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.focus-card select {
+  flex: 1 1 180px;
+  min-width: 0;
+}

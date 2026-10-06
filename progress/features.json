@@ -839,5 +839,10 @@
     "title": "Playtest 5 fixes, batch 2: living costs fit local wages, pensions taper, warm cities, near-family abroad, simple operations skip the dilemma, chronic stays chronic, unique album titles, fame-aware music lines, more office gating, bosses stay put",
     "passes": true,
     "evidence": "tests/engine/playtest5.test.ts; sim"
+  },
+  "S73": {
+    "title": "A year focus, faster learning in childhood, prodigy gifts and the quick-study gift",
+    "passes": true,
+    "evidence": "tests/engine/focus.test.ts; e2e/focus.spec.ts"
   }
 }

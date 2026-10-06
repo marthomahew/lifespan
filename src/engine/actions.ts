@@ -29,6 +29,7 @@ import { cloneState } from './util';
 import { treatInjury } from './systems/injuries';
 import { checkAspirations, chooseAspiration, dropAspiration } from './systems/aspirations';
 import { checkChallenge } from './systems/challenge';
+import { setFocus } from './systems/focus';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -52,7 +53,8 @@ export type PlayerAction =
   | { type: 'treat_injury'; index: number; method: 'physio' | 'surgery' }
   | { type: 'aspiration'; op: 'choose' | 'drop'; id: string }
   | { type: 'emigrate'; country: string; city?: string }
-  | { type: 'pet'; petId: number; id: PetActionId };
+  | { type: 'pet'; petId: number; id: PetActionId }
+  | { type: 'focus'; target: string | null };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -126,6 +128,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'emigrate':
       emigrate(ctx, action.country, action.city);
+      break;
+    case 'focus':
+      setFocus(ctx, action.target);
       break;
   }
   prunePending(ctx.s);

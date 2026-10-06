@@ -252,3 +252,15 @@ button.danger {
 .setting input[type='number'] {
   width: 80px;
 }
+.nl-check {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.nl-gifts {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+}

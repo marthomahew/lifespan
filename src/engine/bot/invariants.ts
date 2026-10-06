@@ -6,7 +6,7 @@ import { debtCeiling, isUnsecuredDebt } from '../systems/loans';
 const NULLABLE: RegExp[] = [
   /^\$\.military$/,
   /^\$\.death$/,
-  /^\$\.player\.talent$/,
+  /^\$\.player\.(talent|focus)$/,
   /^\$\.challenge$/,
   /^\$\.legal\.fugitive$/,
   /^\$\.projects\.novel$/,

@@ -5,6 +5,7 @@ import { WillEditor } from './WillEditor';
 import { CrimeSection } from './CrimeSection';
 import { EmigrateSection } from './EmigrateSection';
 import { HealthSection } from './HealthSection';
+import { FocusCard } from './FocusCard';
 import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
 import { cap } from '../../../components/text';
 
@@ -67,6 +68,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
         onChange={(e) => setQ(e.target.value)}
       />
       {!game.legal.prison && game.settings.freeTime !== false && <FreeTime game={game} />}
+      <FocusCard game={game} onError={setError} />
       {error && (
         <p className="error small" role="alert" data-testid="activity-error">
           {error}

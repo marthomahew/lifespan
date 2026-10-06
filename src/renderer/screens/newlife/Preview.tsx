@@ -64,7 +64,11 @@ export function Preview({
         {WEALTH[d.wealth] ?? d.wealth} family, raised by{' '}
         {d.parents ? PARENTS[d.parents] : 'whoever fate decides'}, with {sibs}.
         {traits.length > 0 && ` Grows up ${traits.join(', ')}.`}
-        {talent && ` A gift for ${talent.label.toLowerCase()}.`}
+        {talent &&
+          (d.prodigy
+            ? ` A prodigy at ${talent.label.toLowerCase()}.`
+            : ` A gift for ${talent.label.toLowerCase()}.`)}
+        {d.gifts.includes('quick_study') && ' A quick study.'}
       </p>
       <label className="nl-seed">
         Seed <span className="muted small">(optional; the same seed replays the same life)</span>
