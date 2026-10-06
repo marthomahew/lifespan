@@ -161,4 +161,15 @@ describe('fixes from the fourth transcript playtest', () => {
       /too young/,
     );
   });
+
+  it('tax evasion needs an income to hide', async () => {
+    const { crimeReason } = await import('../../src/engine/systems/crime');
+    const idle = structuredClone(adult(712));
+    idle.career.jobId = null;
+    idle.career.pension = 0;
+    expect(crimeReason(idle, 'tax_evasion')).toMatch(/no income/);
+    expect(
+      crimeReason(runCheat(adult(712), 'job.set', { job: 'accountant' }).state, 'tax_evasion'),
+    ).toBeNull();
+  });
 });

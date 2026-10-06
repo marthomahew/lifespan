@@ -20,6 +20,8 @@ export function crimeReason(s: GameState, crimeId: string): string | null {
   if (!def) return 'unknown crime';
   if (s.player.age < def.minAge) return `from age ${def.minAge}`;
   if (def.needsJob && !s.career.jobId) return 'needs a job to embezzle from';
+  if (def.id === 'tax_evasion' && !s.career.jobId && !(s.career.pension > 0))
+    return 'no income to hide';
   if (s.legal.prison) return 'not from prison';
   if (s.legal.case) return 'you already have a case pending';
   return null;

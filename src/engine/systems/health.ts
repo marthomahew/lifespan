@@ -138,8 +138,10 @@ export function treat(
       ctx.log(
         'health',
         routine
-          ? `${def.emoji} ${ctx.rng.pick([
+          ? `${def.emoji} ${pickFresh(ctx, [
               `Another check-up for the ${label}. The routine holds.`,
+              `The nurse knows you by name now. Ten minutes, a printout, see you next year.`,
+              `A new doctor reads your notes, nods, and changes nothing. Nothing needed changing.`,
               `Repeat prescription, short appointment, steady numbers. The ${label} ${v('stays in its box', 'stay in their box')}.`,
               `The ${label} ${v('has', 'have')} good and bad weeks, but the ${method} keeps the bad ones short.`,
             ])}`
