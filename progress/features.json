@@ -719,5 +719,10 @@
     "title": "Pet panel shows bond and health changes; Dynasty lists the life in progress",
     "passes": true,
     "evidence": "e2e/pets.spec.ts; e2e/legacy.spec.ts"
+  },
+  "S49": {
+    "title": "Four callbacks for the childhood flags: the library card, the grandmother’s card game, the painted-stone business, the stray cat that comes back as Echo",
+    "passes": true,
+    "evidence": "content:check; sim:coverage"
   }
 }

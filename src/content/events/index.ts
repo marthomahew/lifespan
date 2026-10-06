@@ -38,6 +38,7 @@ import { PRISON_2_EVENTS } from './prison-2';
 import { RELEASE_2_EVENTS } from './release-2';
 import { FUGITIVE_EVENTS } from './fugitive';
 import { CHILDHOOD_3_EVENTS } from './childhood-3';
+import { CALLBACK_2_EVENTS } from './callbacks-2';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -60,6 +61,7 @@ export const EVENTS: EventDef[] = [
   ...RELEASE_2_EVENTS,
   ...FUGITIVE_EVENTS,
   ...CHILDHOOD_3_EVENTS,
+  ...CALLBACK_2_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,
