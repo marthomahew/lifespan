@@ -51,6 +51,10 @@ export type Player = {
   talentLevel?: 'gift' | 'prodigy';
   /** Gifts picked at the start (quick study, and luck of various kinds). */
   gifts?: string[];
+  /** Where you started (family business, a twin...): off unless chosen. */
+  background?: string | null;
+  /** The background's particulars: the business's name, the old country. */
+  backgroundData?: Record<string, string>;
   /** What you devote your free time to, year after year: a skill id, or `lang:<id>`. */
   focus?: string | null;
   age: number;

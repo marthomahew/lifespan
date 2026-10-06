@@ -3,6 +3,7 @@ import { COUNTRIES } from '../../../content/countries';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
 import { GIFTS } from '../../../content/gifts';
+import { BACKGROUNDS, BACKGROUND_BY_ID } from '../../../content/backgrounds';
 import { WEALTH_TIERS, type Attraction, type Gender, type WealthTier } from '../../../engine';
 import { LookBuilder } from '../../portrait/LookBuilder';
 import { Portrait } from '../../portrait/Portrait';
@@ -209,7 +210,28 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             ))}
           </select>
         </label>
+        <label>
+          Background
+          <select
+            data-testid="f-background"
+            value={d.background}
+            onChange={(e) => set({ background: e.target.value })}
+          >
+            <option value="auto">As Settings says (off by default)</option>
+            <option value="none">An ordinary upbringing</option>
+            {BACKGROUNDS.map((b) => (
+              <option key={b.id} value={b.id} title={b.description}>
+                {b.emoji} {b.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
+      {BACKGROUND_BY_ID[d.background] && (
+        <p className="muted small" data-testid="background-note">
+          {BACKGROUND_BY_ID[d.background]?.description}
+        </p>
+      )}
     </Section>
   );
 }

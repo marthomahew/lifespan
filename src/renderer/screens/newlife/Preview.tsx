@@ -1,3 +1,4 @@
+import { BACKGROUND_BY_ID } from '../../../content/backgrounds';
 import { useMemo } from 'react';
 import { COUNTRIES } from '../../../content/countries';
 import { SKILL_BY_ID } from '../../../content/skills';
@@ -69,6 +70,8 @@ export function Preview({
             ? ` A prodigy at ${talent.label.toLowerCase()}.`
             : ` A gift for ${talent.label.toLowerCase()}.`)}
         {d.gifts.includes('quick_study') && ' A quick study.'}
+        {BACKGROUND_BY_ID[d.background] &&
+          ` ${BACKGROUND_BY_ID[d.background]?.emoji} ${BACKGROUND_BY_ID[d.background]?.label}.`}
       </p>
       <label className="nl-seed">
         Seed <span className="muted small">(optional; the same seed replays the same life)</span>

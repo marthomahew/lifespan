@@ -1,5 +1,5 @@
 import { app, go, updateSettings, useApp } from '../store/app';
-import type { TextSize, Theme } from '../store/settings';
+import type { Settings, TextSize, Theme } from '../store/settings';
 
 export function SettingsScreen(): React.JSX.Element {
   const s = useApp((x) => x.settings);
@@ -44,6 +44,20 @@ export function SettingsScreen(): React.JSX.Element {
             <option value="small">Small</option>
             <option value="medium">Medium</option>
             <option value="large">Large</option>
+          </select>
+        </label>
+        <label className="setting">
+          <span>Backgrounds for lives left to chance</span>
+          <select
+            data-testid="set-backgrounds"
+            value={s.backgrounds}
+            onChange={(e) =>
+              updateSettings({ backgrounds: e.target.value as Settings['backgrounds'] })
+            }
+          >
+            <option value="off">Off: an ordinary upbringing</option>
+            <option value="rare">Rare: about one life in ten</option>
+            <option value="common">Common: about one life in three</option>
           </select>
         </label>
         <label className="setting">

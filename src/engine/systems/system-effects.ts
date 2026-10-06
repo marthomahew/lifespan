@@ -15,6 +15,7 @@ import { scaleSalary, takePackage } from './crossroads';
 import { illnessPlan } from './illness';
 import { addHolidayHome, downsizeHome } from './assets';
 import { businessEffect } from './business';
+import { backgroundEffect } from './backgrounds';
 import { netWorth } from '../networth';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
@@ -65,6 +66,11 @@ export function applySystemEffect(
     case 'biz_expand':
     case 'biz_manager':
       businessEffect(ctx, kind, Number(arg ?? 0));
+      return;
+    case 'take_fambiz':
+    case 'sell_fambiz':
+    case 'birth_parent':
+      backgroundEffect(ctx, kind);
       return;
     case 'focus_off':
       s.player.focus = null;

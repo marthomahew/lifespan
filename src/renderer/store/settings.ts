@@ -1,3 +1,4 @@
+import type { BackgroundFrequency } from '../../content/backgrounds';
 export type Theme = 'system' | 'light' | 'dark';
 export type TextSize = 'small' | 'medium' | 'large';
 
@@ -10,6 +11,8 @@ export type Settings = {
   reducedMotion: boolean;
   /** A yearly budget for activities (off: do as much as you like). */
   freeTime: boolean;
+  /** How often a life left to chance starts with a background (family business, a twin...). */
+  backgrounds: BackgroundFrequency;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -20,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   autosave: true,
   reducedMotion: false,
   freeTime: true,
+  backgrounds: 'off',
 };
 
 const KEY = 'lifespan.settings';
@@ -39,6 +43,8 @@ export function loadSettings(): Settings {
     if (typeof v.autosave === 'boolean') out.autosave = v.autosave;
     if (typeof v.reducedMotion === 'boolean') out.reducedMotion = v.reducedMotion;
     if (typeof v.freeTime === 'boolean') out.freeTime = v.freeTime;
+    if (v.backgrounds === 'off' || v.backgrounds === 'rare' || v.backgrounds === 'common')
+      out.backgrounds = v.backgrounds;
     return out;
   } catch {
     return { ...DEFAULT_SETTINGS };

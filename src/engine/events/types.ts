@@ -86,6 +86,9 @@ export type Effect =
         | 'biz_sell'
         | 'biz_expand'
         | 'biz_manager'
+        | 'take_fambiz'
+        | 'sell_fambiz'
+        | 'birth_parent'
         | 'retrain'
         | 'move_city'
         | 'severance';

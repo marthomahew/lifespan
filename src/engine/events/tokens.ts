@@ -1,3 +1,4 @@
+import { backgroundToken } from '../systems/backgrounds';
 import { PET_BY_ID } from '../../content/pets';
 import { favouritePet } from '../systems/pets';
 import { formatMoney, money } from '../economy';
@@ -111,6 +112,7 @@ export function resolveToken(
   }
   if (token === 'novel') return s.projects?.novel?.title ?? null;
   if (token === 'business') return s.business?.name ?? null;
+  if (token === 'fambiz' || token === 'heritage') return backgroundToken(s, token);
   // {pet} and {pet.kind} name your favourite animal; {dog}, {cat}... a particular one.
   if (token === 'pet' || token === 'pet.kind' || PET_BY_ID[token]) {
     const kind = PET_BY_ID[token] ? token : undefined;

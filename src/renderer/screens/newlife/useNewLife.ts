@@ -38,6 +38,8 @@ export type Draft = {
   prodigy: boolean;
   /** Pick-only gifts (quick study, luck): never rolled by the dice. */
   gifts: string[];
+  /** 'auto' follows the Settings frequency; 'none' is an ordinary upbringing. */
+  background: string;
   seed: string;
 };
 
@@ -59,6 +61,7 @@ export const START: Draft = {
   talent: '',
   prodigy: false,
   gifts: [],
+  background: 'auto',
   seed: '',
 };
 
@@ -138,6 +141,7 @@ export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
     ...(d.siblings !== '' ? { siblings: Number(d.siblings) } : {}),
     ...(d.talent ? { talent: d.talent, talentLevel: d.prodigy ? 'prodigy' : 'gift' } : {}),
     ...(d.gifts.length ? { gifts: d.gifts } : {}),
+    ...(d.background !== 'none' ? { background: d.background } : {}),
   };
   if (d.first.trim()) opts.first = d.first.trim();
   if (d.last.trim()) opts.last = d.last.trim();

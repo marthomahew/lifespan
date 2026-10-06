@@ -1,4 +1,5 @@
 import { EVENTS } from '../src/content/events';
+import { BACKGROUNDS } from '../src/content/backgrounds';
 import { newLife, type GameState } from '../src/engine';
 import { botStep, newBotMemory, PERSONAS, type PersonaId } from '../src/engine/bot/persona';
 import { eligibility } from '../src/engine/events/select';
@@ -48,7 +49,9 @@ export function runCoverage(
     const ages: number[] = [];
     for (let i = 0; i < livesPerPersona; i++) {
       const seed = seedBase + pi * 100000 + i;
-      let s: GameState = newLife({}, seed);
+      // Every third life starts with a background, so their stories get played too.
+      const bg = i % 3 === 0 ? BACKGROUNDS[(i / 3) % BACKGROUNDS.length]?.id : undefined;
+      let s: GameState = newLife(bg ? { background: bg } : {}, seed);
       const bot = new Rng(seedRng(seed * 31 + 7));
       const mem = newBotMemory();
       const sample = i % sampleEvery === 0;

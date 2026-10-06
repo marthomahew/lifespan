@@ -1,3 +1,4 @@
+import { BACKGROUND_LINES, setupBackground } from './systems/backgrounds';
 import { COUNTRIES, COUNTRY_BY_ID } from '../content/countries';
 import { FAMILY_WEALTH, PARENT_JOBS, SKIN_TONES } from '../content/family';
 import { TRAIT_BY_ID } from '../content/traits';
@@ -48,6 +49,8 @@ export type NewLifeOptions = {
   talentLevel?: 'gift' | 'prodigy';
   /** Gifts picked at the start; never rolled. */
   gifts?: string[];
+  /** A background (family business, a twin...); none unless given. */
+  background?: string;
   /** Who raised you. */
   parents?: ParentSetup;
   /** 0–4 older siblings and younger ones still to come are rolled as usual. */
@@ -339,6 +342,8 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   if (opts.freeTime === false) s.settings.freeTime = false;
 
   generateFamily(ctx, opts);
+  // (Only a chosen background draws from the dice, so ordinary lives replay as before.)
+  if (opts.background) setupBackground(ctx, opts.background);
   if (opts.challenge && CHALLENGE_BY_ID[opts.challenge])
     s.challenge = { id: opts.challenge, status: 'active', year: s.year };
   s.lifeId = `${p.first.toLowerCase().replace(/[^a-z0-9]/g, '') || 'life'}-${(seed >>> 0).toString(36)}-${r.int(0, 1679615).toString(36)}`;
@@ -356,6 +361,8 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
       : `You are born in ${p.city}, ${c.name}, to ${parentText || 'a family that loves you'}.`,
     true,
   );
+  const bg = p.background ? BACKGROUND_LINES[p.background] : undefined;
+  if (bg) ctx.log('family', bg(s), true);
   if (p.talent && SKILL_BY_ID[p.talent])
     ctx.log(
       'system',

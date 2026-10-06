@@ -49,6 +49,11 @@ export const officeJob = (s: GameState): boolean => {
   const job = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
   return !!job && (OFFICE_FIELDS.includes(job.field) || OFFICE_JOBS.includes(job.id));
 };
+/** Started life with this background. */
+export const hasBackground =
+  (id: string) =>
+  (s: GameState): boolean =>
+    s.player.background === id;
 /** You own a business (of these kinds, if given). */
 export const hasBusiness =
   (...kinds: string[]) =>
