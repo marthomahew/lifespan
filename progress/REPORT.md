@@ -4,7 +4,7 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 538 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 542 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
 - **Cheats:** a full cheat menu (71 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
@@ -60,7 +60,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **On the run (S33):**
   - An escape leaves you a fugitive. The years you still owe follow you, and you can't take a job without papers (false ones can be bought, at a risk).
   - Each year the chance of a 6 a.m. knock fades. After twenty years nobody is looking, and turning yourself in takes two years off.
-  - Four events cover your face on the news, false papers, a police checkpoint and the quiet life.
+  - Eight events cover your face on the news, false papers, a police checkpoint, cash-in-hand work, an old cellmate who recognises you, a birthday call home, the ten-year mark and the quiet life.
 - **UX fixes (S34):** from a second reviewer who played the app in a browser:
   - Space always ages up, even when a button still has focus after a dialog closes.
   - Grades compare you with children your age (an average child earns a C), report cards start at 9, and universities want a B.
@@ -220,12 +220,12 @@ What changed:
   | Most common popup share | 2.0% |
   | Runtime | about 42 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 528 of 538 events (98.1%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 535 of 542 events (98.7%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
   |---|---|
-  | Events (in 45 chains) | 538 |
+  | Events (in 45 chains) | 542 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |

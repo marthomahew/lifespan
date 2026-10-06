@@ -699,5 +699,10 @@
     "title": "Third playtest fixes: heirs keep half-siblings, release events gated by release year, no job offers or emigration for fugitives without papers, salary caps, quiet heir takeovers, pet lines per animal, sensible dating candidates, fresher report cards and news, fluent stops lessons, slower home wear, recapture costs time",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts (third playtest); tests/engine/finance.test.ts; verify"
+  },
+  "S45": {
+    "title": "Four more on-the-run events, including cash-in-hand work that hires you",
+    "passes": true,
+    "evidence": "content:check; sim:coverage; tests/engine/escape.test.ts"
   }
 }

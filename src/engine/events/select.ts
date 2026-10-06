@@ -1,3 +1,4 @@
+import { JOB_BY_ID } from '../../content/jobs';
 import { EVENT_BY_ID, EVENTS } from '../../content/events';
 import { TRAIT_BY_ID } from '../../content/traits';
 import type { Ctx } from '../ctx';
@@ -189,7 +190,10 @@ function offersJob(def: EventDef): boolean {
   const outs = [...(def.choices ?? []).flatMap((c) => c.outcomes), ...(def.outcomes ?? [])];
   const yes = outs.some((o) =>
     o.effects.some(
-      (e) => ('job' in e && e.job === 'hire') || ('system' in e && e.system === 'hire'),
+      (e) =>
+        // Cash-in-hand (part-time) work doesn't check papers.
+        ('job' in e && e.job === 'hire' && !JOB_BY_ID[e.jobId ?? '']?.partTime) ||
+        ('system' in e && e.system === 'hire' && !JOB_BY_ID[e.arg ?? '']?.partTime),
     ),
   );
   JOB_OFFERS.set(def.id, yes);

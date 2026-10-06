@@ -165,4 +165,166 @@ export const FUGITIVE_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'fug_cash_work',
+    kind: 'choice',
+    category: 'work',
+    ages: [17, 70],
+    weight: 8,
+    cooldownYears: 5,
+    when: all(onTheRun, (s) => !s.career.partTimeId && !s.career.jobId),
+    text: 'A café owner with a hand-written sign in the window wants someone for the counter. Cash, no questions, no forms. She looks at you for a long moment and does not ask any.',
+    choices: [
+      {
+        id: 'take',
+        label: 'Take the shifts',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You learn the coffee machine, the regulars and the art of not giving your surname. It is honest work, which is a strange thing to be grateful for.',
+            effects: [
+              { system: 'hire', arg: 'pt_cafe_counter' },
+              { stat: 'stress', delta: -3 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'no',
+        label: 'Keep moving',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'Staying anywhere long enough to have regulars feels like a risk. You thank her and buy a coffee for the road.',
+            effects: [{ stat: 'stress', delta: 2 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'fug_recognised',
+    kind: 'choice',
+    category: 'crime',
+    ages: [18, 90],
+    weight: 6,
+    once: true,
+    when: onTheRun,
+    text: 'A man at the bus stop says your old name, quietly, without turning his head. He knew you inside. He says he can keep quiet, for a price.',
+    choices: [
+      {
+        id: 'pay',
+        label: 'Pay him to forget',
+        requires: canAfford(1500),
+        outcomes: [
+          {
+            chance: 0.7,
+            text: 'An envelope changes hands behind the shelter. You never see him again, which is exactly what you paid for.',
+            effects: [
+              { money: -1500, kind: 'price' },
+              { stat: 'stress', delta: 4 },
+            ],
+            success: true,
+          },
+          {
+            chance: 0.3,
+            text: 'He takes the money, and the next month he is back for more. You move flats that weekend.',
+            effects: [
+              { money: -1500, kind: 'price' },
+              { stat: 'stress', delta: 10 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'bluff',
+        label: 'Tell him he has the wrong person',
+        outcomes: [
+          {
+            chance: 0.6,
+            text: 'You look straight through him and get on the wrong bus. By the time it reaches the depot, he has decided he was mistaken.',
+            effects: [{ stat: 'stress', delta: 6 }],
+            success: true,
+          },
+          {
+            chance: 0.4,
+            text: 'He shrugs, takes out his phone and makes a call. You get off at the next stop and keep walking, but it is already too late.',
+            effects: [{ system: 'recapture' }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'fug_family_call',
+    kind: 'choice',
+    category: 'family',
+    ages: [18, 90],
+    weight: 6,
+    cooldownYears: 6,
+    when: onTheRun,
+    bind: { fam: { role: 'mother' } },
+    text: 'It is {fam.first}’s birthday. You have a phone box, a pocket of coins, and a very good idea of who might be listening to {fam.their} line.',
+    choices: [
+      {
+        id: 'call',
+        label: 'Call anyway',
+        outcomes: [
+          {
+            chance: 0.75,
+            text: 'Four minutes. {fam.first} cries, then laughs, then tells you to hang up before you get caught. You walk for an hour afterwards.',
+            effects: [
+              { stat: 'happiness', delta: 6 },
+              { rel: 'fam', delta: 8, memory: 'the birthday call from a phone box' },
+            ],
+            success: true,
+          },
+          {
+            chance: 0.25,
+            text: 'Halfway through, a car pulls up across the road with its engine running. You leave the receiver swinging.',
+            effects: [{ system: 'recapture' }],
+          },
+        ],
+      },
+      {
+        id: 'card',
+        label: 'Send a card with no return address',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You write three versions and send the shortest. Somewhere, {fam.first} will know it is from you from the handwriting alone.',
+            effects: [
+              { stat: 'happiness', delta: 2 },
+              { rel: 'fam', delta: 3, memory: 'a card with no return address' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'fug_anniversary',
+    kind: 'notice',
+    category: 'random',
+    ages: [18, 95],
+    weight: 6,
+    once: true,
+    when: all(onTheRun, (s) => !!s.legal.fugitive && s.year - s.legal.fugitive.since >= 10),
+    text: 'Ten years since the fence.',
+    outcomes: [
+      {
+        chance: 0.5,
+        text: 'A local paper runs a "where are they now" piece about the escape. They have no idea. You read it in a café, two streets from your flat.',
+        effects: [
+          { stat: 'stress', delta: 4 },
+          { stat: 'happiness', delta: 1 },
+        ],
+      },
+      {
+        chance: 0.5,
+        text: 'Nobody marks it but you. You buy a cake, eat one slice, and think about the version of you who stayed inside.',
+        effects: [{ stat: 'happiness', delta: 2 }],
+      },
+    ],
+  },
 ];
