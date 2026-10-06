@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { COUNTRIES } from '../../content/countries';
 import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
@@ -52,7 +53,7 @@ const MILESTONES: Milestone[] = [
       n.flags = n.flags.filter((f) => f !== 'npc_divorced');
       n.stats.happiness = clampStat(n.stats.happiness + 15);
       n.rel = clampStat(n.rel + 2);
-      return ctx.rng.pick([
+      return pickFresh(ctx, [
         `${who(n)} gets married in a barn with fairy lights. You cry at the vows and deny it at the buffet.`,
         `${who(n)} marries at the town hall on a Tuesday, then takes everyone for chips. It is perfect.`,
         `${who(n)} gets married. The speeches run long, the band runs out of songs, and nobody wants to leave.`,
@@ -67,7 +68,7 @@ const MILESTONES: Milestone[] = [
       n.flags = n.flags.filter((f) => f !== 'npc_married');
       n.flags.push('npc_divorced');
       n.stats.happiness = clampStat(n.stats.happiness - 15);
-      return ctx.rng.pick([
+      return pickFresh(ctx, [
         `${who(n)} is getting divorced. The phone call is long, and mostly quiet.`,
         `${who(n)}'s marriage ends. There is a lot of paperwork and one very sad dog.`,
       ]);
@@ -99,7 +100,7 @@ const MILESTONES: Milestone[] = [
     run: (ctx, n) => {
       n.money += money(ctx.s, ctx.rng.int(3000, 12000), 'wage');
       n.stats.happiness = clampStat(n.stats.happiness + 6);
-      return ctx.rng.pick([
+      return pickFresh(ctx, [
         `${who(n)} gets promoted and is unbearable about it for exactly one dinner.`,
         `${who(n)} is made a manager and immediately buys a better coat.`,
       ]);
@@ -157,7 +158,7 @@ const MILESTONES: Milestone[] = [
     when: (_c, n) => n.age >= 45,
     run: (ctx, n) => {
       n.stats.health = clampStat(n.stats.health - ctx.rng.int(8, 18));
-      return ctx.rng.pick([
+      return pickFresh(ctx, [
         `${who(n)} spends a week in hospital after a scare with ${pronouns(n.gender).their} heart. ${Cap(pronouns(n.gender).they)} ${n.gender === 'nonbinary' ? 'are' : 'is'} home now, and grumpy about the diet.`,
         `${who(n)} has an operation that goes well. You bring grapes; ${pronouns(n.gender).they} eat${n.gender === 'nonbinary' ? '' : 's'} all of them.`,
       ]);

@@ -272,6 +272,30 @@ const PLAY_LINES: Record<string, string[]> = {
     '{name} takes an apple from your palm with enormous, careful lips.',
     'A gallop along the edge of the field. You come back windswept and grinning.',
   ],
+  rabbit: [
+    '{name} does a sudden leap and twist in the air, which you learn is called a binky. It means joy.',
+    'You build {name} a tunnel out of boxes. {name} runs through it forty times, thumping approval.',
+    '{name} accepts a sprig of parsley from your fingers with great ceremony.',
+    '{name} flops over sideways, utterly content. You lie on the floor beside them for a while.',
+  ],
+  hamster: [
+    '{name} stuffs both cheeks with seeds until their face doubles in size, then looks at you, smug.',
+    'You build {name} a cardboard maze. It is solved in eleven seconds and partly eaten in twelve.',
+    '{name} runs a full marathon on the wheel at midnight. You are both very tired the next day.',
+    '{name} sits in your cupped hands, tiny and warm, washing their whiskers.',
+  ],
+  fish: [
+    '{name} follows your finger along the glass. You choose to believe this is friendship.',
+    'You add a little plastic castle to the tank. {name} inspects it thoroughly and moves in.',
+    'Feeding time: {name} meets you at the top of the water every single morning, right on time.',
+    'You watch {name} drift through the weed for ten minutes. It is cheaper than meditation.',
+  ],
+  tortoise: [
+    '{name} crosses the whole lawn in search of a dandelion. It takes all afternoon and is worth it.',
+    'You hand-feed {name} a strawberry. Their whole face turns red and they look delighted.',
+    '{name} basks under the lamp, eyes half shut, the very picture of a life well managed.',
+    '{name} follows you around the garden, slowly, at their own pace, which is the only pace.',
+  ],
   any: [
     'You spend an afternoon with {name}. Small, silly and the best part of the week.',
     '{name} does something adorable and you take forty photographs of it.',

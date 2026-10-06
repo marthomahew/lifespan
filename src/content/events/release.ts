@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { all, canAfford, exCon, hasJob, noJob, oddsBy } from './conditions';
+import { all, canAfford, exCon, hasJob, noJob, oddsBy, releasedWithin } from './conditions';
 
 /** Life after release: rebuilding with a record (SPEC §5.10). Every event needs exCon. */
 export const RELEASE_EVENTS: EventDef[] = [
@@ -10,7 +10,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 9,
     once: true,
-    when: exCon,
+    when: releasedWithin(1),
     text: 'The gate shuts behind you. You own a plastic bag of belongings, a bus pass with a few rides left on it, and a phone so old it asks to update for an hour and then gives up.',
     choices: [
       {
@@ -62,7 +62,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 8,
     cooldownYears: 4,
-    when: all(exCon, noJob),
+    when: all(releasedWithin(6), noJob),
     text: 'The interview at a warehouse goes well until the manager reaches the box on the form that asks about convictions. You ticked it. He taps it twice with his pen.',
     choices: [
       {
@@ -122,7 +122,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 8,
     once: true,
-    when: all(exCon, hasJob),
+    when: all(releasedWithin(8), hasJob),
     bind: { gaffer: { role: 'boss' } },
     text: '{gaffer.first} calls you in and shuts the door. Someone has told the whole floor about your record. {gaffer.They} say{gaffer.s} {gaffer.they} knew already and hired you anyway, and would like to know what you want done about the gossip.',
     choices: [
@@ -225,7 +225,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 7,
     cooldownYears: 4,
-    when: exCon,
+    when: releasedWithin(2),
     text: 'Your probation officer, a tired woman with a cactus on her desk, runs through the checklist: address, work, no new trouble. Then she puts the pen down and asks how you are actually doing.',
     choices: [
       {
@@ -274,7 +274,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 8,
     once: true,
-    when: exCon,
+    when: releasedWithin(3),
     bind: { mum: { role: 'mother', hasMemory: true } },
     text: 'You stand outside {mum.first}’s door for a long time before knocking. The last thing {mum.they} said to you in person was about {mum.memory}, and that was years ago.',
     choices: [
@@ -338,7 +338,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 7,
     once: true,
-    when: exCon,
+    when: releasedWithin(5),
     bind: { bunk: { role: 'acquaintance', flag: 'former_cellmate' } },
     text: '{bunk.first}, who slept in the bunk below you and snored in two keys, turns up at your door. Out a month, no address, all {bunk.their} worldly goods in a sports bag. {bunk.They} ask{bunk.s} for {money:300} to get a room.',
     choices: [
@@ -493,7 +493,7 @@ export const RELEASE_EVENTS: EventDef[] = [
     ages: [18, 58],
     weight: 7,
     cooldownYears: 6,
-    when: exCon,
+    when: releasedWithin(6),
     text: 'The flat is perfect: second floor, decent light, a radiator that works. Then the letting agent mentions they run background checks on all tenants, and smiles like that is good news.',
     choices: [
       {

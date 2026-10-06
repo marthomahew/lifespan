@@ -70,10 +70,24 @@ export const outOfWork = (s: GameState): boolean =>
   !s.military?.active;
 /** Free to relocate: an adult with no prison, case, or probation holding you here. */
 export const canMoveAbroad = (s: GameState): boolean =>
-  s.player.age >= 18 && s.legal.prison === null && s.legal.case === null && s.legal.probation === 0;
+  s.player.age >= 18 &&
+  s.legal.prison === null &&
+  s.legal.case === null &&
+  s.legal.probation === 0 &&
+  // A border wants a passport; someone on the run needs false papers first.
+  (!s.legal.fugitive || s.player.flags.includes('false_papers'));
 /** Out of prison after serving time. */
 export const exCon = (s: GameState): boolean =>
-  s.legal.prison === null && !s.legal.fugitive && s.player.flags.includes('ex_con');
+  s.legal.prison === null &&
+  !s.legal.fugitive &&
+  s.player.flags.includes('ex_con') &&
+  // An escapee whose file went cold never walked out through the gate.
+  (s.legal.releasedYear !== undefined || !s.player.flags.includes('escaped_once'));
+/** Out of prison within the last few years. */
+export const releasedWithin =
+  (years: number) =>
+  (s: GameState): boolean =>
+    exCon(s) && s.legal.releasedYear !== undefined && s.year - s.legal.releasedYear <= years;
 /** Escaped, and still on the run. */
 export const onTheRun = (s: GameState): boolean => !!s.legal.fugitive && !s.legal.prison;
 /** A conviction or plea on record (sealed juvenile records don't count). */

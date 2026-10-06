@@ -118,6 +118,8 @@ export function eligibility(
         return { ok: false, reason: 'category switched off' };
     }
     if (s.legal.prison && !def.inPrison) return { ok: false, reason: 'not while in prison' };
+    if (s.legal.fugitive && !s.player.flags.includes('false_papers') && offersJob(def))
+      return { ok: false, reason: 'job offers want papers you cannot show' };
     if (
       !opts.chain &&
       def.kind === 'notice' &&
@@ -179,6 +181,21 @@ export function bindNpcs(
 }
 
 /** An event is "bad" when every outcome leaves you worse off (no-bad-events cheat). */
+const JOB_OFFERS = new Map<string, boolean>();
+/** Whether any outcome of an event hires you into a job. */
+function offersJob(def: EventDef): boolean {
+  const known = JOB_OFFERS.get(def.id);
+  if (known !== undefined) return known;
+  const outs = [...(def.choices ?? []).flatMap((c) => c.outcomes), ...(def.outcomes ?? [])];
+  const yes = outs.some((o) =>
+    o.effects.some(
+      (e) => ('job' in e && e.job === 'hire') || ('system' in e && e.system === 'hire'),
+    ),
+  );
+  JOB_OFFERS.set(def.id, yes);
+  return yes;
+}
+
 export function isBadEvent(def: EventDef): boolean {
   if (def.kind !== 'notice') return false;
   const outs = def.outcomes ?? [];

@@ -31,6 +31,8 @@ export function emigrateReason(s: GameState, countryId: string): string | null {
   if (countryId === s.player.country) return 'you already live here';
   if (s.player.age < 18) return 'adults only';
   if (s.legal.prison) return 'not from prison';
+  if (s.legal.fugitive && !s.player.flags.includes('false_papers'))
+    return 'no passport you can show at a border';
   if (s.legal.case) return 'not with a case pending';
   if (s.legal.probation > 0) return 'not while on probation';
   if (blockingRecord(s)) return 'your criminal record blocks the visa';

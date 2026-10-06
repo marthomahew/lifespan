@@ -235,6 +235,7 @@ export function release(ctx: Ctx, parole: boolean, quiet = false): void {
       : 'renting';
   if (parole) s.legal.probation = 2;
   if (!s.player.flags.includes('ex_con')) s.player.flags.push('ex_con');
+  if (!quiet) s.legal.releasedYear = s.year;
   for (const n of s.npcs)
     if (n.roles.includes('cellmate')) {
       n.roles = n.roles.map((r) => (r === 'cellmate' ? 'acquaintance' : r));
@@ -306,12 +307,15 @@ export function recapture(ctx: Ctx, surrendered = false): void {
   if (!f) return;
   s.legal.fugitive = null;
   s.player.flags = s.player.flags.filter((x) => x !== 'fugitive' && x !== 'false_papers');
+  // Being caught costs two more years and any goodwill with the parole board.
+  const years = surrendered ? f.owed : f.owed + 2;
   ctx.log(
     'crime',
     surrendered
-      ? `You hand yourself in. The sentence: the ${f.owed} years still owed, and nothing more.`
+      ? `You hand yourself in. The sentence: the ${f.owed} ${f.owed === 1 ? 'year' : 'years'} still owed, and nothing more.`
       : 'A knock at six in the morning. They are polite, and there are a lot of them. You are going back.',
     true,
   );
-  imprison(ctx, f.crimeId, f.owed);
+  imprison(ctx, f.crimeId, years);
+  if (!surrendered && s.legal.prison) s.legal.prison.behaviour = 25;
 }

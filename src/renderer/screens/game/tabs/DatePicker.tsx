@@ -62,8 +62,12 @@ export function DatePicker({
             </span>
             <span className="small date-hook">{c.hook}</span>
             <span className="muted small">
-              {c.wantsKids ? 'Wants children one day' : 'Not the parenting type'} ·{' '}
-              {c.wantsMarriage ? 'open to marriage' : 'not the marrying kind'}
+              {c.wantsKids
+                ? 'Wants children one day'
+                : c.age > 45
+                  ? 'Past the age for children'
+                  : 'Not the parenting type'}{' '}
+              · {c.wantsMarriage ? 'open to marriage' : 'not the marrying kind'}
             </span>
             <button
               className="primary"

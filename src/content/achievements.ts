@@ -304,7 +304,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     label: 'Best Friend',
     emoji: '🐾',
     description: 'A pet lived out every one of its years with you.',
-    check: (s) => s.pets.some((p) => p.age >= p.lifespan && (p.alive || p.fate === 'died')),
+    check: (s) => s.pets.some((p) => p.fate === 'died' && p.age >= p.lifespan),
   },
   {
     id: 'full_house',

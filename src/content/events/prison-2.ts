@@ -644,7 +644,8 @@ export const PRISON_2_EVENTS: EventDef[] = [
     weight: 5,
     once: true,
     inPrison: true,
-    when: all(servedAtLeast(1), yearsLeftAtLeast(3)),
+    // Four years of essays need four years served.
+    when: all(servedAtLeast(4), yearsLeftAtLeast(1)),
     text: 'A distance-learning university offers degrees by correspondence: textbooks by post, essays by hand, exams in the visits hall under the eye of a bored invigilator.',
     choices: [
       {

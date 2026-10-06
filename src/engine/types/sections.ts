@@ -192,6 +192,8 @@ export type LegalState = {
   escapes: number;
   /** On the run after an escape: the years still owed. */
   fugitive?: { since: number; owed: number; crimeId: string } | null;
+  /** The year you last walked out through the gate (not over the fence). */
+  releasedYear?: number;
 };
 
 export type Home = {

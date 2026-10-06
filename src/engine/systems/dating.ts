@@ -46,6 +46,7 @@ export function dateCandidates(s: GameState, activityId: string): Candidate[] {
   const taken = new Set([s.player.first, ...s.npcs.map((n) => n.first)]);
   const out: Candidate[] = [];
   const hooks = r.shuffle(HOOKS);
+  const usedLast = new Set<string>();
   for (let i = 0; i < 3; i++) {
     const a = s.player.attraction;
     const gender: Gender =
@@ -53,18 +54,28 @@ export function dateCandidates(s: GameState, activityId: string): Candidate[] {
     const pool = (gender === 'male' ? c.names.male : c.names.female).filter((n) => !taken.has(n));
     const first = r.pick(pool.length ? pool : gender === 'male' ? c.names.male : c.names.female);
     taken.add(first);
-    const tier = r.pick(['working', 'middle', 'middle', 'comfortable'] as const);
+    // Ages spread around yours (a young player meets 18–24s, not a row of 18s).
+    const lo = Math.max(18, s.player.age - 6);
+    const age = r.int(lo, Math.max(lo + 5, s.player.age + 6));
+    // Jobs fit the age: students and starters when young, retirees later on.
+    const tier =
+      age < 23 ? 'working' : r.pick(['working', 'middle', 'middle', 'comfortable'] as const);
     const jobs = PARENT_JOBS[tier].filter((j) => j !== 'Unemployed');
+    const job = age >= 67 ? 'Retired' : age < 21 && r.chance(0.5) ? 'Student' : r.pick(jobs);
     const t1 = r.pick(TRAITS);
     const t2 = r.pick(TRAITS.filter((t) => t.id !== t1.id && !t1.excludes.includes(t.id)));
+    const lasts = c.names.last.filter((l) => !usedLast.has(l));
+    const last = r.pick(lasts.length ? lasts : c.names.last);
+    usedLast.add(last);
     out.push({
       first,
-      last: r.pick(c.names.last),
+      last,
       gender,
-      age: Math.max(18, s.player.age + r.int(-6, 6)),
-      job: r.pick(jobs),
+      age,
+      job,
       traits: [t1.id, t2.id],
-      wantsKids: !r.chance(0.45),
+      // Past fifty, children are a closed chapter.
+      wantsKids: age <= 45 && !r.chance(0.45),
       wantsMarriage: !r.chance(0.25),
       hook: hooks[i] ?? '',
       lookSeed: 100_000 + r.int(0, 1_000_000),

@@ -1,6 +1,7 @@
+import { ACHIEVEMENTS } from '../content/achievements';
 import { PARENT_JOB_LINK } from '../content/family';
 import { takeOverJob } from './systems/careers';
-import { withArticle } from './text';
+import { article, lowerTitle } from './text';
 import { formatMoney } from './economy';
 import { npcLook, toneOf } from './look';
 import { COUNTRY_BY_ID } from '../content/countries';
@@ -52,7 +53,10 @@ function remapRoles(n: Npc, heir: Npc, oldPlayerId: number): Role[] | null {
   if (heir.parentIds.includes(n.id)) return [n.gender === 'female' ? 'mother' : 'father'];
   if (r.has('spouse')) return ['stepparent'];
   if (r.has('child'))
-    return n.parentIds.some((p) => heir.parentIds.includes(p) || p === oldPlayerId)
+    // Their parent ids still name the late player as 0 at this point.
+    return n.parentIds.some(
+      (p) => heir.parentIds.includes(p) || p === oldPlayerId || p === PLAYER_ID,
+    )
       ? ['sibling']
       : ['acquaintance'];
   if (r.has('grandchild')) return n.parentIds.includes(heir.id) ? ['child'] : ['acquaintance'];
@@ -208,11 +212,12 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
   const link = heir.job ? PARENT_JOB_LINK[heir.job] : undefined;
   if (link && p.age >= 22 && p.age < 66) {
     takeOverJob(ctx, link[0], link[1]);
-    ctx.log(
-      'work',
-      `You still work as ${withArticle(next.career.history.at(-1)?.title ?? 'worker')}. Monday comes whatever happens.`,
-    );
+    const title = lowerTitle(next.career.history.at(-1)?.title ?? 'worker');
+    ctx.log('work', `You still work as ${article(title)} ${title}. Monday comes whatever happens.`);
   }
+  // What the heir already did in the years before (first words, school, a diploma) is credited quietly.
+  for (const a of ACHIEVEMENTS)
+    if (!p.achievements.includes(a.id) && a.check?.(next)) p.achievements.push(a.id);
   recordStatHistory(next);
   return ctx.finish().state;
 }

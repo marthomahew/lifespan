@@ -132,7 +132,7 @@ function leaveCoworkers(ctx: Ctx): void {
   }
 }
 
-export function hire(ctx: Ctx, jobId: string, force = false): void {
+export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): void {
   const s = ctx.s;
   s.player.flags = s.player.flags.filter((f) => f !== 'on_benefits');
   const job = JOB_BY_ID[jobId];
@@ -203,7 +203,12 @@ export function hire(ctx: Ctx, jobId: string, force = false): void {
     });
     junior.job = job.titles[0] ?? null;
   }
-  ctx.log('work', `You're hired as ${job.titles[0]} at ${formatMoney(s, c.salary)} a year.`, true);
+  if (!quiet)
+    ctx.log(
+      'work',
+      `You're hired as ${job.titles[0]} at ${formatMoney(s, c.salary)} a year.`,
+      true,
+    );
 }
 
 export function endJob(ctx: Ctx, reason: string): void {
@@ -283,6 +288,7 @@ export function careerTick(ctx: Ctx): void {
     (c.workedHarder === s.year - 1 ? 12 : 0);
   c.performance = clampStat(c.performance + (target - c.performance) * 0.35 + r.int(-6, 6));
   c.salary = Math.round(c.salary * (1 + Math.max(0, r.normal(0.025, 0.01))));
+  capSalary(s);
   if (s.education.residency > 0 && job.id === 'doctor') {
     s.education.residency -= 1;
     if (s.education.residency === 0) {
@@ -311,6 +317,7 @@ export function promote(ctx: Ctx, job: JobDef): void {
   c.level = Math.min(job.titles.length - 1, c.level + 1);
   c.since = ctx.s.year;
   c.salary = Math.max(Math.round(c.salary * 1.12), salaryFor(ctx, job, c.level));
+  capSalary(ctx.s);
   const title = job.titles[c.level] ?? job.titles[0] ?? job.id;
   const rec = c.history.at(-1);
   if (rec) rec.title = title;
@@ -414,6 +421,7 @@ export function careerAction(ctx: Ctx, id: string): void {
       markKey(s, 'raise');
       if (ctx.roll(clampOdds(0.2 + (c.performance - 50) * 0.012 + playerOdds(s, 'social')))) {
         c.salary = Math.round(c.salary * 1.08);
+        capSalary(s);
         ctx.log('work', `Your boss agrees to a raise. You are now on ${formatMoney(s, c.salary)}.`);
         addStat(s, 'happiness', 4);
       } else {
@@ -510,7 +518,7 @@ export function takeOverJob(ctx: Ctx, jobId: string, level: number): void {
   const s = ctx.s;
   if (jobId === 'doctor' && !s.player.flags.includes('residency_done'))
     s.player.flags.push('residency_done');
-  hire(ctx, jobId);
+  hire(ctx, jobId, true, true);
   const c = s.career;
   c.level = Math.min(job.titles.length - 1, Math.max(0, level));
   c.salary = salaryFor(ctx, job, c.level);
@@ -518,4 +526,14 @@ export function takeOverJob(ctx: Ctx, jobId: string, level: number): void {
   const rec = c.history[c.history.length - 1];
   if (rec) rec.title = job.titles[c.level] ?? rec.title;
   s.education.residency = 0;
+}
+
+/** Pay stays within reach of the job's band for its level (raises can't compound forever). */
+export function capSalary(s: GameState): void {
+  const c = s.career;
+  const job = c.jobId ? JOB_BY_ID[c.jobId] : undefined;
+  if (!job) return;
+  const band = job.salary[Math.min(c.level, job.salary.length - 1)];
+  if (!band) return;
+  c.salary = Math.min(c.salary, money(s, band[1] * 1.3, 'wage'));
 }

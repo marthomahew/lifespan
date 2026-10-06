@@ -1,4 +1,5 @@
 import type { Ctx } from '../ctx';
+import { capSalary } from './careers';
 
 /** Job changes from events (the full career system arrives with M6). */
 export function applyCareerEffect(
@@ -21,11 +22,13 @@ export function applyCareerEffect(
   } else if (kind === 'promote' && c.jobId) {
     c.level += 1;
     c.salary = Math.round(c.salary * 1.15);
+    capSalary(ctx.s);
   } else if (kind === 'demote' && c.jobId) {
     c.level = Math.max(0, c.level - 1);
     c.salary = Math.round(c.salary * 0.88);
   } else if (kind === 'raise' && c.jobId) {
     c.salary = Math.round(c.salary * 1.08);
+    capSalary(ctx.s);
   } else if (kind === 'hire' && jobId) {
     c.jobId = jobId;
   }

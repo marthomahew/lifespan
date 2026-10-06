@@ -242,7 +242,8 @@ export function assetsTick(ctx: Ctx): void {
   let maintenance = 0;
   for (const h of s.assets.homes) {
     h.value = Math.max(0, Math.round(h.value * (1 + r.normal(0.03, 0.06))));
-    h.condition = clampStat(h.condition - r.int(1, 4));
+    // Maintenance (paid below) keeps wear slow; a renovation is for the big jobs.
+    h.condition = clampStat(h.condition - r.int(0, 2));
     const m = Math.round(h.value * 0.01);
     maintenance += m;
     if (h.condition < 25) h.value = Math.round(h.value * 0.97);

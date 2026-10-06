@@ -224,3 +224,68 @@ describe('a child’s costs', () => {
     expect(after.money.cash).toBe(0);
   });
 });
+
+describe('third playtest', () => {
+  it('half-siblings stay siblings for the heir', async () => {
+    const { continueAsChild } = await import('../../src/engine');
+    let s = runCheat(newLife({ birthYear: 1960, gender: 'female' }, 17), 'age.set', {
+      age: 30,
+    }).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+    s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
+    const kids = s.npcs.filter((n) => n.roles.includes('child') && n.alive);
+    if (kids.length < 2) return;
+    const next = continueAsChild(s, kids[0]!.id);
+    const other = next.npcs.find((n) => n.first === kids[1]!.first && n.last === kids[1]!.last);
+    expect(other?.roles).toContain('sibling');
+  });
+
+  it('“the gate shuts behind you” only right after a real release', async () => {
+    const { EVENT_BY_ID } = await import('../../src/content/events');
+    const e = EVENT_BY_ID['rel_first_morning'];
+    const base = runCheat(newLife({ birthYear: 1970 }, 18), 'age.set', { age: 40 }).state;
+    const out = { ...base, player: { ...base.player, flags: [...base.player.flags, 'ex_con'] } };
+    expect(e?.when?.({ ...out, legal: { ...out.legal, releasedYear: out.year } })).toBe(true);
+    expect(e?.when?.({ ...out, legal: { ...out.legal, releasedYear: out.year - 10 } })).toBe(false);
+    expect(e?.when?.(out)).toBe(false);
+  });
+
+  it('pay stays near the job’s band; fluent is fluent; dating candidates fit their age', async () => {
+    const { act } = await import('../../src/engine');
+    const { dateCandidates } = await import('../../src/engine/systems/dating');
+    const { JOB_BY_ID } = await import('../../src/content/jobs');
+    const { money } = await import('../../src/engine/economy');
+    let s = runCheat(newLife({ birthYear: 1980, country: 'us' }, 19), 'age.set', { age: 30 }).state;
+    s = runCheat({ ...s, pending: [] }, 'job.set', { job: 'bartender' }).state;
+    s = {
+      ...s,
+      cheats: { ...s.cheats, forceSuccess: true },
+      career: { ...s.career, salary: 10_000_000 },
+    };
+    s = act(s, { type: 'career', id: 'ask_raise' }).state;
+    const band = JOB_BY_ID['bartender']!.salary[s.career.level]!;
+    expect(s.career.salary).toBeLessThanOrEqual(money(s, band[1] * 1.3, 'wage'));
+    const fluent = {
+      ...s,
+      pending: [],
+      money: { ...s.money, cash: 100000 },
+      player: { ...s.player, languages: { ...s.player.languages, french: 100 } },
+    };
+    expect(() =>
+      act(fluent, { type: 'activity', id: 'learn_language', params: { language: 'french' } }),
+    ).toThrow(/fluent/);
+    const young = runCheat(newLife({ birthYear: 2000, country: 'us' }, 20), 'age.set', {
+      age: 19,
+    }).state;
+    const ages = dateCandidates(young, 'find_date').map((c) => c.age);
+    expect(new Set(ages).size).toBeGreaterThan(1);
+    const old = runCheat(newLife({ birthYear: 1940, country: 'us' }, 21), 'age.set', {
+      age: 75,
+    }).state;
+    for (const c of dateCandidates(old, 'find_date')) {
+      expect(c.wantsKids).toBe(false);
+      if (c.age >= 67) expect(c.job).toBe('Retired');
+    }
+  });
+});

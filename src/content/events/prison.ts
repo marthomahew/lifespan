@@ -124,7 +124,7 @@ export const PRISON_EVENTS: EventDef[] = [
     inPrison: true,
     when: inPrison,
     bind: { mate: { role: 'cellmate' } },
-    text: 'After lights out, {mate.first} starts talking about a daughter {mate.first} hasn’t seen in six years, and doesn’t seem to want an answer.',
+    text: 'After lights out, {mate.first} starts talking about a daughter {mate.they} {mate.has}n’t seen in six years, and doesn’t seem to want an answer.',
     choices: [
       {
         id: 'listen',
@@ -181,7 +181,7 @@ export const PRISON_EVENTS: EventDef[] = [
     category: 'work',
     ages: [18, 75],
     weight: 9,
-    cooldownYears: 4,
+    cooldownYears: 8,
     inPrison: true,
     when: inPrison,
     text: 'A spot opens in the prison kitchen. It pays pennies an hour, starts at five, and comes with the right to wear a hairnet.',
@@ -275,7 +275,7 @@ export const PRISON_EVENTS: EventDef[] = [
     category: 'school',
     ages: [16, 85],
     weight: 8,
-    cooldownYears: 4,
+    cooldownYears: 8,
     inPrison: true,
     when: inPrison,
     text: 'A volunteer from the community college starts an evening class in the chapel. The sign-up sheet has two names on it.',

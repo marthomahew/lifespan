@@ -1150,7 +1150,8 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
     group: 'fun',
     ages: [2, 6],
     limitPerYear: 1,
-    description: 'Every cushion in the house, two chairs and a sheet. No grown-ups unless they know the password.',
+    description:
+      'Every cushion in the house, two chairs and a sheet. No grown-ups unless they know the password.',
     outcomes: [
       {
         chance: 0.4,

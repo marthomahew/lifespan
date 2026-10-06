@@ -652,7 +652,7 @@ export const HEALTH_EVENTS: EventDef[] = [
     category: 'health',
     ages: [30, 49],
     weight: 7,
-    cooldownYears: 5,
+    cooldownYears: 10,
     text: 'You bend to pick up a sock and your lower back seizes like a rusted hinge. You are now living on the floor.',
     choices: [
       {

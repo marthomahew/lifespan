@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { GRAD_BY_ID, MAJOR_BY_ID, MAJORS } from '../../content/education';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
@@ -101,7 +102,7 @@ function reportCard(ctx: Ctx): string {
             'Your teacher writes "capable of more, if the library ever sees you."',
             `You reach the post before ${parent} does. The report card does not survive the journey.`,
           ];
-  return `Your report card says ${now}${trend}. ${ctx.rng.pick(lines)}`;
+  return `Your report card says ${now}${trend}. ${pickFresh(ctx, lines, 200)}`;
 }
 
 export function graduateHighSchool(ctx: Ctx): void {

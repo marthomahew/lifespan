@@ -312,12 +312,26 @@ describe('homes (M7.5)', () => {
     const sold = act(mort, { type: 'sell_asset', id: mort.assets.homes[0]?.id ?? 0 }).state;
     expect(sold.assets.homes).toHaveLength(0);
     expect(sold.money.loans.find((l) => l.kind === 'mortgage')).toBeUndefined();
-    // Appreciation over decades, maintenance and condition decay.
-    s = cashBuy;
+    // Appreciation over decades, maintenance and condition decay, for a home in decent shape
+    // (a fixer-upper below 25 loses value until it is renovated).
+    const good = Math.max(0, s.assets.listings.findIndex((l) => l.condition >= 60));
+    const decent = act(s, { type: 'buy_home', index: good, financing: { kind: 'cash' } }).state;
+    s = decent;
     const v0 = s.assets.homes[0]?.value ?? 0;
     const c0 = s.assets.homes[0]?.condition ?? 0;
+    // Prices wander year to year; over twenty years nearly every home is worth more.
+    // (Runs that moved abroad are left out: their prices are in another currency.)
+    let grew = 0;
+    let stayed = 0;
+    for (let k = 0; k < 10; k++) {
+      const run = playYears({ ...decent, rng: seedRng(9000 + k) }, 20);
+      if (run.player.country !== decent.player.country || !run.assets.homes[0]) continue;
+      stayed++;
+      if (run.assets.homes[0].value > v0) grew++;
+    }
+    expect(stayed).toBeGreaterThanOrEqual(3);
+    expect(grew).toBeGreaterThanOrEqual(Math.ceil(stayed * 0.8));
     s = playYears(s, 20);
-    expect(s.assets.homes[0]?.value).toBeGreaterThan(v0);
     expect(s.assets.homes[0]?.condition).toBeLessThan(c0);
     expect(s.money.last?.maintenance).toBeGreaterThan(0);
     s = act(s, { type: 'renovate', id: s.assets.homes[0]?.id ?? 0 }).state;

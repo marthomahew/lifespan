@@ -48,7 +48,9 @@ export function ageUpInPlace(ctx: Ctx): void {
       'system',
       stage === 'middle_age'
         ? 'You are now middle-aged.'
-        : `You are now a${/^[aeiou]/i.test(STAGE_LABEL[stage]) ? 'n' : ''} ${STAGE_LABEL[stage].toLowerCase()}.`,
+        : stage === 'adult'
+          ? 'You are now thirty, and adulthood is official, apparently.'
+          : `You are now a${/^[aeiou]/i.test(STAGE_LABEL[stage]) ? 'n' : ''} ${STAGE_LABEL[stage].toLowerCase()}.`,
       true,
     );
 

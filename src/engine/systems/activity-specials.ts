@@ -145,11 +145,15 @@ export function runSpecial(
       return;
     }
     case 'language': {
+      // Without a pick (the sim bots), the first language not yet mastered.
       const lang =
         typeof params['language'] === 'string' && LANGUAGE_BY_ID[params['language']]
           ? params['language']
-          : 'spanish';
+          : (Object.keys(LANGUAGE_BY_ID).find((l) => (s.player.languages[l] ?? 0) < 100) ??
+            'spanish');
       const cur = s.player.languages[lang] ?? 0;
+      if (cur >= 100)
+        throw new EngineError(`you already speak ${LANGUAGE_BY_ID[lang]?.label ?? lang} fluently`);
       s.player.languages[lang] = clampStat(
         cur + Math.max(2, Math.round((100 - cur) / 8) + ctx.rng.int(0, 3)),
       );
