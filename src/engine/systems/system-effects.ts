@@ -6,6 +6,7 @@ import { hire } from './careers';
 import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
 import { caseStep, recapture } from './crime';
+import { scaleSalary, takePackage } from './crossroads';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -29,6 +30,12 @@ export function applySystemEffect(
   switch (kind) {
     case 'recapture':
       recapture(ctx);
+      return;
+    case 'salary_mult':
+      scaleSalary(ctx, Number(arg ?? 1));
+      return;
+    case 'severance':
+      takePackage(ctx, Number(arg ?? 1));
       return;
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';

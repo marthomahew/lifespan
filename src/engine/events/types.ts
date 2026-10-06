@@ -70,7 +70,9 @@ export type Effect =
         | 'case_plea'
         | 'move_abroad'
         | 'recapture'
-        | 'move_out';
+        | 'move_out'
+        | 'salary_mult'
+        | 'severance';
       arg?: string;
     }
   | { death: string }

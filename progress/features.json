@@ -744,5 +744,10 @@
     "title": "Music as a career, not a slot machine: free time, flops, rushed records, risky tours, slower fame (bot fame-90 age 21 → 31)",
     "passes": true,
     "evidence": "tests/engine/music.test.ts; sim"
+  },
+  "S54": {
+    "title": "Career crossroads every five to eight years: management or craft, a rival offer, a redundancy package, a sabbatical",
+    "passes": true,
+    "evidence": "tests/engine/crossroads.test.ts; content:check; sim"
   }
 }

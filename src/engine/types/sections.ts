@@ -106,6 +106,8 @@ export type CareerState = {
   workedHarder: number;
   appliedThisYear: string[];
   freelanceYear: number;
+  /** The last career crossroads (absent in older saves). */
+  crossroadsYear?: number;
 };
 
 export type MilitaryState = {
