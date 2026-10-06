@@ -3,6 +3,7 @@ import type { CrimeDef } from './types';
 export const CRIMES: CrimeDef[] = [
   {
     id: 'shoplifting',
+    charge: 'shoplifting',
     label: 'Shoplift',
     emoji: '🛍️',
     description: 'Leave a shop with something you never paid for.',
@@ -32,6 +33,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'pickpocketing',
+    charge: 'pickpocketing',
     label: 'Pickpocket',
     emoji: '👛',
     description: 'Relieve a stranger in a crowd of something that was theirs.',
@@ -61,6 +63,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'vandalism',
+    charge: 'vandalism',
     label: 'Vandalise',
     emoji: '🎨',
     description: 'Leave your mark on property that belongs to someone else.',
@@ -90,6 +93,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'burglary',
+    charge: 'burglary',
     label: 'Burgle a house',
     emoji: '🏚️',
     description: 'Enter a home that is not yours and leave with what is inside.',
@@ -119,6 +123,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'car_theft',
+    charge: 'car theft',
     label: 'Steal a car',
     emoji: '🚗',
     description: 'Drive away in a car that belongs to someone else.',
@@ -148,6 +153,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'fraud',
+    charge: 'fraud',
     label: 'Commit fraud',
     emoji: '🧾',
     description: 'Make money from a lie that other people believe.',
@@ -177,6 +183,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'embezzlement',
+    charge: 'embezzlement',
     label: 'Embezzle from work',
     emoji: '💼',
     description: 'Quietly help yourself to money your employer trusted you with.',
@@ -207,6 +214,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'drug_dealing',
+    charge: 'drug dealing',
     label: 'Deal drugs',
     emoji: '💊',
     description: 'Sell illegal substances and live with what follows.',
@@ -236,6 +244,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'assault',
+    charge: 'assault',
     label: 'Assault someone',
     emoji: '👊',
     description: 'Hurt another person on purpose and carry the weight of it.',
@@ -265,6 +274,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'armed_robbery',
+    charge: 'armed robbery',
     label: 'Armed robbery',
     emoji: '🏦',
     description: 'Take money by threatening lives, and become a different person doing it.',
@@ -294,6 +304,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'homicide',
+    charge: 'murder',
     label: 'Commit murder',
     emoji: '🔪',
     description: 'Take a human life. There is no undoing it.',
@@ -323,6 +334,7 @@ export const CRIMES: CrimeDef[] = [
   },
   {
     id: 'tax_evasion',
+    charge: 'tax evasion',
     label: 'Evade taxes',
     emoji: '📉',
     description: 'Keep money that the government is fairly sure belongs to it.',

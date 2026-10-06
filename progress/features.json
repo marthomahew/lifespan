@@ -614,5 +614,10 @@
     "title": "Accessories: earrings and headwear (beanie, cap, bucket hat, fedora, headscarf) in the builder and makeovers",
     "passes": true,
     "evidence": "tests/integration/portrait.test.ts (accessories); tests/engine/look.test.ts; e2e/customize.spec.ts"
+  },
+  "S28": {
+    "title": "Playtest fixes 1: unique names, fertility limits, named strangers, currency-correct wealth titles, crime nouns, pronouns and grammar, prison context, one death line",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts; sim invariants"
   }
 }

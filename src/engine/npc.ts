@@ -31,8 +31,16 @@ export function randomName(ctx: Ctx, countryId: string, gender: Gender): string 
         : ctx.rng.chance(0.5)
           ? c.names.male
           : c.names.female;
-  return ctx.rng.pick(pool);
+  // Nobody new shares a first name with you, your family, or anyone still in your life.
+  const s = ctx.s;
+  const taken = new Set<string>([s.player.first]);
+  for (const n of s.npcs)
+    if (n.alive || n.roles.some((r) => FAMILY_ROLES.has(r))) taken.add(n.first);
+  const free = pool.filter((x) => !taken.has(x));
+  return ctx.rng.pick(free.length ? free : pool);
 }
+
+const FAMILY_ROLES = new Set(['mother', 'father', 'sibling', 'child', 'grandparent', 'spouse']);
 
 export function randomSurname(ctx: Ctx, countryId: string): string {
   const c = COUNTRY_BY_ID[countryId] ?? COUNTRY_BY_ID['us'];

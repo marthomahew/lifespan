@@ -1,4 +1,4 @@
-import type { Category, ChainPayload, GameState, Role, StatKey, ViceKey } from '../types';
+import type { Gender, Category, ChainPayload, GameState, Role, StatKey, ViceKey } from '../types';
 
 /** Who an event talks about. If a binding can't be filled, the event is ineligible. */
 export type NpcQuery = {
@@ -51,6 +51,9 @@ export type Effect =
         | 'npc_dies';
       with?: string;
       role?: Role;
+      /** A new friend or enemy the text has already named. */
+      first?: string;
+      gender?: Gender;
     }
   | { schedule: string; inYears: number | [number, number]; payload?: ChainPayload }
   | {

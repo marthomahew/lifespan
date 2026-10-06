@@ -118,7 +118,10 @@ export function applyEffect(
   } else if ('performance' in e) {
     s.career.performance = clampStat(s.career.performance + e.performance);
   } else if ('status' in e) {
-    applyStatusEffect(ctx, e.status, e.with ? boundNpc(ctx, e.with, bindings) : undefined, e.role);
+    applyStatusEffect(ctx, e.status, e.with ? boundNpc(ctx, e.with, bindings) : undefined, e.role, {
+      ...(e.first ? { first: e.first } : {}),
+      ...(e.gender ? { gender: e.gender } : {}),
+    });
   } else if ('schedule' in e) {
     const [lo, hi] = typeof e.inYears === 'number' ? [e.inYears, e.inYears] : e.inYears;
     s.chains.push({

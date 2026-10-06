@@ -713,7 +713,10 @@ export const BABY_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: 'In the sand you meet a girl named Wren, who has already built a moat. By home time, she is your best friend and you are both made of sand.',
-            effects: [{ stat: 'happiness', delta: 3 }, { status: 'friend' }],
+            effects: [
+              { stat: 'happiness', delta: 3 },
+              { status: 'friend', first: 'Wren', gender: 'female' },
+            ],
           },
         ],
       },

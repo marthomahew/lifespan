@@ -2,7 +2,7 @@ import { COUNTRIES } from '../../content/countries';
 import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
-import { relLabel } from '../npc';
+import { pronouns, relLabel } from '../npc';
 import type { Npc } from '../types';
 import { clampStat } from '../util';
 
@@ -158,8 +158,8 @@ const MILESTONES: Milestone[] = [
     run: (ctx, n) => {
       n.stats.health = clampStat(n.stats.health - ctx.rng.int(8, 18));
       return ctx.rng.pick([
-        `${who(n)} spends a week in hospital after a scare with their heart. They are home now, and grumpy about the diet.`,
-        `${who(n)} has an operation that goes well. You bring grapes; they eat all of them.`,
+        `${who(n)} spends a week in hospital after a scare with ${pronouns(n.gender).their} heart. ${Cap(pronouns(n.gender).they)} ${n.gender === 'nonbinary' ? 'are' : 'is'} home now, and grumpy about the diet.`,
+        `${who(n)} has an operation that goes well. You bring grapes; ${pronouns(n.gender).they} eat${n.gender === 'nonbinary' ? '' : 's'} all of them.`,
       ]);
     },
   },
@@ -172,7 +172,7 @@ const MILESTONES: Milestone[] = [
       const amount = money(ctx.s, ctx.rng.int(20000, 200000));
       n.money += amount;
       n.stats.happiness = clampStat(n.stats.happiness + 10);
-      return `${who(n)} comes into ${formatMoney(ctx.s, amount)} from a great-aunt nobody had met. They buy a boat they cannot steer.`;
+      return `${who(n)} comes into ${formatMoney(ctx.s, amount)} from a great-aunt nobody had met. ${Cap(pronouns(n.gender).they)} ${n.gender === 'nonbinary' ? 'buy' : 'buys'} a boat ${pronouns(n.gender).they} cannot steer.`;
     },
   },
 ];
@@ -187,7 +187,10 @@ export function npcMilestones(ctx: Ctx): string[] {
   const s = ctx.s;
   // Other people's news is told the way a teen or adult hears it.
   if (s.player.age < 14) return [];
-  const people = s.npcs.filter((n) => matters(ctx, n)).sort((a, b) => b.rel - a.rel || a.id - b.id);
+  // A cellmate's news reaches you face to face, not by photo; they're left out while you're inside.
+  const people = s.npcs
+    .filter((n) => matters(ctx, n) && !(s.legal.prison && n.roles.includes('cellmate')))
+    .sort((a, b) => b.rel - a.rel || a.id - b.id);
   const happened: string[] = [];
   for (const n of people) {
     if (happened.length >= MILESTONE_CAP) break;

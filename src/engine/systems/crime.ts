@@ -84,7 +84,7 @@ export function openCase(ctx: Ctx, crimeId: string): void {
   const ev = EVENT_BY_ID['legal_arrest'];
   if (ev)
     fireEvent(ctx, ev, 'system', {
-      crime: def?.label.toLowerCase() ?? 'a crime',
+      crime: def?.charge ?? 'a crime',
       bail: Math.round(bail),
     });
 }
@@ -105,7 +105,7 @@ export function caseStep(ctx: Ctx, step: string, arg: string | undefined): void 
     const ev = EVENT_BY_ID['legal_lawyer'];
     if (ev)
       fireEvent(ctx, ev, 'system', {
-        crime: CRIME_BY_ID[c.crimeId]?.label.toLowerCase() ?? 'the charge',
+        crime: CRIME_BY_ID[c.crimeId]?.charge ?? 'the charge',
       });
   } else if (step === 'case_lawyer') {
     const tier = (
@@ -119,7 +119,7 @@ export function caseStep(ctx: Ctx, step: string, arg: string | undefined): void 
     const ev = EVENT_BY_ID['legal_plea'];
     if (ev)
       fireEvent(ctx, ev, 'system', {
-        crime: CRIME_BY_ID[c.crimeId]?.label.toLowerCase() ?? 'the charge',
+        crime: CRIME_BY_ID[c.crimeId]?.charge ?? 'the charge',
       });
   } else if (step === 'case_plea') {
     resolveCase(ctx, arg === 'plea');

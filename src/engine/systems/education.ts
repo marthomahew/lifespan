@@ -108,7 +108,7 @@ export function graduateHighSchool(ctx: Ctx): void {
   s.education.inSchool = false;
   ctx.log(
     'school',
-    `You graduate from high school with a ${letterGrade(s.education.grade)} average. Your family cheers slightly too loudly.`,
+    `You graduate from high school with ${/^[AF]/.test(letterGrade(s.education.grade)) ? 'an' : 'a'} ${letterGrade(s.education.grade)} average. Your family cheers slightly too loudly.`,
     true,
   );
 }

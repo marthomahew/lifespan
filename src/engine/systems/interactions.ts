@@ -144,7 +144,14 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   if (def.special === 'propose' && n.flags.includes('no_marriage') && !s.cheats.forceSuccess)
     ok = false;
   if (def.special === 'baby') {
-    const fert = (s.player.stats.fertility + n.fertility) / 200;
+    // The one who would carry the baby counts most; nobody past it has a chance.
+    const pf = s.player.stats.fertility;
+    const carrier =
+      s.player.gender === 'female'
+        ? Math.max(pf, n.gender === 'female' ? n.fertility : 0)
+        : n.fertility;
+    const other = carrier === pf ? n.fertility : pf;
+    const fert = carrier <= 0 ? 0 : (carrier * 0.7 + other * 0.3) / 100;
     ok = ctx.roll(Math.min(0.9, fert * 0.85));
   }
   if (def.special === 'wedding')
@@ -152,7 +159,9 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   const out = ok ? def.success : def.failure;
   const [lo, hi] = out.rel;
   const delta = ctx.rng.int(lo, hi);
-  const text = renderText(s, ctx.rng.pick(out.texts), { npc: n.id });
+  // From prison, a talk happens across a visiting-room table or down a phone line.
+  const inside = s.legal.prison && def.id === 'conversation' && ok && !n.roles.includes('cellmate');
+  const text = renderText(s, ctx.rng.pick(inside ? PRISON_TALK : out.texts), { npc: n.id });
   ctx.log(def.adultsOnly ? 'romance' : 'social', text);
   remember(s, n, out.memory, delta);
   if (out.happiness) addStat(s, 'happiness', out.happiness);
@@ -219,3 +228,9 @@ export function interact(ctx: Ctx, npcId: number, id: string, params: InteractPa
   }
   n.rel = clampStat(n.rel);
 }
+
+const PRISON_TALK = [
+  '{npc.first} visits. You talk across the bolted table until the guard calls time, and it is the best hour of the month.',
+  'A phone call with {npc.first}, eleven minutes long. You save up things to tell {npc.them} all week.',
+  '{npc.first} writes back, three pages, mostly about the neighbours. You read it four times.',
+];

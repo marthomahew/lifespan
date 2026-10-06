@@ -3,7 +3,7 @@ import type { Ctx } from '../ctx';
 import { baseHazard, healthMultiplier } from '../mortality';
 import { addNpc, remember } from '../npc';
 import { money } from '../economy';
-import { addStat } from '../stats';
+import { addStat, fertilityBaseline } from '../stats';
 import type { Npc } from '../types';
 import { clampStat } from '../util';
 import { inheritFrom } from './inheritance';
@@ -152,7 +152,16 @@ function npcAging(ctx: Ctx): void {
       } else if (n.age === 22 && n.job === 'At university') n.job = r.pick(PARENT_JOBS.middle);
     }
     if (n.age === 66 && n.job && !['At school', 'At university'].includes(n.job)) n.job = 'Retired';
-    n.fertility = clampStat(n.age > 45 ? n.fertility - 4 : n.fertility);
+    // Women's fertility follows the same curve as the player's and ends in the mid-forties.
+    n.fertility = clampStat(
+      n.gender === 'female'
+        ? n.age > 46
+          ? 0
+          : Math.min(n.fertility, fertilityBaseline(n.age, 'female') + 10)
+        : n.age > 45
+          ? n.fertility - 4
+          : n.fertility,
+    );
     // Savings keep pace with prices, and working adults put a little away.
     n.money = Math.round(
       n.money * 1.025 +

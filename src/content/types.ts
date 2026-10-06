@@ -353,6 +353,8 @@ export type PossessionDef = {
 export type CrimeDef = {
   id: string;
   label: string;
+  /** The offence as a noun, for charges: "arrested for burglary". */
+  charge: string;
   emoji: string;
   /** One abstract sentence about what it is, no method. */
   description: string;

@@ -247,7 +247,7 @@ export const RELEASE_EVENTS: EventDef[] = [
             chance: 1,
             text: 'She signs you up. Your mentor turns out to be a retired plasterer called Osric who served six years and talks mostly about his allotment.',
             effects: [
-              { status: 'friend' },
+              { status: 'friend', first: 'Osric', gender: 'male' },
               { stat: 'discipline', delta: 5 },
               { stat: 'karma', delta: 2 },
             ],

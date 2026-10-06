@@ -1,17 +1,9 @@
+import { netWorthRef } from '../engine/networth';
 import type { GameState } from '../engine/types';
 import type { AchievementDef, LifeTitleDef } from './types';
 
-const nw = (s: GameState): number => {
-  const m = s.money;
-  const a = s.assets;
-  const local =
-    m.cash +
-    m.savings +
-    Object.values(m.holdings).reduce((x, y) => x + y, 0) +
-    [...a.homes, ...a.vehicles, ...a.possessions].reduce((x, y) => x + y.value, 0) -
-    m.loans.reduce((x, l) => x + l.balance, 0);
-  return local / Math.max(1e-9, s.inflation);
-};
+// Net worth in today's money, converted from the local currency (yen and won are not dollars).
+const nw = (s: GameState): number => netWorthRef(s);
 const kids = (s: GameState): number => s.npcs.filter((n) => n.roles.includes('child')).length;
 const hasDegree = (s: GameState, lvls: string[]): boolean =>
   s.education.degrees.some((d) => lvls.includes(d.level));

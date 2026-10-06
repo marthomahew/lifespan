@@ -504,7 +504,10 @@ export const MIDDLE_AGE_EVENTS: EventDef[] = [
           {
             chance: 0.6,
             text: 'You reconnect with a former lab partner, Thessaly Moor, who remembers you fondly and inaccurately.',
-            effects: [{ status: 'friend' }, { stat: 'happiness', delta: 6 }],
+            effects: [
+              { status: 'friend', first: 'Thessaly', gender: 'female' },
+              { stat: 'happiness', delta: 6 },
+            ],
           },
           {
             chance: 0.4,

@@ -68,7 +68,10 @@ export function healthTick(ctx: Ctx): void {
       h.illnesses = h.illnesses.filter((x) => x !== ill);
       // Minor bugs pass quietly; recovering from anything worse is news.
       if (!isMinorIllness(def))
-        ctx.log('health', `${def.emoji} The ${def.label.toLowerCase()} clears up on its own.`);
+        ctx.log(
+          'health',
+          `${def.emoji} You shake off the ${def.label.toLowerCase()}. Your body sorts it out on its own.`,
+        );
     }
   }
   if (s.cheats.noBadEvents) return;

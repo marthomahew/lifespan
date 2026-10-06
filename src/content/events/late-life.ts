@@ -424,7 +424,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
             text: 'The society meets in a church hall and argues for an hour about signal boxes. You fit in alarmingly fast and make a friend called Ossie.',
             effects: [
               { stat: 'happiness', delta: 6 },
-              { status: 'friend' },
+              { status: 'friend', first: 'Ossie', gender: 'male' },
               { flag: 'late_railway' },
             ],
             next: { eventId: 'late_hobby_show', inYears: [1, 3] },
@@ -600,7 +600,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
             effects: [
               { stat: 'karma', delta: 6 },
               { stat: 'discipline', delta: 2 },
-              { status: 'friend' },
+              { status: 'friend', first: 'Nell', gender: 'female' },
             ],
           },
         ],
@@ -1049,7 +1049,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
             effects: [
               { money: -5000 },
               { stat: 'happiness', delta: 11 },
-              { status: 'friend' },
+              { status: 'friend', first: 'Sigrun', gender: 'female' },
               { flag: 'late_last_adventure' },
             ],
           },

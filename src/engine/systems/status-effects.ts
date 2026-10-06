@@ -1,13 +1,19 @@
 import type { Ctx } from '../ctx';
 import { addNpc, remember } from '../npc';
-import type { Npc, Role } from '../types';
+import type { Gender, Npc, Role } from '../types';
 import { currentPartner, fitsAttraction, killNpc, partnerGender } from './partners';
 import { addChild, breakUp, divorce, marry } from './romance';
 
 export { currentPartner, killNpc, partnerGender, partnerOf } from './partners';
 
 /** Relationship status changes from events. Romance is adults only. */
-export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, role?: Role): void {
+export function applyStatusEffect(
+  ctx: Ctx,
+  kind: string,
+  npc: Npc | undefined,
+  role?: Role,
+  named: { first?: string; gender?: Gender } = {},
+): void {
   const s = ctx.s;
   const p = s.player;
   switch (kind) {
@@ -86,6 +92,7 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
       const n = addNpc(ctx, {
         role: role ?? (kind === 'friend' ? 'friend' : 'enemy'),
         age: near,
+        ...named,
         rel: kind === 'friend' ? ctx.rng.int(55, 75) : ctx.rng.int(5, 25),
       });
       ctx.log(
@@ -96,8 +103,9 @@ export function applyStatusEffect(ctx: Ctx, kind: string, npc: Npc | undefined, 
     }
     case 'npc_dies': {
       if (npc) {
-        killNpc(ctx, npc, 'an accident');
-        ctx.log('family', `${npc.first} dies.`, true);
+        killNpc(ctx, npc, npc.age >= 70 ? 'old age' : 'an accident');
+        // The event has told the story; this is the line the timeline keeps.
+        ctx.log('family', `🕯️ ${npc.first} ${npc.last}, ${npc.birthYear}–${ctx.s.year}.`, true);
       }
       return;
     }
