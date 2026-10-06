@@ -16,6 +16,7 @@ import { addIllness, cureIllness } from '../systems/illness';
 import { applyCrimeEffect } from '../systems/legal-effects';
 import { applyStatusEffect } from '../systems/status-effects';
 import { addSkill } from '../systems/skills';
+import { payFromLiquid } from '../systems/loans';
 import type { ChainPayload, Npc } from '../types';
 import { clampStat } from '../util';
 import { renderText } from './tokens';
@@ -148,7 +149,17 @@ export function applyEffect(
     if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
   } else if ('wealth' in e) {
     // Stakes that scale with what you have: a share of net worth, paid from (or into) cash.
-    s.money.cash += Math.round(Math.max(0, netWorth(s)) * e.wealth);
+    // A share of what you can reach (cash, savings, investments), not of the house you live in.
+    // Losses come out of cash first, then savings and investments, so they never overdraw you.
+    const m = s.money;
+    const liquid = m.cash + m.savings + Object.values(m.holdings).reduce((x, v) => x + v, 0);
+    const amount = Math.round(Math.max(0, Math.min(liquid, netWorth(s))) * e.wealth);
+    if (amount >= 0) s.money.cash += amount;
+    else {
+      // (Two steps: payFromLiquid changes cash itself.)
+      const owed = payFromLiquid(s, -amount);
+      s.money.cash -= owed;
+    }
   } else if ('novel' in e) {
     novelOp(ctx, e.novel);
   } else if ('pet' in e && e.pet === 'adopt') {

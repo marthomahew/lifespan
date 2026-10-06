@@ -7,7 +7,7 @@ import type { Ctx } from '../ctx';
 import { remember } from '../npc';
 import { addStat } from '../stats';
 import type { ChainPayload } from '../types';
-import { hire } from './careers';
+import { hire, retire } from './careers';
 import { discharge, enlist } from './military';
 import { signRecordDeal } from './music';
 import { caseStep, recapture } from './crime';
@@ -59,6 +59,9 @@ export function applySystemEffect(
       );
       return;
     }
+    case 'retire':
+      if (s.career.jobId) retire(ctx);
+      return;
     case 'near_family':
       // Moving to be near the family: the children and grandchildren see a lot more of you.
       for (const n of s.npcs)
@@ -117,7 +120,11 @@ export function applySystemEffect(
       // Move with your partner: to the country in arg, or anywhere else at random.
       if (!canMoveAbroad(s)) return;
       const options = COUNTRIES.filter((c) => c.id !== s.player.country);
-      const to = options.find((c) => c.id === arg) ?? ctx.rng.pick(options);
+      // 'warm': somewhere sunny to retire to, and not back where you started.
+      const warm = options.filter((c) => WARM.includes(c.id) && c.id !== s.player.birthCountry);
+      const to =
+        options.find((c) => c.id === arg) ??
+        ctx.rng.pick(arg === 'warm' && warm.length ? warm : options);
       emigrate(ctx, to.id, undefined, true);
       for (const n of s.npcs)
         if (n.alive && (n.roles.includes('partner') || n.roles.includes('spouse')))
@@ -130,3 +137,6 @@ export function applySystemEffect(
       return;
   }
 }
+
+/** Where people go to retire in the sun. */
+const WARM = ['mx', 'au', 'br', 'fr'];

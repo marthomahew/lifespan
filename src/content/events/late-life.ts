@@ -845,7 +845,7 @@ export const LATE_LIFE_EVENTS: EventDef[] = [
     ages: [65, 90],
     weight: 8,
     once: true,
-    text: 'Your new hip is titanium, apparently, and the surgeon seems very pleased with it. The physio hands you a sheet of exercises and a look that says she has heard every excuse.',
+    text: 'Your hip finally gives out, and a surgeon replaces it with a titanium one, which she seems very pleased with. The physio hands you a sheet of exercises and a look that says she has heard every excuse.',
     choices: [
       {
         id: 'diligent',

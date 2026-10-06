@@ -167,6 +167,21 @@ export function debtCeiling(s: GameState, salary: number): number {
   return Math.max(money(s, 40000), Math.round(salary * 2));
 }
 
+/** Pay an amount from cash (if asked), then savings, then investments; returns what's still owed. */
+export function payFromLiquid(s: GameState, amount: number, useCash = true): number {
+  const m = s.money;
+  let left = Math.max(0, amount);
+  const take = (have: number): number => {
+    const n = Math.min(left, Math.max(0, have));
+    left -= n;
+    return n;
+  };
+  if (useCash) m.cash -= take(m.cash);
+  m.savings -= take(m.savings);
+  for (const k of Object.keys(m.holdings) as InvestKey[]) m.holdings[k] -= take(m.holdings[k]);
+  return left;
+}
+
 /**
  * Bankruptcy (DECISIONS: SPEC §5.6 debt needs an end). When overdraft debt passes the
  * ceiling, savings and investments go to creditors and the court wipes the rest.
@@ -178,6 +193,17 @@ export function bankruptcyCheck(ctx: Ctx, salary: number): void {
   const unsecured = m.loans.filter(isUnsecuredDebt);
   const total = unsecured.reduce((t, l) => t + l.balance, 0);
   if (!unsecured.length || total <= debtCeiling(s, salary)) return;
+  // Savings and investments cover it: you sell and clear the debt, no court needed.
+  const liquid = m.savings + Object.values(m.holdings).reduce((t, v) => t + v, 0);
+  if (liquid >= total) {
+    payFromLiquid(s, total, false);
+    m.loans = m.loans.filter((l) => !unsecured.includes(l));
+    ctx.log(
+      'money',
+      `You sell ${formatMoney(s, total)} of savings and investments to clear the overdraft.`,
+    );
+    return;
+  }
   let seized = m.savings;
   m.savings = 0;
   for (const k of Object.keys(m.holdings) as InvestKey[]) {

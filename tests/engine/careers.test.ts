@@ -120,15 +120,20 @@ describe('applications and the job (M6.5)', () => {
 
   it('performance drives raises and promotions; poor performance gets you fired', () => {
     const base = getJob(adult(4), 'accountant' in JOB_BY_ID ? 'bank_teller' : 'retail_associate');
-    const star = clone(base);
-    star.player.stats.smarts = 95;
-    star.player.stats.discipline = 95;
-    star.career.performance = 95;
-    let s = star;
-    for (let i = 0; i < 8; i++)
-      s = playYears(act(s, { type: 'career', id: 'work_harder' }).state, 1);
-    expect(s.career.level).toBeGreaterThan(0);
-    expect(s.log.some((l) => l.text.startsWith('Promoted to'))).toBe(true);
+    // Life can intervene (a backpacking year ends the job), so judge the first star who stays.
+    let stayed: GameState | null = null;
+    for (let seed = 4; seed < 12 && !stayed; seed++) {
+      const star = clone(seed === 4 ? base : getJob(adult(seed), base.career.jobId ?? ''));
+      star.player.stats.smarts = 95;
+      star.player.stats.discipline = 95;
+      star.career.performance = 95;
+      let s = star;
+      for (let i = 0; i < 8 && s.career.jobId; i++)
+        s = playYears(act(s, { type: 'career', id: 'work_harder' }).state, 1);
+      if (s.career.jobId) stayed = s;
+    }
+    expect(stayed?.career.level).toBeGreaterThan(0);
+    expect(stayed?.log.some((l) => l.text.startsWith('Promoted to'))).toBe(true);
     const slacker = clone(base);
     slacker.player.stats.smarts = 5;
     slacker.player.stats.discipline = 0;

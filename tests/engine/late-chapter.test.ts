@@ -39,6 +39,21 @@ describe('the later-life chapter', () => {
     expect(kid?.rel).toBeGreaterThan(50);
   });
 
+  it('retiring abroad means somewhere warm, not home, and ends the job', () => {
+    for (const seed of [603, 604, 605, 606]) {
+      let s = runCheat(retiree(seed), 'job.set', { job: 'accountant' }).state;
+      s = runCheat({ ...s, pending: [] }, 'money.add', { amount: 100000 }).state;
+      const p = fire({ ...s, pending: [] });
+      if (!currentPopup(p)?.choices.find((c) => c.id === 'sun')?.enabled) continue;
+      const after = choose(p, 'sun').state;
+      expect(['mx', 'au', 'br', 'fr']).toContain(after.player.country);
+      expect(after.player.country).not.toBe(after.player.birthCountry);
+      expect(after.career.jobId).toBeNull();
+      return;
+    }
+    throw new Error('no seed could retire abroad');
+  });
+
   it('comes round every eight years or so after 66', () => {
     let s = retiree(602);
     const years: number[] = [];

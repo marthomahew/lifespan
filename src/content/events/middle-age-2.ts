@@ -416,11 +416,14 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
     id: 'mid2_baby_name',
     kind: 'choice',
     category: 'family',
-    ages: [50, 64],
+    ages: [45, 80],
     weight: 6,
     cooldownYears: 6,
-    bind: { kid: { role: 'child', minAge: 22 } },
-    text: '{kid.first} rings to say the baby is here and healthy, and that they have named her Juniper Moonbeam. There is a pause on the line in which you are clearly expected to say something.',
+    // The granddaughter born this year, so the name belongs to someone in the family tree.
+    bind: {
+      baby: { role: 'grandchild', maxAge: 0, gender: 'female', notFlag: 'great_grandchild' },
+    },
+    text: 'The phone rings: {baby.first} is here and healthy, and her parents have chosen her middle name. It is Moonbeam. There is a pause on the line in which you are clearly expected to say something.',
     choices: [
       {
         id: 'love_it',
@@ -428,9 +431,9 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: '{kid.first} audibly relaxes. Within a month you cannot imagine her called anything else, and you knit the name into a blanket.',
+            text: 'Her parents audibly relax. Within a month you cannot imagine her as anything but {baby.first} Moonbeam, and you knit the whole name into a blanket.',
             effects: [
-              { rel: 'kid', delta: 8, memory: 'how kindly you took the name' },
+              { rel: 'baby', delta: 8, memory: 'the blanket with my whole name on it' },
               { stat: 'happiness', delta: 5 },
               { skill: 'art', delta: 1 },
             ],
@@ -443,32 +446,29 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
         outcomes: [
           {
             chance: 0.4,
-            text: 'Against all odds, {kid.first} likes it. The baby becomes Juniper Margaret, and your late aunt would have been unbearable about it.',
+            text: 'Against all odds, they like it. The baby becomes {baby.first} Margaret, and your late aunt would have been unbearable about it.',
             effects: [
-              { rel: 'kid', delta: 4, memory: 'the middle name you gave the baby' },
+              { rel: 'baby', delta: 4, memory: 'the middle name you gave me' },
               { stat: 'happiness', delta: 6 },
             ],
             success: true,
           },
           {
             chance: 0.6,
-            text: 'The silence lengthens. {kid.first} says, “We weren’t actually asking,” and the first photos arrive a few days later than they might have.',
-            effects: [
-              { rel: 'kid', delta: -7, memory: 'the row about the baby’s name' },
-              { stat: 'happiness', delta: -3 },
-            ],
+            text: 'The silence lengthens. "We weren’t actually asking," says a voice, and the first photos arrive a few days later than they might have.',
+            effects: [{ stat: 'happiness', delta: -3 }],
           },
         ],
       },
       {
         id: 'nickname',
-        label: 'Privately decide to call her “June”',
+        label: 'Privately decide on a nickname',
         outcomes: [
           {
             chance: 1,
-            text: 'Nobody else calls her June. She grows up knowing that it is only you, and treats it like a secret password.',
+            text: 'You call her Beanie, and nobody else does. She grows up knowing that it is only you, and treats it like a secret password.',
             effects: [
-              { rel: 'kid', delta: 1, memory: 'your stubborn nickname for the baby' },
+              { rel: 'baby', delta: 6, memory: 'the nickname only you use' },
               { stat: 'happiness', delta: 3 },
             ],
           },
@@ -674,6 +674,9 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
     ages: [50, 64],
     weight: 7,
     once: true,
+    // Empty means both parents are gone.
+    when: (s) =>
+      !s.npcs.some((n) => n.alive && (n.roles.includes('mother') || n.roles.includes('father'))),
     bind: { sib: { role: 'sibling', minAge: 40, hasMemory: true } },
     text: 'The house you grew up in is empty now, and {sib.first} wants to keep it “in the family,” meaning {sib.them}, rent-free. Over the phone {sib.they} remind{sib.s} you of {sib.memory}, which seems unrelated but clearly is not.',
     choices: [

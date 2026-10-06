@@ -56,4 +56,55 @@ describe('money decisions come back around', () => {
     }
     expect(found).toBe(true);
   });
+
+  it('a loss comes out of savings and investments before any overdraft, never the house', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { applyEffect } = await import('../../src/engine/events/apply');
+    const s = structuredClone(rich(520, 'friend'));
+    s.money.cash = 10_000;
+    s.money.savings = 50_000;
+    s.money.holdings.index = 200_000;
+    s.assets.homes.push({
+      id: 999,
+      type: 'house',
+      name: 'the house',
+      value: 9_000_000,
+      paid: 9_000_000,
+      condition: 90,
+      bought: s.year,
+      city: s.player.city,
+      country: s.player.country,
+      livingIn: true,
+    });
+    applyEffect(new Ctx(s), { wealth: -0.12 }, {}, {}, 'test');
+    // 12% of the 260k you can reach, not of the 9m house.
+    expect(s.money.cash).toBe(0);
+    expect(s.money.savings + s.money.holdings.index).toBeCloseTo(260_000 * 0.88, -1);
+    expect(s.money.loans).toHaveLength(0);
+  });
+
+  it('debt that savings and investments can cover is paid off, not taken to court', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { bankruptcyCheck } = await import('../../src/engine/systems/loans');
+    const s = structuredClone(rich(521, 'friend'));
+    s.money.cash = 0;
+    s.money.holdings.index = 900_000;
+    s.money.loans = [
+      {
+        id: 1,
+        kind: 'debt',
+        principal: 300_000,
+        balance: 300_000,
+        rate: 0.19,
+        termYears: 0,
+        payment: 0,
+        yearsPaid: 0,
+        missed: 0,
+      },
+    ];
+    bankruptcyCheck(new Ctx(s), 0);
+    expect(s.player.flags).not.toContain('bankrupt');
+    expect(s.money.loans).toHaveLength(0);
+    expect(s.money.holdings.index).toBe(600_000);
+  });
 });

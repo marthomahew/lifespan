@@ -322,9 +322,10 @@ export const LATE_CHAPTER_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You swap grey drizzle for a white town on a hill, a café that knows your order, and a doctor who speaks slowly for you. The family visit every summer, and stay longer each time.',
+            text: 'You swap grey drizzle for a white town on a hill, a café that knows your order, and a doctor who speaks slowly for you. Visitors come every summer, and stay longer each time.',
             effects: [
-              { system: 'move_abroad' },
+              { system: 'retire' },
+              { system: 'move_abroad', arg: 'warm' },
               { stat: 'happiness', delta: 9 },
               { stat: 'health', delta: 2 },
               { flag: 'retired_abroad' },

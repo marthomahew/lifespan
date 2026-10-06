@@ -331,9 +331,16 @@ export function drawRandomEvents(ctx: Ctx): void {
   }
 }
 
-/** Drop pending popups whose bound NPCs have died since they were drawn. */
+/**
+ * Drop pending popups whose bound NPCs have died since they were drawn, and random ones whose
+ * condition an earlier choice has undone (no recruiter's call once you've left the job).
+ */
 export function prunePending(s: GameState): void {
-  s.pending = s.pending.filter((p) =>
-    Object.values(p.bindings).every((id) => s.npcs.find((n) => n.id === id)?.alive === true),
-  );
+  s.pending = s.pending.filter((p) => {
+    if (!Object.values(p.bindings).every((id) => s.npcs.find((n) => n.id === id)?.alive === true))
+      return false;
+    if (p.source !== 'random') return true;
+    const def = EVENT_BY_ID[p.eventId];
+    return !def?.when || def.when(s);
+  });
 }

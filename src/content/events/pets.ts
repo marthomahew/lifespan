@@ -187,7 +187,10 @@ export const PET_EVENTS: EventDef[] = [
     ages: [18, 90],
     weight: 4,
     cooldownYears: 8,
-    when: all(hasPet(), notInPrison, favouriteNot('horse')),
+    // Only just after a move: a home bought this year or last.
+    when: all(hasPet(), notInPrison, favouriteNot('horse'), (s) =>
+      s.assets.homes.some((h) => h.livingIn && h.bought >= s.year - 1),
+    ),
     text: 'The new place is lovely, the boxes are unpacked, and {pet} has decided the whole move was a personal betrayal.',
     choices: [
       {

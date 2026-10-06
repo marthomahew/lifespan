@@ -43,12 +43,13 @@ describe('stats (M1.4)', () => {
   it('health declines slowly from 30 and faster after 60', () => {
     expect(healthBaseline(30, 80) - healthBaseline(40, 80)).toBeCloseTo(3.5, 5);
     expect(healthBaseline(70, 80) - healthBaseline(80, 80)).toBeGreaterThan(10);
-    // On average across lives.
+    // On average across lives: 120 of them, because events make any one life noisy.
+    const N = 120;
     const avg = (age: number): number => {
       let t = 0;
-      for (let seed = 1; seed <= 40; seed++)
+      for (let seed = 1; seed <= N; seed++)
         t += playYears(immortal(seed), age).player.stats.health;
-      return t / 40;
+      return t / N;
     };
     const h25 = avg(25);
     const h55 = avg(55);

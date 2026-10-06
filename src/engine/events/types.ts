@@ -78,6 +78,7 @@ export type Effect =
         | 'holiday_home'
         | 'downsize'
         | 'near_family'
+        | 'retire'
         | 'retrain'
         | 'move_city'
         | 'severance';

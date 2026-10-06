@@ -631,6 +631,14 @@ export const TEEN_YA_EVENTS_2: EventDef[] = [
     ages: [18, 26],
     weight: 8,
     cooldownYears: 6,
+    // Flatmates are for the renting and the unattached.
+    when: (s) =>
+      s.assets.housing === 'renting' &&
+      !s.npcs.some(
+        (n) =>
+          n.alive &&
+          (n.roles.includes('partner') || n.roles.includes('spouse') || n.roles.includes('child')),
+      ),
     text: 'Your new flatmate labels every item in the fridge, including yours, with their own name. They also practise the bagpipes on the balcony at seven in the morning.',
     choices: [
       {

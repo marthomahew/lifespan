@@ -839,7 +839,14 @@ export const ROMANCE_EVENTS_2: EventDef[] = [
     ages: [40, 79],
     weight: 6,
     cooldownYears: 6,
-    when: single,
+    // "Again" needs a before: an ex, or a partner who has died.
+    when: (s) =>
+      single(s) &&
+      s.npcs.some(
+        (n) =>
+          n.roles.includes('ex') ||
+          (!n.alive && (n.roles.includes('spouse') || n.roles.includes('partner'))),
+      ),
     bind: { pal: { role: 'friend', minAge: 18, minRelationship: 30 } },
     text: 'It has been a long time since you were on your own; the last time you dated, people phoned each other. {pal.first} says it is time, and has already picked someone.',
     choices: [
