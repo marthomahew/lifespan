@@ -342,3 +342,32 @@
 .act-feedback p + p {
   margin-top: 4px;
 }
+
+/* Side columns fade at the bottom edge, so a clipped card reads as "there is more below".
+   A sticky strip, not a mask: masks would trap the dialogs these panels open. S37. */
+.stats-col::after,
+.tab-panel::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  flex: none;
+  height: 26px;
+  margin-top: -6px;
+  pointer-events: none;
+  background: linear-gradient(transparent, var(--bg));
+}
+.tab-panel::after {
+  bottom: -12px;
+  margin: 0 -12px -12px;
+  background: linear-gradient(transparent, var(--surface));
+}
+.tree-scroll {
+  background:
+    linear-gradient(to right, var(--surface) 30%, transparent) left / 28px 100% no-repeat local,
+    linear-gradient(to left, var(--surface) 30%, transparent) right / 28px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.18), transparent) left / 10px 100%
+      no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.18), transparent) right / 10px 100%
+      no-repeat scroll;
+}

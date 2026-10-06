@@ -659,5 +659,10 @@
     "title": "Panel feedback after actions, Study harder and the school average on the Occupation tab, builder polish (steady height, zoomed earrings, secondary Random life), no-licence note, honest Married to the Job",
     "passes": true,
     "evidence": "e2e/assets.spec.ts (panel feedback); e2e/careers.spec.ts (school); verify"
+  },
+  "S37": {
+    "title": "Side columns fade at the bottom edge when there is more to scroll; the family tree gets edge shadows",
+    "passes": true,
+    "evidence": "npm run shots (05-main-adult at 1024); e2e/layout.spec.ts"
   }
 }
