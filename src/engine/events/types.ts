@@ -76,6 +76,8 @@ export type Effect =
   | { notoriety: number }
   /** Military conduct (affects promotion and discharge type). */
   | { conduct: number }
+  /** Behaviour inside (counts towards early release). */
+  | { behaviour: number }
   /** Your favourite pet (of a kind, if given): the bond or their health moves, or they leave. */
   | { pet: 'bond' | 'health'; delta: number; kind?: string }
   | { pet: 'lose'; fate: string; kind?: string }

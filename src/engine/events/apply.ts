@@ -138,6 +138,8 @@ export function applyEffect(
     addStat(s, 'fame', e.fame);
   } else if ('notoriety' in e) {
     addStat(s, 'notoriety', e.notoriety);
+  } else if ('behaviour' in e) {
+    if (s.legal.prison) s.legal.prison.behaviour = clampStat(s.legal.prison.behaviour + e.behaviour);
   } else if ('conduct' in e) {
     if (s.military) s.military.conduct = clampStat(s.military.conduct + e.conduct);
   } else if ('pet' in e && e.pet === 'adopt') {

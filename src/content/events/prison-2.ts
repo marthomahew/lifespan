@@ -162,6 +162,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'Your first tomatoes are small, sour and the best thing you have eaten in years. You start talking about soil like it owes you money.',
             effects: [
               { flag: 'prison_garden' },
+              { behaviour: 3 },
               { stat: 'happiness', delta: 6 },
               { stat: 'health', delta: 2 },
               { stat: 'stress', delta: -5 },
@@ -173,6 +174,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'Slugs take the lettuces, pigeons take the seeds. You learn a lot about patience and nothing about lettuce.',
             effects: [
               { flag: 'prison_garden' },
+              { behaviour: 3 },
               { stat: 'discipline', delta: 4 },
               { stat: 'happiness', delta: 1 },
             ],
@@ -517,6 +519,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'You reorganise the crime section with a straight face and start a request list that runs to four pages. People nod to you in the corridor now.',
             effects: [
               { flag: 'prison_library' },
+              { behaviour: 4 },
               { stat: 'smarts', delta: 5 },
               { stat: 'discipline', delta: 3 },
               { money: 120, kind: 'wage' },
@@ -558,6 +561,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'You see a lot of first nights. Some of them write to you after they get out, short letters that mostly just say “still out”.',
             effects: [
               { flag: 'prison_mentor' },
+              { behaviour: 6 },
               { stat: 'karma', delta: 6 },
               { stat: 'happiness', delta: 5 },
             ],
@@ -568,6 +572,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'It is harder than it sounds. Some nights you carry other people’s first nights back to your own cell.',
             effects: [
               { flag: 'prison_mentor' },
+              { behaviour: 6 },
               { stat: 'karma', delta: 5 },
               { stat: 'stress', delta: 5 },
             ],
@@ -607,6 +612,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'Four years of essays written on your knees. The certificate arrives in a cardboard tube and you are not too proud to cry about it.',
             effects: [
               { flag: 'prison_degree' },
+              { behaviour: 5 },
               { stat: 'smarts', delta: 10 },
               { skill: 'writing', delta: 6 },
               { stat: 'happiness', delta: 8 },
@@ -658,13 +664,14 @@ export const PRISON_2_EVENTS: EventDef[] = [
               { stat: 'karma', delta: 5 },
               { stat: 'notoriety', delta: 2 },
               { stat: 'stress', delta: 3 },
+              { behaviour: 4 },
             ],
             success: true,
           },
           {
             chance: 0.4,
             text: 'You end up in the middle of it when the alarm goes. The report says “involved”, which is technically true.',
-            effects: [{ injury: 8 }, { stat: 'stress', delta: 8 }],
+            effects: [{ injury: 8 }, { stat: 'stress', delta: 8 }, { behaviour: -8 }],
           },
         ],
       },
@@ -715,6 +722,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'You learn more about U-bends than any person needs to. The instructor says you have steady hands and an unsettling calm around leaks.',
             effects: [
               { flag: 'prison_trade_cert' },
+              { behaviour: 4 },
               { stat: 'smarts', delta: 3 },
               { stat: 'discipline', delta: 4 },
             ],
@@ -731,6 +739,7 @@ export const PRISON_2_EVENTS: EventDef[] = [
             text: 'By week ten your walls stand up on their own. You build the same small wall nine times and knock it down eight.',
             effects: [
               { flag: 'prison_trade_cert' },
+              { behaviour: 4 },
               { stat: 'health', delta: 2 },
               { stat: 'discipline', delta: 4 },
             ],

@@ -135,3 +135,23 @@ describe('wording', () => {
     expect(lines.filter((l) => l.includes('under control')).length).toBeLessThanOrEqual(1);
   });
 });
+
+describe('life inside comes back outside', () => {
+  it('each thing you built in prison has an event after release', async () => {
+    const { EVENT_BY_ID } = await import('../../src/content/events');
+    const base = runCheat(newLife({ birthYear: 1970 }, 14), 'age.set', { age: 40 }).state;
+    const pairs: [string, string][] = [
+      ['prison_degree', 'rel2_degree_interview'],
+      ['prison_garden', 'rel2_allotment'],
+      ['prison_mentor', 'rel2_mentee_call'],
+      ['prison_list', 'rel2_first_things'],
+      ['prison_trade_cert', 'rel2_trade_trial'],
+    ];
+    for (const [flag, id] of pairs) {
+      const s = { ...base, player: { ...base.player, flags: [...base.player.flags, 'ex_con', flag] } };
+      const e = EVENT_BY_ID[id];
+      expect(e?.when?.(s), id).toBe(true);
+      expect(e?.when?.(base), `${id} without the flag`).toBe(false);
+    }
+  });
+});

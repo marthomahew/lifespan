@@ -624,5 +624,10 @@
     "title": "Playtest fixes 2: pets only where they exist, the family dog, local money words, early-relationship events gated, empty nest when the youngest leaves, wills to the closest, varied yearly lines, repeats less likely, 16 long-sentence prison events, obituary relations, fertility rounding",
     "passes": true,
     "evidence": "tests/engine/playtest-fixes.test.ts; content:check; sim invariants"
+  },
+  "S30": {
+    "title": "Prison behaviour from events; six post-release callbacks for the degree, garden, ship, mentee, list and trade certificate",
+    "passes": true,
+    "evidence": "tests/engine/playtest-fixes.test.ts (life inside comes back outside); content:check"
   }
 }

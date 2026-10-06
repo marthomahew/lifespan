@@ -35,6 +35,7 @@ import { LATE_LIFE_EVENTS } from './late-life';
 import { CALLBACK_EVENTS } from './callbacks';
 import { PET_EVENTS } from './pets';
 import { PRISON_2_EVENTS } from './prison-2';
+import { RELEASE_2_EVENTS } from './release-2';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -54,6 +55,7 @@ export const EVENTS: EventDef[] = [
   ...CALLBACK_EVENTS,
   ...PET_EVENTS,
   ...PRISON_2_EVENTS,
+  ...RELEASE_2_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,
