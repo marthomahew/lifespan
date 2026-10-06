@@ -388,3 +388,12 @@
   align-items: center;
   gap: 8px;
 }
+/* What next stays in reach, however long the obituary runs. */
+.obit-actions {
+  position: sticky;
+  bottom: 0;
+  padding: 10px 0;
+  margin-bottom: -12px;
+  background: var(--surface);
+  box-shadow: 0 -10px 12px -10px rgba(0, 0, 0, 0.35);
+}

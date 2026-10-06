@@ -79,7 +79,7 @@ export function ObituaryScreen({ game }: { game: GameState }): React.JSX.Element
           </p>
         )}
         <ContinueAsChild game={game} />
-        <div className="row center-row">
+        <div className="row center-row obit-actions">
           <button className="primary" data-testid="btn-obit-new-life" onClick={() => go('new')}>
             New Life
           </button>
