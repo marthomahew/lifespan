@@ -37,6 +37,11 @@ const TITLES = [
   'The Last Good Summer',
 ];
 
+const WAITING: Record<string, string> = {
+  'waiting to hear back from agents': 'out with agents',
+  'the reviews aren’t in yet': 'waiting on its reviews',
+};
+
 export const novelOf = (s: GameState): NovelProject | null => s.projects?.novel ?? null;
 
 /** Why you can't sit down to write right now, or null. */
@@ -51,6 +56,15 @@ export function novelReason(s: GameState): string | null {
 export function writeNovel(ctx: Ctx, outcomeIndex: number): void {
   const s = ctx.s;
   const w = s.player.skills['writing'] ?? 0;
+  // While the book is out in the world, the desk is for short stories: practice, not progress.
+  const waiting = novelReason(s);
+  if (waiting) {
+    ctx.log(
+      'fame',
+      `With ${novelOf(s)?.title ?? 'the book'} ${WAITING[waiting] ?? 'out'}, you write short stories to keep your hand in.`,
+    );
+    return;
+  }
   const p: Projects = (s.projects ??= {});
   let n = p.novel ?? null;
   if (!n || n.stage === 'published') {

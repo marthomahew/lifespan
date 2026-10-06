@@ -77,7 +77,10 @@ describe('a novel over the years', () => {
         },
       },
     };
-    expect(() => act(waiting, { type: 'activity', id: 'write_novel' })).toThrow(/agents/);
+    // While waiting on agents, the desk is for short stories: skill grows, the book stays put.
+    const stories = act(waiting, { type: 'activity', id: 'write_novel' }).state;
+    expect(stories.projects?.novel?.stage).toBe('querying');
+    expect(stories.log.some((l) => /short stories/.test(l.text))).toBe(true);
   });
 
   it('a drawer, or doing it yourself, are choices too', () => {
@@ -133,7 +136,9 @@ describe('more books', () => {
     for (let b = 0; b < 6; b++) {
       s.projects = {
         ...(s.projects ?? {}),
-        novel: s.projects?.novel ? { ...s.projects.novel, stage: 'published' } : null,
+        novel: s.projects?.novel
+          ? { ...s.projects.novel, stage: 'published', reviewed: true }
+          : null,
       };
       writeNovel(new Ctx(s), 0);
       titles.push(s.projects?.novel?.title ?? '');
@@ -182,7 +187,9 @@ describe('one book at a time', () => {
         },
       },
     };
-    expect(() => act(out, { type: 'activity', id: 'write_novel' })).toThrow(/reviews/);
+    const stories = act(out, { type: 'activity', id: 'write_novel' }).state;
+    expect(stories.projects?.novel?.title).toBe('Paper Boats');
+    expect(stories.log.some((l) => /short stories/.test(l.text))).toBe(true);
   });
 
   it('after eight rounds of no, nobody is left to ask: rewrite, publish, or the drawer', () => {

@@ -7,7 +7,7 @@ import { addStat } from '../stats';
 import type { GameState, ViceKey } from '../types';
 import { clampStat } from '../util';
 import { escapePrison, recapture, release } from './crime';
-import { novelReason, writeNovel } from './projects';
+import { writeNovel } from './projects';
 import { graduateHighSchool } from './education';
 import { treat } from './health';
 import { ILLNESS_BY_ID } from '../../content/illnesses';
@@ -35,10 +35,6 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
   if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
-  if (sp === 'novel') {
-    const why = novelReason(s);
-    if (why) return why;
-  }
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
     if (reasons.every((r) => r !== null)) return reasons.find((r) => r) ?? 'not now';

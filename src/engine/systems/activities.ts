@@ -1,3 +1,4 @@
+import { novelReason } from './projects';
 import { pickFresh } from '../fresh';
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
 import type { ActivityDef } from '../../content/types';
@@ -283,5 +284,7 @@ function describe(s: GameState, def: ActivityDef): string {
   const n = s.projects?.novel;
   if (def.id === 'write_novel' && n?.stage === 'drafting')
     return `Keep going on ${n.title}: about ${n.progress}% of a draft.`;
+  if (def.id === 'write_novel' && n && n.stage !== 'drafting' && novelReason(s))
+    return `Short stories, to keep your hand in while ${n.title} is out in the world.`;
   return def.description;
 }

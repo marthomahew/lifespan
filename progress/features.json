@@ -814,5 +814,10 @@
     "title": "Novel querying ends after eight rounds (drawer choice, odds floor)",
     "passes": true,
     "evidence": "tests/engine/projects.test.ts; content:check"
+  },
+  "S68": {
+    "title": "Short stories while a book is out (writing skill no longer stalls)",
+    "passes": true,
+    "evidence": "tests/engine/projects.test.ts"
   }
 }
