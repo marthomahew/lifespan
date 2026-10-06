@@ -1,3 +1,4 @@
+import { GIFT_BY_ID } from '../../content/gifts';
 import { SKILL_BY_ID } from '../../content/skills';
 import { TRAIT_BY_ID } from '../../content/traits';
 import type { OddsKey } from '../../content/types';
@@ -39,6 +40,16 @@ export function eventEdge(s: GameState, def: EventDef): Edge {
     const v = ((k?.odds[d.key] ?? 0) * lvl) / 100;
     if (k && v) parts.push([`Your ${k.label.toLowerCase()}`, v]);
   }
+  // Luck (a picked gift) can push past the usual cap.
+  let luckBonus = 0;
+  for (const id of s.player.gifts ?? []) {
+    const g = GIFT_BY_ID[id];
+    const v = g?.odds?.[d.key] ?? 0;
+    if (g && v) {
+      parts.push([g.label, v]);
+      luckBonus += v;
+    }
+  }
   if (d.stat) {
     const v = (s.player.stats[d.stat] - 50) / 300;
     if (Math.abs(v) >= 0.02) parts.push([`${v > 0 ? 'High' : 'Low'} ${STAT_LABEL[d.stat]}`, v]);
@@ -46,7 +57,7 @@ export function eventEdge(s: GameState, def: EventDef): Edge {
   const bonus = Math.max(
     -MAX,
     Math.min(
-      MAX,
+      MAX + luckBonus,
       parts.reduce((t, [, v]) => t + v, 0),
     ),
   );

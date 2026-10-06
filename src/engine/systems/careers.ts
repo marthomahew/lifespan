@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import { pickFresh } from '../fresh';
 import { JOB_BY_ID, JOBS } from '../../content/jobs';
 import { SPECIALTY_BY_ID } from '../../content/military';
@@ -290,7 +291,10 @@ export function careerTick(ctx: Ctx): void {
     st.discipline * 0.3 +
     playerOdds(s, 'work') * 60 -
     Math.max(0, st.stress - 70) * 0.4 +
-    (c.workedHarder === s.year - 1 ? 12 : 0);
+    (c.workedHarder === s.year - 1 ? 12 : 0) +
+    // Luck at work (and, for athletes, in sport) lifts how well it goes.
+    20 * luck(s, 'career') +
+    (job.field === 'sports' ? 20 * luck(s, 'sport') : 0);
   c.performance = clampStat(c.performance + (target - c.performance) * 0.35 + r.int(-6, 6));
   c.salary = Math.round(c.salary * (1 + Math.max(0, r.normal(0.025, 0.01))));
   capSalary(s);
@@ -304,8 +308,15 @@ export function careerTick(ctx: Ctx): void {
   const yearsAtLevel = s.year - c.since;
   const canPromote =
     c.level < job.titles.length - 1 && !(job.id === 'doctor' && s.education.residency > 0);
-  if (canPromote && c.performance >= 75 && yearsAtLevel >= 2 && r.chance(0.35)) promote(ctx, job);
-  else if (c.performance < 25 && r.chance(0.4)) {
+  const lucky = luck(s, 'career');
+  if (
+    canPromote &&
+    c.performance >= 75 &&
+    yearsAtLevel >= (lucky >= 1 ? 1 : 2) &&
+    r.chance(Math.min(0.95, 0.35 + 0.35 * lucky))
+  )
+    promote(ctx, job);
+  else if (c.performance < 25 && lucky < 1 && r.chance(0.4)) {
     ctx.log(
       'work',
       `You're let go from your job as ${job.titles[c.level] ?? job.titles[0]}. HR is very sorry, apparently.`,
@@ -429,7 +440,13 @@ export function careerAction(ctx: Ctx, id: string): void {
       if (!job) throw new EngineError('you need a job');
       if (usedKey(s, 'raise')) throw new EngineError('already asked this year');
       markKey(s, 'raise');
-      if (ctx.roll(clampOdds(0.2 + (c.performance - 50) * 0.012 + playerOdds(s, 'social')))) {
+      if (
+        ctx.roll(
+          clampOdds(
+            0.2 + (c.performance - 50) * 0.012 + playerOdds(s, 'social') + 0.4 * luck(s, 'career'),
+          ),
+        )
+      ) {
         c.salary = Math.round(c.salary * 1.08);
         capSalary(s);
         ctx.log('work', `Your boss agrees to a raise. You are now on ${formatMoney(s, c.salary)}.`);
@@ -457,7 +474,16 @@ export function careerAction(ctx: Ctx, id: string): void {
       if (c.level >= job.titles.length - 1) throw new EngineError('you are already at the top');
       if (job.id === 'doctor' && s.education.residency > 0)
         throw new EngineError('finish your residency first');
-      if (ctx.roll(clampOdds(0.1 + (c.performance - 60) * 0.015 + (s.year - c.since) * 0.04)))
+      if (
+        ctx.roll(
+          clampOdds(
+            0.1 +
+              (c.performance - 60) * 0.015 +
+              (s.year - c.since) * 0.04 +
+              0.4 * luck(s, 'career'),
+          ),
+        )
+      )
         promote(ctx, job);
       else {
         ctx.log(

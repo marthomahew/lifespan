@@ -66,4 +66,12 @@ describe('character cheats', () => {
     expect(runCheat(base, 'notoriety.set', { value: 40 }).state.player.stats.notoriety).toBe(40);
     expect(runCheat(base, 'karma.set', { value: 2 }).state.player.stats.karma).toBe(2);
   });
+
+  it("'gift.add' gives a pick-only gift mid-life, once", () => {
+    const once = runCheat(base, 'gift.add', { gift: 'money_luck' }).state;
+    expect(once.player.gifts).toEqual(['money_luck']);
+    expect(runCheat(once, 'gift.add', { gift: 'money_luck' }).state.player.gifts).toEqual([
+      'money_luck',
+    ]);
+  });
 });

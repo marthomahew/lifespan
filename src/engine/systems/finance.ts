@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import type { Ctx } from '../ctx';
 import { incomeTax, localToRef, money } from '../economy';
 import { netWorth } from '../networth';
@@ -107,7 +108,10 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     if (v <= 0) continue;
     const def = INVESTMENTS[k];
     let r = ctx.rng.normal(def.mean, def.sd);
-    if (def.crash && ctx.rng.chance(def.crash)) r = -0.9;
+    // Money luck: a better year than the market, and the crash that happens to other people.
+    const lucky = luck(s, 'money');
+    r += 0.06 * lucky;
+    if (def.crash && lucky < 1 && ctx.rng.chance(def.crash)) r = -0.9;
     r = Math.max(-0.95, r);
     const delta = Math.round(v * r);
     m.holdings[k] = Math.max(0, v + delta);

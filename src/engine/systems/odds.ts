@@ -1,3 +1,4 @@
+import { GIFT_BY_ID } from '../../content/gifts';
 import { SKILL_BY_ID } from '../../content/skills';
 import { TRAIT_BY_ID } from '../../content/traits';
 import type { OddsKey } from '../../content/types';
@@ -9,6 +10,7 @@ export function playerOdds(s: GameState, key: OddsKey): number {
   for (const id of s.player.traits) t += TRAIT_BY_ID[id]?.odds[key] ?? 0;
   for (const [id, lvl] of Object.entries(s.player.skills))
     t += ((SKILL_BY_ID[id]?.odds[key] ?? 0) * lvl) / 100;
+  for (const id of s.player.gifts ?? []) t += GIFT_BY_ID[id]?.odds?.[key] ?? 0;
   return t;
 }
 

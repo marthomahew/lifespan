@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import { freeTime } from './activities';
 import { pickFresh } from '../fresh';
 import { EVENT_BY_ID } from '../../content/events';
@@ -207,7 +208,11 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       // Rushing records out hurts them: last year's release costs this one.
       const rushed = m.releases.filter((x) => x.year >= s.year - 1).length * 10;
       const quality = clampStat(
-        skill * 0.55 + r.int(0, 45) + (s.player.traits.includes('creative') ? 8 : 0) - rushed,
+        skill * 0.55 +
+          r.int(0, 45) +
+          (s.player.traits.includes('creative') ? 8 : 0) +
+          18 * luck(s, 'music') -
+          rushed,
       );
       // Every record gets a title of its own.
       const used = new Set(m.releases.map((x) => x.title));
@@ -228,7 +233,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
         `You release "${title}". ${quality > 80 ? (mum ? 'Critics call it a masterpiece; your mum agrees.' : 'Critics call it a masterpiece, and for once you agree.') : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 30 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
-      if (!m.label && quality >= 60 && m.stage === 3) {
+      if (!m.label && quality >= 60 - 15 * luck(s, 'music') && m.stage === 3) {
         const def = EVENT_BY_ID['fame_record_deal_offer'];
         if (def) fireEvent(ctx, def, 'system');
       }
@@ -237,7 +242,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
     case 'tour': {
       const fame = s.player.stats.fame;
       // A quarter of tours go wrong: cancelled dates, a voice that gives out, a van in a ditch.
-      if (r.chance(0.25)) {
+      if (r.chance(0.25 * Math.max(0, 1 - luck(s, 'music')))) {
         const pay = money(s, 5000 + fame * 600, 'wage');
         s.money.cash += pay;
         addStat(s, 'health', -8);

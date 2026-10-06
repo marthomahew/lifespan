@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import { CRIME_BY_ID } from '../../content/crimes';
 import { EVENT_BY_ID } from '../../content/events';
 import type { Ctx } from '../ctx';
@@ -62,7 +63,10 @@ export function commitCrime(ctx: Ctx, crimeId: string): void {
       `${ctx.rng.pick(def.texts.success)}${loot ? ` (${formatMoney(s, loot)})` : ''}`,
     );
   }
-  const arrestP = s.cheats.forceSuccess ? 0 : ok ? def.arrest.success : def.arrest.fail;
+  // Luck with the law: the police are rarely interested.
+  const arrestP =
+    (s.cheats.forceSuccess ? 0 : ok ? def.arrest.success : def.arrest.fail) *
+    Math.max(0.1, 1 - 0.75 * luck(s, 'crime'));
   if (ctx.rng.chance(arrestP)) {
     ctx.log('crime', ctx.rng.pick(def.texts.caught), true);
     openCase(ctx, crimeId);
@@ -146,8 +150,10 @@ export function resolveCase(ctx: Ctx, plea: boolean): void {
       LAWYER_BONUS[c.lawyer ?? 'public'] +
       (st.karma - 50) / 250 -
       st.notoriety / 250 -
-      (def?.violent ? 0.1 : 0);
-    convicted = !ctx.roll(Math.min(0.85, Math.max(0.05, p)));
+      (def?.violent ? 0.1 : 0) +
+      // And when the police do get interested, the case falls apart.
+      0.5 * luck(s, 'crime');
+    convicted = !ctx.roll(Math.min(0.85 + 0.1 * luck(s, 'crime'), Math.max(0.05, p)));
   }
   if (!convicted) {
     s.legal.record.push({
@@ -287,7 +293,12 @@ export function legalTick(ctx: Ctx): void {
   );
   addStat(s, 'stress', 6);
   if (p.served >= p.years) release(ctx, false);
-  else if (p.served * 2 >= p.years && p.behaviour >= 60 && ctx.rng.chance(0.4)) release(ctx, true);
+  else if (
+    p.served * 2 >= p.years &&
+    p.behaviour >= 60 &&
+    ctx.rng.chance(Math.min(0.95, 0.4 + 0.4 * luck(s, 'crime')))
+  )
+    release(ctx, true);
 }
 
 /** On the run: the risk of a knock at the door fades with the years, and after twenty nobody is looking. */

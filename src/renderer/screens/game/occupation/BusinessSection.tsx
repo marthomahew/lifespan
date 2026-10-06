@@ -5,6 +5,7 @@ import {
   formatMoney,
   investCost,
   levelName,
+  sellPrice,
   money,
   startReason,
   type BusinessOp,
@@ -150,7 +151,7 @@ export function BusinessSection({
                 data-testid="business-sell-yes"
                 onClick={() => run({ op: 'sell' })}
               >
-                Sell for {formatMoney(game, Math.round(b.value * 0.9))}
+                Sell for {formatMoney(game, sellPrice(game, b))}
               </button>
               <button data-testid="business-sell-no" onClick={() => setSelling(false)}>
                 Keep it

@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import { LANGUAGE_BY_ID } from '../../content/skills';
 import type { ActivityDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -215,7 +216,8 @@ export function runSpecial(
     }
     case 'lottery': {
       // Real lottery odds: tickets lose money on average.
-      if (s.cheats.forceSuccess || ctx.rng.chance(0.000001)) {
+      // Money luck makes the long shot a little shorter: still rare, but it happens.
+      if (s.cheats.forceSuccess || ctx.rng.chance(0.000001 + 0.004 * luck(s, 'money'))) {
         const prize = money(s, ctx.rng.int(250000, 5000000));
         s.money.cash += prize;
         if (!s.player.flags.includes('lottery_winner')) s.player.flags.push('lottery_winner');

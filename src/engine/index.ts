@@ -70,6 +70,7 @@ export {
   investCost,
   kindOf,
   levelName,
+  sellPrice,
   startReason,
   type Business,
   type BusinessOp,

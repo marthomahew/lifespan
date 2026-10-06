@@ -1,6 +1,7 @@
 import { skinFromTone } from '../look';
 import { SKIN_TONES } from '../../content/family';
 import { TRAIT_BY_ID } from '../../content/traits';
+import { GIFTS } from '../../content/gifts';
 import { setStat } from '../stats';
 import type { Attraction, Gender, StatKey } from '../types';
 import { clampStat } from '../util';
@@ -157,6 +158,27 @@ export const CHARACTER_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       ctx.s.player.traits = ctx.s.player.traits.filter((x) => x !== p['trait']);
       return `Removed ${String(p['trait'])}`;
+    },
+  },
+  {
+    id: 'gift.add',
+    group: 'character',
+    label: 'Give yourself a gift',
+    syntax: 'gift {gift}',
+    help: 'Add a pick-only gift mid-life: quick study, or luck with money, work, sport, music, crime or business, or a charmed life.',
+    params: [
+      {
+        name: 'gift',
+        type: 'enum',
+        options: () => GIFTS.map((g) => ({ value: g.id, label: `${g.emoji} ${g.label}` })),
+      },
+    ],
+    run: (ctx, p) => {
+      const id = String(p['gift']);
+      if (!GIFTS.some((g) => g.id === id)) return 'Unknown gift';
+      const g = ctx.s.player.gifts ?? [];
+      if (!g.includes(id)) ctx.s.player.gifts = [...g, id];
+      return `Gift: ${id}`;
     },
   },
   {

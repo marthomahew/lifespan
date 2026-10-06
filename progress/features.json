@@ -854,5 +854,15 @@
     "title": "Your own business: eight kinds, momentum and profit, expand, invest, manager, sell, events, achievements",
     "passes": true,
     "evidence": "tests/engine/business.test.ts; e2e/business.spec.ts; content:check"
+  },
+  "S76": {
+    "title": "Backgrounds: eight starts with their own stories, a picker and an off/rare/common setting",
+    "passes": true,
+    "evidence": "tests/engine/backgrounds.test.ts; e2e/backgrounds.spec.ts; content:check"
+  },
+  "S77": {
+    "title": "Luck gifts by area (money, career, sport, music, crime, business, charmed) and the gift cheat",
+    "passes": true,
+    "evidence": "tests/engine/luck.test.ts"
   }
 }

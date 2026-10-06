@@ -53,6 +53,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `appearance {tone}` | Skin tone 0–5 (0 keeps the portrait as it is; 1 lightest, 5 darkest). |
 | `trait add {trait}` | Add a trait; conflicting traits are removed. |
 | `trait remove {trait}` | Remove one of your traits. |
+| `gift {gift}` | Add a pick-only gift mid-life: quick study, or luck with money, work, sport, music, crime or business, or a charmed life. |
 | `skill {skill} {value}` | Set a skill to 0–100. Example: skill instrument 80 |
 | `grade {value}` | Set your school average, 0–100 (universities want 70). Example: grade 85 |
 | `language {language} {value}` | Set fluency 0–100 in a language. Example: language japanese 90 |
@@ -152,7 +153,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `state size` | How big the current save is. |
 | `deathbot` | Let the default sim bot play the rest of this life. |
 
-72 commands in all. Every one is also a form in the cheat panel.
+73 commands in all. Every one is also a form in the cheat panel.
 
 <!-- cheats:end -->
 

@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
@@ -79,7 +80,8 @@ export function injuryFromText(text: string, tier: InjuryTier): string | null {
  */
 export function addInjury(ctx: Ctx, amount: number, story: string[] = []): void {
   const s = ctx.s;
-  const n = Math.abs(amount);
+  // A born athlete (or a charmed one) shrugs off half of every knock.
+  const n = Math.round(Math.abs(amount) * Math.max(0.3, 1 - 0.5 * luck(s, 'sport')));
   addStat(s, 'health', -n);
   s.health.injuries += 1;
   if (n < 6) return;

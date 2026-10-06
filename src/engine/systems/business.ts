@@ -1,3 +1,4 @@
+import { luck } from './luck';
 import {
   BUSINESS_BY_ID,
   LEVEL_MULT,
@@ -42,6 +43,11 @@ export const businessOf = (s: GameState): Business | null => s.business ?? null;
 export const kindOf = (b: Business): BusinessKind | undefined => BUSINESS_BY_ID[b.kind];
 export const runsBusiness = (s: GameState): boolean => businessOf(s)?.hands === 'self';
 export const levelName = (b: Business): string => LEVEL_NAMES[b.level - 1] ?? '';
+
+/** What a sale fetches: nine-tenths of its value (more with the Midas touch). */
+export function sellPrice(s: GameState, b: Business): number {
+  return Math.round(b.value * (0.9 + 0.4 * luck(s, 'business')));
+}
 
 /** What the next level costs, or null at the top. */
 export function expandCost(s: GameState, b: Business): number | null {
@@ -154,7 +160,8 @@ export function businessAction(ctx: Ctx, a: BusinessOp): void {
       return;
     case 'sell':
     case 'close': {
-      const got = a.op === 'sell' ? Math.round(b.value * 0.9) : 0;
+      // The Midas touch finds buyers who pay over the odds.
+      const got = a.op === 'sell' ? sellPrice(s, b) : 0;
       s.money.cash += got;
       s.business = null;
       s.player.flags.push(a.op === 'sell' ? 'sold_business' : 'closed_business');
@@ -242,7 +249,7 @@ export function businessEffect(ctx: Ctx, kind: string, n: number): void {
   else if (kind === 'biz_manager') b.hands = 'manager';
   else if (kind === 'biz_expand' && b.level < LEVEL_MULT.length) b.level += 1;
   else if (kind === 'biz_sell') {
-    const got = Math.round(b.value * (n || 1));
+    const got = Math.round(b.value * (n || 1) * (1 + 0.3 * luck(s, 'business')));
     s.money.cash += got;
     s.business = null;
     s.player.flags.push('sold_business');
@@ -252,9 +259,9 @@ export function businessEffect(ctx: Ctx, kind: string, n: number): void {
   b.value = valueOf(s, b);
 }
 
-/** Luck in business, from gifts (none yet: business luck arrives with the luck traits). */
-export function businessLuck(_s: GameState): number {
-  return 0;
+/** Luck in business: the Midas touch lifts momentum (and a charmed life, a little). */
+export function businessLuck(s: GameState): number {
+  return 25 * luck(s, 'business');
 }
 
 function yearLine(ctx: Ctx, b: Business, k: BusinessKind, profit: number): string {
