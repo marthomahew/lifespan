@@ -76,6 +76,8 @@ export type Effect =
         | 'salary_mult'
         | 'illness_plan'
         | 'holiday_home'
+        | 'downsize'
+        | 'near_family'
         | 'retrain'
         | 'move_city'
         | 'severance';

@@ -1,5 +1,6 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, canMoveAbroad, hasJob } from './conditions';
+import type { GameState } from '../../engine/types';
+import { canAfford, canMoveAbroad, hasChildren, hasJob } from './conditions';
 
 /** The mid-life question, fired by the chapter system every six years or so between 38 and 62. */
 export const CHAPTER_EVENTS: EventDef[] = [
@@ -258,6 +259,90 @@ export const MARRIAGE_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You carry on as you are. It is fine, mostly. Some nights you both sit in the same room and are somewhere else entirely.',
             effects: [{ rel: 'sp', delta: -10, memory: 'the years we drifted' }],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+/** Owns and lives in a house big enough to be worth leaving. */
+const inBigHome = (st: GameState): boolean =>
+  st.assets.homes.some((h) => h.livingIn && h.type !== 'studio' && h.type !== 'apartment');
+
+/** The later-life question, fired by the chapter system every eight years or so from 66. */
+export const LATE_CHAPTER_EVENTS: EventDef[] = [
+  {
+    id: 'late_chapter',
+    kind: 'choice',
+    category: 'random',
+    ages: [66, 90],
+    weight: 1,
+    chainOnly: true,
+    text: 'The stairs have started to have opinions. The garden takes a whole weekend. Over breakfast you find yourself asking where, and how, you want to spend the years that are left.',
+    choices: [
+      {
+        id: 'downsize',
+        label: 'Sell the house and buy somewhere small',
+        requires: inBigHome,
+        outcomes: [
+          {
+            chance: 1,
+            text: 'Forty years of belongings go to the children, the charity shop and the tip, in that order. The new flat has a balcony and one step. You are surprised how light you feel.',
+            effects: [
+              { system: 'downsize' },
+              { stat: 'stress', delta: -8 },
+              { stat: 'happiness', delta: 4 },
+              { flag: 'downsized' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'near',
+        label: 'Move to be near the family',
+        requires: hasChildren,
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You leave a town full of memories for one full of grandchildren. Sunday lunches become a habit, then a tradition, then the best part of the week.',
+            effects: [
+              { system: 'move_city' },
+              { system: 'near_family' },
+              { stat: 'happiness', delta: 8 },
+              { flag: 'moved_near_family' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'sun',
+        label: 'Retire somewhere warm, abroad',
+        requires: canMoveAbroad,
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You swap grey drizzle for a white town on a hill, a café that knows your order, and a doctor who speaks slowly for you. The family visit every summer, and stay longer each time.',
+            effects: [
+              { system: 'move_abroad' },
+              { stat: 'happiness', delta: 9 },
+              { stat: 'health', delta: 2 },
+              { flag: 'retired_abroad' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'stay',
+        label: 'Stay put: this is home',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You fit a rail on the stairs, pay a lad to do the garden, and carry on. The neighbours have known you for decades. That is worth a great deal.',
+            effects: [
+              { stat: 'happiness', delta: 3 },
+              { money: -1500, kind: 'price' },
+            ],
           },
         ],
       },

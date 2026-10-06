@@ -804,5 +804,10 @@
     "title": "Wealth choices come back around (loan repaid, startup news)",
     "passes": true,
     "evidence": "tests/engine/wealth-followups.test.ts; content:check"
+  },
+  "S66": {
+    "title": "Later-life chapter: downsize, move near family, retire abroad, or stay",
+    "passes": true,
+    "evidence": "tests/engine/late-chapter.test.ts; content:check; sim"
   }
 }

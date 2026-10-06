@@ -4,6 +4,7 @@ import { enroll, enrollReason } from './education';
 import { applyCareerEffect } from './career-effects';
 import { BRANCHES, SPECIALTIES } from '../../content/military';
 import type { Ctx } from '../ctx';
+import { remember } from '../npc';
 import { addStat } from '../stats';
 import type { ChainPayload } from '../types';
 import { hire } from './careers';
@@ -12,7 +13,7 @@ import { signRecordDeal } from './music';
 import { caseStep, recapture } from './crime';
 import { scaleSalary, takePackage } from './crossroads';
 import { illnessPlan } from './illness';
-import { addHolidayHome } from './assets';
+import { addHolidayHome, downsizeHome } from './assets';
 import { netWorth } from '../networth';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
@@ -58,6 +59,15 @@ export function applySystemEffect(
       );
       return;
     }
+    case 'near_family':
+      // Moving to be near the family: the children and grandchildren see a lot more of you.
+      for (const n of s.npcs)
+        if (n.alive && (n.roles.includes('child') || n.roles.includes('grandchild')))
+          remember(s, n, 'you moving to be nearby', n.roles.includes('child') ? 10 : 6);
+      return;
+    case 'downsize':
+      downsizeHome(ctx);
+      return;
     case 'holiday_home': {
       // Bought with a share of what you're worth; it stays on the books as a home.
       const price = Math.round(Math.max(0, netWorth(s)) * 0.15);

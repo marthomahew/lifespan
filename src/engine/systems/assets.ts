@@ -320,3 +320,30 @@ export function addHolidayHome(ctx: Ctx, price: number): void {
     livingIn: false,
   });
 }
+
+/** Later life: sell the home you live in and buy a small flat outright; the difference is yours. */
+export function downsizeHome(ctx: Ctx): void {
+  const s = ctx.s;
+  const h = s.assets.homes.find((x) => x.livingIn);
+  if (!h || h.type === 'studio' || h.type === 'apartment') return;
+  const before = s.money.cash;
+  sellHome(ctx, h.id);
+  // What the sale cleared after the mortgage; a flat costs at most two-fifths of it.
+  const price = Math.round(Math.max(0, s.money.cash - before) * 0.4);
+  if (price <= 0) return;
+  s.money.cash -= price;
+  for (const x of s.assets.homes) x.livingIn = false;
+  s.assets.homes.push({
+    id: s.assets.nextAssetId++,
+    type: 'apartment',
+    name: 'the flat with the balcony',
+    value: price,
+    paid: price,
+    condition: 85,
+    bought: s.year,
+    city: s.player.city,
+    country: s.player.country,
+    livingIn: true,
+  });
+  s.assets.housing = 'owning';
+}

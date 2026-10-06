@@ -46,7 +46,7 @@ import { WEALTH_EVENTS } from './wealth';
 import { DIAGNOSIS_EVENTS } from './diagnosis';
 import { MEMORY_EVENTS } from './memories';
 import { CALLBACK_3_EVENTS } from './callbacks-3';
-import { CHAPTER_EVENTS, MARRIAGE_EVENTS, UNI_EVENTS } from './chapters';
+import { CHAPTER_EVENTS, LATE_CHAPTER_EVENTS, MARRIAGE_EVENTS, UNI_EVENTS } from './chapters';
 
 export const EVENTS: EventDef[] = [
   ...PRISON_EVENTS,
@@ -79,6 +79,7 @@ export const EVENTS: EventDef[] = [
   ...CHAPTER_EVENTS,
   ...UNI_EVENTS,
   ...MARRIAGE_EVENTS,
+  ...LATE_CHAPTER_EVENTS,
   ...CHILD_EVENTS,
   ...TEEN_EVENTS,
   ...YOUNG_ADULT_EVENTS,

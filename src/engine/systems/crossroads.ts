@@ -46,6 +46,17 @@ export function lifeChapterTick(ctx: Ctx): void {
   if (def) fireEvent(ctx, def, 'system');
 }
 
+/** Past 66, every eight years or so: where, and how, to spend the years that are left. */
+export function lateChapterTick(ctx: Ctx): void {
+  const s = ctx.s;
+  if (s.legal.prison || s.legal.fugitive || s.player.age < 66 || s.player.age > 85) return;
+  const last = s.events.lastFired['late_chapter'];
+  if (last !== undefined && s.year - last < 8) return;
+  if (!ctx.rng.chance(0.3)) return;
+  const def = EVENT_BY_ID['late_chapter'];
+  if (def) fireEvent(ctx, def, 'system');
+}
+
 /** Married seven years or more: every eight years or so, the marriage asks for attention. */
 export function marriageTick(ctx: Ctx): void {
   const s = ctx.s;
