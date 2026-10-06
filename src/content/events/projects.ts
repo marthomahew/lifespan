@@ -58,7 +58,7 @@ export const PROJECT_EVENTS: EventDef[] = [
     ages: [10, 120],
     weight: 1,
     chainOnly: true,
-    text: 'Another year of polite emails about {novel}: "not quite right for our list", "a very crowded market", and one that just says "No." in the subject line.',
+    text: 'Another year of polite emails about {novel}: "not quite right for our list", "a very crowded market", and one that just says "No." in the subject line. That makes {$rejections} rounds of no.',
     choices: [
       {
         id: 'again',

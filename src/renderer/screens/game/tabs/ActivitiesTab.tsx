@@ -34,6 +34,8 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
       (a.enabled ||
         a.reason === 'done enough this year' ||
         a.reason === 'no free time left this year' ||
+        a.reason === 'waiting to hear back from agents' ||
+        a.reason === 'the reviews aren’t in yet' ||
         a.reason.startsWith('costs')) &&
       (!query || `${a.label} ${a.description}`.toLowerCase().includes(query)),
   );

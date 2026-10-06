@@ -67,3 +67,16 @@ describe('the crossroads clock', () => {
     expect(s.pending.some((p) => p.eventId.startsWith('xr_'))).toBe(true);
   });
 });
+
+describe('promotions from events', () => {
+  it('taking the team updates the title, the history and the log, like a normal promotion', async () => {
+    const { JOB_BY_ID } = await import('../../src/content/jobs');
+    const s = worker(73);
+    const fired = runCheat(s, 'event.fire', { event: 'xr_manage', force: 'on' }).state;
+    const after = choose(fired, 'manage').state;
+    const title = JOB_BY_ID['accountant']!.titles[after.career.level];
+    expect(after.career.level).toBe(s.career.level + 1);
+    expect(after.career.history.at(-1)?.title).toBe(title);
+    expect(after.log.some((l) => l.text === `Promoted to ${title}.`)).toBe(true);
+  });
+});

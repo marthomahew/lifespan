@@ -14,7 +14,7 @@ export function ThreadsCard({ game }: { game: GameState }): React.JSX.Element | 
             <span aria-hidden="true">{t.icon}</span>
             <span className="grow">
               <span className="thread-label">{t.label}</span>
-              <span className="muted small"> {t.detail}</span>
+              <span className="muted small">{t.detail}</span>
               {t.progress !== undefined && (
                 <span className="mini-bar thread-bar">
                   <span className="bar-fill" style={{ width: `${t.progress}%` }} />

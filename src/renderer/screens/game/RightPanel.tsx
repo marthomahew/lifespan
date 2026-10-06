@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { GameState } from '../../../engine';
 import { app, useApp, type Tab } from '../../store/app';
 import { OccupationTab } from './tabs/OccupationTab';
@@ -13,10 +14,15 @@ export const TABS: { id: Tab; label: string; emoji: string }[] = [
 ];
 
 export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
+  const panel = useRef<HTMLDivElement>(null);
   const tab = useApp((s) => s.tab);
   const feedback = useApp((s) => s.feedback);
   const fresh =
     feedback && feedback.tab === tab && feedback.year === game.year && !game.pending.length;
+  // A new result scrolls the panel up to where it is shown.
+  useEffect(() => {
+    if (feedback) panel.current?.scrollTo({ top: 0 });
+  }, [feedback]);
   return (
     <aside className="right card" aria-label="Life panels">
       <div className="tabs" role="tablist">
@@ -54,6 +60,7 @@ export function RightPanel({ game }: { game: GameState }): React.JSX.Element {
         id={`panel-${tab}`}
         aria-labelledby={`tab-${tab}`}
         data-testid={`panel-${tab}`}
+        ref={panel}
       >
         {fresh && (
           <div className="act-feedback" data-testid="act-feedback" role="status">

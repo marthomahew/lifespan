@@ -429,11 +429,6 @@
   transform: none;
   width: min(320px, 30vw);
 }
-.act-feedback {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
 .look-tabs .chip.active {
   background: var(--accent);
   border-color: var(--accent);
@@ -485,6 +480,7 @@
 }
 .thread-label {
   font-weight: 600;
+  display: block;
 }
 .thread-bar {
   display: block;
@@ -493,4 +489,10 @@
 }
 .thread-bar .bar-fill {
   background: var(--accent);
+}
+
+.mood-dot {
+  background: var(--surface);
+  border-radius: 50%;
+  padding: 1px;
 }

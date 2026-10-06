@@ -43,6 +43,7 @@ export const novelOf = (s: GameState): NovelProject | null => s.projects?.novel 
 export function novelReason(s: GameState): string | null {
   const n = novelOf(s);
   if (n?.stage === 'querying') return 'waiting to hear back from agents';
+  if (n?.stage === 'published' && !n.reviewed) return 'the reviews aren’t in yet';
   return null;
 }
 
@@ -83,7 +84,9 @@ export function projectsTick(ctx: Ctx): void {
   if (n.stage === 'querying') {
     const fame = s.player.stats.fame;
     const odds = Math.min(0.85, 0.12 + n.quality / 160 + fame / 300 - n.rejections * 0.02);
-    fire(ctx, ctx.rng.chance(odds) ? 'proj_novel_offer' : 'proj_novel_rejection');
+    const yes = ctx.rng.chance(odds);
+    const def = EVENT_BY_ID[yes ? 'proj_novel_offer' : 'proj_novel_rejection'];
+    if (def) fireEvent(ctx, def, 'system', { rejections: n.rejections + 1 });
   } else if (
     n.stage === 'published' &&
     !n.reviewed &&
@@ -152,16 +155,21 @@ export function novelOp(ctx: Ctx, op: NovelOp): void {
       // A track record pays: each earlier book raises the next advance.
       const base = (3000 + n.quality * 400 + w * 100) * (1 + 0.35 * (p.books ?? 0));
       const advance = money(s, op === 'holdout' ? base * 1.8 : base, 'wage');
-      publish(ctx, n, advance, `a publisher, for ${formatMoney(s, advance)}`);
+      publish(ctx, n, `sells to a publisher for ${formatMoney(s, advance)}`, advance);
       return;
     }
     case 'selfpub':
-      publish(ctx, n, money(s, 200 + n.quality * 20, 'wage'), 'yourself, one print run at a time');
+      publish(
+        ctx,
+        n,
+        'comes out under your own name, one print run at a time',
+        money(s, 200 + n.quality * 20, 'wage'),
+      );
       return;
   }
 }
 
-function publish(ctx: Ctx, n: NovelProject, advance: number, how: string): void {
+function publish(ctx: Ctx, n: NovelProject, how: string, advance: number): void {
   const s = ctx.s;
   const p = s.projects as Projects;
   n.stage = 'published';
@@ -170,5 +178,5 @@ function publish(ctx: Ctx, n: NovelProject, advance: number, how: string): void 
   s.money.cash += advance;
   if (!s.player.flags.includes('published_novel')) s.player.flags.push('published_novel');
   addStat(s, 'fame', n.quality >= 60 ? 5 : 2);
-  ctx.log('fame', `📚 ${n.title} is published by ${how}.`, true);
+  ctx.log('fame', `📚 ${n.title} ${how}.`, true);
 }

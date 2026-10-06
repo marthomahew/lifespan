@@ -56,7 +56,7 @@ describe('holidays', () => {
       { ...s, pending: [] },
       { type: 'activity', id: 'vacation', params: { dest: 'japan' } },
     ).state;
-    expect(s.log.some((l) => l.text.startsWith('🇯🇵'))).toBe(true);
+    expect(s.log.some((l) => l.text.includes('🇯🇵'))).toBe(true);
     expect(s.player.flags).toContain('visited:japan');
     s = {
       ...s,

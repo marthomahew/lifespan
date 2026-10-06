@@ -53,6 +53,9 @@ export const EVENT_CHEATS: CheatDef[] = [
       const force = p['force'] === true;
       if (!force && def.chainOnly)
         return `${def.id} only fires as a follow-up; add "on" to force it`;
+      // Some follow-ups need a story already in motion (an illness, a job offer): they say so.
+      if (/\{\$\w+\}|\{money:\$|\{cash:\$/.test(def.text))
+        return `${def.id} needs a story already in motion; it can't be fired on its own`;
       const e = eligibility(ctx.s, def, { ignoreConditions: force, chain: force });
       if (!e.ok) return `Can't fire ${def.id}: ${e.reason}`;
       const ok = fireEvent(ctx, def, 'cheat');

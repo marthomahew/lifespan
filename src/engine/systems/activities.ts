@@ -113,7 +113,7 @@ export function activitiesFor(s: GameState): ActivityView[] {
       label: def.label,
       emoji: def.emoji,
       group: def.group,
-      description: def.description,
+      description: describe(s, def),
       enabled: why === null,
       reason: why ?? '',
       cost: def.cost && !parentsPay(s, def) ? money(s, def.cost) : 0,
@@ -204,7 +204,8 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
         [o.text, ...variants].map((x) => renderText(s, x)),
       )
     : renderText(s, o.text);
-  ctx.log('activity', `${def.emoji} ${line}`);
+  // A picked holiday tells its own story (the destination's line); the generic one would clash.
+  if (!(def.special === 'vacation' && params['dest'])) ctx.log('activity', `${def.emoji} ${line}`);
   for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id);
 
   if (def.special === 'fertility' && o.success) {
@@ -275,4 +276,12 @@ export function writeWill(ctx: Ctx, heirs?: { npcId: number; share: number }[]):
       ? `Your will: ${names.join(', ')}.`
       : 'You write a will, but there is nobody to leave it to. It will all go to the state.',
   );
+}
+
+/** Descriptions that follow what you're in the middle of. */
+function describe(s: GameState, def: ActivityDef): string {
+  const n = s.projects?.novel;
+  if (def.id === 'write_novel' && n?.stage === 'drafting')
+    return `Keep going on ${n.title}: about ${n.progress}% of a draft.`;
+  return def.description;
 }

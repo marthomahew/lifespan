@@ -101,12 +101,13 @@ function RecordsCard(): React.JSX.Element | null {
   const r = loadRecords();
   if (!r.lives) return null;
   const rows: [string, string][] = [];
-  if (r.oldest) rows.push(['Oldest', `${r.oldest.value}, ${r.oldest.who}`]);
-  if (r.richest) rows.push(['Richest', `${formatRef(r.richest.value)}, ${r.richest.who}`]);
+  if (r.oldest) rows.push(['Oldest', `${r.oldest.who} · ${r.oldest.value}`]);
+  if (r.richest)
+    rows.push(['Richest (today’s dollars)', `${r.richest.who} · ${formatRef(r.richest.value)}`]);
   if (r.mostChildren)
-    rows.push(['Most children', `${r.mostChildren.value}, ${r.mostChildren.who}`]);
+    rows.push(['Most children', `${r.mostChildren.who} · ${r.mostChildren.value}`]);
   if (r.mostAchievements)
-    rows.push(['Most achievements', `${r.mostAchievements.value}, ${r.mostAchievements.who}`]);
+    rows.push(['Most achievements', `${r.mostAchievements.who} · ${r.mostAchievements.value}`]);
   return (
     <section className="records card pad" data-testid="records" aria-label="Records">
       <h2 className="section-title">

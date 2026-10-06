@@ -75,6 +75,7 @@ export type Effect =
         | 'move_out'
         | 'salary_mult'
         | 'illness_plan'
+        | 'holiday_home'
         | 'severance';
       arg?: string;
     }

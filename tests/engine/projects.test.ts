@@ -164,3 +164,24 @@ describe('a writing career', () => {
     expect(advance(3)).toBeGreaterThan(advance(0) * 1.8);
   });
 });
+
+describe('one book at a time', () => {
+  it('a new draft waits until the last book’s reviews are in', () => {
+    const s = writer(96);
+    const out = {
+      ...s,
+      projects: {
+        books: 1,
+        novel: {
+          title: 'Paper Boats',
+          stage: 'published' as const,
+          progress: 100,
+          quality: 70,
+          rejections: 0,
+          publishedYear: s.year,
+        },
+      },
+    };
+    expect(() => act(out, { type: 'activity', id: 'write_novel' })).toThrow(/reviews/);
+  });
+});

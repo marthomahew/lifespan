@@ -8,6 +8,8 @@ import { signRecordDeal } from './music';
 import { caseStep, recapture } from './crime';
 import { scaleSalary, takePackage } from './crossroads';
 import { illnessPlan } from './illness';
+import { addHolidayHome } from './assets';
+import { netWorth } from '../networth';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -32,6 +34,13 @@ export function applySystemEffect(
     case 'recapture':
       recapture(ctx);
       return;
+    case 'holiday_home': {
+      // Bought with a share of what you're worth; it stays on the books as a home.
+      const price = Math.round(Math.max(0, netWorth(s)) * 0.15);
+      s.money.cash -= price;
+      addHolidayHome(ctx, price);
+      return;
+    }
     case 'illness_plan':
       if (typeof payload['illness'] === 'string')
         illnessPlan(ctx, arg ?? 'gentle', payload['illness']);

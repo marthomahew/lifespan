@@ -1,5 +1,6 @@
 import type { Ctx } from '../ctx';
-import { capSalary } from './careers';
+import { JOB_BY_ID } from '../../content/jobs';
+import { capSalary, promote } from './careers';
 
 /** Job changes from events (the full career system arrives with M6). */
 export function applyCareerEffect(
@@ -20,12 +21,15 @@ export function applyCareerEffect(
     c.level = 0;
     ctx.log('work', 'You are out of a job.', true);
   } else if (kind === 'promote' && c.jobId) {
-    c.level += 1;
-    c.salary = Math.round(c.salary * 1.15);
-    capSalary(ctx.s);
+    // The same promotion as the career system's: title, history, cap and the log line.
+    const job = JOB_BY_ID[c.jobId];
+    if (job && c.level < job.titles.length - 1) promote(ctx, job);
   } else if (kind === 'demote' && c.jobId) {
     c.level = Math.max(0, c.level - 1);
     c.salary = Math.round(c.salary * 0.88);
+    const rec = c.history.at(-1);
+    const title = JOB_BY_ID[c.jobId]?.titles[c.level];
+    if (rec && title) rec.title = title;
   } else if (kind === 'raise' && c.jobId) {
     c.salary = Math.round(c.salary * 1.08);
     capSalary(ctx.s);

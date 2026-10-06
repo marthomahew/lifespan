@@ -100,7 +100,7 @@ export function runSpecial(
       const asked =
         typeof params['dest'] === 'string' ? DESTINATION_BY_ID[params['dest']] : undefined;
       const dest = asked ?? ctx.rng.pick(DESTINATIONS);
-      ctx.log('activity', `${dest.flag} ${pickFresh(ctx, dest.lines, 400)}`);
+      ctx.log('activity', `✈️ ${dest.flag} ${pickFresh(ctx, dest.lines, 400)}`);
       const flag = `visited:${dest.id}`;
       if (!s.player.flags.includes(flag)) s.player.flags.push(flag);
       return;

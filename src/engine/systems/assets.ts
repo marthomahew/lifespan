@@ -303,3 +303,20 @@ function vehicleAccidents(ctx: Ctx): void {
 }
 
 export const homeLabel = (h: Home): string => `${HOME_TYPE_BY_ID[h.type]?.emoji ?? '🏠'} ${h.name}`;
+
+/** A second home bought outright from an event: it shows up in Assets and keeps its value. */
+export function addHolidayHome(ctx: Ctx, price: number): void {
+  const s = ctx.s;
+  s.assets.homes.push({
+    id: s.assets.nextAssetId++,
+    type: 'cottage',
+    name: 'the cottage by the sea',
+    value: price,
+    paid: price,
+    condition: 80,
+    bought: s.year,
+    city: s.player.city,
+    country: s.player.country,
+    livingIn: false,
+  });
+}

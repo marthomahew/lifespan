@@ -78,7 +78,7 @@ export const WEALTH_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: (s) => 0.3 + s.player.stats.smarts / 400,
-            text: 'Four years later a bigger company buys it. Your share comes back several times over, and {pal.first} sends you a bottle of something very old.',
+            text: 'The company takes off faster than anyone dared hope, and a bigger one buys it. Your share comes back several times over, and {pal.first} sends you a bottle of something very old.',
             effects: [
               { wealth: 0.25 },
               { rel: 'pal', delta: 12, memory: 'backing the company early' },
@@ -254,7 +254,7 @@ export const WEALTH_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You spend every summer there from now on. The village slowly decides you are allowed to stay. The gate stays crooked.',
             effects: [
-              { wealth: -0.15 },
+              { system: 'holiday_home' },
               { stat: 'happiness', delta: 10 },
               { stat: 'stress', delta: -6 },
               { flag: 'holiday_home' },
