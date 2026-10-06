@@ -18,6 +18,7 @@ import { DynastyView } from '../screens/DynastyView';
 import { Timeline } from '../screens/Timeline';
 import { CommandPalette } from '../screens/CommandPalette';
 import { NpcPanel } from '../screens/game/NpcPanel';
+import { PetPanel } from '../screens/game/PetPanel';
 import { GoalPicker } from '../screens/GoalPicker';
 
 export function App(): React.JSX.Element {
@@ -29,6 +30,7 @@ export function App(): React.JSX.Element {
   const settings = useApp((s) => s.settings);
   const cheatsOpen = useApp((s) => s.cheatsOpen);
   const npcId = useApp((s) => s.npcId);
+  const petId = useApp((s) => s.petId);
 
   useEffect(() => {
     applySettingsToDocument(settings);
@@ -63,6 +65,7 @@ export function App(): React.JSX.Element {
       {overlay === 'goals' && game && <GoalPicker game={game} />}
       {overlay === 'palette' && game && <CommandPalette game={game} />}
       {npcId !== null && game && !overlay && <NpcPanel game={game} npcId={npcId} />}
+      {petId !== null && game && !overlay && <PetPanel game={game} petId={petId} />}
       {error && (
         <div className="error-banner card" role="alert" data-testid="error-banner">
           <span className="grow">{error}</span>

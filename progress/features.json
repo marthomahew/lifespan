@@ -604,5 +604,10 @@
     "title": "Cosmetic surgery uses the builder: pick a face, nose, eyes, brows or mouth; results vary",
     "passes": true,
     "evidence": "tests/engine/look.test.ts (cosmetic surgery); e2e/customize.spec.ts (cosmetic surgery)"
+  },
+  "S26": {
+    "title": "Pets: eight animals, bond and health, care actions, ageing and loss, inheritance, 20 pet events",
+    "passes": true,
+    "evidence": "tests/engine/pets.test.ts; tests/content/pets-content.test.ts; e2e/pets.spec.ts; sim invariants"
   }
 }

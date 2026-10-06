@@ -1,9 +1,10 @@
+import { petsEver } from './systems/pets';
 import type { Ctx } from './ctx';
 import { netWorthRef } from './networth';
 import { lifeTitle } from './titles';
 import { settleEstate } from './systems/inheritance';
 import type { GameState } from './types';
-import { article, lowerTitle } from './text';
+import { article, lowerTitle, listAnd } from './text';
 import { ASPIRATION_BY_ID } from '../content/aspirations';
 import { CHALLENGE_BY_ID } from '../content/challenges';
 import { GRAD_BY_ID, MAJOR_BY_ID } from '../content/education';
@@ -105,6 +106,11 @@ export function obituary(s: GameState): Obituary | null {
   const ticks = p.flags.filter((f) => f === 'bucket_item').length;
   if (ticks)
     summary.push(`Ticked ${ticks === 1 ? 'one thing' : `${ticks} things`} off the bucket list.`);
+  const pets = petsEver(s);
+  if (pets.length)
+    summary.push(
+      `Shared a life with ${listAnd(pets.slice(0, 3))}${pets.length > 3 ? `, and ${pets.length - 3} more` : ''}.`,
+    );
   if (p.achievements.length) summary.push(`Earned ${p.achievements.length} achievements.`);
   if (!summary.length) summary.push('Lived quietly and left the world about how they found it.');
   const survivors = s.npcs

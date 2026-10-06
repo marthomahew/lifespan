@@ -11,6 +11,7 @@ import { COUNTRIES } from '../src/content/countries';
 import { ALL_STATS, CATEGORIES, VICES } from '../src/engine/types';
 import { bindingQueries, ROLES } from '../src/engine/events/select';
 import { tokensIn } from '../src/engine/events/tokens';
+import { PET_KINDS } from '../src/content/pets';
 import type { EventDef, Effect, OutcomeDef } from '../src/engine/events/types';
 import { extraContent, type ExtraContent } from './content-extra';
 
@@ -24,6 +25,7 @@ export type Threshold = {
 };
 
 const PLAYER_TOKENS = new Set(['first', 'last', 'age', 'city', 'country', 'year']);
+export const PET_TOKENS = new Set(['pet', 'pet.kind', ...PET_KINDS.map((k) => k.id)]);
 const NPC_FIELDS = new Set([
   'first',
   'last',
@@ -195,6 +197,8 @@ export function validateEvents(
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;
+        // Pet tokens; tests/content/pets-content.test.ts checks such events need a pet.
+        if (PET_TOKENS.has(tok)) continue;
         if (
           /^money:\$[a-z_]+$/.test(tok) ||
           /^cash:\$[a-z_]+$/.test(tok) ||

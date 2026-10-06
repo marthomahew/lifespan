@@ -3,6 +3,7 @@ import { LANGUAGES, SKILLS } from '../../../../content/skills';
 import type { GameState } from '../../../../engine';
 import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
 import { Portrait } from '../../../portrait/Portrait';
+import { PetPicker } from './PetPicker';
 import { Modal } from '../../../components/Modal';
 
 /** Activities that need you to pick something first. */
@@ -12,6 +13,7 @@ export const OPTION_ACTIVITIES = [
   'new_look',
   'change_name',
   'plastic_surgery',
+  'adopt_pet',
 ];
 
 /** What a salon, a razor, an optician and a shop can change. */
@@ -30,6 +32,7 @@ const TITLE: Record<string, string> = {
   new_look: 'Pick a new look',
   change_name: 'Your new name',
   plastic_surgery: 'What would you like changed?',
+  adopt_pet: 'Who is coming home?',
 };
 
 /** Pick what the activity is about, right where you chose it. */
@@ -161,6 +164,7 @@ export function OptionDialog({
           </button>
         </div>
       )}
+      {activity === 'adopt_pet' && <PetPicker game={game} onRun={onRun} />}
       {activity === 'change_name' && (
         <form
           className="buy-form"

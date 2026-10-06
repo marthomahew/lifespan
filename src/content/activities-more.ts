@@ -1081,4 +1081,35 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
+  {
+    id: 'adopt_pet',
+    label: 'Adopt a pet',
+    emoji: '🐾',
+    group: 'fun',
+    ages: [6, 110],
+    limitPerYear: 2,
+    special: 'adopt_pet',
+    description:
+      'A dog, a cat, a rabbit, a parrot that will outlive you. Someone who is always glad you came home.',
+    outcomes: [
+      {
+        chance: 0.4,
+        success: true,
+        text: 'The shelter smells of disinfectant and hope. One face in particular will not stop looking at you.',
+        effects: [],
+      },
+      {
+        chance: 0.35,
+        success: true,
+        text: 'You meant to just look. Everybody says that. You fill in the forms with a pen that does not work.',
+        effects: [],
+      },
+      {
+        chance: 0.25,
+        success: true,
+        text: 'A neighbour knows someone whose animal had a surprise litter. The handover happens in a car park, like a very wholesome deal.',
+        effects: [],
+      },
+    ],
+  },
 ];

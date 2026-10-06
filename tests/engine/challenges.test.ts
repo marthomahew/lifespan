@@ -59,11 +59,9 @@ describe('challenges', () => {
     if (!heir) throw new Error('no heir');
     let g2 = continueAsChild(s, heir.id);
     expect(g2.challenge?.status).toBe('active');
-    g2 = runCheat(
-      runCheat({ ...g2, pending: [] }, 'age.set', { age: 40 }).state,
-      'baby.now',
-      {},
-    ).state;
+    // The heir may already be past 40 if their parent lived long.
+    if (g2.player.age < 40) g2 = runCheat({ ...g2, pending: [] }, 'age.set', { age: 40 }).state;
+    g2 = runCheat({ ...g2, pending: [] }, 'baby.now', {}).state;
     g2 = runCheat({ ...g2, pending: [] }, 'deathbot', {}).state;
     const heir2 = heirOptions(g2)[0];
     if (!heir2) throw new Error('no heir');

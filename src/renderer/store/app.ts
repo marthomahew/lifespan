@@ -49,6 +49,7 @@ export type AppState = {
   error: string | null;
   /** NPC whose detail panel is open. */
   npcId: number | null;
+  petId: number | null;
   /** Bumped when saves change so the Lives screen reloads. */
   savesVersion: number;
   /** Debug overlay showing hidden stats. */
@@ -73,6 +74,7 @@ export const app = createStore<AppState>({
   toasts: [],
   error: null,
   npcId: null,
+  petId: null,
   savesVersion: 0,
   hiddenStats: false,
   result: null,
@@ -148,6 +150,7 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
     tab: 'occupation',
     overlay: null,
     npcId: null,
+    petId: null,
   });
   if (s.autosave) void persist(game);
 }
@@ -187,6 +190,7 @@ export async function loadLife(id: string): Promise<void> {
       screen: state.death ? 'obituary' : 'game',
       overlay: null,
       npcId: null,
+      petId: null,
     });
   } catch (e) {
     showError(`That save is damaged: ${(e as Error).message}`);
@@ -282,6 +286,7 @@ export function continueAs(heirId: number): void {
       saveName: `${next.player.first} ${next.player.last}`,
       overlay: null,
       npcId: null,
+      petId: null,
       tab: 'occupation',
     });
     void persist(next);

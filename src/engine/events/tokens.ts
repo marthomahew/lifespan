@@ -1,3 +1,5 @@
+import { PET_BY_ID } from '../../content/pets';
+import { favouritePet } from '../systems/pets';
 import { formatMoney, money } from '../economy';
 import { countryOf } from '../economy';
 import { pronouns, relLabel } from '../npc';
@@ -101,6 +103,15 @@ export function resolveToken(
       return countryOf(s).name;
     case 'year':
       return String(s.year);
+  }
+  // {pet} and {pet.kind} name your favourite animal; {dog}, {cat}... a particular one.
+  if (token === 'pet' || token === 'pet.kind' || PET_BY_ID[token]) {
+    const kind = PET_BY_ID[token] ? token : undefined;
+    // A popup queued this year may outlive the pet it names; fall back to the last one you had.
+    const pet =
+      favouritePet(s, kind) ?? [...s.pets].reverse().find((p) => !kind || p.kind === kind);
+    if (!pet) return null;
+    return token === 'pet.kind' ? (PET_BY_ID[pet.kind]?.label ?? pet.kind).toLowerCase() : pet.name;
   }
   const dot = token.indexOf('.');
   if (dot > 0) {

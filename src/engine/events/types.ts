@@ -72,7 +72,10 @@ export type Effect =
   | { fame: number }
   | { notoriety: number }
   /** Military conduct (affects promotion and discharge type). */
-  | { conduct: number };
+  | { conduct: number }
+  /** Your favourite pet (of a kind, if given): the bond or their health moves, or they leave. */
+  | { pet: 'bond' | 'health'; delta: number; kind?: string }
+  | { pet: 'lose'; fate: string; kind?: string };
 
 export type ChainStepDef = {
   eventId: string;

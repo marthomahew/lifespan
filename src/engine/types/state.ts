@@ -8,6 +8,7 @@ import type {
   GenerationRecord,
   LogEntry,
   Npc,
+  Pet,
   PendingEvent,
   RngState,
   SimSettings,
@@ -75,6 +76,7 @@ export type GameState = {
   inflationMult: number;
   player: Player;
   npcs: Npc[];
+  pets: Pet[];
   nextNpcId: number;
   log: LogEntry[];
   pending: PendingEvent[];

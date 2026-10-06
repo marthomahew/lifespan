@@ -1,6 +1,6 @@
 import type { RngState } from '../rng';
 
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 export const VISIBLE_STATS = ['happiness', 'health', 'smarts', 'looks'] as const;
 export const HIDDEN_STATS = [
@@ -181,6 +181,27 @@ export type Npc = {
 };
 
 export const PLAYER_ID = 0;
+
+/** An animal in your life. */
+export type Pet = {
+  id: number;
+  kind: string;
+  name: string;
+  age: number;
+  /** Bond with you, 0..100. */
+  bond: number;
+  /** The pet's health, 0..100. */
+  health: number;
+  /** Years they would live with ordinary luck. */
+  lifespan: number;
+  adoptedYear: number;
+  alive: boolean;
+  /** How they left: died, ran off, rehomed. */
+  fate?: string;
+  endYear?: number;
+  /** Last year you played with or walked them. */
+  lastPlay: number;
+};
 
 export type ChainPayload = Record<string, string | number | boolean>;
 export type ChainStep = {

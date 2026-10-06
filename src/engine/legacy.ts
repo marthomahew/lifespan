@@ -130,6 +130,8 @@ export function continueAsChild(input: GameState, heirId: number): GameState {
     npcs.push(copy);
   }
   next.npcs = npcs;
+  // The animals stay with the family.
+  next.pets = s.pets.filter((x) => x.alive).map((x) => ({ ...x, lastPlay: s.year }));
 
   const c = COUNTRY_BY_ID[heir.country] ?? COUNTRY_BY_ID[old.country];
   const p = next.player;

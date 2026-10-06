@@ -14,6 +14,7 @@ import { addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
 import { cleanLook, NOSES } from '../look';
+import { adoptPet, adoptReason, PET_KIND_IDS } from './pets';
 import type { Look } from '../types';
 import { EngineError } from '../errors';
 
@@ -30,6 +31,10 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   }
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
+  if (sp === 'adopt_pet') {
+    const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
+    if (reasons.every((r) => r !== null)) return reasons.find((r) => r) ?? 'not now';
+  }
   if (sp === 'adopt') {
     // Agencies want a stable home: a partner, or a steady income of your own.
     const partnered = s.npcs.some(
@@ -82,6 +87,14 @@ export function runSpecial(
     case 'bucket_list':
       s.player.flags.push('bucket_item');
       return;
+    case 'adopt_pet': {
+      const asked = typeof params['kind'] === 'string' ? params['kind'] : '';
+      // Without a choice (the sim bots), any animal that is allowed.
+      const allowed = PET_KIND_IDS.filter((k) => adoptReason(s, k) === null);
+      const kind = asked || (allowed.length ? ctx.rng.pick(allowed) : 'cat');
+      adoptPet(ctx, kind, typeof params['name'] === 'string' ? params['name'] : undefined);
+      return;
+    }
     case 'plastic_surgery': {
       s.health.surgeryCount += 1;
       const wanted = cleanLook(pickKeys(params, SURGERY), s.player.look);

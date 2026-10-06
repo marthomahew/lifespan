@@ -1,3 +1,4 @@
+import { PET_BY_ID } from '../../../../content/pets';
 import type { GameState, Npc } from '../../../../engine';
 import { npcLook } from '../../../../engine/look';
 import { Portrait } from '../../../portrait/Portrait';
@@ -46,6 +47,7 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
       >
         🌳 Family tree
       </button>
+      {game.pets.length > 0 && <PetList game={game} />}
       {groups.map((g) => (
         <section key={g.label} className="panel-section">
           <h3 className="section-title">{g.label}</h3>
@@ -102,5 +104,56 @@ export function RelationshipsTab({ game }: { game: GameState }): React.JSX.Eleme
         </section>
       ))}
     </div>
+  );
+}
+
+/** Animals: the living first, then the ones you remember. */
+function PetList({ game }: { game: GameState }): React.JSX.Element {
+  const pets = [...game.pets].sort((a, b) => Number(b.alive) - Number(a.alive) || b.id - a.id);
+  return (
+    <section className="panel-section" data-testid="pet-list">
+      <h3 className="section-title">Pets</h3>
+      <ul className="npc-list">
+        {pets.map((p) => (
+          <li key={p.id}>
+            <button
+              className={`npc-row${p.alive ? '' : ' faded'}`}
+              data-testid={`pet-${p.id}`}
+              onClick={() => app.set({ petId: p.id })}
+            >
+              <span className="pet-row-emoji" aria-hidden="true">
+                {PET_BY_ID[p.kind]?.emoji ?? '🐾'}
+              </span>
+              <span className="grow npc-name">
+                <span>{p.name}</span>
+                <span className="muted small">
+                  {(PET_BY_ID[p.kind]?.label ?? p.kind).toLowerCase()},{' '}
+                  {p.alive ? `age ${p.age}` : `${p.fate ?? 'gone'} ${p.endYear ?? ''}`}
+                </span>
+              </span>
+              {p.alive ? (
+                <>
+                  <span
+                    className="mini-bar"
+                    aria-label={`Bond ${p.bond}`}
+                    title={`Bond ${p.bond}/100`}
+                  >
+                    <span
+                      className={`bar-fill ${barColour(p.bond)}`}
+                      style={{ width: `${p.bond}%` }}
+                    />
+                  </span>
+                  <span className="rel-num muted small">{p.bond}</span>
+                </>
+              ) : (
+                <span className="rel-num muted" aria-label="Gone">
+                  †
+                </span>
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

@@ -75,6 +75,16 @@ export const stateSchema = z.looseObject({
   inflationMult: num.min(0),
   player: playerSchema,
   npcs: z.array(npcSchema),
+  pets: z.array(
+    z.looseObject({
+      id: int,
+      kind: z.string(),
+      name: z.string(),
+      alive: z.boolean(),
+      bond: int,
+      health: int,
+    }),
+  ),
   nextNpcId: int,
   log: z.array(z.looseObject({ age: int, year: int, cat: z.string(), text: z.string().min(1) })),
   pending: z.array(z.looseObject({ eventId: z.string(), bindings: z.record(z.string(), int) })),
@@ -134,6 +144,8 @@ export const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
     const tone = toneOf(look as Parameters<typeof toneOf>[0]);
     return { ...raw, player: { ...player, look, appearance: tone } };
   },
+  // v7: pets.
+  6: (raw) => ({ ...raw, pets: raw['pets'] ?? [] }),
 };
 
 export class SaveError extends Error {}

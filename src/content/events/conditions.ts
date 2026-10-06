@@ -107,3 +107,9 @@ export const hasKidAged =
   (lo: number, hi: number) =>
   (s: GameState): boolean =>
     s.npcs.some((n) => n.alive && n.roles.includes('child') && n.age >= lo && n.age <= hi);
+
+/** You have a living pet (of a kind, if given). */
+export const hasPet =
+  (kind?: string) =>
+  (s: GameState): boolean =>
+    s.pets.some((p) => p.alive && (!kind || p.kind === kind));

@@ -139,3 +139,78 @@
   align-items: center;
   gap: 8px;
 }
+
+/* Pets (S26) */
+.pet-row-emoji {
+  font-size: 26px;
+  width: 36px;
+  text-align: center;
+}
+.npc-row.faded {
+  opacity: 0.6;
+}
+.pet-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.pet-emoji {
+  font-size: 54px;
+  line-height: 1;
+}
+.pet-meter {
+  display: grid;
+  grid-template-columns: 60px 1fr 32px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mini-bar.wide {
+  width: 100%;
+}
+.pet-panel .row {
+  margin-top: 12px;
+  gap: 8px;
+}
+.pet-last {
+  margin-top: 12px;
+  color: var(--text-2);
+}
+.pet-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pet-panel .row {
+  flex-wrap: wrap;
+}
+.pet-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.pet-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+}
+.pet-tile.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.pet-tile-emoji {
+  font-size: 30px;
+  line-height: 1.1;
+}
+.pet-detail {
+  margin: 0;
+  min-height: 3em;
+}
+@media (max-width: 560px) {
+  .pet-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -27,3 +27,9 @@ export function withArticle(label: string): string {
   const l = lowerLabel(label);
   return `${article(l)} ${l}`;
 }
+
+/** "a", "a and b", "a, b and c". */
+export function listAnd(items: string[]): string {
+  if (items.length <= 1) return items[0] ?? '';
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1] ?? ''}`;
+}

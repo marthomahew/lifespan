@@ -89,6 +89,19 @@ for (const size of SIZES) {
       await page.getByTestId('look-builder').waitFor();
       await shot('29-makeover');
       await page.keyboard.press('Escape');
+      await page.getByTestId('act-adopt_pet').click();
+      await page.getByTestId('opt-pet-go').waitFor();
+      await shot('30-adopt');
+      await page.getByTestId('opt-pet-dog').click();
+      await page.getByTestId('opt-pet-name').fill('Biscuit');
+      await page.getByTestId('opt-pet-go').click();
+      while (await page.getByTestId('event-modal').isVisible())
+        await page.locator('button.choice:not([disabled])').first().click();
+      await page.getByTestId('tab-relationships').click();
+      await page.getByTestId('pet-list').getByRole('button').first().click();
+      await page.getByTestId('pet-act-play').click();
+      await shot('31-pet');
+      await page.keyboard.press('Escape');
       await page.getByTestId('tab-occupation').click();
       await shot('13-occupation');
       await page.getByTestId('btn-job-listings').click();

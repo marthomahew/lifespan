@@ -1,3 +1,4 @@
+import { petAction, type PetActionId } from './systems/pets';
 import { Ctx, type Step } from './ctx';
 import { EngineError } from './errors';
 import { prunePending } from './events/select';
@@ -50,7 +51,8 @@ export type PlayerAction =
   | { type: 'treat'; illness: string; method: Treatment }
   | { type: 'treat_injury'; index: number; method: 'physio' | 'surgery' }
   | { type: 'aspiration'; op: 'choose' | 'drop'; id: string }
-  | { type: 'emigrate'; country: string; city?: string };
+  | { type: 'emigrate'; country: string; city?: string }
+  | { type: 'pet'; petId: number; id: PetActionId };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -63,6 +65,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'activity':
       doActivity(ctx, action.id, action.params);
+      break;
+    case 'pet':
+      petAction(ctx, action.petId, action.id);
       break;
     case 'enroll':
       enroll(ctx, action.kind, action.programId);

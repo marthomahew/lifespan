@@ -4,7 +4,7 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 491 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 511 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
 - **Cheats:** a full cheat menu (69 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
@@ -43,6 +43,8 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **Callbacks (S21):** 18 events bring old choices back years later (the band you quit, the country you left, the record you carry, the ex you never called).
 - **Free time (S22):** a year holds only so many activities. You get 7 out of work and 9 when retired; full-time work costs 2, studies 1, and small children 1. Health care, paperwork and prison life are free. The Activities tab shows what's left and why, so casual play rarely hits the limit, but you can't do everything every year.
 - **Drawn portraits (S23):** layered SVG faces replace the emoji avatars. The New Life builder has 10 tabs: skin and freckles, 5 face shapes, 13 haircuts in 13 colours, 5 eye shapes in 6 colours, 6 brows, 6 noses, 5 mouths, 6 kinds of facial hair, 5 glasses and 5 tops in 10 colours. Every option is drawn on your own face, and the preview shows you at 1, 8, 30 and 75. Portraits age, from a baby's round face and blush to greying hair and lines. Everyone in your life has a face: blood relatives take after you, and your children mix you and their other parent. An heir keeps the face they had as your child. A makeover (hair, colour, facial hair, glasses, clothes) shows a live preview. Save v6 builds a portrait for older saves from their old hair and skin tone.
+- **Faces everywhere (S24–S25):** expressions follow happiness (a frown and worried brows when miserable) and health (pale, tired eyes when ill). Faces appear in event popups (whoever the event is about), the family tree, the Lives list and the Continue button. Cosmetic surgery uses the builder to change face, eyes, brows, nose or mouth. Most patients get what they picked, some get a bill, and complications pick a nose for you.
+- **Pets (S26):** adopt a dog, cat, rabbit, hamster, parrot, goldfish, tortoise or horse from age 6. Children get one small pet that the parents pay for. Each pet has a name, a bond and its own health. Play, walks (dogs and horses) and the vet build the bond; neglect wears it down, and a neglected cat or dog may wander off. Pets cost upkeep, lift your mood when the bond is strong, age on their own clock (a hamster lasts two years, a tortoise outlives you), are mourned when they die, pass to your heir, and are rehomed if you go to prison. 20 pet events name them, the obituary remembers them, and the Relationships tab lists the living and the remembered.
 
 ## Late life (S16)
 
@@ -189,12 +191,12 @@ What changed:
   | Most common popup share | 2.0% |
   | Runtime | about 42 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 482 of 491 events (98.2%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 504 of 511 events (98.6%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
   |---|---|
-  | Events (in 45 chains) | 491 |
+  | Events (in 45 chains) | 511 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |
@@ -244,6 +246,8 @@ What changed:
 | `27-challenges` | Challenge picker |
 | `28-look-builder` | Character builder: the hair grid, every option drawn on your own face |
 | `29-makeover` | Get a new look: hair, facial hair, glasses and clothes |
+| `30-adopt` | Adopt a pet: eight animals, costs and lifespans |
+| `31-pet` | A pet's panel: bond, health, play, walk, vet |
 
 **Visual review, problems found and fixed:**
 - Modal fade-ins were caught mid-animation.

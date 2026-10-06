@@ -110,6 +110,7 @@ export function emptyState(seed: number): GameState {
       genes: { looks: 50, smarts: 50, health: 80 },
     },
     npcs: [],
+    pets: [],
     nextNpcId: 1,
     log: [],
     pending: [],
