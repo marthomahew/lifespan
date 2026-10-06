@@ -37,7 +37,14 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
   if (amount <= 0) return;
   dead.money -= amount;
   s.money.cash += amount;
-  ctx.log('money', `${dead.first}'s will leaves you ${formatMoney(s, amount)}.`, true);
+  // A token sum reads as a keepsake, not a windfall.
+  ctx.log(
+    'money',
+    amount < money(s, 100)
+      ? `${dead.first}'s will leaves you a token ${formatMoney(s, amount)}, and the thought.`
+      : `${dead.first}'s will leaves you ${formatMoney(s, amount)}.`,
+    amount >= money(s, 100),
+  );
   // Older relatives sometimes leave an heirloom too.
   if (
     (dead.roles.includes('grandparent') ||

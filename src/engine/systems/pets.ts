@@ -1,3 +1,4 @@
+import { pickFresh } from '../fresh';
 import { PET_BY_ID, PET_KINDS, type PetKindDef } from '../../content/pets';
 import type { Ctx } from '../ctx';
 import { formatMoney, refToLocal } from '../economy';
@@ -120,7 +121,12 @@ export function petAction(ctx: Ctx, petId: number, id: PetActionId): void {
       addStat(s, 'happiness', r.int(2, 4));
       ctx.log(
         'family',
-        `${def?.emoji ?? '🐾'} ${r.pick(PLAY_LINES[pet.kind] ?? PLAY_LINES['any'] ?? [''])}`
+        `${def?.emoji ?? '🐾'} ${pickFresh(
+          ctx,
+          (PLAY_LINES[pet.kind] ?? PLAY_LINES['any'] ?? ['']).map((l) =>
+            l.split('{name}').join(pet.name),
+          ),
+        )}`
           .split('{name}')
           .join(pet.name),
       );
@@ -133,7 +139,10 @@ export function petAction(ctx: Ctx, petId: number, id: PetActionId): void {
       addStat(s, 'happiness', 1);
       ctx.log(
         'family',
-        `${def?.emoji ?? '🐾'} ${r.pick(WALK_LINES)}`.split('{name}').join(pet.name),
+        `${def?.emoji ?? '🐾'} ${pickFresh(
+          ctx,
+          WALK_LINES.map((l) => l.split('{name}').join(pet.name)),
+        )}`,
       );
       break;
     case 'vet': {
@@ -238,18 +247,37 @@ const PLAY_LINES: Record<string, string[]> = {
   dog: [
     'You throw the ball for {name} until your arm aches. {name} could do this forever.',
     '{name} learns to shake hands. You tell everyone, at length.',
+    'A game of tug with a sock that used to be yours. {name} wins, as is traditional.',
+    '{name} finds a stick roughly the length of a canoe and insists on bringing it home.',
+    'You hide treats around the garden. {name} finds all of them, and one you lost in March.',
+    '{name} falls asleep mid-zoomies, upside down, legs in the air. You take a photo for the archive.',
   ],
   cat: [
     '{name} graciously allows you to dangle a string. For four minutes. Then leaves.',
     '{name} falls asleep on your chest and you do not move for an hour.',
+    '{name} discovers a cardboard box and is happier than with any toy you have ever bought.',
+    'You and {name} watch the birds from the window together, both making the same small noise.',
+    '{name} brings you a sock, places it at your feet and looks at you with enormous pride.',
+    '{name} headbutts your hand until you stop working. You stop working.',
   ],
   parrot: [
     '{name} learns a new word. Unfortunately it is your ringtone.',
     '{name} sings along to the radio, badly and with feeling.',
+    '{name} rides around the flat on your shoulder, commenting on everything.',
+    '{name} dismantles a cardboard tube with the focus of a surgeon. It is very satisfying to watch.',
   ],
-  horse: ['A long ride with {name} on a clear morning. Nothing else in the world for an hour.'],
+  horse: [
+    'A long ride with {name} on a clear morning. Nothing else in the world for an hour.',
+    'You brush {name} until the coat shines. {name} leans into it like a very large cat.',
+    '{name} takes an apple from your palm with enormous, careful lips.',
+    'A gallop along the edge of the field. You come back windswept and grinning.',
+  ],
   any: [
     'You spend an afternoon with {name}. Small, silly and the best part of the week.',
     '{name} does something adorable and you take forty photographs of it.',
+    '{name} has a new favourite spot, which is wherever you are sitting.',
+    'You build {name} something out of cardboard and tape. It is the best thing you have made all year.',
+    'Ten quiet minutes watching {name}. Your shoulders come down from round your ears.',
+    'You talk to {name} about your day. {name} is an excellent listener.',
   ],
 };

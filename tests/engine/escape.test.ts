@@ -143,3 +143,26 @@ describe('achievements for the new games', () => {
     }
   });
 });
+
+describe('no papers', () => {
+  it('a fugitive can’t sign on for benefits or be hired into a proper job', async () => {
+    const { unemploymentBenefit } = await import('../../src/engine/systems/careers');
+    const s = jailed(25);
+    const route = solve(escapeMap(s)) ?? [];
+    const out = act(s, {
+      type: 'activity',
+      id: 'prison_escape',
+      params: { moves: route.join('') },
+    }).state;
+    expect(unemploymentBenefit(out)).toBe(0);
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { hire } = await import('../../src/engine/systems/careers');
+    const ctx = new Ctx(structuredClone(out));
+    hire(ctx, 'accountant');
+    expect(ctx.s.career.jobId).toBeNull();
+    // The cheat menu still overrides everything.
+    expect(
+      runCheat({ ...out, pending: [] }, 'job.set', { job: 'accountant' }).state.career.jobId,
+    ).toBe('accountant');
+  });
+});

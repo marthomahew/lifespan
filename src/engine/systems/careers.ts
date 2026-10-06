@@ -132,11 +132,19 @@ function leaveCoworkers(ctx: Ctx): void {
   }
 }
 
-export function hire(ctx: Ctx, jobId: string): void {
+export function hire(ctx: Ctx, jobId: string, force = false): void {
   const s = ctx.s;
   s.player.flags = s.player.flags.filter((f) => f !== 'on_benefits');
   const job = JOB_BY_ID[jobId];
   if (!job) return;
+  // A proper job checks papers; on the run, only cash-in-hand work (part-time) is open.
+  if (!force && !job.partTime && s.legal.fugitive && !s.player.flags.includes('false_papers')) {
+    ctx.log(
+      'work',
+      'They want a passport and a tax number by Friday. You do not go back on Friday.',
+    );
+    return;
+  }
   const c = s.career;
   if (job.partTime) {
     c.partTimeId = job.id;
@@ -342,7 +350,8 @@ export function unemploymentBenefit(s: GameState): number {
   const p = s.player;
   if (p.age < 18 || p.age >= countryOf(s).ages.retirement) return 0;
   if (c.jobId || c.partTimeId || c.retired || s.education.enrollment) return 0;
-  if (s.legal.prison || s.military?.active) return 0;
+  // Support needs papers; someone on the run can't sign on.
+  if (s.legal.prison || s.military?.active || s.legal.fugitive) return 0;
   return money(s, 7000, 'wage');
 }
 

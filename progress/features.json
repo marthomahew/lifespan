@@ -674,5 +674,10 @@
     "title": "Achievements for the new systems: Best Friend, Full House, Cold Case, Twenty-One; The Great Escape counts any escape",
     "passes": true,
     "evidence": "tests/engine/escape.test.ts (achievements); tests/engine/achievements.test.ts"
+  },
+  "S40": {
+    "title": "Third playtest fixes: fresher pet lines, fugitives can not sign on, be hired without papers or stand for council, token bequests read as keepsakes",
+    "passes": true,
+    "evidence": "tests/engine/escape.test.ts (no papers); tests/engine/pets.test.ts; verify"
   }
 }

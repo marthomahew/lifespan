@@ -83,7 +83,7 @@ export const CAREER_CHEATS: CheatDef[] = [
     run: (ctx, p) => {
       const job = JOB_BY_ID[String(p['job'])];
       if (!job) return 'No such job';
-      hire(ctx, job.id);
+      hire(ctx, job.id, true);
       if (!job.partTime) {
         ctx.s.education.residency = 0;
         const target = Math.min(job.titles.length - 1, Number(p['level'] ?? 0));

@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, inSchool, oddsBy, ownsHome } from './conditions';
+import { canAfford, hasJob, inSchool, oddsBy, onTheRun, ownsHome } from './conditions';
 
 /** The wider world brushing against an ordinary life: weather, money, crowds, councils. */
 export const WORLD_EVENTS_2: EventDef[] = [
@@ -179,6 +179,8 @@ export const WORLD_EVENTS_2: EventDef[] = [
     ages: [25, 57],
     weight: 5,
     cooldownYears: 12,
+    // Nobody on the run stands for election.
+    when: (s) => !onTheRun(s) && !s.legal.prison,
     text: 'The ward seat on the {city} council is up for grabs and nobody wants it. A woman with a clipboard corners you at the bus stop and says you have "a sensible face." She means it as a job offer.',
     choices: [
       {
