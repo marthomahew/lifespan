@@ -273,21 +273,102 @@ export function businessLuck(s: GameState): number {
 function yearLine(ctx: Ctx, b: Business, k: BusinessKind, profit: number): string {
   const s = ctx.s;
   const p = formatMoney(s, Math.abs(profit));
-  if (profit < 0)
-    return `${k.emoji} ${pickFresh(ctx, [
-      `A hard year at ${b.name}: a loss of ${p}. You cover the wages from your own account.`,
-      `${b.name} loses ${p} this year. You lie awake doing sums.`,
-      `Quiet tills and a leaking roof: ${b.name} is ${p} down on the year.`,
-    ])}`;
-  if (b.health >= 75)
-    return `${k.emoji} ${pickFresh(ctx, [
-      `A booming year at ${b.name}: ${p} in profit and a waiting list.`,
-      `${b.name} has its best year yet: ${p} profit, and people queue.`,
-      `Everything goes right at ${b.name}: ${p} profit, and a feature in the local paper.`,
-    ])}`;
-  return `${k.emoji} ${pickFresh(ctx, [
-    `A steady year at ${b.name}: ${p} profit.`,
-    `${b.name} turns ${p} profit. Not glamorous; yours.`,
-    `${b.name} ticks along: ${p} after costs, and a regular who brings you biscuits.`,
-  ])}`;
+  const band = profit < 0 ? 'bad' : b.health >= 68 ? 'good' : 'fair';
+  const detail = pickFresh(ctx, DETAIL[k.id]?.[band] ?? DETAIL['shop']?.[band] ?? ['']);
+  const head =
+    band === 'bad'
+      ? pickFresh(ctx, [
+          `A hard year at ${b.name}: a loss of ${p}.`,
+          `${b.name} loses ${p} this year.`,
+          `${b.name} is ${p} down on the year.`,
+        ])
+      : band === 'good'
+        ? pickFresh(ctx, [
+            `A booming year at ${b.name}: ${p} in profit.`,
+            `${b.name} has its best year yet: ${p} profit.`,
+            `Everything goes right at ${b.name}: ${p} profit.`,
+          ])
+        : pickFresh(ctx, [
+            `A steady year at ${b.name}: ${p} profit.`,
+            `${b.name} turns ${p} profit. Not glamorous; yours.`,
+            `${b.name} ticks along: ${p} after costs.`,
+          ]);
+  return `${k.emoji} ${head} ${detail}`.trim();
 }
+
+/** What a year looks like in each kind of business, good, fair and bad. */
+const DETAIL: Record<string, Record<'good' | 'fair' | 'bad', string[]>> = {
+  cafe: {
+    good: [
+      'There is a queue for the window seats.',
+      'The cake you are known for sells out by eleven.',
+    ],
+    fair: ['A regular brings you biscuits.', 'The coffee machine needs a new seal, again.'],
+    bad: ['Rain all summer and an empty terrace.', 'The rent goes up and the footfall goes down.'],
+  },
+  shop: {
+    good: ['The window display stops people in the street.', 'You reorder twice before Christmas.'],
+    fair: [
+      'The bell over the door rings often enough.',
+      'The cat that came with the lease sleeps in the window.',
+    ],
+    bad: [
+      'Quiet tills and a leaking roof.',
+      'Half the high street has a sale on; you cannot match it.',
+    ],
+  },
+  restaurant: {
+    good: [
+      'Every table is booked a month ahead.',
+      'A food writer comes in unannounced and loves it.',
+    ],
+    fair: ['Friday nights are full; Tuesdays are thin.', 'The new menu works, mostly.'],
+    bad: ['The walk-in freezer dies in August.', 'Two cooks leave in the same week.'],
+  },
+  tech: {
+    good: ['Users double; investors call you first.', 'A big client signs a three-year contract.'],
+    fair: [
+      'The roadmap slips a quarter, as roadmaps do.',
+      'You ship the update everyone asked for.',
+    ],
+    bad: [
+      'The servers cost more than the customers pay.',
+      'Your best engineer leaves for a bigger name.',
+    ],
+  },
+  builders: {
+    good: [
+      'The order book is full until next spring.',
+      'A housing estate contract keeps every van busy.',
+    ],
+    fair: ['The weather costs you three weeks.', 'One client pays late and one pays early.'],
+    bad: ['Materials go up by a third overnight.', 'A job runs over and the penalty clause bites.'],
+  },
+  studio: {
+    good: [
+      'Your work wins an award and the phone rings.',
+      'A national brand hires you for a rebrand.',
+    ],
+    fair: [
+      'Steady clients, and one who wants it more blue.',
+      'A long project finally gets signed off.',
+    ],
+    bad: ['Two clients go under owing you money.', 'Everyone wants it cheaper, and faster.'],
+  },
+  farm: {
+    good: ['A golden harvest, in on time.', 'Prices at market are the best in years.'],
+    fair: [
+      'A middling harvest and a broken tractor.',
+      'The weather does its usual best to ruin things.',
+    ],
+    bad: ['A wet spring and a dry summer.', 'Prices at market fall through the floor.'],
+  },
+  firm: {
+    good: ['Three new clients come by word of mouth.', 'The tax-season rush pays for the year.'],
+    fair: [
+      'April is chaos; the rest of the year is calm.',
+      'A client brings receipts in a shoebox, again.',
+    ],
+    bad: ['A big client moves to a cheaper firm.', 'New software eats a month of everyone’s time.'],
+  },
+};

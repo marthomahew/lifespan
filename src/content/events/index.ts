@@ -17,6 +17,7 @@ import { PRODIGY_EVENTS } from './prodigy';
 import { BUSINESS_EVENTS } from './business';
 import { BG_FAMILY_EVENTS } from './bg-family';
 import { BG_ROOTS_EVENTS } from './bg-roots';
+import { SPECIAL_PATH_EVENTS } from './special-paths';
 import { LEGAL_EVENTS } from './legal';
 import { HEALTH_EVENTS } from './health';
 import { TEEN_YA_EVENTS_2 } from './teen-ya-2';
@@ -101,6 +102,7 @@ export const EVENTS: EventDef[] = [
   ...BUSINESS_EVENTS,
   ...BG_FAMILY_EVENTS,
   ...BG_ROOTS_EVENTS,
+  ...SPECIAL_PATH_EVENTS,
   ...LEGAL_EVENTS,
   ...HEALTH_EVENTS,
   ...TEEN_YA_EVENTS_2,

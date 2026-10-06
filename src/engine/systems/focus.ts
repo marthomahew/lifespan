@@ -15,14 +15,15 @@ export function yearCap(s: GameState, skill: string): number {
   // Languages aren't gifts: steady work gets you fluent in five years or so.
   if (skill.startsWith('lang:')) return 20;
   if (s.player.talent !== skill) return 12;
-  return s.player.talentLevel === 'prodigy' ? 40 : 22;
+  return s.player.talentLevel === 'prodigy' ? 25 : 18;
 }
 
 export type FocusOption = { id: string; label: string; level: number };
 
 export function focusLabel(id: string): string {
   if (id.startsWith('lang:')) return LANGUAGE_BY_ID[id.slice(5)]?.label ?? id.slice(5);
-  return SKILL_BY_ID[id]?.label ?? id;
+  // Mid-sentence: "your free time goes to chess" (languages keep their capital).
+  return (SKILL_BY_ID[id]?.label ?? id).toLowerCase();
 }
 
 export function focusLevel(s: GameState, id: string): number {

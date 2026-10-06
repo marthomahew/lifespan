@@ -2,7 +2,7 @@ import { pickFreshTemplate } from '../fresh';
 import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { baseHazard, healthMultiplier } from '../mortality';
-import { addNpc, remember } from '../npc';
+import { addNpc, relLabel, remember } from '../npc';
 import { money } from '../economy';
 import { addStat, fertilityBaseline } from '../stats';
 import type { Npc } from '../types';
@@ -57,12 +57,22 @@ function npcDeaths(ctx: Ctx): void {
       cause.replace('their', n.gender === 'male' ? 'his' : n.gender === 'female' ? 'her' : 'their'),
     );
     if (isClose(n)) {
+      // Who they were to you, first: "Your husband Tom Reyes dies…".
+      const who = relLabel(n);
       ctx.log(
         'family',
-        `${n.first} ${n.last} dies ${n.deathCause ?? ''}, aged ${n.age}.`.replace(/\s+,/, ','),
+        `${who.charAt(0).toUpperCase()}${who.slice(1)} ${n.first} ${n.last} dies ${n.deathCause ?? ''}, aged ${n.age}.`.replace(
+          /\s+,/,
+          ',',
+        ),
         true,
       );
-      addStat(s, 'happiness', -(isFamily(n) ? ctx.rng.int(6, 15) : ctx.rng.int(3, 7)));
+      const partner = n.roles.includes('spouse') || n.roles.includes('partner');
+      addStat(
+        s,
+        'happiness',
+        -(partner ? ctx.rng.int(18, 28) : isFamily(n) ? ctx.rng.int(6, 15) : ctx.rng.int(3, 7)),
+      );
       addStat(s, 'stress', 4);
     }
     inheritFrom(ctx, n);
@@ -87,6 +97,8 @@ function npcBirths(ctx: Ctx): void {
     s.player.age < 16 &&
     sibs < 4 &&
     !mother.flags.includes('parents_split') &&
+    !mother.flags.includes('absent_parent') &&
+    !father.flags.includes('absent_parent') &&
     r.chance(0.07)
   ) {
     const kid = addNpc(ctx, {

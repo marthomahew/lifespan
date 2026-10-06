@@ -98,6 +98,8 @@ export type CareerState = {
   since: number;
   performance: number;
   salary: number;
+  /** The best full-time pay you have had (pensions use it if you're between jobs). */
+  peakSalary?: number;
   partTimeId: string | null;
   history: JobRecord[];
   retired: boolean;

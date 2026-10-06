@@ -73,6 +73,13 @@ export function bindingQueries(def: EventDef): Record<string, NpcQuery> {
 
 export function matches(s: GameState, n: Npc, q: NpcQuery, adultsOnly: boolean): boolean {
   if (!n.alive || (!q.anyRole && !n.roles.includes(q.role))) return false;
+  // A parent who is around in name only isn't the one at the checkout or on the phone.
+  if (
+    (q.role === 'mother' || q.role === 'father') &&
+    n.flags.includes('absent_parent') &&
+    q.flag !== 'absent_parent'
+  )
+    return false;
   if (q.minRelationship !== undefined && n.rel < q.minRelationship) return false;
   if (q.maxRelationship !== undefined && n.rel > q.maxRelationship) return false;
   if (q.minAge !== undefined && n.age < q.minAge) return false;

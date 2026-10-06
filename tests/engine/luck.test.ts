@@ -84,7 +84,17 @@ describe('luck', () => {
           { ...s, pending: [] },
           { type: 'business', action: { op: 'start', kind: 'shop' } },
         ).state;
-        total += years(s, 5, { biz_buyout: 'keep' }).business?.health ?? 0;
+        // Average momentum over the years it is open (a lucky shop may be sold for a fortune).
+        let sum = 0;
+        let n = 0;
+        for (let y = 0; y < 5; y++) {
+          s = years(s, 1, { biz_buyout: 'keep' });
+          if (s.business) {
+            sum += s.business.health;
+            n++;
+          }
+        }
+        total += n ? sum / n : 0;
       }
       return total;
     };

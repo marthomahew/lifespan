@@ -18,7 +18,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
     once: true,
     when: mover,
     bind: { par: { role: 'acquaintance', anyRole: true, flag: 'mover_parent' } },
-    text: 'Your {par.rel} comes home with a new posting and a roll of parcel tape. By the end of the month you are standing at the front of another classroom while a teacher mispronounces your name.',
+    text: '{par.Rel} comes home with a new posting and a roll of parcel tape. By the end of the month you are standing at the front of another classroom while a teacher mispronounces your name.',
     choices: [
       {
         id: 'loud',
@@ -67,7 +67,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'Your boxes stay taped in protest for six weeks. Your {par.rel} unpacks them one night while you sleep and says nothing about it, ever.',
+            text: 'Your boxes stay taped in protest for six weeks. {par.Rel} unpacks them one night while you sleep and says nothing about it, ever.',
             effects: [
               { system: 'move_city' },
               { stat: 'happiness', delta: -4 },
@@ -97,6 +97,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You keep the promise far longer than anyone expects. Your letters get longer, funnier and better spelt, and your friend keeps every one in a shoebox.',
             effects: [
+              { system: 'move_city' },
               { skill: 'writing', delta: 4 },
               { stat: 'happiness', delta: 2 },
               { flag: 'pen_friend' },
@@ -113,6 +114,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You hug once at the gate and do not look back. It works, more or less. You learn to travel light, and something in you gets a little harder.',
             effects: [
+              { system: 'move_city' },
               { stat: 'stress', delta: -2 },
               { stat: 'happiness', delta: -3 },
               { stat: 'discipline', delta: 2 },
@@ -122,12 +124,13 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
       },
       {
         id: 'blame',
-        label: 'Tell your {par.rel} it’s not fair',
+        label: 'Tell {par.rel} it’s not fair',
         outcomes: [
           {
             chance: 1,
-            text: 'You say it at dinner, loudly. Your {par.rel} agrees that it isn’t, and apologises, which is somehow worse. You still move, but you both remember the talk.',
+            text: 'You say it at dinner, loudly. {par.Rel} agrees that it isn’t, and apologises, which is somehow worse. You still move, but you both remember the talk.',
             effects: [
+              { system: 'move_city' },
               { rel: 'par', delta: 4, memory: 'admitting the moves weren’t fair on you' },
               { stat: 'happiness', delta: -2 },
             ],
@@ -169,7 +172,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'Your {par.rel} cries in the car park and then helps carry your bags upstairs. For the first time you get to stay somewhere long enough to be bored of it, which is wonderful.',
+            text: '{par.Rel} cries in the car park and then helps carry your bags upstairs. For the first time you get to stay somewhere long enough to be bored of it, which is wonderful.',
             effects: [
               { stat: 'happiness', delta: 6 },
               { stat: 'smarts', delta: 3 },
@@ -185,7 +188,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You pack in an afternoon; you are very good at it by now. The new school is fine. Your {par.rel} notices what you gave up and never quite stops thanking you.',
+            text: 'You pack in an afternoon; you are very good at it by now. The new school is fine. {par.Rel} notices what you gave up and never quite stops thanking you.',
             effects: [
               { system: 'move_city' },
               { stat: 'stress', delta: 5 },
@@ -250,7 +253,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
     once: true,
     when: immigrant,
     bind: { par: { role: 'acquaintance', anyRole: true, flag: 'heritage_parent' } },
-    text: 'At the bank, the man behind the glass talks slowly and loudly at your {par.rel}, as if that helps. Your {par.rel} looks down at you: you are the one who speaks both.',
+    text: 'At the bank, the man behind the glass talks slowly and loudly at {par.rel}, as if that helps. {par.Rel} looks down at you: you are the one who speaks both.',
     choices: [
       {
         id: 'translate',
@@ -258,7 +261,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You learn the words “overdraft” and “standing order” at nine years old. The man starts speaking to you directly. Your {par.rel} holds your hand on the way out, hard.',
+            text: 'You learn the words “overdraft” and “standing order” at nine years old. The man starts speaking to you directly. {par.Rel} holds your hand on the way out, hard.',
             effects: [
               { stat: 'smarts', delta: 4 },
               { stat: 'stress', delta: 3 },
@@ -274,7 +277,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'The man is curt; in your version he is charming. Your {par.rel} leaves thinking the bank is a lovely place, and you leave knowing exactly what diplomacy costs.',
+            text: 'The man is curt; in your version he is charming. {par.Rel} leaves thinking the bank is a lovely place, and you leave knowing exactly what diplomacy costs.',
             effects: [
               { stat: 'karma', delta: 2 },
               { stat: 'smarts', delta: 2 },
@@ -289,7 +292,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You stare at your shoes. Your {par.rel} struggles through alone, with a lot of pointing, and never asks you again. You are not sure whether that is a relief.',
+            text: 'You stare at your shoes. {par.Rel} struggles through alone, with a lot of pointing, and never asks you again. You are not sure whether that is a relief.',
             effects: [
               { stat: 'happiness', delta: -2 },
               { rel: 'par', delta: -5, memory: 'leaving them to manage at the bank' },
@@ -312,7 +315,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
     choices: [
       {
         id: 'proud',
-        label: 'Bring your {par.rel}’s cooking',
+        label: 'Bring {par.rel}’s cooking',
         outcomes: [
           {
             chance: 0.7,
@@ -340,7 +343,7 @@ export const BG_ROOTS_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'Nobody notices your sandwiches, which was the point. At home your {par.rel} sees the empty bread bag and says nothing, which you hear anyway.',
+            text: 'Nobody notices your sandwiches, which was the point. At home {par.rel} sees the empty bread bag and says nothing, which you hear anyway.',
             effects: [
               { stat: 'stress', delta: -2 },
               { stat: 'happiness', delta: -2 },

@@ -173,6 +173,7 @@ export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean): void {
   const v = VEHICLE_BY_ID[modelId];
   if (!v) throw new EngineError('unknown vehicle');
   if (!onSale(v, s.year)) throw new EngineError(`not on sale until ${v.from}`);
+  if (s.legal.prison) throw new EngineError('not from prison');
   if (s.player.age < 16) throw new EngineError('from age 16');
   const price = money(s, v.price);
   const id = s.assets.nextAssetId++;
@@ -203,6 +204,7 @@ export function buyPossession(ctx: Ctx, itemId: string): void {
   const p = POSSESSION_BY_ID[itemId];
   if (!p) throw new EngineError('unknown item');
   if (!onSale(p, s.year)) throw new EngineError(`not on sale until ${p.from}`);
+  if (s.legal.prison) throw new EngineError('not from prison');
   const price = money(s, p.price);
   if (s.money.cash < price) throw new EngineError(`you need ${formatMoney(s, price)}`);
   s.money.cash -= price;

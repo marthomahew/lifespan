@@ -209,7 +209,7 @@ export const TEEN_PARENTING_EVENTS: EventDef[] = [
             chance: 0.65,
             text: 'Up close they are mostly polite, slightly lost kids who eat everything. You know their names now, and {kid.first} knows you aren’t the enemy.',
             effects: [
-              { rel: 'kid', delta: 7, memory: 'the night you fed all my friends' },
+              { rel: 'kid', delta: 7, memory: 'the night you fed all their friends' },
               { npcStat: 'kid', stat: 'happiness', delta: 3 },
             ],
             success: true,
@@ -217,7 +217,7 @@ export const TEEN_PARENTING_EVENTS: EventDef[] = [
           {
             chance: 0.35,
             text: 'Dinner is a disaster of eye-rolling. But a month later {kid.first} quietly drifts back to the old crowd, and the grades follow.',
-            effects: [{ rel: 'kid', delta: 1, memory: 'the awkward dinner with my friends' }],
+            effects: [{ rel: 'kid', delta: 1, memory: 'the awkward dinner with their friends' }],
           },
         ],
       },
@@ -229,7 +229,7 @@ export const TEEN_PARENTING_EVENTS: EventDef[] = [
             chance: 1,
             text: 'Forbidding it makes them irresistible. {kid.first} sees them anyway and lies about it, and you both know.',
             effects: [
-              { rel: 'kid', delta: -9, memory: 'you banning my friends' },
+              { rel: 'kid', delta: -9, memory: 'you banning their friends' },
               { npcStat: 'kid', stat: 'smarts', delta: -2 },
             ],
           },
@@ -270,7 +270,7 @@ export const TEEN_PARENTING_EVENTS: EventDef[] = [
             chance: 1,
             text: '{kid.first} comes home smelling of compost and full of stories about the regulars. {kid.They} buy{kid.s} you a plant with {kid.their} first wage packet.',
             effects: [
-              { rel: 'kid', delta: 5, memory: 'my first job, and the plant I bought you' },
+              { rel: 'kid', delta: 5, memory: 'their first job, and the plant they bought you' },
               { npcStat: 'kid', stat: 'happiness', delta: 4 },
             ],
           },

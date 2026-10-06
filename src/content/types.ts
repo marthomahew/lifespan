@@ -285,6 +285,8 @@ export type JobDef = {
   description: string;
   /** Part-time jobs for ages 14–17 (and anyone who wants one). */
   partTime?: boolean;
+  /** Only reached through a special path (astronaut, politician...); never in the listings. */
+  special?: boolean;
 };
 
 export type MajorDef = {

@@ -152,7 +152,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
     outcomes: [
       {
         chance: 1,
-        text: 'You play last. When you finish, nobody claps for a second, and then the whole hall stands up. A woman in the front row is crying and is not even your relative.',
+        text: 'You perform last. When you finish, nobody claps for a second, and then the whole hall stands up. A woman in the front row is crying and is not even your relative.',
         effects: [{ stat: 'happiness', delta: 8 }, { fame: 2 }, { flag: 'music_kid' }],
       },
     ],
@@ -262,7 +262,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
     outcomes: [
       {
         chance: 1,
-        text: 'A youth orchestra gives your first symphony its premiere. You sit in the front row in a borrowed jacket while three hundred people hear the inside of your head. Critics use the word that begins with M.',
+        text: 'A youth orchestra premieres the first big piece of your own. You sit in the front row in a borrowed jacket while three hundred people hear the inside of your head. Critics use the word that begins with M.',
         effects: [
           { fame: 10 },
           { stat: 'happiness', delta: 15 },

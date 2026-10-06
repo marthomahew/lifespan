@@ -19,6 +19,7 @@ import { skillDecay } from './skills';
 import { focusTick } from './focus';
 import { prodigyTick } from './prodigy';
 import { backgroundTick } from './backgrounds';
+import { specialPathsTick } from './special-paths';
 import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
@@ -93,6 +94,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   universityTick(ctx);
   careerTick(ctx);
   crossroadsTick(ctx);
+  specialPathsTick(ctx);
   lifeChapterTick(ctx);
   marriageTick(ctx);
   lateChapterTick(ctx);

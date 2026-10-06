@@ -1,0 +1,50 @@
+/* The focus card, the help guide and the job board. */
+.focus-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.focus-card select {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+.help-guide {
+  margin: 0 0 12px;
+  display: grid;
+  gap: 8px;
+}
+.help-guide dt {
+  font-weight: 600;
+}
+.help-guide dd {
+  margin: 2px 0 0;
+}
+.odds-chip {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.odds-chip.good {
+  color: var(--green);
+  border-color: currentColor;
+}
+.odds-chip.fair {
+  color: var(--amber);
+  border-color: currentColor;
+}
+.odds-chip.long {
+  color: var(--text-2);
+}
+.pay-ladder ol {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.jobs-far > summary {
+  cursor: pointer;
+  margin: 10px 0 6px;
+  font-weight: 600;
+}

@@ -232,6 +232,7 @@ export const HEALTH_EVENTS: EventDef[] = [
   },
   {
     id: 'hl_teen_phone_nights',
+    fromYear: 2008,
     kind: 'notice',
     category: 'health',
     ages: [13, 17],

@@ -310,7 +310,7 @@ export const WEALTH_EVENTS: EventDef[] = [
             chance: 1,
             text: '{sib.first} argues, then cries, then puts the envelope back in {sib.their} coat. A university fund is opened that week in {sib.their} children’s names.',
             effects: [
-              { rel: 'sib', delta: 22, memory: 'the loan you told me to keep' },
+              { rel: 'sib', delta: 22, memory: 'the loan you told them to keep' },
               { stat: 'karma', delta: 6 },
               { stat: 'happiness', delta: 6 },
             ],

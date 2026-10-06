@@ -18,6 +18,13 @@ export function memoryTick(ctx: Ctx): void {
   for (const n of s.npcs) {
     // Not the people you live with: they bring things up at breakfast, not out of the blue.
     if (!n.alive || n.age < 10 || n.roles.some((r) => r === 'spouse' || r === 'partner')) continue;
+    // Nor the family you grow up with, while you still live under their roof.
+    if (
+      s.player.age < 18 &&
+      (n.roles.some((r) => r === 'mother' || r === 'father' || r === 'sibling') ||
+        n.flags.includes('raising_grandparent'))
+    )
+      continue;
     // Someone with a story already in motion (a loan coming back) doesn't turn up twice.
     if (s.chains.some((c) => Object.values(c.bindings).includes(n.id))) continue;
     for (const m of n.memory)

@@ -96,16 +96,22 @@ describe('looks', () => {
   });
 
   it('an heir keeps the face they had as your child', () => {
-    let s = runCheat(newLife({ birthYear: 1970, gender: 'female' }, 31), 'age.set', {
-      age: 30,
-    }).state;
-    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
-    const kid = s.npcs.find((n) => n.roles.includes('child'));
-    if (!kid) throw new Error('no child');
-    const face = npcLook(s, kid);
-    s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
-    const next = continueAsChild(s, kid.id);
-    expect(next.player.look).toEqual(face);
+    // Children can die before their parents; judge the first line that has an heir.
+    let checked = false;
+    for (let seed = 31; seed < 41 && !checked; seed++) {
+      let s = runCheat(newLife({ birthYear: 1970, gender: 'female' }, seed), 'age.set', {
+        age: 30,
+      }).state;
+      s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+      const kid = s.npcs.find((n) => n.roles.includes('child'));
+      if (!kid) throw new Error('no child');
+      const face = npcLook(s, kid);
+      s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
+      if (!s.npcs.find((n) => n.id === kid.id)?.alive) continue;
+      expect(continueAsChild(s, kid.id).player.look).toEqual(face);
+      checked = true;
+    }
+    expect(checked).toBe(true);
   });
 
   it('v5 saves get a portrait from their old hair and tone', () => {

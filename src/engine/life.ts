@@ -343,7 +343,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
 
   generateFamily(ctx, opts);
   // (Only a chosen background draws from the dice, so ordinary lives replay as before.)
-  if (opts.background) setupBackground(ctx, opts.background);
+  if (opts.background) setupBackground(ctx, opts.background, opts.last !== undefined);
   if (opts.challenge && CHALLENGE_BY_ID[opts.challenge])
     s.challenge = { id: opts.challenge, status: 'active', year: s.year };
   s.lifeId = `${p.first.toLowerCase().replace(/[^a-z0-9]/g, '') || 'life'}-${(seed >>> 0).toString(36)}-${r.int(0, 1679615).toString(36)}`;

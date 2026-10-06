@@ -46,6 +46,7 @@ export const PRODIGY_MILESTONES: ProdigyMilestone[] = [
   },
   {
     id: 'chess_gm',
+    minAge: 13,
     gifted: true,
     skills: ['chess'],
     minLevel: 90,
@@ -79,6 +80,7 @@ export const PRODIGY_MILESTONES: ProdigyMilestone[] = [
   },
   {
     id: 'music_composer',
+    minAge: 9,
     gifted: true,
     skills: MUSIC,
     minLevel: 88,

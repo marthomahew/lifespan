@@ -753,6 +753,7 @@ export const TEEN_EVENTS: EventDef[] = [
   },
   {
     id: 'teen_cracked_screen',
+    fromYear: 2008,
     kind: 'notice',
     category: 'random',
     ages: [13, 17],

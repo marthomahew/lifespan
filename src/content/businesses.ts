@@ -41,7 +41,7 @@ export const BUSINESS_KINDS: BusinessKind[] = [
     profit: 20000,
     volatility: 0.25,
     skill: 'art',
-    names: ['{last} & Daughters', 'Odds and Ends', 'The Little Shop', 'Hidden Gem', 'Paper Moon'],
+    names: ['{last} & Co.', 'Odds and Ends', 'The Little Shop', 'Hidden Gem', 'Paper Moon'],
   },
   {
     id: 'restaurant',

@@ -437,7 +437,7 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
             chance: 1,
             text: 'Her parents audibly relax. Within a month you cannot imagine her as anything but {baby.first} Moonbeam, and you knit the whole name into a blanket.',
             effects: [
-              { rel: 'baby', delta: 8, memory: 'the blanket with my whole name on it' },
+              { rel: 'baby', delta: 8, memory: 'the blanket with their whole name on it' },
               { stat: 'happiness', delta: 5 },
               { skill: 'art', delta: 1 },
             ],
@@ -452,7 +452,7 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
             chance: 0.4,
             text: 'Against all odds, they like it. The baby becomes {baby.first} Margaret, and your late aunt would have been unbearable about it.',
             effects: [
-              { rel: 'baby', delta: 4, memory: 'the middle name you gave me' },
+              { rel: 'baby', delta: 4, memory: 'the middle name you gave them' },
               { stat: 'happiness', delta: 6 },
             ],
             success: true,

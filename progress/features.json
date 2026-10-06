@@ -879,5 +879,15 @@
     "title": "Help explains the systems (focus, gifts, luck, business, backgrounds, chains, cheats); tabs open at their top",
     "passes": true,
     "evidence": "e2e/keyboard.spec.ts; e2e/focus.spec.ts"
+  },
+  "S81": {
+    "title": "Playtest 6 fixes (new systems): doubled your, absent parents, first-person memories, immigrant names, background parents keep their lives, gentler prodigy caps, prison blocks, cottage price, peak-pay pensions, partner deaths, unique names, business lines by kind, the moving family moves",
+    "passes": true,
+    "evidence": "tests/engine/playtest6.test.ts; content:check"
+  },
+  "S82": {
+    "title": "The job board (fit, pay ladder, ceiling, sorting, search) and special careers that find you (astronaut, politician, intelligence officer, diplomat, film actor; Olympics, restaurant star, Nobel)",
+    "passes": true,
+    "evidence": "tests/engine/job-board.test.ts; tests/engine/special-paths.test.ts; e2e/careers.spec.ts"
   }
 }

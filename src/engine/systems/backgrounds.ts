@@ -1,3 +1,4 @@
+import { applySystemEffect } from './system-effects';
 import { EVENT_BY_ID } from '../../content/events';
 import { fireEvent } from '../events/select';
 import { BACKGROUND_BY_ID } from '../../content/backgrounds';
@@ -5,19 +6,19 @@ import { BUSINESS_BY_ID } from '../../content/businesses';
 import { COUNTRIES, COUNTRY_BY_ID } from '../../content/countries';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
-import { addNpc } from '../npc';
+import { addNpc, randomName, randomSurname } from '../npc';
 import type { GameState, Npc } from '../types';
 import { clampStat } from '../util';
 
 const FAMILY_KINDS = ['cafe', 'shop', 'restaurant', 'farm', 'builders', 'firm'];
-const FAMOUS_JOBS = ['Actor', 'Singer', 'Television presenter', 'Footballer', 'Novelist'];
+const FAMOUS_JOBS = ['Actor', 'Singer', 'Television presenter'];
 
 export const backgroundOf = (s: GameState): string | null => s.player.background ?? null;
 const parents = (s: GameState): Npc[] =>
   s.npcs.filter((n) => n.roles.includes('mother') || n.roles.includes('father'));
 
 /** Set up a background at birth (after the family is generated). */
-export function setupBackground(ctx: Ctx, id: string): void {
+export function setupBackground(ctx: Ctx, id: string, keepLast = false): void {
   const s = ctx.s;
   const p = s.player;
   if (!BACKGROUND_BY_ID[id]) return;
@@ -66,9 +67,19 @@ export function setupBackground(ctx: Ctx, id: string): void {
         COUNTRIES.filter((c) => c.id !== p.country && c.languages[0] !== here),
       );
       data['heritage'] = from.id;
-      for (const n of s.npcs)
-        if (n.roles.some((r) => r === 'mother' || r === 'father' || r === 'grandparent'))
-          n.country = from.id;
+      // The family's names come from the old country too (yours as well, unless you chose it).
+      const oldLast = p.last;
+      const newLast = randomSurname(ctx, from.id);
+      if (!keepLast) p.last = newLast;
+      for (const n of s.npcs) {
+        const elders = n.roles.some((r) => r === 'mother' || r === 'father' || r === 'grandparent');
+        if (!elders && !n.roles.includes('sibling') && !n.roles.includes('great_grandparent'))
+          continue;
+        if (elders) n.country = from.id;
+        n.first = randomName(ctx, from.id, n.gender);
+        if (n.last === oldLast) n.last = newLast;
+        else if (!n.roles.includes('sibling')) n.last = randomSurname(ctx, from.id);
+      }
       for (const n of ps) n.flags.push('heritage_parent');
       const lang = from.languages[0];
       if (lang) p.languages[lang] = Math.max(p.languages[lang] ?? 0, 60);
@@ -148,6 +159,10 @@ export function backgroundEffect(ctx: Ctx, kind: string): void {
     };
     if (!s.player.flags.includes('founded_business')) s.player.flags.push('founded_business');
     s.player.flags.push('fambiz_settled');
+    // The parent who ran it steps back.
+    for (const n of s.npcs)
+      if (n.alive && n.flags.includes('business_parent'))
+        n.job = n.age >= 60 ? 'Retired' : 'Semi-retired';
     ctx.log('work', `${k.emoji} ${s.business.name} is yours now.`, true);
   } else if (kind === 'sell_fambiz') {
     const k = BUSINESS_BY_ID[d['kind'] ?? 'shop'];
@@ -195,6 +210,20 @@ export const BACKGROUND_LINES: Record<string, (s: GameState) => string> = {
  */
 export function backgroundTick(ctx: Ctx): void {
   const s = ctx.s;
+  // Always moving: every few years until you're 15, the boxes come out again.
+  if (
+    s.player.background === 'moving_family' &&
+    !s.death &&
+    s.player.age >= 3 &&
+    s.player.age <= 15
+  ) {
+    const d = (s.player.backgroundData ??= {});
+    const last = Number(d['lastMove'] ?? -99);
+    if (s.year - last >= 3 && ctx.rng.chance(0.35)) {
+      d['lastMove'] = String(s.year);
+      applySystemEffect(ctx, 'move_city', undefined, {});
+    }
+  }
   if (s.player.background !== 'family_business' || s.death || s.legal.prison) return;
   if (s.player.age < 18 || s.business || s.player.flags.includes('fambiz_settled')) return;
   const par = s.npcs.find((n) => n.flags.includes('business_parent'));

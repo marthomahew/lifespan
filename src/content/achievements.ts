@@ -368,6 +368,34 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Grew a business into a household name.',
     check: (s) => (s.business?.level ?? 0) >= 5,
   },
+  {
+    id: 'into_orbit',
+    label: 'Into Orbit',
+    emoji: '🚀',
+    description: 'Flew to space.',
+    check: (s) => flag(s, 'been_to_space'),
+  },
+  {
+    id: 'olympian',
+    label: 'Olympic Medal',
+    emoji: '🥇',
+    description: 'Stood on an Olympic podium.',
+    check: (s) => flag(s, 'olympic_medal'),
+  },
+  {
+    id: 'laureate',
+    label: 'Laureate',
+    emoji: '🏅',
+    description: 'Won a Nobel prize.',
+    check: (s) => flag(s, 'nobel_laureate'),
+  },
+  {
+    id: 'head_of_government',
+    label: 'Leader of the Country',
+    emoji: '🏛️',
+    description: 'Became head of government.',
+    check: (s) => s.career.jobId === 'politician' && s.career.level >= 4,
+  },
 ];
 
 export const ACHIEVEMENT_BY_ID: Record<string, AchievementDef> = Object.fromEntries(

@@ -37,6 +37,7 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
     return 'you already have a diploma';
   if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
   if (sp === 'chess' && (s.player.skills['chess'] ?? 0) < 15) return 'needs chess 15';
+  if (sp === 'driving_test' && s.legal.prison) return 'not from prison';
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
     if (reasons.every((r) => r !== null)) return reasons.find((r) => r) ?? 'not now';

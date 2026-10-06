@@ -276,7 +276,8 @@ export function release(ctx: Ctx, parole: boolean, quiet = false): void {
 export function legalTick(ctx: Ctx): void {
   const s = ctx.s;
   const l = s.legal;
-  if (s.player.age === 18 && !l.sealed && l.record.some((r) => r.juvenile)) {
+  // Sealed at 18, or on release from juvenile detention after it.
+  if (s.player.age >= 18 && !l.prison && !l.sealed && l.record.some((r) => r.juvenile)) {
     l.sealed = true;
     ctx.log('crime', 'You turn 18 and your juvenile record is sealed. A clean-ish slate.', true);
   }

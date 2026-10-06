@@ -58,7 +58,8 @@ export const BUSINESS_EVENTS: EventDef[] = [
     ages: [18, 90],
     weight: 8,
     cooldownYears: 6,
-    when: own,
+    when: (s) =>
+      own(s) && ['cafe', 'shop', 'restaurant', 'studio'].includes(s.business?.kind ?? ''),
     text: 'A big chain opens across the street from {business}, with a launch offer you cannot possibly match.',
     choices: [
       {
@@ -116,7 +117,8 @@ export const BUSINESS_EVENTS: EventDef[] = [
     ages: [18, 90],
     weight: 5,
     cooldownYears: 8,
-    when: own,
+    when: (s) =>
+      own(s) && ['cafe', 'shop', 'restaurant', 'studio'].includes(s.business?.kind ?? ''),
     text: 'Someone famous mentions {business} to a very large audience, completely unprompted.',
     outcomes: [
       {

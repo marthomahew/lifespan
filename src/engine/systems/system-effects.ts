@@ -14,9 +14,10 @@ import { caseStep, recapture } from './crime';
 import { scaleSalary, takePackage } from './crossroads';
 import { illnessPlan } from './illness';
 import { addHolidayHome, downsizeHome } from './assets';
+import { addLoan, payFromLiquid } from './loans';
+import { money } from '../economy';
 import { businessEffect } from './business';
 import { backgroundEffect } from './backgrounds';
-import { netWorth } from '../networth';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -101,10 +102,12 @@ export function applySystemEffect(
       downsizeHome(ctx);
       return;
     case 'holiday_home': {
-      // Bought with a share of what you're worth; it stays on the books as a home.
-      const price = Math.round(Math.max(0, netWorth(s)) * 0.15);
-      s.money.cash -= price;
+      // A cottage's price, not a share of everything you own: paid from what you can reach,
+      // and anything short goes on a mortgage against it.
+      const price = money(s, ctx.rng.int(250000, 550000));
+      const owed = payFromLiquid(s, price);
       addHolidayHome(ctx, price);
+      if (owed > 0) addLoan(s, 'mortgage', owed, 0.05, 20, s.assets.nextAssetId - 1);
       return;
     }
     case 'illness_plan':

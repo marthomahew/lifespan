@@ -94,6 +94,7 @@ function convertCurrency(s: GameState, ratio: number): void {
   s.assets.listings = [];
   s.assets.listingsYear = -1;
   s.career.salary = r(s.career.salary);
+  if (s.career.peakSalary) s.career.peakSalary = r(s.career.peakSalary);
   s.career.pension = r(s.career.pension);
   if (s.legal.case) s.legal.case.bail = r(s.legal.case.bail);
   for (const n of s.npcs) n.money = r(n.money);

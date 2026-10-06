@@ -106,6 +106,13 @@ function effectRefs(
   if ('system' in e && e.system === 'hire' && e.arg && !ctx.extra.jobs.has(e.arg))
     err(`unknown job ${e.arg}`);
   if ('rel' in e && !e.memory) err(`relationship effect on ${e.rel} needs a memory line`);
+  // Memories read as "{name} still thinks about …": "you" for the player, "them" for the person.
+  if (
+    'rel' in e &&
+    e.memory &&
+    /\b(I|me|my|mine|myself)\b/.test(e.memory.replace(/['"‘“][^'"’”]*['"’”]/g, ''))
+  )
+    err(`memory "${e.memory}" should say "them", not "I/me/my"`);
   if ('status' in e && e.role && !ROLE_SET.has(e.role)) err(`unknown role ${e.role}`);
   if ('money' in e && typeof e.money === 'number' && !Number.isFinite(e.money))
     err('money must be finite');
@@ -206,6 +213,8 @@ export function validateEvents(
       // "watch{x.s}" renders "watchs": these verbs need rewording.
       const bad = /(ch|sh|ss|x|zz)\{[a-z]+\.s\}/.exec(t);
       if (bad) err(where, `"${bad[0]}" renders a verb without its -es`);
+      // {x.rel} already says "your mother": "your {x.rel}" renders "your your mother".
+      if (/\b[Yy]our \{[a-z]+\.[Rr]el\}/.test(t)) err(where, '"your {x.rel}" doubles the "your"');
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;

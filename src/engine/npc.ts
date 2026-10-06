@@ -101,6 +101,10 @@ export function addNpc(ctx: Ctx, spec: NpcSpec): Npc {
     fertility: startFertility(r.int(40, 90), spec.age, gender),
   };
   if (spec.lookSeed !== undefined) npc.lookSeed = spec.lookSeed;
+  // Nobody in your life shares a full name with someone else in it (re-rolled only on a clash).
+  if (!spec.first)
+    for (let i = 0; i < 6 && s.npcs.some((n) => n.first === npc.first && n.last === npc.last); i++)
+      npc.first = randomName(ctx, country, gender);
   s.npcs.push(npc);
   return npc;
 }

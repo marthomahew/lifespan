@@ -85,7 +85,10 @@ const MILESTONES: Milestone[] = [
       n.job !== 'At school' &&
       n.job !== 'Retired' &&
       !n.roles.includes('boss') &&
-      !n.roles.includes('coworker'),
+      !n.roles.includes('coworker') &&
+      // A background's parent (the family business, the famous one) keeps that life.
+      !n.flags.includes('business_parent') &&
+      !n.flags.includes('famous_parent'),
     run: (ctx, n) => {
       const was = n.job;
       const left = n.flags.find((f) => f.startsWith('left_job:'))?.slice(9);
@@ -128,12 +131,14 @@ const MILESTONES: Milestone[] = [
         const abroad = COUNTRIES.filter((c) => c.id !== ctx.s.player.country);
         const c = ctx.rng.pick(abroad);
         n.country = c.id;
-        return `${who(n)} moves to ${ctx.rng.pick(c.cities)}, ${c.name}. The video calls start at strange hours.`;
+        return `${who(n)} moves to ${ctx.rng.pick(c.cities)}, ${c.name}. ${ctx.s.year >= 2005 ? 'The video calls start at strange hours.' : 'The phone calls start at strange hours.'}`;
       }
       const cities = COUNTRIES.find((c) => c.id === ctx.s.player.country)?.cities ?? [];
       const others = cities.filter((x) => x !== ctx.s.player.city);
       const city = others.length ? ctx.rng.pick(others) : 'the other side of the country';
-      return `${who(n)} moves to ${city}. You help carry a sofa down four flights of stairs.`;
+      return ctx.s.legal.prison
+        ? `${who(n)} moves to ${city}. You hear about it in a letter.`
+        : `${who(n)} moves to ${city}. You help carry a sofa down four flights of stairs.`;
     },
   },
   {
@@ -168,7 +173,9 @@ const MILESTONES: Milestone[] = [
       n.stats.health = clampStat(n.stats.health - ctx.rng.int(8, 18));
       return pickFresh(ctx, [
         `${who(n)} spends a week in hospital after a scare with ${pronouns(n.gender).their} heart. ${Cap(pronouns(n.gender).they)} ${n.gender === 'nonbinary' ? 'are' : 'is'} home now, and grumpy about the diet.`,
-        `${who(n)} has an operation that goes well. You bring grapes; ${pronouns(n.gender).they} eat${n.gender === 'nonbinary' ? '' : 's'} all of them.`,
+        ctx.s.legal.prison
+          ? `${who(n)} has an operation that goes well. You hear on the prison phone, and are more relieved than you expected.`
+          : `${who(n)} has an operation that goes well. You bring grapes; ${pronouns(n.gender).they} eat${n.gender === 'nonbinary' ? '' : 's'} all of them.`,
       ]);
     },
   },

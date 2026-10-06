@@ -87,7 +87,8 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
 export type Listing = { job: JobDef; unmet: string[]; salary: number; current: boolean };
 
 export function jobListings(s: GameState): Listing[] {
-  return JOBS.map((job) => ({
+  // Special careers find you; they are listed only while you hold one.
+  return JOBS.filter((j) => !j.special || s.career.jobId === j.id).map((job) => ({
     job,
     unmet: unmetRequirements(s, job),
     salary: money(s, ((job.salary[0]?.[0] ?? 0) + (job.salary[0]?.[1] ?? 0)) / 2, 'wage'),
@@ -300,6 +301,7 @@ export function careerTick(ctx: Ctx): void {
   c.performance = clampStat(c.performance + (target - c.performance) * 0.35 + r.int(-6, 6));
   c.salary = Math.round(c.salary * (1 + Math.max(0, r.normal(0.025, 0.01))));
   capSalary(s);
+  c.peakSalary = Math.max(c.peakSalary ?? 0, c.salary);
   if (s.education.residency > 0 && job.id === 'doctor') {
     s.education.residency -= 1;
     if (s.education.residency === 0) {
@@ -347,11 +349,12 @@ export function promote(ctx: Ctx, job: JobDef): void {
 export function pensionFor(s: GameState): number {
   const c = countryOf(s);
   const years = s.career.yearsWorked + (s.military?.years ?? 0);
-  const full =
-    money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01);
+  // Final pay, or most of your best if you're between jobs when the pension starts.
+  const pay = Math.max(s.career.salary, (s.career.peakSalary ?? 0) * 0.85);
+  const full = money(s, years * c.pensionPerYear, 'wage') + pay * Math.min(0.4, years * 0.01);
   // Past seven-tenths of final pay (or a floor, for low earners) each extra counts a quarter:
   // a pension rarely beats the salary it replaces. A pension perk is a better scheme on top.
-  const soft = Math.max(s.career.salary * 0.7, money(s, 6000, 'wage'));
+  const soft = Math.max(pay * 0.7, money(s, 6000, 'wage'));
   const capped = full <= soft ? full : soft + (full - soft) * 0.25;
   return Math.round(capped * perkEffect(s).pension);
 }

@@ -72,6 +72,7 @@ export function musicReason(s: GameState, id: MusicActionId): string | null {
       if (s.player.stats.fame >= 70) return 'too famous: it would cause a crush';
       return skill < 10 ? 'needs instrument or voice 10' : null;
     case 'open_mic':
+      if (s.player.stats.fame >= 60) return 'too famous for open mics';
       return skill < 20 ? 'needs instrument or voice 20' : null;
     case 'gig':
       return m.stage < 2
