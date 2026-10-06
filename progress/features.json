@@ -794,5 +794,10 @@
     "title": "A long marriage asks for attention",
     "passes": true,
     "evidence": "tests/engine/marriage.test.ts; content:check"
+  },
+  "S64": {
+    "title": "Raising a teenager: five parenting decisions",
+    "passes": true,
+    "evidence": "tests/engine/parenting-teens.test.ts; content:check; sim"
   }
 }
