@@ -321,6 +321,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     check: (s) => s.player.flags.includes('file_cold'),
   },
   {
+    id: 'passport_stamps',
+    label: 'Passport Stamps',
+    emoji: '🧳',
+    description: 'Holidayed in six different places.',
+    check: (s) => s.player.flags.filter((f) => f.startsWith('visited:')).length >= 6,
+  },
+  {
     id: 'natural',
     label: 'Twenty-One',
     emoji: '🃏',

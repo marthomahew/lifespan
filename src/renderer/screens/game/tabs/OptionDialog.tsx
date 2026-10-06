@@ -3,6 +3,7 @@ import { LANGUAGES, SKILLS } from '../../../../content/skills';
 import { formatMoney, type GameState } from '../../../../engine';
 import { money } from '../../../../engine/economy';
 import { ACTIVITY_BY_ID } from '../../../../content/activities';
+import { DESTINATIONS } from '../../../../content/destinations';
 import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
 import { Portrait } from '../../../portrait/Portrait';
 import { PetPicker } from './PetPicker';
@@ -23,6 +24,7 @@ export const OPTION_ACTIVITIES = [
   'casino',
   'find_date',
   'dating_app',
+  'vacation',
 ];
 
 /** What a salon, a razor, an optician and a shop can change. */
@@ -46,6 +48,7 @@ const TITLE: Record<string, string> = {
   casino: 'The card tables',
   find_date: 'Who catches your eye?',
   dating_app: 'Tonight’s matches',
+  vacation: 'Where to?',
 };
 
 /** Pick what the activity is about, right where you chose it. */
@@ -195,6 +198,26 @@ export function OptionDialog({
       {activity === 'casino' && <CasinoTable game={game} onRun={onRun} />}
       {(activity === 'find_date' || activity === 'dating_app') && (
         <DatePicker game={game} activity={activity} onRun={onRun} />
+      )}
+      {activity === 'vacation' && (
+        <div className="option-grid dest-grid">
+          {DESTINATIONS.map((d) => (
+            <button
+              key={d.id}
+              className="option"
+              data-testid={`opt-dest-${d.id}`}
+              onClick={() => onRun({ dest: d.id })}
+            >
+              <span className="option-emoji">{d.flag}</span>
+              <span className="grow">{d.label}</span>
+              {p.flags.includes(`visited:${d.id}`) && <span className="muted small">been</span>}
+            </button>
+          ))}
+          <button className="option" data-testid="opt-dest-any" onClick={() => onRun({})}>
+            <span className="option-emoji">🎲</span>
+            <span className="grow">Surprise me</span>
+          </button>
+        </div>
       )}
       {activity === 'change_name' && (
         <form

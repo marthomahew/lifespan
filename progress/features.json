@@ -724,5 +724,10 @@
     "title": "Four callbacks for the childhood flags: the library card, the grandmother’s card game, the painted-stone business, the stray cat that comes back as Echo",
     "passes": true,
     "evidence": "content:check; sim:coverage"
+  },
+  "S50": {
+    "title": "Holidays: pick from twelve destinations with their own lines; Passport Stamps achievement",
+    "passes": true,
+    "evidence": "tests/engine/free-time.test.ts (holidays); e2e/customize.spec.ts (holiday)"
   }
 }

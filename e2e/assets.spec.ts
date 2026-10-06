@@ -81,7 +81,9 @@ test('an action in a panel says what it did, right there', async ({ page }) => {
   await page.getByTestId('tab-occupation').click();
   await page.getByTestId('btn-ask-raise').click();
   await expect(page.getByTestId('act-feedback')).toBeVisible();
-  await expect(page.getByTestId('act-feedback')).toContainText(/raise|boss|budget|valued|revisit|HR/);
+  await expect(page.getByTestId('act-feedback')).toContainText(
+    /raise|boss|budget|valued|revisit|HR/,
+  );
   // Another tab, another story: the note stays with the panel it came from.
   await page.getByTestId('tab-assets').click();
   await expect(page.getByTestId('act-feedback')).toHaveCount(0);

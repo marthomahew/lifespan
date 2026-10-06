@@ -14,6 +14,8 @@ import { addSkill } from './skills';
 import { treatAddiction, useVice } from './vices';
 import { VICES } from '../types';
 import { cleanLook, NOSES } from '../look';
+import { DESTINATION_BY_ID, DESTINATIONS } from '../../content/destinations';
+import { pickFresh } from '../fresh';
 import { adoptPet, adoptReason, PET_KIND_IDS } from './pets';
 import type { Look } from '../types';
 import { EngineError } from '../errors';
@@ -88,6 +90,16 @@ export function runSpecial(
     case 'bucket_list':
       s.player.flags.push('bucket_item');
       return;
+    case 'vacation': {
+      // Where you went: your pick, or (the sim bots) anywhere.
+      const asked =
+        typeof params['dest'] === 'string' ? DESTINATION_BY_ID[params['dest']] : undefined;
+      const dest = asked ?? ctx.rng.pick(DESTINATIONS);
+      ctx.log('activity', `${dest.flag} ${pickFresh(ctx, dest.lines, 400)}`);
+      const flag = `visited:${dest.id}`;
+      if (!s.player.flags.includes(flag)) s.player.flags.push(flag);
+      return;
+    }
     case 'surrender': {
       const f = s.legal.fugitive;
       if (!f) return;

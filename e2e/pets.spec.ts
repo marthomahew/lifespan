@@ -14,7 +14,9 @@ test('adopt a dog, name it, play and walk, and say goodbye', async ({ page }) =>
   await page.getByTestId('opt-pet-name').fill('Biscuit');
   await page.getByTestId('opt-pet-go').click();
   await clearPopups(page);
-  await expect(page.getByTestId('log-line').filter({ hasText: 'bring home Biscuit' })).toHaveCount(1);
+  await expect(page.getByTestId('log-line').filter({ hasText: 'bring home Biscuit' })).toHaveCount(
+    1,
+  );
 
   await page.getByTestId('tab-relationships').click();
   const row = page.getByTestId('pet-list').getByRole('button', { name: /Biscuit/ });
@@ -26,7 +28,9 @@ test('adopt a dog, name it, play and walk, and say goodbye', async ({ page }) =>
   await page.getByTestId('pet-act-play').click();
   await expect(page.getByTestId('pet-last')).toBeVisible();
   await page.getByTestId('pet-act-walk').click();
-  expect(Number(await page.getByTestId('pet-bond').getAttribute('data-value'))).toBeGreaterThan(bond);
+  expect(Number(await page.getByTestId('pet-bond').getAttribute('data-value'))).toBeGreaterThan(
+    bond,
+  );
   await expect(page.getByTestId('pet-bond-delta')).toContainText('+');
   await expect(page.getByTestId('pet-act-play')).toBeDisabled();
   await page.getByTestId('pet-act-rehome').click();

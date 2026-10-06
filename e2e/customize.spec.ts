@@ -25,7 +25,9 @@ test('in life: practise a picked skill, get a new look, change your name', async
   await page.getByTestId('look-opt-facialHair-goatee').click();
   await page.getByTestId('look-tab-hat').click();
   await page.getByTestId('look-opt-hat-beanie').click();
-  await expect(page.getByTestId('makeover-portrait').locator('[data-layer="hat"]').first()).toBeAttached();
+  await expect(
+    page.getByTestId('makeover-portrait').locator('[data-layer="hat"]').first(),
+  ).toBeAttached();
   await expect(page.getByTestId('makeover-portrait')).toHaveAttribute('data-hair', 'mohawk');
   await page.getByTestId('opt-look-go').click();
   await expect(page.getByTestId('header-portrait')).toHaveAttribute('data-hair', 'mohawk');
@@ -91,4 +93,17 @@ test('toddlers have things to do: forts, questions, dancing, worms', async ({ pa
   await page.getByTestId('act-toddler_fort').click();
   await clearPopups(page);
   await expect(page.getByTestId('act-toddler_fort')).toBeDisabled();
+});
+
+test('a holiday: pick where, and the log says what happened there', async ({ page }) => {
+  await startSeeded(page, 2525, async (p) => {
+    await p.getByTestId('f-country').selectOption('us');
+  });
+  await cheat(page, 'age set 30', 'money add 50000');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await page.getByTestId('act-vacation').click();
+  await page.getByTestId('opt-dest-iceland').click();
+  await clearPopups(page);
+  await expect(page.getByTestId('log-line').filter({ hasText: '🇮🇸' })).toHaveCount(1);
 });

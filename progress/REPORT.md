@@ -68,6 +68,12 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - An adult heir keeps their job, and their diploma matches their grades.
   - The lease event really moves you out; no imaginary family dog; "your share of the estate".
 - **Dating (S35):** Find a date and dating apps offer three drawn people, each with a job, two traits, a line about them, and whether they want children or marriage. The face on the card is the face you get. Relationships get serious more surely the longer and warmer they are.
+- **More to do (S39–S49):**
+  - Achievements for pets, escapes and blackjack, plus Passport Stamps for twelve holiday destinations, each with its own lines.
+  - A setting that switches off the free-time limit.
+  - Records across lives on the start screen, toddler activities, and 20 childhood events with callbacks later in life.
+  - Pets' faces in their popups; dynasty and obituary portraits; nephews, nieces, aunts and uncles for heirs.
+  - Life on the run is shown on screen; fixes from two more playtests and a second browser review.
 - **Polish (S36–S38):**
   - Panels show what an action did; children can study harder from the Occupation tab; buying a car warns about a missing licence.
   - The side columns fade where there is more below.
@@ -234,7 +240,7 @@ What changed:
   | Activities | 37 |
   | Illnesses | 25 |
   | Traits / skills | 22 / 7 |
-  | Achievements / life titles | 45 / 20 |
+  | Achievements / life titles | 46 / 20 |
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |

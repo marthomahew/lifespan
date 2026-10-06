@@ -438,6 +438,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
     ages: [6, 110],
     cost: 2500,
     limitPerYear: 1,
+    special: 'vacation',
     description: 'Two weeks somewhere that is not here.',
     outcomes: [
       {

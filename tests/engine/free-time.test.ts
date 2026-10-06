@@ -48,3 +48,27 @@ describe('free time can be switched off', () => {
     expect(newLife({ freeTime: false }, 6).settings.freeTime).toBe(false);
   });
 });
+
+describe('holidays', () => {
+  it('a picked destination is where you go, and six places earn Passport Stamps', () => {
+    let s = runCheat(adult(7), 'money.add', { amount: 1_000_000 }).state;
+    s = act(
+      { ...s, pending: [] },
+      { type: 'activity', id: 'vacation', params: { dest: 'japan' } },
+    ).state;
+    expect(s.log.some((l) => l.text.startsWith('🇯🇵'))).toBe(true);
+    expect(s.player.flags).toContain('visited:japan');
+    s = {
+      ...s,
+      player: {
+        ...s.player,
+        flags: [...s.player.flags, 'visited:a', 'visited:b', 'visited:c', 'visited:d', 'visited:e'],
+      },
+    };
+    s = act(
+      { ...s, pending: [], usage: { year: 0, used: {} } },
+      { type: 'activity', id: 'vacation', params: { dest: 'peru' } },
+    ).state;
+    expect(s.player.achievements).toContain('passport_stamps');
+  });
+});
