@@ -54,3 +54,8 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - S63 long-marriage check-in (dates, counselling, coasting); S64 five teen-parenting decisions; S65 wealth follow-ups (loan repaid, startup news); S66 later-life chapter (downsize, near family, abroad, stay).
 - Measure (default bot, 40 lives): real decisions 35–65 0.68→0.77/yr; 65+ lasting choices 22→28%, stat-only 42→34%.
 - DONE §8 final check re-run clean after S66; release/ matches 4adcd06.
+
+## 2026-10-06 (S67–S70b)
+- S67 novel querying ends after eight rounds (drawer, odds floor); S68 short stories while a book is out.
+- Fourth transcript playtest (12 lives): S69/S70 fixed 15 findings: liquid-first wealth losses and no bankruptcy when assets cover debt; stale random popups pruned; situational gates; injuries match the story; sealed records; stale prison-deferred chains expire; office-only events; text agreement; variety.
+- stats health-trend test now averages 120 lives (was 40; noise). DONE §8 re-run clean at 6fabee2.
