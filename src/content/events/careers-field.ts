@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { all, hasJob, inField, isJob, jobLevelAtLeast, oddsBy } from './conditions';
+import { all, hasJob, inField, isJob, jobLevelAtLeast, oddsBy, officeJob } from './conditions';
 
 /** Field-specific working lives (agriculture, sports) and career-arc moments for anyone employed. */
 export const CAREER_FIELD_EVENTS: EventDef[] = [
@@ -806,7 +806,7 @@ export const CAREER_FIELD_EVENTS: EventDef[] = [
     ages: [25, 64],
     weight: 7,
     cooldownYears: 8,
-    when: all(hasJob, jobLevelAtLeast(1)),
+    when: all(officeJob, jobLevelAtLeast(1)),
     bind: { boss: { role: 'boss' } },
     text: 'After a six-month restructure with its own logo, your title is now "Lead Value Enablement Partner." Your desk, your duties and your pay are exactly what they were last Tuesday.',
     choices: [

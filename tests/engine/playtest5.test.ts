@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { newLife, runCheat, type GameState } from '../../src/engine';
+import { choose, newLife, runCheat, type GameState } from '../../src/engine';
 import { EVENT_BY_ID } from '../../src/content/events';
 import { validateEvents } from '../../scripts/content-lib';
 import type { EventDef } from '../../src/engine/events/types';
@@ -79,5 +79,85 @@ describe('fixes from the fifth transcript playtest', () => {
     const broke = { ...s, pending: [], money: { ...s.money, cash: 0 } };
     const after = act(broke, { type: 'money', action: { op: 'deposit', amount: 100 } }).state;
     expect(after.log.some((l) => / 0 in savings/.test(l.text))).toBe(false);
+  });
+
+  it('an ordinary job covers an ordinary life in every country; pensions stay below pay', async () => {
+    const { ageUp } = await import('../../src/engine');
+    const { pensionFor } = await import('../../src/engine/systems/careers');
+    for (const country of ['us', 'ng', 'mx', 'br', 'se', 'in']) {
+      let s = runCheat(newLife({ birthYear: 1990, country }, 5), 'age.set', { age: 30 }).state;
+      s = runCheat({ ...s, pending: [] }, 'job.set', { job: 'retail_associate' }).state;
+      s = {
+        ...s,
+        pending: [],
+        assets: { ...s.assets, housing: 'renting' },
+        cheats: { ...s.cheats, immortal: true, noBadEvents: true },
+      };
+      const next = ageUp(s).state;
+      expect(next.money.last?.net ?? -1, country).toBeGreaterThan(0);
+      const veteran = { ...s, career: { ...s.career, yearsWorked: 45 } };
+      expect(pensionFor(veteran), country).toBeLessThan(s.career.salary);
+    }
+  });
+
+  it('a simple operation is not a dilemma, and a chronic condition is managed, not cured', async () => {
+    const { Ctx } = await import('../../src/engine/ctx');
+    const { addIllness, illnessPlan } = await import('../../src/engine/systems/illness');
+    const s = structuredClone(adult(810));
+    addIllness(new Ctx(s), 'appendicitis', true);
+    expect(s.pending.some((p) => p.eventId === 'hl_serious_diagnosis')).toBe(false);
+    const c = structuredClone(adult(811, 60));
+    addIllness(new Ctx(c), 'copd', false);
+    const ill = c.health.illnesses.find((i) => i.id === 'copd');
+    if (ill) ill.severity = 10;
+    illnessPlan(new Ctx(c), 'aggressive', 'copd');
+    expect(c.health.illnesses.some((i) => i.id === 'copd')).toBe(true);
+  });
+
+  it('every record gets its own title; office stories need an office; bosses stay put', async () => {
+    const { act } = await import('../../src/engine');
+    let s = structuredClone(adult(812, 25));
+    s.player.skills['voice'] = 90;
+    s.music = { ...s.music, stage: 3, act: 'solo' };
+    s.settings = { ...s.settings, freeTime: false };
+    for (let i = 0; i < 12; i++) {
+      s = act({ ...s, pending: [] }, { type: 'music', id: 'release' }).state;
+      s = { ...s, usage: { year: s.year, used: {} } };
+    }
+    const titles = s.music.releases.map((r) => r.title);
+    expect(new Set(titles).size).toBe(titles.length);
+    const laborer = runCheat(adult(813), 'job.set', { job: 'construction_worker' }).state;
+    for (const id of ['work_ad_moonshot', 'work_ad_reply_all_storm', 'work_sr_knowledge'])
+      expect(EVENT_BY_ID[id]?.when?.(laborer), id).toBe(false);
+  });
+
+  it('retiring somewhere warm means a warm city', () => {
+    const warm: Record<string, string[] | null> = {
+      mx: null,
+      br: null,
+      au: ['Sydney', 'Brisbane', 'Perth', 'Darwin', 'Adelaide'],
+      fr: ['Marseille', 'Montpellier', 'Toulouse'],
+    };
+    let seen = 0;
+    for (let seed = 820; seed < 840; seed++) {
+      let s = runCheat(adult(seed, 68), 'money.add', { amount: 200000 }).state;
+      s = runCheat({ ...s, pending: [] }, 'event.fire', {
+        event: 'late_chapter',
+        force: 'on',
+      }).state;
+      const sun = s.pending.length ? s : null;
+      if (!sun) continue;
+      let after: GameState;
+      try {
+        after = choose(sun, 'sun').state;
+      } catch {
+        continue;
+      }
+      const cities = warm[after.player.country];
+      expect(after.player.country in warm).toBe(true);
+      if (cities) expect(cities).toContain(after.player.city);
+      seen++;
+    }
+    expect(seen).toBeGreaterThan(3);
   });
 });

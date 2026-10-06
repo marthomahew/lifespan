@@ -51,22 +51,28 @@ describe('challenges', () => {
   });
 
   it('a family challenge passes to the heir and is won in the third generation', () => {
-    let s = clone(runCheat(start('dynasty', 5), 'age.set', { age: 40 }).state);
-    s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
-    s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
-    expect(s.challenge?.status).toBe('active');
-    const heir = heirOptions(s)[0];
-    if (!heir) throw new Error('no heir');
-    let g2 = continueAsChild(s, heir.id);
-    expect(g2.challenge?.status).toBe('active');
-    // The heir may already be past 40 if their parent lived long.
-    if (g2.player.age < 40) g2 = runCheat({ ...g2, pending: [] }, 'age.set', { age: 40 }).state;
-    g2 = runCheat({ ...g2, pending: [] }, 'baby.now', {}).state;
-    g2 = runCheat({ ...g2, pending: [] }, 'deathbot', {}).state;
-    const heir2 = heirOptions(g2)[0];
-    if (!heir2) throw new Error('no heir');
-    const g3 = continueAsChild(g2, heir2.id);
-    expect(ageUp({ ...g3, pending: [] }).state.challenge?.status).toBe('won');
+    // Children can die before their parents; judge the first line of descent that has heirs.
+    let checked = false;
+    for (let seed = 5; seed < 15 && !checked; seed++) {
+      let s = clone(runCheat(start('dynasty', seed), 'age.set', { age: 40 }).state);
+      s = runCheat({ ...s, pending: [] }, 'baby.now', {}).state;
+      s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
+      expect(s.challenge?.status).toBe('active');
+      const heir = heirOptions(s)[0];
+      if (!heir) continue;
+      let g2 = continueAsChild(s, heir.id);
+      expect(g2.challenge?.status).toBe('active');
+      // The heir may already be past 40 if their parent lived long.
+      if (g2.player.age < 40) g2 = runCheat({ ...g2, pending: [] }, 'age.set', { age: 40 }).state;
+      g2 = runCheat({ ...g2, pending: [] }, 'baby.now', {}).state;
+      g2 = runCheat({ ...g2, pending: [] }, 'deathbot', {}).state;
+      const heir2 = heirOptions(g2)[0];
+      if (!heir2) continue;
+      const g3 = continueAsChild(g2, heir2.id);
+      expect(ageUp({ ...g3, pending: [] }).state.challenge?.status).toBe('won');
+      checked = true;
+    }
+    expect(checked).toBe(true);
   });
 
   it('old saves load without a challenge', () => {

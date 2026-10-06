@@ -930,7 +930,10 @@ export const CAREER_HANDS_EVENTS: EventDef[] = [
     ages: [18, 57],
     weight: 6,
     cooldownYears: 5,
-    when: inField('transport'),
+    // Snow needs a country that gets it.
+    when: (s) =>
+      inField('transport')(s) &&
+      ['us', 'uk', 'ca', 'se', 'de', 'fr', 'jp', 'kr'].includes(s.player.country),
     text: 'A snowstorm shuts half the routes out of {city}, and dispatch spends the day on the radio reading out closed roads like a sad poem.',
     outcomes: [
       {

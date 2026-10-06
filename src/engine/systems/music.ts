@@ -167,12 +167,21 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       addStat(s, 'fame', skill > 70 ? 2 : 1);
       ctx.log(
         'fame',
-        pickFresh(ctx, [
-          `A paid gig at a pub with sticky floors: ${formatMoney(s, pay)} and a regular slot.`,
-          `A wedding band needs a dep at short notice. ${formatMoney(s, pay)} and more cake than anyone should eat.`,
-          `A Friday night in a back room above a bar: ${formatMoney(s, pay)}, a full room, and an encore you didn't plan.`,
-          `A festival's smallest stage, at noon, to forty people and a lot of mud. ${formatMoney(s, pay)}, and it counts.`,
-        ]),
+        pickFresh(
+          ctx,
+          s.player.stats.fame >= 60
+            ? [
+                `A secret warm-up show for three hundred people who can't believe their luck: ${formatMoney(s, pay)}.`,
+                `A benefit night at a theatre with your name top of the bill: ${formatMoney(s, pay)} for your trouble, and far more for the cause.`,
+                `A one-off acoustic set in a church with perfect echo. ${formatMoney(s, pay)}, and silence you could hear a pin in.`,
+              ]
+            : [
+                `A paid gig at a pub with sticky floors: ${formatMoney(s, pay)} and a regular slot.`,
+                `A wedding band needs a dep at short notice. ${formatMoney(s, pay)} and more cake than anyone should eat.`,
+                `A Friday night in a back room above a bar: ${formatMoney(s, pay)}, a full room, and an encore you didn't plan.`,
+                `A festival's smallest stage, at noon, to forty people and a lot of mud. ${formatMoney(s, pay)}, and it counts.`,
+              ],
+        ),
       );
       return;
     }
@@ -200,7 +209,13 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       const quality = clampStat(
         skill * 0.55 + r.int(0, 45) + (s.player.traits.includes('creative') ? 8 : 0) - rushed,
       );
-      const title = `${r.pick(TITLE_A)} ${r.pick(TITLE_B)}`;
+      // Every record gets a title of its own.
+      const used = new Set(m.releases.map((x) => x.title));
+      let title = `${r.pick(TITLE_A)} ${r.pick(TITLE_B)}`;
+      for (let i = 0; i < 30 && used.has(title); i++)
+        title = `${r.pick(TITLE_A)} ${r.pick(TITLE_B)}`;
+      if (used.has(title)) title = `${title} II`;
+      const mum = s.npcs.some((n) => n.alive && n.roles.includes('mother'));
       m.releases.push({ year: s.year, title, quality });
       const fameGain = Math.round(quality / 16) + (m.label ? 3 : 1);
       // A flop costs you: the audience drifts and the critics are unkind.
@@ -210,7 +225,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       s.money.cash += pay;
       ctx.log(
         'fame',
-        `You release "${title}". ${quality > 80 ? 'Critics call it a masterpiece; your mum agrees.' : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 50 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
+        `You release "${title}". ${quality > 80 ? (mum ? 'Critics call it a masterpiece; your mum agrees.' : 'Critics call it a masterpiece, and for once you agree.') : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 30 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
       if (!m.label && quality >= 60 && m.stage === 3) {
@@ -232,7 +247,11 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
         m.stage = Math.max(m.stage, 5);
         ctx.log(
           'fame',
-          `Half the tour is cancelled when your voice gives out in the third city. It still pays ${formatMoney(s, pay)}, and a lot of refunds.`,
+          pickFresh(ctx, [
+            `Half the tour is cancelled when your voice gives out in the third city. It still pays ${formatMoney(s, pay)}, and a lot of refunds.`,
+            `The tour bus breaks down twice and the drummer breaks a wrist. You limp home with ${formatMoney(s, pay)} and a lot of apologies to send.`,
+            `A storm cancels the biggest date and food poisoning takes two more. ${formatMoney(s, pay)}, and a tour T-shirt that lists cities you never reached.`,
+          ]),
           true,
         );
         return;
@@ -246,7 +265,13 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
       m.stage = Math.max(m.stage, 5);
       ctx.log(
         'fame',
-        `The tour sells out in ${r.int(8, 40)} cities and pays ${formatMoney(s, pay)}. You learn to sleep on a moving bus.`,
+        pickFresh(ctx, [
+          `The tour sells out in ${r.int(8, 40)} cities and pays ${formatMoney(s, pay)}. You learn to sleep on a moving bus.`,
+          `${r.int(8, 40)} cities, ${r.int(30, 90)} nights, ${formatMoney(s, pay)}. In one of them a whole stadium sings the second verse back at you.`,
+          `The tour pays ${formatMoney(s, pay)} and costs you every houseplant you own. You come home and sleep for a week.`,
+          `A long run of shows across ${r.int(8, 40)} cities: ${formatMoney(s, pay)}, one marriage proposal in the front row, and no voice left by the end.`,
+          `You tour with a band half your age who call you a legend to your face. ${formatMoney(s, pay)}, and the best crowds of your life.`,
+        ]),
         true,
       );
       return;

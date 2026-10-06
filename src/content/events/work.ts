@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, oddsBy, officeJob } from './conditions';
+import { canAfford, hasJob, isJob, oddsBy, officeJob } from './conditions';
 
 /** Workplace events across a working life. Every one needs a job. */
 export const WORK_EVENTS: EventDef[] = [
@@ -483,7 +483,7 @@ export const WORK_EVENTS: EventDef[] = [
     cooldownYears: 8,
     when: hasJob,
     bind: { cw: { role: 'coworker' } },
-    text: 'You and {cw.first} were seen sharing an umbrella to the bus stop, and the office has decided it is a love story.',
+    text: 'You and {cw.first} were seen sharing an umbrella to the bus stop, and everyone at work has decided it is a love story.',
     outcomes: [
       {
         chance: 0.6,
@@ -567,7 +567,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 44],
     weight: 9,
     cooldownYears: 6,
-    when: officeJob,
+    when: isJob('graphic_designer', 'architect', 'journalist', 'photographer', 'web_developer'),
     text: 'A client wants the logo "bigger, but also smaller," the colour "blue, but not like that," and the final version yesterday. This is the eleventh round.',
     choices: [
       {
@@ -883,7 +883,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [31, 44],
     weight: 7,
     cooldownYears: 10,
-    when: hasJob,
+    when: officeJob,
     bind: { boss: { role: 'boss' } },
     text: '{boss.first} offers you the "Phoenix Project," a doomed initiative that has already burned through two leads. If it works, everyone wins. If not, it has your name on it.',
     choices: [
@@ -961,7 +961,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [30, 44],
     weight: 6,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     text: 'Someone sends a company newsletter to all six thousand staff, and the replies begin: "Please remove me," "Please stop replying," "Who is this?"',
     outcomes: [
       {
@@ -1186,7 +1186,7 @@ export const WORK_EVENTS: EventDef[] = [
     cooldownYears: 10,
     when: hasJob,
     bind: { cw: { role: 'coworker' } },
-    text: '{cw.first} has been here almost as long as you, and you have both been quietly competing for the same corner office for a decade. It has finally come free.',
+    text: '{cw.first} has been here almost as long as you, and you have both been quietly competing for the same promotion for a decade. It has finally come free.',
     choices: [
       {
         id: 'campaign',
@@ -1440,7 +1440,7 @@ export const WORK_EVENTS: EventDef[] = [
     ages: [65, 75],
     weight: 6,
     cooldownYears: 8,
-    when: hasJob,
+    when: officeJob,
     bind: { boss: { role: 'boss' } },
     text: '{boss.first} wants you to write down "everything you know" before you inevitably leave. You are the only person who understands the invoicing system, which is older than half the staff.',
     choices: [

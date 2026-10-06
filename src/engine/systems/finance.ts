@@ -75,17 +75,23 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
 
   if (adult && !s.legal.prison) {
     // People live within their means: on a low income you rent the small flat, not the nice one.
-    const income = report.salary + report.otherIncome;
+    // Shares of what's left after tax, and floors in local wages: the basics cost what local
+    // pay can stretch to, so an ordinary job covers an ordinary life in every country.
+    const income = report.salary + report.otherIncome - report.tax;
     const own = housing === 'renting' || housing === 'owning';
     // From 23, staying at your parents' means paying your way: board, not rent.
     const full =
-      housing === 'parents' && s.player.age >= 23 ? money(s, 5000) : money(s, LIVING[housing] ?? 0);
-    const base = own ? Math.min(full, Math.max(money(s, 6000), Math.round(income * 0.45))) : full;
+      housing === 'parents' && s.player.age >= 23
+        ? money(s, 5000, 'wage')
+        : money(s, LIVING[housing] ?? 0);
+    const base = own
+      ? Math.min(full, Math.max(money(s, 6000, 'wage'), Math.round(income * 0.45)))
+      : full;
     report.living = Math.round(base * LIFESTYLE_MULT[m.lifestyle]);
     if (housing === 'renting')
       report.housing = Math.min(
         money(s, RENT['renting'] ?? 0),
-        Math.max(money(s, 4000), Math.round(income * 0.3)),
+        Math.max(money(s, 4000, 'wage'), Math.round(income * 0.3)),
       );
     m.cash -= report.living + report.housing;
   }

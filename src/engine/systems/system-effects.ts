@@ -62,12 +62,20 @@ export function applySystemEffect(
     case 'retire':
       if (s.career.jobId) retire(ctx);
       return;
-    case 'near_family':
-      // Moving to be near the family: the children and grandchildren see a lot more of you.
+    case 'near_family': {
+      // Moving to be near the family: to the eldest child's country if they live abroad,
+      // otherwise to a new city at home. The children and grandchildren see a lot more of you.
+      const eldest = s.npcs
+        .filter((n) => n.alive && n.roles.includes('child'))
+        .sort((a, b) => b.age - a.age)[0];
+      if (eldest && eldest.country !== s.player.country && canMoveAbroad(s))
+        emigrate(ctx, eldest.country, undefined, true);
+      else applySystemEffect(ctx, 'move_city', undefined, payload);
       for (const n of s.npcs)
         if (n.alive && (n.roles.includes('child') || n.roles.includes('grandchild')))
           remember(s, n, 'you moving to be nearby', n.roles.includes('child') ? 10 : 6);
       return;
+    }
     case 'downsize':
       downsizeHome(ctx);
       return;
@@ -121,11 +129,12 @@ export function applySystemEffect(
       if (!canMoveAbroad(s)) return;
       const options = COUNTRIES.filter((c) => c.id !== s.player.country);
       // 'warm': somewhere sunny to retire to, and not back where you started.
-      const warm = options.filter((c) => WARM.includes(c.id) && c.id !== s.player.birthCountry);
+      const warm = options.filter((c) => c.id in WARM && c.id !== s.player.birthCountry);
       const to =
         options.find((c) => c.id === arg) ??
         ctx.rng.pick(arg === 'warm' && warm.length ? warm : options);
-      emigrate(ctx, to.id, undefined, true);
+      const sunny = arg === 'warm' ? (WARM[to.id] ?? to.cities) : [];
+      emigrate(ctx, to.id, sunny.length ? ctx.rng.pick(sunny) : undefined, true);
       for (const n of s.npcs)
         if (n.alive && (n.roles.includes('partner') || n.roles.includes('spouse')))
           n.country = to.id;
@@ -138,5 +147,10 @@ export function applySystemEffect(
   }
 }
 
-/** Where people go to retire in the sun. */
-const WARM = ['mx', 'au', 'br', 'fr'];
+/** Where people go to retire in the sun: the country, and its warm cities (null: all of them). */
+const WARM: Record<string, string[] | null> = {
+  mx: null,
+  br: null,
+  au: ['Sydney', 'Brisbane', 'Perth', 'Darwin', 'Adelaide'],
+  fr: ['Marseille', 'Montpellier', 'Toulouse'],
+};

@@ -296,7 +296,7 @@ export const ADULT_EVENTS: EventDef[] = [
     cooldownYears: 4,
     when: hasJob,
     bind: { boss: { role: 'boss' } },
-    text: "{boss.first} leans on your desk on Friday at 4:55. 'Quick one. Could you come in Saturday? Sunday too, ideally. It is a tiny emergency.'",
+    text: "{boss.first} catches you on Friday at 4:55. 'Quick one. Could you come in Saturday? Sunday too, ideally. It is a tiny emergency.'",
     choices: [
       {
         id: 'yes',
@@ -304,7 +304,7 @@ export const ADULT_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'The tiny emergency is a spreadsheet nobody has opened since 2019. {boss.first} brings doughnuts on Monday and remembers your name in the next review.',
+            text: 'The tiny emergency turns out to be a job that could have waited until Tuesday. {boss.first} brings doughnuts on Monday and remembers your name in the next review.',
             effects: [
               { performance: 6 },
               { rel: 'boss', delta: 6, memory: 'the weekend you saved the spreadsheet' },

@@ -78,7 +78,14 @@ const MILESTONES: Milestone[] = [
   {
     kind: 'job',
     chance: 0.05,
-    when: (_c, n) => n.age >= 22 && n.age <= 62 && n.job !== 'At school' && n.job !== 'Retired',
+    // Bosses and coworkers are defined by the job you share: they don't drift off-stage.
+    when: (_c, n) =>
+      n.age >= 22 &&
+      n.age <= 62 &&
+      n.job !== 'At school' &&
+      n.job !== 'Retired' &&
+      !n.roles.includes('boss') &&
+      !n.roles.includes('coworker'),
     run: (ctx, n) => {
       const was = n.job;
       const left = n.flags.find((f) => f.startsWith('left_job:'))?.slice(9);

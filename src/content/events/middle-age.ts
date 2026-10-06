@@ -1,5 +1,5 @@
 import type { EventDef } from '../../engine/events/types';
-import { canAfford, hasJob, hasPartner, oddsBy } from './conditions';
+import { canAfford, hasPartner, oddsBy, officeJob } from './conditions';
 
 export const MIDDLE_AGE_EVENTS: EventDef[] = [
   {
@@ -355,8 +355,8 @@ export const MIDDLE_AGE_EVENTS: EventDef[] = [
     category: 'work',
     ages: [50, 64],
     weight: 8,
-    cooldownYears: 6,
-    when: hasJob,
+    once: true,
+    when: officeJob,
     text: 'Your new manager is twenty-six, calls meetings “syncs,” and has asked whether you would be open to “reverse-mentoring” on spreadsheets.',
     choices: [
       {

@@ -834,5 +834,10 @@
     "title": "Playtest 5 fixes, batch 1: fugitive ends on a new arrest, same-sex cellmates, injuries read the prompt, named friends and enemies, -es verb check, memory and date placeholders, sibling weddings, housing on marriage",
     "passes": true,
     "evidence": "tests/engine/playtest5.test.ts; tests/engine/playtest4.test.ts; content:check"
+  },
+  "S72": {
+    "title": "Playtest 5 fixes, batch 2: living costs fit local wages, pensions taper, warm cities, near-family abroad, simple operations skip the dilemma, chronic stays chronic, unique album titles, fame-aware music lines, more office gating, bosses stay put",
+    "passes": true,
+    "evidence": "tests/engine/playtest5.test.ts; sim"
   }
 }

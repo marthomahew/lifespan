@@ -240,7 +240,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
     weight: 8,
     cooldownYears: 3,
     when: hasJob,
-    text: "{coworker.first} is collecting money for the office birthday cake. The birthday is {coworker.first}'s own.",
+    text: "{coworker.first} is collecting money for a birthday cake at work. The birthday is {coworker.first}'s own.",
     choices: [
       {
         id: 'chip_in',

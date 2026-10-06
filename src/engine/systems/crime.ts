@@ -52,7 +52,9 @@ export function commitCrime(ctx: Ctx, crimeId: string): void {
   const ok = ctx.roll(crimeOdds(s, crimeId));
   addStat(s, 'karma', def.karma);
   if (ok) {
-    const loot = def.loot[1] > 0 ? money(s, ctx.rng.int(def.loot[0], def.loot[1])) : 0;
+    let loot = def.loot[1] > 0 ? money(s, ctx.rng.int(def.loot[0], def.loot[1])) : 0;
+    // You can only skim what passes through your hands: about a year's pay at most.
+    if (def.needsJob) loot = Math.min(loot, Math.max(s.career.salary, money(s, 5000, 'wage')));
     s.money.cash += loot;
     addStat(s, 'notoriety', def.notoriety);
     ctx.log(

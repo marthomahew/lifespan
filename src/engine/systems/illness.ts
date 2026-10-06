@@ -35,16 +35,19 @@ export function addIllness(ctx: Ctx, id: string, decide = false): void {
     def.chronic || def.deathFactor >= 1,
   );
   // A serious diagnosis is a decision, not just news.
+  // (Chronic, or no near-certain cure: appendicitis is an operation, not a dilemma.)
+  const sure = Math.max(...Object.values(def.treatments).map((v) => v ?? 0)) >= 0.9;
   if (
     decide &&
     def.deathFactor >= 1 &&
+    (def.chronic || !sure) &&
     !def.mental &&
     !again &&
     s.player.age >= 16 &&
     !s.legal.prison
   ) {
     const ev = EVENT_BY_ID['hl_serious_diagnosis'];
-    if (ev) fireEvent(ctx, ev, 'system', { illness: id, label: def.label.toLowerCase() });
+    if (ev) fireEvent(ctx, ev, 'system', { illness: id, label: lowerLabel(def.label) });
   }
 }
 
@@ -97,7 +100,9 @@ export function illnessPlan(ctx: Ctx, plan: string, illnessId: string): void {
       );
     }
   }
-  if (ill.severity <= 0) cureIllness(ctx, illnessId);
+  // A chronic condition can be managed, never treated away.
+  if (ILLNESS_BY_ID[illnessId]?.chronic) ill.severity = Math.max(5, ill.severity);
+  else if (ill.severity <= 0) cureIllness(ctx, illnessId);
 }
 
 export function cureIllness(ctx: Ctx, id: string): void {

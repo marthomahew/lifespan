@@ -307,7 +307,6 @@ export const LATE_CHAPTER_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You leave a town full of memories for one full of grandchildren. Sunday lunches become a habit, then a tradition, then the best part of the week.',
             effects: [
-              { system: 'move_city' },
               { system: 'near_family' },
               { stat: 'happiness', delta: 8 },
               { flag: 'moved_near_family' },

@@ -128,7 +128,7 @@ export function treat(
   // Ongoing care for a chronic condition is routine after the first time.
   const routine = def.chronic && ill.treated > 0 && ill.treated >= s.year - 2;
   ill.treated = s.year;
-  const label = def.label.toLowerCase();
+  const label = lowerLabel(def.label);
   // Verb agreement for plural labels ("the migraines have…").
   const v = (one: string, many: string): string => (def.plural ? many : one);
   if (ctx.roll(odds)) {
@@ -164,7 +164,7 @@ export function treat(
     if (ill.fails >= 2 && !s.legal.prison) {
       ill.fails = 0;
       const ev = EVENT_BY_ID['hl_treatment_rethink'];
-      if (ev) fireEvent(ctx, ev, 'system', { illness: ill.id, label: def.label.toLowerCase() });
+      if (ev) fireEvent(ctx, ev, 'system', { illness: ill.id, label: lowerLabel(def.label) });
     }
     ill.severity = clampStat(ill.severity + (method === 'surgery' ? 10 : 0));
     ctx.log(

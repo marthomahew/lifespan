@@ -329,10 +329,13 @@ export function promote(ctx: Ctx, job: JobDef): void {
 export function pensionFor(s: GameState): number {
   const c = countryOf(s);
   const years = s.career.yearsWorked + (s.military?.years ?? 0);
-  return Math.round(
-    (money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01)) *
-      perkEffect(s).pension,
-  );
+  const full =
+    money(s, years * c.pensionPerYear, 'wage') + s.career.salary * Math.min(0.4, years * 0.01);
+  // Past seven-tenths of final pay (or a floor, for low earners) each extra counts a quarter:
+  // a pension rarely beats the salary it replaces. A pension perk is a better scheme on top.
+  const soft = Math.max(s.career.salary * 0.7, money(s, 6000, 'wage'));
+  const capped = full <= soft ? full : soft + (full - soft) * 0.25;
+  return Math.round(capped * perkEffect(s).pension);
 }
 
 export function retire(ctx: Ctx): void {

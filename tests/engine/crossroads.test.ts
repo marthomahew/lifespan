@@ -31,7 +31,7 @@ function play(
 
 describe('career crossroads', () => {
   it('a long stretch in one job brings a fork in the road every five to eight years', () => {
-    const { seen } = play(worker(70), 20, { xr_package: 'stay' });
+    const { seen } = play(worker(70), 20, { xr_package: 'stay', mid_chapter: 'stay' });
     expect(seen.length).toBeGreaterThanOrEqual(2);
     expect(seen.length).toBeLessThanOrEqual(5);
   });
