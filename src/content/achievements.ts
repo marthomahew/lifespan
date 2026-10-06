@@ -227,7 +227,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     label: 'The Great Escape',
     emoji: '🪜',
     description: 'Broke out of prison.',
-    check: (s) => flag(s, 'fugitive'),
+    check: (s) => flag(s, 'fugitive') || flag(s, 'escaped_once'),
   },
   {
     id: 'clean_slate',
@@ -298,6 +298,34 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     emoji: '🪂',
     description: 'Ticked off five things from the bucket list.',
     check: (s) => s.player.flags.filter((f) => f === 'bucket_item').length >= 5,
+  },
+  {
+    id: 'best_friend',
+    label: 'Best Friend',
+    emoji: '🐾',
+    description: 'A pet lived out every one of its years with you.',
+    check: (s) => s.pets.some((p) => p.age >= p.lifespan && (p.alive || p.fate === 'died')),
+  },
+  {
+    id: 'full_house',
+    label: 'Full House',
+    emoji: '🏡',
+    description: 'Four animals under one roof.',
+    check: (s) => s.pets.filter((p) => p.alive).length >= 4,
+  },
+  {
+    id: 'cold_case',
+    label: 'Cold Case',
+    emoji: '🗄️',
+    description: 'Stayed out of sight for twenty years.',
+    check: (s) => s.player.flags.includes('file_cold'),
+  },
+  {
+    id: 'natural',
+    label: 'Twenty-One',
+    emoji: '🃏',
+    description: 'Dealt a natural blackjack.',
+    check: (s) => s.player.flags.includes('natural_blackjack'),
   },
 ];
 

@@ -265,6 +265,7 @@ export function runSpecial(
         release(ctx, false, true);
         s.legal.fugitive = { since: s.year, owed, crimeId: p.crimeId };
         s.player.flags.push('fugitive');
+        if (!s.player.flags.includes('escaped_once')) s.player.flags.push('escaped_once');
         addStat(s, 'notoriety', 15);
         ctx.log('crime', 'You are free, technically. Every siren is about you now.', true);
       } else {

@@ -234,7 +234,7 @@ What changed:
   | Activities | 37 |
   | Illnesses | 25 |
   | Traits / skills | 22 / 7 |
-  | Achievements / life titles | 41 / 20 |
+  | Achievements / life titles | 45 / 20 |
   | Crimes | 12 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 13 |

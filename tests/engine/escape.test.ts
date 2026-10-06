@@ -115,3 +115,31 @@ describe('on the run', () => {
     );
   });
 });
+
+describe('achievements for the new games', () => {
+  it('escaping earns Over the Fence; a natural earns Twenty-One', async () => {
+    const s = jailed(23);
+    const route = solve(escapeMap(s)) ?? [];
+    const out = act(s, {
+      type: 'activity',
+      id: 'prison_escape',
+      params: { moves: route.join('') },
+    }).state;
+    expect(out.player.achievements).toContain('great_escape');
+    const { shoeFor, playSession, betOptions } = await import('../../src/engine/systems/blackjack');
+    const { money } = await import('../../src/engine/economy');
+    // Find a visit whose first hand is a natural, then cash out.
+    let t = runCheat(newLife({ country: 'us', birthYear: 1980 }, 24), 'age.set', { age: 30 }).state;
+    t = runCheat({ ...t, pending: [] }, 'money.add', { amount: 100000 }).state;
+    for (let year = 0; year < 40; year++) {
+      const shoe = shoeFor(t);
+      if (playSession(shoe, '').hands[0]?.status === 'blackjack') {
+        const bet = betOptions(t, (r) => money(t, r))[0] ?? 0;
+        const after = act(t, { type: 'activity', id: 'casino', params: { plan: '', bet } }).state;
+        expect(after.player.achievements).toContain('natural');
+        return;
+      }
+      t = { ...t, year: t.year + 1 };
+    }
+  });
+});

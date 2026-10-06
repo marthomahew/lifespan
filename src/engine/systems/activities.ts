@@ -170,6 +170,11 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
       throw new EngineError('Casino: pick a table');
     const session = playSession(shoe, plan);
     if (session.waiting) throw new EngineError('Casino: finish the hand first');
+    if (
+      session.hands.some((h) => h.status === 'blackjack') &&
+      !s.player.flags.includes('natural_blackjack')
+    )
+      s.player.flags.push('natural_blackjack');
     const net = Math.round(session.net * bet);
     params = { ...params, net };
     const pick = net > 0 ? 0 : net < 0 ? 1 : 2;

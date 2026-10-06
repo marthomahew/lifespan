@@ -284,6 +284,7 @@ function fugitiveTick(ctx: Ctx): void {
   const years = s.year - f.since;
   if (years >= 20) {
     s.legal.fugitive = null;
+    if (!s.player.flags.includes('file_cold')) s.player.flags.push('file_cold');
     s.player.flags = s.player.flags.filter((x) => x !== 'fugitive');
     ctx.log(
       'crime',
