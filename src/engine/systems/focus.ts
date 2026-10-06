@@ -71,9 +71,16 @@ export function focusTick(ctx: Ctx): void {
   const f = s.player.focus;
   if (!f || s.death || s.legal.prison || s.player.age < 4) return;
   const before = focusLevel(s, f);
+  const label = focusLabel(f);
+  const mastered = (): void => {
+    if (s.player.flags.includes(`mastered:${f}`)) return;
+    s.player.flags.push(`mastered:${f}`);
+    ctx.log('activity', `🏆 Years devoted to ${label}, and you have mastered it: 100/100.`, true);
+  };
   // Mastered: the hours now keep it there.
   if (before >= 100) {
     s.player.skillPractice[f] = s.year;
+    mastered();
     return;
   }
   for (let i = 0; i < SESSIONS; i++) {
@@ -86,8 +93,6 @@ export function focusTick(ctx: Ctx): void {
   const after = Math.min(focusLevel(s, f), before + YEAR_CAP);
   if (f.startsWith('lang:')) s.player.languages[f.slice(5)] = after;
   else s.player.skills[f] = after;
-  const label = focusLabel(f);
-  if (after >= 100)
-    ctx.log('activity', `🏆 Years devoted to ${label}, and you have mastered it: 100/100.`, true);
+  if (after >= 100) mastered();
   else ctx.log('activity', `🎯 A year devoted to ${label}: ${before} → ${after}.`);
 }

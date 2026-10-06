@@ -59,6 +59,9 @@ export function applySystemEffect(
       );
       return;
     }
+    case 'focus_off':
+      s.player.focus = null;
+      return;
     case 'retire':
       if (s.career.jobId) retire(ctx);
       return;

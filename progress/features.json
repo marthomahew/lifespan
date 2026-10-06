@@ -844,5 +844,10 @@
     "title": "A year focus, faster learning in childhood, prodigy gifts and the quick-study gift",
     "passes": true,
     "evidence": "tests/engine/focus.test.ts; e2e/focus.spec.ts"
+  },
+  "S74": {
+    "title": "Prodigy paths: chess skill and tournaments, chess and music milestones, art/sport/code/writing/cooking prodigies, burnout, Wunderkind and Grandmaster",
+    "passes": true,
+    "evidence": "tests/engine/prodigy.test.ts; content:check"
   }
 }

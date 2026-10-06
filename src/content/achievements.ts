@@ -340,6 +340,20 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: 'Dealt a natural blackjack.',
     check: (s) => s.player.flags.includes('natural_blackjack'),
   },
+  {
+    id: 'wunderkind',
+    label: 'Wunderkind',
+    emoji: '🌟',
+    description: 'Noticed as a prodigy before you were grown.',
+    check: (s) => flag(s, 'prodigy_noticed') && s.player.age < 18,
+  },
+  {
+    id: 'grandmaster',
+    label: 'Grandmaster',
+    emoji: '♟️',
+    description: 'Earned the highest title in chess.',
+    check: (s) => flag(s, 'chess_gm'),
+  },
 ];
 
 export const ACHIEVEMENT_BY_ID: Record<string, AchievementDef> = Object.fromEntries(

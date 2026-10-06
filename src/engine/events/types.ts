@@ -81,6 +81,7 @@ export type Effect =
         | 'downsize'
         | 'near_family'
         | 'retire'
+        | 'focus_off'
         | 'retrain'
         | 'move_city'
         | 'severance';

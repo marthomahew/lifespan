@@ -50,6 +50,13 @@ export const SKILLS: SkillDef[] = [
     description: 'Sentences that people finish reading.',
     odds: { creative: 0.15, work: 0.05 },
   },
+  {
+    id: 'chess',
+    label: 'Chess',
+    emoji: '♟️',
+    description: 'Seeing six moves ahead, and the trap in the fourth.',
+    odds: { study: 0.15 },
+  },
 ];
 
 export const SKILL_BY_ID: Record<string, SkillDef> = Object.fromEntries(
