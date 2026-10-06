@@ -34,3 +34,14 @@ export function takePackage(ctx: Ctx, years: number): void {
   const c = ctx.s.career;
   ctx.s.money.cash += Math.round(c.salary * years);
 }
+
+/** Between 38 and 62, every six years or so: a bigger question about the shape of your life. */
+export function lifeChapterTick(ctx: Ctx): void {
+  const s = ctx.s;
+  if (s.legal.prison || s.legal.fugitive || s.player.age < 38 || s.player.age > 62) return;
+  const last = s.events.lastFired['mid_chapter'];
+  if (last !== undefined && s.year - last < 6) return;
+  if (!ctx.rng.chance(0.3)) return;
+  const def = EVENT_BY_ID['mid_chapter'];
+  if (def) fireEvent(ctx, def, 'system');
+}

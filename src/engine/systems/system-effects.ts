@@ -1,3 +1,7 @@
+import { MAJORS } from '../../content/education';
+import { COUNTRY_BY_ID } from '../../content/countries';
+import { enroll, enrollReason } from './education';
+import { applyCareerEffect } from './career-effects';
 import { BRANCHES, SPECIALTIES } from '../../content/military';
 import type { Ctx } from '../ctx';
 import { addStat } from '../stats';
@@ -34,6 +38,26 @@ export function applySystemEffect(
     case 'recapture':
       recapture(ctx);
       return;
+    case 'retrain': {
+      // Back to college for a new field: the old job ends, a two-year course begins.
+      const major = arg ?? ctx.rng.pick(MAJORS).id;
+      if (s.career.jobId) applyCareerEffect(ctx, 'fire');
+      if (!enrollReason(s, 'community', major)) enroll(ctx, 'community', major);
+      return;
+    }
+    case 'move_city': {
+      // A fresh start in another city of the same country.
+      const cities =
+        COUNTRY_BY_ID[s.player.country]?.cities.filter((c) => c !== s.player.city) ?? [];
+      if (!cities.length) return;
+      s.player.city = ctx.rng.pick(cities);
+      ctx.log(
+        'family',
+        `You move to ${s.player.city}. New streets, new neighbours, the same you.`,
+        true,
+      );
+      return;
+    }
     case 'holiday_home': {
       // Bought with a share of what you're worth; it stays on the books as a home.
       const price = Math.round(Math.max(0, netWorth(s)) * 0.15);

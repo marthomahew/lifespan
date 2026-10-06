@@ -115,7 +115,7 @@ describe('wording', () => {
     s = runCheat({ ...s, pending: [] }, 'deathbot', {}).state;
     const ob = obituary(s);
     for (const line of ob?.survivors ?? [])
-      expect(line).toMatch(/^(son|daughter|child|husband|wife|spouse|partner)\b/);
+      expect(line).toMatch(/^(son|daughter|child|husband|wife|spouse|partner|boyfriend|girlfriend)\b/);
   });
 
   it('a chronic condition reads as routine after the first treatment', async () => {

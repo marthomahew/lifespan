@@ -4,7 +4,7 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 588 original events (45 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 591 original events (46 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 13 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
 - **Cheats:** a full cheat menu (72 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
@@ -79,6 +79,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
   - Events that need phones, apps or video calls only happen from 2008, and the content check enforces it. The most-repeated activity lines have four variants each (the worst repeat per life fell from 38 to 10).
   - A re-measurement found the gains: lasting choices up across adulthood, mid-life decisions up, the musician's fame at 27 instead of 19, and the worst repeated line per life down from 39 to 11. Its bugs are fixed: unique book titles, a tenure clock for crossroads, settled memories, a long-engagement nudge, follow-ups for the holiday home, the foundation and the drawer novel, no corner-shop job offers for the rich, varied failed-treatment and refused-promotion lines, and "across the United States".
   - Writing is a career: advances grow with each earlier book and the backlist pays every year. Event outcomes can now vary their wording (the content check validates the variants). Two failed treatments in a row bring a rethink: a specialist, a different approach, or learning to live with it.
+  - Mid-life gets bigger questions. Every six years or so between 38 and 62: retrain (back to college), work less, start again somewhere new, or decide this is good. When a child goes to university, who pays shapes their graduation four years on.
   - Every five to eight years in a job brings a crossroads: take the team or stay hands-on, a rival's offer (take it, counter, or stay), a redundancy package, or a sabbatical.
   - Living with your parents costs board from 23; unemployment support is means-tested; alternative events (three gap years) happen at most once.
 - **More to do (S39–S49):**
@@ -239,12 +240,12 @@ What changed:
   | Most common popup share | 2.0% |
   | Runtime | about 42 s |
 
-- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 581 of 588 events (98.8%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
+- Coverage: `sim:coverage` ran 2,080 lives across 8 personas and fired 583 of 591 events (98.6%) against an 85% target. The few that never fired need rare combinations (a professional athlete aged 20–36, a smoking grandparent), and players can still reach them. Every persona also passes the invariants inside verify (`tests/integration/persona-invariants.test.ts`).
 - Content (all DONE §3 thresholds enforced):
 
   | Content | Count |
   |---|---|
-  | Events (in 45 chains) | 588 |
+  | Events (in 46 chains) | 591 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |

@@ -784,5 +784,10 @@
     "title": "Third browser review fixes: reviews before the next draft, event promotions update titles, the holiday home is an asset, cleaner holiday lines, feedback in flow, Write a novel stays visible with progress, rejection counts, clearer records, payload-only events refuse console firing",
     "passes": true,
     "evidence": "tests/engine/projects.test.ts (one book at a time); tests/engine/crossroads.test.ts (promotions from events); tests/engine/free-time.test.ts; e2e (verify)"
+  },
+  "S62": {
+    "title": "Mid-life chapters (retrain, work less, move, stay) and paying for a child’s university, with a graduation four years on",
+    "passes": true,
+    "evidence": "tests/engine/chapters.test.ts; content:check; sim"
   }
 }
