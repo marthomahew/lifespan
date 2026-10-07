@@ -111,6 +111,14 @@ export function FinancesView({ game }: { game: GameState }): React.JSX.Element {
         </section>
         <section>
           <h3 className="section-title">Bank and investments</h3>
+          <p className="fin-cash" data-testid="fin-cash">
+            <span>
+              Cash on hand <strong>{formatMoney(game, Math.round(m.cash))}</strong>
+            </span>
+            <span>
+              Savings <strong>{formatMoney(game, Math.round(m.savings))}</strong>
+            </span>
+          </p>
           <label className="row small">
             Amount
             <input

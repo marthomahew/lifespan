@@ -470,3 +470,29 @@
   font-size: 0.85em;
   color: var(--amber);
 }
+
+/* Foldable section titles. */
+.fold-title {
+  padding: 0;
+}
+button.fold-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  cursor: pointer;
+}
+button.fold-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fold-caret {
+  width: 1em;
+  color: var(--text-2);
+}
+.fold-count {
+  margin-left: auto;
+  font-weight: 500;
+  color: var(--text-2);
+}

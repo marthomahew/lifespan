@@ -8,6 +8,7 @@ import { LegalSection } from '../occupation/LegalSection';
 import { BusinessSection } from '../occupation/BusinessSection';
 import { WorkTime } from './FreeTime';
 import { PursuitsSection } from '../occupation/PursuitsSection';
+import { FameSection } from '../occupation/FameSection';
 
 export function OccupationTab({ game }: { game: GameState }): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +47,7 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       <BusinessSection game={game} onError={setError} />
       <MilitarySection game={game} onError={setError} />
       <PursuitsSection game={game} onError={setError} />
+      <FameSection game={game} onError={setError} />
       <MusicSection game={game} onError={setError} />
       <LegalSection game={game} />
     </div>

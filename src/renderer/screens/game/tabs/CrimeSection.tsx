@@ -1,5 +1,6 @@
 import { CRIMES } from '../../../../content/crimes';
 import { crimeOdds, crimeReason, type GameState } from '../../../../engine';
+import { FoldTitle } from '../../../components/Fold';
 import { doAct } from '../../../store/app';
 import { cap } from '../../../components/text';
 
@@ -15,34 +16,35 @@ export function CrimeSection({
   const rows = CRIMES.filter((c) => game.player.age >= c.minAge);
   return (
     <section className="panel-section" data-testid="crime-section">
-      <h3 className="section-title">Crime</h3>
-      <ul className="activity-list">
-        {rows.map((c) => {
-          const why = crimeReason(game, c.id);
-          return (
-            <li key={c.id}>
-              <button
-                className="activity"
-                data-testid={`crime-${c.id}`}
-                disabled={why !== null}
-                title={why ?? c.description}
-                onClick={() => onError(doAct({ type: 'crime', id: c.id }))}
-              >
-                <span className="activity-emoji" aria-hidden="true">
-                  {c.emoji}
-                </span>
-                <span className="grow">
-                  <span className="activity-label">{c.label}</span>
-                  <span className="muted small activity-desc">
-                    {why ? cap(why) : c.description}
+      <FoldTitle id="crime" title="Crime" count={rows.length}>
+        <ul className="activity-list">
+          {rows.map((c) => {
+            const why = crimeReason(game, c.id);
+            return (
+              <li key={c.id}>
+                <button
+                  className="activity"
+                  data-testid={`crime-${c.id}`}
+                  disabled={why !== null}
+                  title={why ?? c.description}
+                  onClick={() => onError(doAct({ type: 'crime', id: c.id }))}
+                >
+                  <span className="activity-emoji" aria-hidden="true">
+                    {c.emoji}
                   </span>
-                </span>
-                <span className="muted small">{Math.round(crimeOdds(game, c.id) * 100)}%</span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+                  <span className="grow">
+                    <span className="activity-label">{c.label}</span>
+                    <span className="muted small activity-desc">
+                      {why ? cap(why) : c.description}
+                    </span>
+                  </span>
+                  <span className="muted small">{Math.round(crimeOdds(game, c.id) * 100)}%</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </FoldTitle>
     </section>
   );
 }

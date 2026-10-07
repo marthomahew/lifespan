@@ -131,3 +131,19 @@ test('writing a novel starts a thread you can follow in the left column', async 
   await clearPopups(page);
   await expect(page.getByTestId('thread-novel')).toContainText('% of a draft');
 });
+
+test('activity categories fold away, and stay folded', async ({ page }) => {
+  await startSeeded(page, 5160);
+  await cheat(page, 'age set 30');
+  await clearPopups(page);
+  await page.getByTestId('tab-activities').click();
+  await expect(page.getByTestId('crime-shoplifting')).toBeVisible();
+  await page.getByTestId('fold-crime').click();
+  await expect(page.getByTestId('crime-shoplifting')).toHaveCount(0);
+  await expect(page.getByTestId('fold-crime')).toHaveAttribute('aria-expanded', 'false');
+  await page.getByTestId('tab-assets').click();
+  await page.getByTestId('tab-activities').click();
+  await expect(page.getByTestId('crime-shoplifting')).toHaveCount(0);
+  await page.getByTestId('fold-crime').click();
+  await expect(page.getByTestId('crime-shoplifting')).toBeVisible();
+});

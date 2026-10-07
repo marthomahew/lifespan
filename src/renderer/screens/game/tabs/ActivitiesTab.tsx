@@ -9,6 +9,7 @@ import { FocusCard } from './FocusCard';
 import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
 import { cap } from '../../../components/text';
 import { FreeTime } from './FreeTime';
+import { FoldTitle } from '../../../components/Fold';
 
 const GROUP_LABEL: Record<string, string> = {
   mind_body: 'Mind and body',
@@ -78,39 +79,47 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
       <HealthSection game={game} onError={setError} />
       {ORDER.filter((g) => visible.some((a) => a.group === g)).map((g) => (
         <section key={g} className="panel-section">
-          <h3 className="section-title">{GROUP_LABEL[g]}</h3>
-          <ul className="activity-list">
-            {visible
-              .filter((a) => a.group === g)
-              .map((a) => (
-                <li key={a.id}>
-                  <button
-                    className="activity"
-                    data-testid={`act-${a.id}`}
-                    disabled={!a.enabled}
-                    title={a.reason || a.description}
-                    onClick={() => run(a.id)}
-                  >
-                    <span className="activity-emoji" aria-hidden="true">
-                      {a.emoji}
-                    </span>
-                    <span className="grow">
-                      <span className="activity-label">{a.label}</span>
-                      <span className="muted small activity-desc">
-                        {a.reason ? cap(a.reason) : a.description}
+          <FoldTitle
+            id={`act-${g}`}
+            title={GROUP_LABEL[g] ?? g}
+            count={visible.filter((a) => a.group === g).length}
+            open={query !== ''}
+          >
+            <ul className="activity-list">
+              {visible
+                .filter((a) => a.group === g)
+                .map((a) => (
+                  <li key={a.id}>
+                    <button
+                      className="activity"
+                      data-testid={`act-${a.id}`}
+                      disabled={!a.enabled}
+                      title={a.reason || a.description}
+                      onClick={() => run(a.id)}
+                    >
+                      <span className="activity-emoji" aria-hidden="true">
+                        {a.emoji}
                       </span>
-                      {a.preview && !a.reason && (
-                        <span className="small activity-preview" data-testid={`preview-${a.id}`}>
-                          {a.preview}
+                      <span className="grow">
+                        <span className="activity-label">{a.label}</span>
+                        <span className="muted small activity-desc">
+                          {a.reason ? cap(a.reason) : a.description}
                         </span>
+                        {a.preview && !a.reason && (
+                          <span className="small activity-preview" data-testid={`preview-${a.id}`}>
+                            {a.preview}
+                          </span>
+                        )}
+                      </span>
+                      {a.cost > 0 && (
+                        <span className="muted small">{formatMoney(game, a.cost)}</span>
                       )}
-                    </span>
-                    {a.cost > 0 && <span className="muted small">{formatMoney(game, a.cost)}</span>}
-                    {a.parentsPay && <span className="muted small">Parents pay</span>}
-                  </button>
-                </li>
-              ))}
-          </ul>
+                      {a.parentsPay && <span className="muted small">Parents pay</span>}
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </FoldTitle>
         </section>
       ))}
       <EmigrateSection game={game} onError={setError} />

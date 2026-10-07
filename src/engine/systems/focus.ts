@@ -62,11 +62,13 @@ export function setFocus(ctx: Ctx, target: string | null): void {
     if (s.player.focus)
       ctx.log('activity', `🎯 You stop focusing on ${focusLabel(s.player.focus)}.`);
     s.player.focus = null;
+    s.player.focusYears = 0;
     return;
   }
   const why = focusReason(s);
   if (why) throw new EngineError(why);
   if (!focusOptions(s).some((o) => o.id === target)) throw new EngineError('nothing to focus on');
+  if (s.player.focus !== target) s.player.focusYears = 0;
   s.player.focus = target;
   ctx.log('activity', `🎯 From now on, your free time goes to ${focusLabel(target)}.`);
 }
@@ -89,18 +91,27 @@ export function focusTick(ctx: Ctx): void {
     mastered();
     return;
   }
+  const boost = momentum(s);
   for (let i = 0; i < SESSIONS; i++) {
     const cur = focusLevel(s, f);
     if (cur >= 100) break;
-    if (f.startsWith('lang:')) addLanguage(s, f.slice(5), Math.max(2, Math.round((100 - cur) / 8)));
-    else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)), 'focus');
+    if (f.startsWith('lang:'))
+      addLanguage(s, f.slice(5), Math.max(2, Math.round(((100 - cur) / 8) * boost)));
+    else addSkill(s, f, Math.max(1, Math.round(((100 - cur) / 12) * boost)), 'focus');
   }
-  // Even a prodigy needs a few years.
-  const after = Math.min(focusLevel(s, f), before + yearCap(s, f));
+  // Even a prodigy needs a few years (but years in a row build on each other).
+  const after = Math.min(focusLevel(s, f), before + Math.round(yearCap(s, f) * boost));
+  s.player.focusYears = (s.player.focusYears ?? 0) + 1;
   if (f.startsWith('lang:')) s.player.languages[f.slice(5)] = after;
   else s.player.skills[f] = after;
   if (after >= 100) mastered();
   else ctx.log('activity', `🎯 A year devoted to ${label}: ${before} → ${after}.`);
+}
+
+/** Momentum: each year in a row on the same focus adds 15% to the next, up to 60%. */
+export function momentum(s: GameState, id: string | null | undefined = s.player.focus): number {
+  const years = id && id === s.player.focus ? (s.player.focusYears ?? 0) : 0;
+  return 1 + 0.15 * Math.min(4, years);
 }
 
 /** About how much a year of this focus would add now (your age, your gift, the cap). */
@@ -108,15 +119,16 @@ export function focusForecast(s: GameState, id: string): number {
   const lang = id.startsWith('lang:');
   const rate = learnRate(s, lang ? undefined : id);
   const start = focusLevel(s, id);
+  const boost = momentum(s, id);
   let cur = start;
   for (let i = 0; i < SESSIONS && cur < 100; i++) {
     // The same steps the year itself takes (focusTick, then addSkill's learning rate).
     const g = lang
-      ? Math.max(2, Math.round((100 - cur) / 8))
-      : Math.max(1, Math.round((100 - cur) / 12));
+      ? Math.max(2, Math.round(((100 - cur) / 8) * boost))
+      : Math.max(1, Math.round(((100 - cur) / 12) * boost));
     const f = lang ? 1 : levelFactor(cur);
     cur = Math.min(100, cur + Math.max(1, Math.round(g * rate * f)));
   }
-  const gain = Math.min(cur, start + yearCap(s, id)) - start;
+  const gain = Math.min(cur, start + Math.round(yearCap(s, id) * boost)) - start;
   return gain;
 }

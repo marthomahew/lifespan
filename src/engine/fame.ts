@@ -23,7 +23,8 @@ export function knownFor(s: GameState): string[] {
     );
   if (s.sport && s.sport.best >= 4)
     out.push(`${SPORT_BY_ID[s.sport.sport]?.label.toLowerCase() ?? 'sport'} for your country`);
-  if (s.chess?.title) out.push(`chess (${TITLE_NAMES[s.chess.title]})`);
+  if (s.chess?.crowns?.length) out.push('being world chess champion');
+  else if (s.chess?.title) out.push(`chess (${TITLE_NAMES[s.chess.title]})`);
   if (s.music.releases.length && (s.music.stage >= 3 || s.player.stats.fame >= 30))
     out.push(s.music.act === 'band' ? 'your band' : 'your music');
   if ((s.projects?.books ?? 0) > 0)

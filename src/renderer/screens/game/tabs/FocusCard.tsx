@@ -1,6 +1,7 @@
 import {
   FOCUS_COST,
   focusForecast,
+  momentum,
   focusOptions,
   focusReason,
   type GameState,
@@ -22,7 +23,7 @@ export function FocusCard({
     <label
       className="focus-card"
       data-testid="focus-card"
-      title={`A focus takes ${FOCUS_COST} pips of free time and gives about three practice sessions a year, faster if you're young or gifted.`}
+      title={`A focus takes ${FOCUS_COST} ${FOCUS_COST === 1 ? 'pip' : 'pips'} of free time and gives about three practice sessions a year, faster if you're young or gifted, and faster again each year you stick with it.`}
     >
       <span className="free-time-label">🎯 Focus</span>
       <select
@@ -40,7 +41,11 @@ export function FocusCard({
       </select>
       <span className="muted small">
         {cur
-          ? `Takes ${FOCUS_COST} pips of free time a year`
+          ? `Takes ${FOCUS_COST} ${FOCUS_COST === 1 ? 'pip' : 'pips'} of free time a year${
+              (game.player.focusYears ?? 0) > 0
+                ? ` · year ${(game.player.focusYears ?? 0) + 1} in a row: +${Math.round((momentum(game) - 1) * 100)}% momentum`
+                : ' · sticking with it builds momentum'
+            }`
           : 'Devote your spare time to one thing'}
       </span>
     </label>

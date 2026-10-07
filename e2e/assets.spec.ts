@@ -38,6 +38,7 @@ test('finances view shows last year and a net worth graph; investing works', asy
   await page.getByTestId('tab-assets').click();
   await page.getByTestId('btn-finances').click();
   await expect(page.getByTestId('finance-breakdown')).toContainText('Salary');
+  await expect(page.getByTestId('fin-cash')).toContainText('Cash on hand');
   await expect(page.getByTestId('finance-breakdown')).toContainText('Tax');
   await expect(page.getByTestId('networth-chart')).toBeVisible();
   await page.getByTestId('fin-amount').fill('1000');

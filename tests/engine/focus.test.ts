@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FOCUS_COST, focusForecast } from '../../src/engine/systems/focus';
+import { FOCUS_COST, focusForecast, momentum } from '../../src/engine/systems/focus';
 import {
   act,
   ageUp,
@@ -58,7 +58,7 @@ describe('a focus, and how fast you learn', () => {
     s = years(s, 7);
     // Steady to 50, slower after: good, not world-class.
     expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(60);
-    expect(s.player.skills['instrument'] ?? 0).toBeLessThan(80);
+    expect(s.player.skills['instrument'] ?? 0).toBeLessThan(90);
   });
 
   it('a child prodigy who focuses masters it in about a decade, and keeps it while focused', () => {
@@ -97,5 +97,20 @@ describe('a focus, and how fast you learn', () => {
     // Use up this year's room with practice; next year's focus is unaffected.
     s = { ...s, usage: { year: s.year, used: { ...s.usage.used, 'sk:programming': 50 } } };
     expect(focusForecast(s, 'programming')).toBe(before);
+  });
+
+  it('years in a row on the same focus build momentum; switching starts again', () => {
+    let s = life(12, 25);
+    s = act(s, { type: 'focus', target: 'cooking' }).state;
+    const first = focusForecast(s, 'cooking');
+    s = years(s, 2);
+    expect(s.player.focusYears).toBe(2);
+    expect(momentum(s)).toBeCloseTo(1.3, 5);
+    // Same level, more momentum: a bigger year than a fresh start would give.
+    const fresh = { ...s, player: { ...s.player, focusYears: 0 } };
+    expect(focusForecast(s, 'cooking')).toBeGreaterThan(focusForecast(fresh, 'cooking'));
+    expect(first).toBeGreaterThan(0);
+    s = act(s, { type: 'focus', target: 'art' }).state;
+    expect(s.player.focusYears).toBe(0);
   });
 });

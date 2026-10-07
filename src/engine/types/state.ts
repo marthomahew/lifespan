@@ -60,6 +60,8 @@ export type Player = {
   backgroundData?: Record<string, string>;
   /** What you devote your free time to, year after year: a skill id, or `lang:<id>`. */
   focus?: string | null;
+  /** Years in a row spent on the current focus (momentum: each one adds 15%, up to 60%). */
+  focusYears?: number;
   age: number;
   birthYear: number;
   birthCountry: string;
