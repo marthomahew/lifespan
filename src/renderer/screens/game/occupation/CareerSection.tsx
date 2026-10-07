@@ -1,7 +1,7 @@
 import { RESULTS_REASON } from '../../../../engine/systems/career-modes';
 import { useState } from 'react';
 import { JOB_BY_ID } from '../../../../content/jobs';
-import { formatMoney, type GameState } from '../../../../engine';
+import { formatMoney, titleFor, type GameState } from '../../../../engine';
 import { barColour } from '../../../components/StatBar';
 import { doAct } from '../../../store/app';
 import { JobListings } from './JobListings';
@@ -27,7 +27,7 @@ export function CareerSection({
       {job && (
         <div className="job-card card pad" data-testid="current-job">
           <div className="listing-title" data-testid="job-title">
-            {job.titles[c.level] ?? job.titles[0]}
+            {titleFor(game, job, c.level)}
           </div>
           <div className="muted small">
             {formatMoney(game, c.salary)} a year · since {c.history.at(-1)?.from ?? game.year}

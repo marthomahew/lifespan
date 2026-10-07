@@ -3,6 +3,7 @@ import { RESULTS_JOBS, RESULTS_REASON, resultsCareerTick } from './career-modes'
 import { luck } from './luck';
 import { pickFresh } from '../fresh';
 import { JOB_BY_ID } from '../../content/jobs';
+import { SPORT_BY_ID } from '../../content/sports';
 import { GRAD_BY_ID } from '../../content/education';
 import type { JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -30,8 +31,25 @@ export {
 import { interviewOdds, unmetRequirements } from './career-requirements';
 
 export function salaryFor(ctx: Ctx, job: JobDef, level: number): number {
+  const sport = job.id === 'professional_athlete' ? SPORT_BY_ID[ctx.s.sport?.sport ?? ''] : null;
+  if (sport) {
+    // Each sport pays its own way. The top two rungs are a global market, paid in dollars;
+    // below that, pay follows the local game.
+    const [lo, hi] = sport.pro.pay[Math.min(level, sport.pro.pay.length - 1)] ?? [20000, 30000];
+    const ref = Math.round(lo * Math.pow(hi / lo, ctx.rng.next()));
+    return level >= 3
+      ? Math.round(ref * ctx.s.inflation * countryOf(ctx.s).currency.perUsd)
+      : money(ctx.s, ref, 'wage');
+  }
   const [lo, hi] = job.salary[Math.min(level, job.salary.length - 1)] ?? [20000, 30000];
   return money(ctx.s, ctx.rng.int(lo, hi), 'wage');
+}
+
+/** A job's title at a level: a professional athlete's comes from their sport. */
+export function titleFor(s: GameState, job: JobDef, level: number): string {
+  const sport = job.id === 'professional_athlete' ? SPORT_BY_ID[s.sport?.sport ?? ''] : null;
+  const titles = sport ? sport.pro.titles : job.titles;
+  return titles[Math.min(level, titles.length - 1)] ?? job.titles[0] ?? '';
 }
 
 /** Leave the current job's coworkers behind (they become acquaintances). */
@@ -62,7 +80,7 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
     c.partTimeId = job.id;
     ctx.log(
       'work',
-      `You start as ${job.titles[0]}. The uniform is itchy but the money is money.`,
+      `You start as ${titleFor(s, job, 0)}. The uniform is itchy but the money is money.`,
       true,
     );
     return;
@@ -82,7 +100,7 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
   c.retired = false;
   c.history.push({
     jobId: job.id,
-    title: job.titles[0] ?? job.id,
+    title: titleFor(s, job, 0) || job.id,
     from: s.year,
     to: null,
     reason: '',
@@ -123,7 +141,7 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
   if (!quiet)
     ctx.log(
       'work',
-      `You're hired as ${job.titles[0]} at ${formatMoney(s, c.salary)} a year.`,
+      `You're hired as ${titleFor(s, job, 0)} at ${formatMoney(s, c.salary)} a year.`,
       true,
     );
 }
@@ -170,7 +188,7 @@ export function applyForJob(ctx: Ctx, jobId: string): void {
   fireEvent(ctx, def, 'system', {
     jobId,
     odds: Math.round(odds * 1000) / 1000,
-    title: job.titles[0] ?? job.id,
+    title: titleFor(s, job, 0) || job.id,
   });
 }
 
@@ -232,7 +250,7 @@ export function careerTick(ctx: Ctx): void {
   else if (c.performance < 25 && lucky < 1 && r.chance(0.4)) {
     ctx.log(
       'work',
-      `You're let go from your job as ${job.titles[c.level] ?? job.titles[0]}. HR is very sorry, apparently.`,
+      `You're let go from your job as ${titleFor(s, job, c.level)}. HR is very sorry, apparently.`,
       true,
     );
     endJob(ctx, 'fired');
@@ -256,7 +274,7 @@ export function promote(ctx: Ctx, job: JobDef): void {
   c.since = ctx.s.year;
   c.salary = Math.max(Math.round(c.salary * 1.12), salaryFor(ctx, job, c.level));
   capSalary(ctx.s);
-  const title = job.titles[c.level] ?? job.titles[0] ?? job.id;
+  const title = titleFor(ctx.s, job, c.level) || job.id;
   const rec = c.history.at(-1);
   if (rec) rec.title = title;
   ctx.log('work', `Promoted to ${title}.`, true);
@@ -431,7 +449,7 @@ export function careerAction(ctx: Ctx, id: string): void {
       if (!job) throw new EngineError('you need a job');
       ctx.log(
         'work',
-        `You quit your job as ${job.titles[c.level] ?? ''}. The exit interview is the most honest conversation you've had there.`,
+        `You quit your job as ${titleFor(s, job, c.level)}. The exit interview is the most honest conversation you've had there.`,
         true,
       );
       endJob(ctx, 'quit');
@@ -502,7 +520,7 @@ export function takeOverJob(ctx: Ctx, jobId: string, level: number): void {
   c.salary = salaryFor(ctx, job, c.level);
   c.since = s.year - ctx.rng.int(2, 10);
   const rec = c.history[c.history.length - 1];
-  if (rec) rec.title = job.titles[c.level] ?? rec.title;
+  if (rec) rec.title = titleFor(s, job, c.level) || rec.title;
   s.education.residency = 0;
 }
 
@@ -511,6 +529,8 @@ export function capSalary(s: GameState): void {
   const c = s.career;
   const job = c.jobId ? JOB_BY_ID[c.jobId] : undefined;
   if (!job) return;
+  // An athlete's pay is set by their sport's market, contract by contract.
+  if (job.id === 'professional_athlete' && s.sport) return;
   const band = job.salary[Math.min(c.level, job.salary.length - 1)];
   if (!band) return;
   c.salary = Math.min(c.salary, money(s, band[1] * 1.3, 'wage'));

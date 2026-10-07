@@ -2,7 +2,7 @@ import type { JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
 import { formatMoney } from '../economy';
 import { addStat } from '../stats';
-import { endJob, salaryFor } from './careers';
+import { endJob, salaryFor, titleFor } from './careers';
 
 /**
  * Careers that aren't ladders. An athlete's standing follows their form, season by season;
@@ -38,7 +38,7 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
       c.level = level;
       c.since = s.year;
       c.salary = salaryFor(ctx, job, level);
-      const title = job.titles[level] ?? '';
+      const title = titleFor(s, job, level);
       const rec = c.history.at(-1);
       if (rec) rec.title = title;
       ctx.log(

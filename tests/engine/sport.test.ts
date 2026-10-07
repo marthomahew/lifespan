@@ -10,6 +10,11 @@ import {
   type GameState,
 } from '../../src/engine';
 import { SPECIAL_PATHS } from '../../src/content/special-paths';
+import { SPORT_BY_ID } from '../../src/content/sports';
+import { JOB_BY_ID } from '../../src/content/jobs';
+import { salaryFor, titleFor } from '../../src/engine/systems/careers';
+import { Ctx } from '../../src/engine/ctx';
+import { seedRng } from '../../src/engine/rng';
 
 const kid = (seed: number, opts: Parameters<typeof newLife>[0] = {}): GameState => {
   const s = runCheat(newLife({ birthYear: 2000, country: 'us', ...opts }, seed), 'age.set', {
@@ -76,5 +81,43 @@ describe('sport, season by season', () => {
       },
     };
     expect(olympics?.when(national)).toBe(true);
+  });
+
+  it('each sport pays its own way: a cycling leader earns far less than an NBA starter', () => {
+    const pro = (sport: string, level: number, country = 'us'): GameState => {
+      const s = runCheat(kid(2410 + level, { country }), 'age.set', { age: 26 }).state;
+      const playing = {
+        ...s,
+        sport: { sport, level: 4, best: 4, form: 90, seasons: 12, honours: [], active: true },
+      };
+      const hired = runCheat(playing, 'job.set', { job: 'professional_athlete' }).state;
+      return { ...hired, career: { ...hired.career, level } };
+    };
+    const cyclist = pro('cycling', 3);
+    expect(titleFor(cyclist, JOB_BY_ID['professional_athlete']!, 3)).toBe('Team Leader');
+    const nba = pro('basketball', 3);
+    expect(titleFor(nba, JOB_BY_ID['professional_athlete']!, 3)).toBe('NBA Starter');
+    const pay = (s: GameState, level: number): number[] =>
+      Array.from({ length: 20 }, (_, i) =>
+        salaryFor(
+          new Ctx({ ...s, rng: seedRng(i + 1) }),
+          JOB_BY_ID['professional_athlete']!,
+          level,
+        ),
+      );
+    const usdPay = (s: GameState, level: number): number =>
+      Math.max(...pay(s, level)) / s.inflation;
+    expect(usdPay(cyclist, 3)).toBeLessThanOrEqual(3_000_001);
+    expect(Math.min(...pay(nba, 3)) / nba.inflation).toBeGreaterThanOrEqual(11_999_999);
+    // Stars are paid in a global market: the same dollars in Nigeria as in the US.
+    const ngStar = pro('football', 4, 'ng');
+    const ng = Math.min(...pay(ngStar, 4)) / (ngStar.inflation * 1500);
+    expect(ng).toBeGreaterThanOrEqual(19_999_000);
+  });
+
+  it('American football is a sport you can take up', () => {
+    const s = act(kid(2420), { type: 'sport', sport: 'american_football' }).state;
+    expect(s.sport?.sport).toBe('american_football');
+    expect(SPORT_BY_ID['american_football']?.pro.titles[0]).toBe('Practice Squad Player');
   });
 });

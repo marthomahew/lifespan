@@ -57,6 +57,7 @@ export {
   unmetRequirements,
   interviewOdds,
   pensionFor,
+  titleFor,
   type Listing,
 } from './systems/careers';
 export { enrollReason, tuitionFor, letterGrade } from './systems/education';
