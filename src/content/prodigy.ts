@@ -45,16 +45,6 @@ export const PRODIGY_MILESTONES: ProdigyMilestone[] = [
     event: 'pr_chess_master',
   },
   {
-    id: 'chess_gm',
-    minAge: 13,
-    gifted: true,
-    skills: ['chess'],
-    minLevel: 90,
-    maxAge: 30,
-    after: 'chess_master',
-    event: 'pr_chess_grandmaster',
-  },
-  {
     id: 'music_recital',
     skills: MUSIC,
     minLevel: 35,

@@ -1,3 +1,4 @@
+import { tournamentReason } from '../systems/chess';
 import { ACTIVITY_BY_ID } from '../../content/activities';
 import { act } from '../actions';
 import { ageUp } from '../age';
@@ -76,8 +77,8 @@ const PLANS: Partial<Record<PersonaId, (s: GameState, rng: Rng, t: typeof tryAct
 /** One year's worth of a persona's own choices; the default persona follows DONE §4. */
 function planYear(s: GameState, persona: PersonaId, rng: Rng): GameState {
   const plan = PLANS[persona];
-  if (plan) return plan(s, rng, tryAct);
-  let cur = s;
+  if (plan) return chessSeason(plan(s, rng, tryAct), rng);
+  let cur = chessSeason(s, rng);
   if (rng.chance(0.5)) {
     const n = rng.int(0, 2);
     for (let i = 0; i < n; i++) {
@@ -118,4 +119,18 @@ export function botStep(
     return planYear(s, persona, rng);
   }
   return ageUp(s).state;
+}
+
+/** Anyone who plays chess well enough enters a tournament or two, at the best level open to them. */
+function chessSeason(s: GameState, rng: Rng): GameState {
+  if ((s.player.skills['chess'] ?? 0) < 30 || !rng.chance(0.6)) return s;
+  let cur = s;
+  for (let i = 0; i < 2; i++) {
+    const tier = ['elite', 'international', 'national', 'local'].find(
+      (x) => tournamentReason(cur, x) === null,
+    );
+    if (!tier) break;
+    cur = tryAct(cur, { type: 'chess', tier });
+  }
+  return cur;
 }

@@ -38,7 +38,6 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
   if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
-  if (sp === 'chess' && (s.player.skills['chess'] ?? 0) < 15) return 'needs chess 15';
   if (sp === 'driving_test' && s.legal.prison) return 'not from prison';
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
@@ -146,16 +145,6 @@ export function runSpecial(
       addStat(s, 'happiness', outcomeIndex === 0 ? 4 : outcomeIndex === 1 ? 1 : -1);
       // A story that mentions a new friend brings one.
       if (/friend/.test(line)) applyStatusEffect(ctx, 'friend', undefined);
-      return;
-    }
-    case 'chess': {
-      // A win pays by the strength of the field you can beat: club prizes to elite purses.
-      if (outcomeIndex !== 0) return;
-      const lvl = s.player.skills['chess'] ?? 0;
-      const prize = money(s, Math.round(lvl * lvl * (lvl >= 85 ? 6 : 1.5)), 'wage');
-      s.money.cash += prize;
-      if (lvl >= 80) addStat(s, 'fame', 2);
-      ctx.log('activity', `♟️ The prize: ${formatMoney(s, prize)}.`);
       return;
     }
     case 'practice': {

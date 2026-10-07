@@ -904,5 +904,10 @@
     "title": "Your people card (closest people with faces, role and closeness; sketch on hover); popups show the person their text names",
     "passes": true,
     "evidence": "tests/engine/people.test.ts"
+  },
+  "S86": {
+    "title": "Chess over the board: Elo rating from results, tournaments by level, norms and titles at the real thresholds, world ranking, prize money; a Chess panel under Pursuits",
+    "passes": true,
+    "evidence": "tests/engine/chess.test.ts"
   }
 }

@@ -63,7 +63,6 @@ export function activityPreview(s: GameState, def: ActivityDef): string {
   } else if (def.special === 'language') {
     parts.push(`🗣️ the language you pick: about +${Math.max(2, Math.round(12 * learnRate(s)))}`);
   } else if (def.special === 'club') parts.push('the club’s skill +1 to +4, maybe a friend');
-  else if (def.special === 'chess') parts.push('♟️ prize money if you win');
   const good = def.outcomes.reduce(
     (t, o) => t + (o.success && typeof o.chance === 'number' ? o.chance : 0),
     0,

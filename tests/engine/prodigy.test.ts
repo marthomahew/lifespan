@@ -43,15 +43,14 @@ function grow(
 }
 
 describe('child prodigies', () => {
-  it('a chess prodigy with a focus climbs from the library club to grandmaster', () => {
+  it('a chess prodigy with a focus is noticed from the library club to a grandmaster’s group', () => {
     let s = child(900, 5, { talent: 'chess', talentLevel: 'prodigy' });
     s = act(s, { type: 'focus', target: 'chess' }).state;
     const { s: out, seen } = grow(s, 14, { pr_chess_junior: 'enter', pr_chess_master: 'train' });
     expect(out.player.flags).toContain('pm:chess_club');
     expect(seen).toContain('pr_chess_junior');
     expect(seen).toContain('pr_chess_master');
-    expect(out.player.flags).toContain('chess_gm');
-    expect(out.player.achievements.includes('grandmaster')).toBe(true);
+    // The title itself is earned over the board now (tests/engine/chess.test.ts).
     expect(out.player.achievements.includes('wunderkind')).toBe(true);
   });
 
@@ -77,7 +76,7 @@ describe('child prodigies', () => {
     }
   });
 
-  it('giving it up ends the focus; chess tournaments pay by strength', () => {
+  it('giving it up ends the focus', () => {
     let s = child(905, 12, { talent: 'chess', talentLevel: 'prodigy' });
     s = {
       ...s,
@@ -85,13 +84,5 @@ describe('child prodigies', () => {
     };
     s = runCheat(s, 'event.fire', { event: 'pr_burnout', force: 'on' }).state;
     expect(choose(s, 'quit').state.player.focus).toBeNull();
-    let pro = runCheat(child(906, 30), 'skill.set', { skill: 'chess', value: 90 }).state;
-    pro = { ...pro, pending: [], cheats: { ...pro.cheats, forceSuccess: true } };
-    const cash = pro.money.cash;
-    const after = act(pro, { type: 'activity', id: 'chess_tournament' }).state;
-    expect(after.money.cash).toBeGreaterThan(cash);
-    expect(() => act(child(907, 30), { type: 'activity', id: 'chess_tournament' })).toThrow(
-      /chess 15/,
-    );
   });
 });

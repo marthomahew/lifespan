@@ -84,3 +84,12 @@ export {
 } from './systems/business';
 export { jobBoard, sortBoard, type BoardRow, type BoardSort, type Rung } from './systems/job-board';
 export { closestPeople, closeness, npcSketch } from './people';
+export {
+  CHESS_TIERS,
+  TITLE_NAMES,
+  chessOf,
+  playingStrength,
+  tournamentReason,
+  worldRank,
+  type ChessRecord,
+} from './systems/chess';

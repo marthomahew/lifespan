@@ -226,44 +226,7 @@ export const MORE_ACTIVITIES: ActivityDef[] = [
       },
     ],
   },
-  {
-    id: 'chess_tournament',
-    label: 'Play a chess tournament',
-    emoji: '♟️',
-    group: 'fun',
-    ages: [6, 110],
-    limitPerYear: 1,
-    special: 'chess',
-    description: 'A weekend of silent clocks, cold tea and prize money for the best.',
-    outcomes: [
-      {
-        chance: 0.45,
-        success: true,
-        text: 'You win the tournament on tiebreaks after a final round that lasts five hours.',
-        texts: [
-          'You finish first, a full point clear. The arbiter has to look up how to spell your name for the trophy.',
-          'An unbeaten weekend. In the last round your opponent resigns, shakes your hand and says, “Next time.”',
-        ],
-        effects: [
-          { skill: 'chess', delta: 3 },
-          { stat: 'happiness', delta: 5 },
-        ],
-      },
-      {
-        chance: 0.4,
-        text: 'A respectable finish in the middle of the table, and one game you will analyse for a month.',
-        effects: [{ skill: 'chess', delta: 3 }],
-      },
-      {
-        chance: 0.15,
-        text: 'You lose on time in a winning position. You say nothing on the train home.',
-        effects: [
-          { skill: 'chess', delta: 2 },
-          { stat: 'happiness', delta: -3 },
-        ],
-      },
-    ],
-  },
+
   {
     id: 'practice_skill',
     label: 'Practise a skill',
