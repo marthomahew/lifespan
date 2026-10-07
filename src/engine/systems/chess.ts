@@ -230,7 +230,7 @@ export function playTournament(ctx: Ctx, tierId: string): void {
   rec.rating = Math.max(100, rec.rating + change);
   rec.best = Math.max(rec.best, rec.rating);
   rec.events += 1;
-  addSkill(s, 'chess', 2);
+  addSkill(s, 'chess', 1, 'experience');
   // Performance: what a rating that scored like this would be.
   const frac = score / ROUNDS;
   const perf = Math.round(

@@ -24,37 +24,29 @@ export function learnRate(s: GameState, skill?: string): number {
 }
 
 /**
- * How much a skill can still grow this year, from every source together. The base is 12
- * points (a gift 18, a prodigy 25, more for a quick study), and it shrinks near the top:
- * 60% from 50, a quarter from 70, a fifth from 90 (still 2–5 points a year at the very top). So the best start young and still take
- * years: a chess prodigy who starts at six reaches grandmaster strength at about twelve.
+ * How much one session is worth at your level: everything counts, but the top is slow.
+ * Full value below 50, 80% from 50, 60% from 70, 40% from 90 (never less than a point).
  */
-export function skillYearRoom(s: GameState, id: string, freshYear = false): number {
-  const cur = s.player.skills[id] ?? 0;
-  const talent = s.player.talent === id ? (s.player.talentLevel === 'prodigy' ? 25 : 18) : 12;
-  const quick = (s.player.gifts ?? []).reduce((m, g) => m * (GIFT_BY_ID[g]?.learn ?? 1), 1);
-  const band = cur >= 90 ? 0.2 : cur >= 70 ? 0.25 : cur >= 50 ? 0.6 : 1;
-  const gained = !freshYear && s.usage.year === s.year ? (s.usage.used[`sk:${id}`] ?? 0) : 0;
-  return Math.max(0, talent * quick * band - gained);
+export function levelFactor(cur: number): number {
+  return cur >= 90 ? 0.4 : cur >= 70 ? 0.6 : cur >= 50 ? 0.8 : 1;
 }
 
-/** Add to a skill (0..100). Positive deltas count as practice this year, at your learning rate. */
-export function addSkill(s: GameState, id: string, delta: number, floorOne = true): void {
+/**
+ * Where a gain comes from: study and practice (at your learning rate), your focus (the same),
+ * or plain experience from competing (a point or two, however young or gifted you are).
+ */
+export type SkillPool = 'focus' | 'practice' | 'experience';
+
+/** Add to a skill (0..100). There's no yearly limit: more practice is always more skill. */
+export function addSkill(
+  s: GameState,
+  id: string,
+  delta: number,
+  pool: SkillPool = 'practice',
+): void {
   const cur = s.player.skills[id] ?? 0;
-  // The top is hard: above 80 gains shrink, and above 90 a small one can round to nothing.
-  // 100 is the best in the world.
-  const slow = cur >= 90 ? 0.35 : cur >= 80 ? 0.6 : 1;
-  const raw = delta * learnRate(s, id) * slow;
-  // Practice always counts for something; the yearly room below sets how much.
-  let d = delta > 0 ? Math.max(1, Math.round(raw)) : delta;
-  if (d > 0) {
-    // However many sources pile in (focus, practice, tournaments), a year only holds so much.
-    const room = Math.floor(skillYearRoom(s, id));
-    // Past the year's room, practice still shows: +1 a time, until the last ten points.
-    d = room >= 1 ? Math.min(d, room) : cur < 90 && floorOne ? 1 : 0;
-    if (s.usage.year !== s.year) s.usage = { year: s.year, used: {} };
-    s.usage.used[`sk:${id}`] = (s.usage.used[`sk:${id}`] ?? 0) + d;
-  }
+  const rate = pool === 'experience' ? 1 : learnRate(s, id);
+  const d = delta > 0 ? Math.max(1, Math.round(delta * rate * levelFactor(cur))) : delta;
   s.player.skills[id] = clampStat(cur + d);
   if (delta > 0) s.player.skillPractice[id] = s.year;
 }

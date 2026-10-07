@@ -137,7 +137,7 @@ describe('chess, over the board', () => {
     );
   });
 
-  it('a chess prodigy who starts at six can be a grandmaster at about twelve, not at nine', () => {
+  it('a chess prodigy who starts at six can be a record-young grandmaster, not a toddler one', () => {
     let s = runCheat(
       newLife({ birthYear: 2000, country: 'us', talent: 'chess', talentLevel: 'prodigy' }, 7001),
       'age.set',
@@ -150,8 +150,9 @@ describe('chess, over the board', () => {
       s = season(s, 6);
       if (s.chess?.title === 'GM') gm = s.player.age;
     }
-    expect(gm).toBeGreaterThanOrEqual(11);
-    expect(gm).toBeLessThanOrEqual(15);
+    // With focus, practice and six events a year: around the real record (12), a little under.
+    expect(gm).toBeGreaterThanOrEqual(9);
+    expect(gm).toBeLessThanOrEqual(14);
   });
 
   it('top grandmasters are paid to play opens, and gain little rating beating weaker fields', () => {

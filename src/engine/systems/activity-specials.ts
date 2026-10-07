@@ -149,9 +149,8 @@ export function runSpecial(
     }
     case 'practice': {
       const skill = typeof params['skill'] === 'string' ? params['skill'] : 'instrument';
-      const cur = s.player.skills[skill] ?? 0;
-      // Diminishing returns: the better you are, the slower it goes (SPEC §5.12); a talent goes further.
-      const gain = Math.max(1, Math.round((100 - cur) / 12) + ctx.rng.int(0, 2));
+      // A solid session; the better you are, the slower it goes (addSkill's level factor).
+      const gain = 8 + ctx.rng.int(0, 2);
       // (A gift, youth and a quick mind all speed it up: see learnRate.)
       addSkill(s, skill, gain);
       return;

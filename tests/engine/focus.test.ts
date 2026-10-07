@@ -68,9 +68,8 @@ describe('a focus, and how fast you learn', () => {
     // Fast, but not overnight: 25 points a calendar year (the first birthday can straddle two).
     expect(s.player.skills['instrument']).toBeLessThanOrEqual(50);
     s = years(s, 4);
-    // Strong after five years, but the top takes far longer.
+    // Strong after five years of focus.
     expect(s.player.skills['instrument']).toBeGreaterThanOrEqual(65);
-    expect(s.player.skills['instrument']).toBeLessThan(95);
     s = years(s, 8);
     expect(s.player.skills['instrument']).toBe(100);
     s = years(s, 3);

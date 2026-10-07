@@ -104,7 +104,7 @@ export function trainExtra(ctx: Ctx): void {
   const r = s.sport as SportRecord;
   r.extra = (r.extra ?? 0) + 1;
   markUsed(s, 'w:total');
-  addSkill(s, 'athletics', 1);
+  addSkill(s, 'athletics', 4);
   const def = sportDef(r);
   ctx.log(
     'activity',
@@ -146,7 +146,7 @@ export function sportTick(ctx: Ctx): void {
   r.extra = 0;
   r.form = Math.max(0, Math.min(100, Math.round(perf)));
   r.seasons += 1;
-  addSkill(s, 'athletics', 2);
+  addSkill(s, 'athletics', 2, 'experience');
   addStat(s, 'health', 1);
   // What each level asks of you.
   const need = [0, 25, 42, 58, 72][r.level + 1] ?? 999;

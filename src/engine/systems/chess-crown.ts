@@ -116,7 +116,7 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
   markUsed(s, 'w:total');
   rec.events += 1;
   // Top-level chess is the best practice there is.
-  addSkill(s, 'chess', 1);
+  addSkill(s, 'chess', 1, 'experience');
   s.player.skillPractice['chess'] = s.year;
   const me = playingStrength(s);
   let result: string;

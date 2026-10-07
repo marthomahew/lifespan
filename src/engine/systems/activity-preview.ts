@@ -1,7 +1,7 @@
 import { SKILL_BY_ID } from '../../content/skills';
 import type { ActivityDef } from '../../content/types';
 import type { GameState } from '../types';
-import { learnRate } from './skills';
+import { learnRate, levelFactor } from './skills';
 
 const STAT_ICON: Record<string, string> = {
   happiness: '😊',
@@ -39,7 +39,8 @@ export function activityPreview(s: GameState, def: ActivityDef): string {
         add(e.stat, e.delta);
         seen.add(e.stat);
       } else if ('skill' in e) {
-        add(`skill:${e.skill}`, Math.max(1, Math.round(e.delta * learnRate(s, e.skill))));
+        const at = levelFactor(s.player.skills[e.skill] ?? 0);
+        add(`skill:${e.skill}`, Math.max(1, Math.round(e.delta * learnRate(s, e.skill) * at)));
         seen.add(`skill:${e.skill}`);
       }
     }

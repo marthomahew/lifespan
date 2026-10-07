@@ -2,7 +2,7 @@ import { LANGUAGE_BY_ID, SKILL_BY_ID } from '../../content/skills';
 import type { Ctx } from '../ctx';
 import { EngineError } from '../errors';
 import type { GameState } from '../types';
-import { addLanguage, addSkill, learnRate, skillYearRoom } from './skills';
+import { addLanguage, addSkill, learnRate, levelFactor } from './skills';
 
 /**
  * A focus: the thing you give your free time to, year after year. Worth about three
@@ -93,7 +93,7 @@ export function focusTick(ctx: Ctx): void {
     const cur = focusLevel(s, f);
     if (cur >= 100) break;
     if (f.startsWith('lang:')) addLanguage(s, f.slice(5), Math.max(2, Math.round((100 - cur) / 8)));
-    else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)), false);
+    else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)), 'focus');
   }
   // Even a prodigy needs a few years.
   const after = Math.min(focusLevel(s, f), before + yearCap(s, f));
@@ -114,10 +114,9 @@ export function focusForecast(s: GameState, id: string): number {
     const g = lang
       ? Math.max(2, Math.round((100 - cur) / 8))
       : Math.max(1, Math.round((100 - cur) / 12));
-    cur = Math.min(100, cur + Math.max(1, Math.round(g * rate)));
+    const f = lang ? 1 : levelFactor(cur);
+    cur = Math.min(100, cur + Math.max(1, Math.round(g * rate * f)));
   }
   const gain = Math.min(cur, start + yearCap(s, id)) - start;
-  // Focus lands at the start of next year, so it gets that year's full room, untouched by
-  // whatever you have practised this year.
-  return lang ? gain : Math.min(gain, Math.floor(skillYearRoom(s, id, true)));
+  return gain;
 }
