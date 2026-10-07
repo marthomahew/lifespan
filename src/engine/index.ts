@@ -106,6 +106,7 @@ export {
   type SportRecord,
 } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
+export { HUSTLES, hustleReason, strapped, type HustleId } from './systems/hustle';
 export {
   lifestyleCost,
   lifestyleReason,
