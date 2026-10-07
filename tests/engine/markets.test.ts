@@ -55,9 +55,25 @@ describe('markets that follow history', () => {
     s = runCheat({ ...s, pending: [] }, 'event.fire', { event: 'mk_btc_forum', force: 'on' }).state;
     expect(currentPopup(s)?.eventId).toBe('mk_btc_forum');
     s = choose(s, 'mine').state;
-    expect(s.money.shares?.['BTC']).toBe(180);
+    expect(s.money.shares?.['BTC']).toBe(300);
     expect(s.chains.some((c) => c.eventId === 'mk_btc_drive')).toBe(true);
     const binned = runCheat(s, 'event.fire', { event: 'mk_btc_drive', force: 'on' }).state;
     expect(choose(binned, 'bin').state.money.shares?.['BTC'] ?? 0).toBe(0);
+  });
+
+  it('mining in 2009 makes thousands of coins; later, anyone can hear about bitcoin', async () => {
+    const { choose, currentPopup } = await import('../../src/engine');
+    let s = runCheat(at(1990, 19), 'skill.set', { skill: 'programming', value: 35 }).state;
+    expect(s.year).toBe(2009);
+    s = runCheat({ ...s, pending: [] }, 'event.fire', { event: 'mk_btc_forum', force: 'on' }).state;
+    s = choose(s, 'mine').state;
+    expect(s.money.shares?.['BTC']).toBe(2500);
+    let anyone: GameState = { ...at(1980, 33), pending: [] };
+    expect(anyone.year).toBe(2013);
+    anyone = { ...anyone, money: { ...anyone.money, cash: 5000 } };
+    anyone = runCheat(anyone, 'event.fire', { event: 'mk_btc_word', force: 'on' }).state;
+    expect(currentPopup(anyone)?.eventId).toBe('mk_btc_word');
+    anyone = choose(anyone, 'big').state;
+    expect(anyone.money.shares?.['BTC'] ?? 0).toBeGreaterThan(0);
   });
 });

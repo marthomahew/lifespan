@@ -166,18 +166,22 @@ export function sharesValue(s: GameState): number {
 export function sharesEffect(ctx: Ctx, kind: string, arg: string): void {
   const s = ctx.s;
   const [id = '', raw = '0'] = arg.split(':');
-  const n = Number(raw);
-  const price = priceLocal(s, id);
-  if (price === null || !Number.isFinite(n)) return;
+  const n = raw === 'mine' ? minedCoins(s.year) : Number(raw);
+  if (!Number.isFinite(n)) return;
   const held = (s.money.shares ??= {});
   const have = held[id] ?? 0;
+  // Coins mined before anyone traded them have no price yet, but they are still yours.
+  if (kind === 'grant_shares') {
+    held[id] = have + n;
+    return;
+  }
+  const price = priceLocal(s, id);
+  if (price === null) return;
   if (kind === 'buy_shares') {
     const spend = Math.min(money(s, n, 'price'), Math.max(0, s.money.cash));
     if (spend <= 0) return;
     s.money.cash -= spend;
     held[id] = have + spend / price;
-  } else if (kind === 'grant_shares') {
-    held[id] = have + n;
   } else if (have > 0) {
     const part = have * Math.min(1, Math.max(0, n));
     held[id] = have - part;
@@ -188,6 +192,18 @@ export function sharesEffect(ctx: Ctx, kind: string, arg: string): void {
     }
     if (held[id] <= 1e-9) delete held[id];
   }
+}
+
+/**
+ * Coins a home computer left mining for a few months makes: thousands in the first year,
+ * when hardly anyone mined, then fewer as the network crowds in.
+ */
+export function minedCoins(year: number): number {
+  if (year <= 2009) return 2500;
+  if (year === 2010) return 300;
+  if (year === 2011) return 40;
+  if (year === 2012) return 10;
+  return 1;
 }
 
 /** Holding at least this much of something (local money), for event conditions. */

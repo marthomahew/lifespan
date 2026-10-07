@@ -241,9 +241,11 @@ describe('prison (M8.6)', () => {
     let released = good;
     // Parole is a yearly roll from the halfway point; the full term is the latest release.
     const term = good.legal.prison?.years ?? 0;
-    for (let i = 0; i < term && released.legal.prison; i++) released = playYears(released, 1);
-    expect(released.legal.prison).toBeNull();
+    // Stop once the robbery sentence is over (an auto-picked popup can start a new case later).
+    const serving = (t: GameState): boolean => t.legal.prison?.crimeId === 'armed_robbery';
+    for (let i = 0; i < term && serving(released); i++) released = playYears(released, 1);
+    expect(serving(released)).toBe(false);
     expect(released.player.flags).toContain('ex_con');
-    expect(released.assets.housing).not.toBe('prison');
+    if (!released.legal.prison) expect(released.assets.housing).not.toBe('prison');
   });
 });

@@ -6,7 +6,7 @@ import { money } from '../../engine/economy';
 
 /** Close enough to computers to notice things early: code, or a job in tech. */
 const techSavvy = (s: GameState): boolean =>
-  (s.player.skills['programming'] ?? 0) >= 40 ||
+  (s.player.skills['programming'] ?? 0) >= 30 ||
   JOB_BY_ID[s.career.jobId ?? '']?.field === 'technology';
 const adult = (s: GameState): boolean => s.player.age >= 18 && !s.legal.prison;
 const holds =
@@ -109,10 +109,10 @@ export const MARKET_EVENTS: EventDef[] = [
     kind: 'choice',
     category: 'money',
     emoji: '₿',
-    ages: [14, 80],
+    ages: [12, 80],
     weight: 12,
     once: true,
-    fromYear: 2010,
+    fromYear: 2009,
     toYear: 2012,
     when: (s) => !s.legal.prison && techSavvy(s),
     text: 'On a programming forum, someone has posted about a new digital money that nobody controls. You can make it at home with a spare computer, or buy it for pennies from strangers.',
@@ -125,7 +125,7 @@ export const MARKET_EVENTS: EventDef[] = [
             chance: 1,
             text: 'An old computer hums in the corner for months, running up the electricity bill and filling a little file with coins. You mostly forget about it.',
             effects: [
-              { system: 'grant_shares', arg: 'BTC:180' },
+              { system: 'grant_shares', arg: 'BTC:mine' },
               { money: -400, kind: 'price' },
               { flag: 'early_miner' },
             ],
@@ -152,6 +152,61 @@ export const MARKET_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: 'You close the tab. Somewhere, a pizza is bought for ten thousand of these coins.',
+            effects: [{ flag: 'ignored_bitcoin' }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'mk_btc_word',
+    kind: 'choice',
+    category: 'money',
+    emoji: '🪙',
+    ages: [16, 85],
+    weight: 6,
+    once: true,
+    fromYear: 2011,
+    toYear: 2017,
+    when: (s) =>
+      !s.legal.prison &&
+      holdingValue(s, 'BTC') <= 0 &&
+      !s.player.flags.some((f) => ['ignored_bitcoin', 'early_miner', 'early_buyer'].includes(f)),
+    text: 'Someone at a party will not stop talking about bitcoin: internet money, no banks, and it has gone up again. Half the room is rolling its eyes. The other half is listening.',
+    choices: [
+      {
+        id: 'small',
+        label: 'Buy a hundred dollars’ worth',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You set up an account that night and buy a small slice, mostly so you can say you did.',
+            effects: [{ system: 'buy_shares', arg: 'BTC:100' }, { flag: 'bitcoin_dabbler' }],
+          },
+        ],
+      },
+      {
+        id: 'big',
+        label: 'Put in a thousand',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'A thousand dollars goes in. You check the price on your phone more often than you check the weather.',
+            effects: [
+              { system: 'buy_shares', arg: 'BTC:1000' },
+              { flag: 'bitcoin_dabbler' },
+              { stat: 'stress', delta: 3 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'pass',
+        label: 'Sounds like a scam',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You change the subject. It may well be a scam. It may also be the most expensive conversation you ever walked away from.',
             effects: [{ flag: 'ignored_bitcoin' }],
           },
         ],
@@ -271,7 +326,7 @@ export const MARKET_EVENTS: EventDef[] = [
     weight: 12,
     cooldownYears: 3,
     fromYear: 2013,
-    when: (s) => [2013, 2017, 2021, 2024].includes(s.year) && holds('BTC', 20000)(s),
+    when: (s) => [2013, 2017, 2021, 2024].includes(s.year) && holds('BTC', 2000)(s),
     text: 'Bitcoin is on the evening news again. The coins you hold are worth more than you ever expected to have, and your relatives have Opinions at dinner.',
     choices: [
       {
