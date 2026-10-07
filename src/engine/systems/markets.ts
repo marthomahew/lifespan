@@ -195,8 +195,14 @@ export function investBlock(s: GameState): string | null {
   return guardian ? null : 'a child needs a parent or guardian to open the account';
 }
 
-/** Buy or sell shares, by local amount (buy) or share count (sell). */
-export function tradeShares(ctx: Ctx, id: string, op: 'buy' | 'sell', amount: number): void {
+/** Buy or sell shares: buy by local amount (or by count with `units`), sell by count. */
+export function tradeShares(
+  ctx: Ctx,
+  id: string,
+  op: 'buy' | 'sell',
+  amount: number,
+  units = false,
+): void {
   const s = ctx.s;
   const price = priceLocal(s, id);
   if (price === null) throw new EngineError('not trading yet');
@@ -207,10 +213,14 @@ export function tradeShares(ctx: Ctx, id: string, op: 'buy' | 'sell', amount: nu
     if (!onRadar(s, id)) throw new EngineError('you have never heard of it');
     const left = id === 'BTC' ? btcAllowance(s) : Infinity;
     if (left <= 0) throw new EngineError('the market is too thin to buy more this year');
-    const spend = Math.min(Math.round(amount), Math.max(0, s.money.cash), Math.ceil(left * price));
+    // By count: exactly that many (or as many as you can afford and the market will sell).
+    const want = units ? Math.min(amount, left, Math.max(0, s.money.cash) / price) : 0;
+    const spend = units
+      ? Math.round(want * price * 100) / 100
+      : Math.min(Math.round(amount), Math.max(0, s.money.cash), Math.ceil(left * price));
     if (spend <= 0) throw new EngineError('enter an amount you have');
     s.money.cash -= spend;
-    const coins = Math.min(left, spend / price);
+    const coins = units ? want : Math.min(left, spend / price);
     held[id] = (held[id] ?? 0) + coins;
     if (id === 'BTC' && left < Infinity) {
       if (s.usage.year !== s.year) s.usage = { year: s.year, used: {} };

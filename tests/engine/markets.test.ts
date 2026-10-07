@@ -150,4 +150,14 @@ describe('markets that follow history', () => {
     for (const y of [2011, 2013, 2017, 2020]) expect(marketReturn(y, 'coin')).toBeNull();
     expect(marketReturn(2017, 'index')).not.toBeNull();
   });
+
+  it('shares can be bought by count as well as by money', () => {
+    const s = runCheat(at(1980, 30), 'money.add', { amount: 10_000 }).state;
+    const price = priceUsd(s, 'KO') ?? 0;
+    const bought = act(s, { type: 'shares', id: 'KO', op: 'buy', amount: 3, units: true }).state;
+    expect(bought.money.shares?.['KO']).toBeCloseTo(3, 9);
+    expect(s.money.cash - bought.money.cash).toBeCloseTo(3 * price, 6);
+    const sold = act(bought, { type: 'shares', id: 'KO', op: 'sell', amount: 1 }).state;
+    expect(sold.money.shares?.['KO']).toBeCloseTo(2, 9);
+  });
 });

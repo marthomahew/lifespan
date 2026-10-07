@@ -64,7 +64,14 @@ export type PlayerAction =
   | { type: 'chess'; tier: string }
   | { type: 'sport'; sport: string | null }
   | { type: 'let_home'; id: number; on: boolean }
-  | { type: 'shares'; id: string; op: 'buy' | 'sell'; amount: number };
+  | {
+      type: 'shares';
+      id: string;
+      op: 'buy' | 'sell';
+      amount: number;
+      /** Buy this many shares (or coins) rather than this much money's worth. */
+      units?: boolean;
+    };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -155,7 +162,7 @@ export function act(input: GameState, action: PlayerAction): Step {
       letHome(ctx, action.id, action.on);
       break;
     case 'shares':
-      tradeShares(ctx, action.id, action.op, action.amount);
+      tradeShares(ctx, action.id, action.op, action.amount, action.units);
       break;
   }
   prunePending(ctx.s);

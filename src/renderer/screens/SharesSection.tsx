@@ -21,6 +21,7 @@ export function SharesSection({
   run: (a: PlayerAction) => void;
 }): React.JSX.Element {
   const [amount, setAmount] = useState('1000');
+  const [unit, setUnit] = useState<'money' | 'units'>('money');
   const n = Math.max(0, Number(amount) || 0);
   const held = game.money.shares ?? {};
   const blocked = investBlock(game);
@@ -43,7 +44,7 @@ export function SharesSection({
           : ''}
       </p>
       <label className="row small">
-        <span className="nowrap">Amount ({countryOf(game).currency.symbol})</span>
+        <span className="nowrap">Amount</span>
         <input
           type="number"
           min={0}
@@ -51,10 +52,21 @@ export function SharesSection({
           data-testid="shares-amount"
           onChange={(e) => setAmount(e.target.value)}
         />
+        <select
+          value={unit}
+          data-testid="shares-unit"
+          aria-label="Amount in"
+          onChange={(e) => setUnit(e.target.value === 'units' ? 'units' : 'money')}
+        >
+          <option value="money">{countryOf(game).currency.symbol}</option>
+          <option value="units">shares / coins</option>
+        </select>
       </label>
       <p className="small muted" data-testid="shares-hint">
-        Buy spends this much; Sell sells this much worth.
-        {n > 0 && open.some((t) => t.id === 'BTC')
+        {unit === 'money'
+          ? 'Buy spends this much; Sell sells this much worth.'
+          : 'Buy or sell this many shares (or coins); fractions are fine.'}
+        {unit === 'money' && n > 0 && open.some((t) => t.id === 'BTC')
           ? ` That’s about ${btcCoins(game, n)} bitcoin.`
           : ''}
       </p>
@@ -71,14 +83,33 @@ export function SharesSection({
                     {t.emoji} {t.name}{' '}
                     <span className="muted small">{sharePrice(game, price)}</span>
                   </th>
-                  <td>{have > 0 ? formatMoney(game, Math.round(have * price)) : '—'}</td>
+                  <td data-testid={`held-${t.id}`}>
+                    {have > 0 ? (
+                      <>
+                        {units(have, t.id === 'BTC')}{' '}
+                        <span className="muted small">
+                          {formatMoney(game, Math.round(have * price))}
+                        </span>
+                      </>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td className="btn-row">
                     <button
                       data-testid={`buy-${t.id}`}
                       disabled={
                         blocked !== null || n <= 0 || (t.id === 'BTC' && btcAllowance(game) <= 0)
                       }
-                      onClick={() => run({ type: 'shares', id: t.id, op: 'buy', amount: n })}
+                      onClick={() =>
+                        run({
+                          type: 'shares',
+                          id: t.id,
+                          op: 'buy',
+                          amount: n,
+                          units: unit === 'units',
+                        })
+                      }
                     >
                       Buy
                     </button>
@@ -104,7 +135,10 @@ export function SharesSection({
                           type: 'shares',
                           id: t.id,
                           op: 'sell',
-                          amount: price > 0 ? Math.min(have, n / price) : have,
+                          amount: Math.min(
+                            have,
+                            unit === 'units' ? n : price > 0 ? n / price : have,
+                          ),
                         })
                       }
                     >
@@ -143,4 +177,11 @@ function btcCoins(game: GameState, amount: number): string {
   if (price <= 0) return '0';
   const c = amount / price;
   return c >= 100 ? Math.round(c).toLocaleString() : c.toFixed(c >= 1 ? 2 : 4);
+}
+
+/** A holding as a count: whole shares, or coins to a few places. */
+function units(n: number, coins: boolean): string {
+  const shown = n >= 100 ? Math.round(n).toLocaleString() : n.toFixed(n >= 1 ? 2 : 4);
+  if (coins) return `${shown} ₿`;
+  return `${shown} ${n === 1 ? 'share' : 'shares'}`;
 }

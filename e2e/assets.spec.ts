@@ -50,6 +50,11 @@ test('finances view shows last year and a net worth graph; investing works', asy
   await expect(page.getByTestId('max-KO')).toBeDisabled();
   await page.getByTestId('sell-all-KO').click();
   await expect(page.getByTestId('sell-all-KO')).toBeDisabled();
+  // Amounts can be counted in shares too, and the holding shows its count.
+  await page.getByTestId('shares-unit').selectOption('units');
+  await page.getByTestId('shares-amount').fill('2');
+  await page.getByTestId('buy-KO').click();
+  await expect(page.getByTestId('held-KO')).toContainText('2.00 shares');
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('finances')).toHaveCount(0);
 });
