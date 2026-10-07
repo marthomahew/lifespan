@@ -198,6 +198,35 @@ export function renovate(ctx: Ctx, homeId: number): void {
   );
 }
 
+/** What a full service costs: a call-out, plus repairs that follow the wear and the car's worth. */
+export function serviceCost(s: GameState, vehicleId: number): number {
+  const v = s.assets.vehicles.find((x) => x.id === vehicleId);
+  if (!v) return 0;
+  return Math.round(money(s, 300) + ((100 - v.condition) / 100) * v.value * 0.15);
+}
+
+/** Service a vehicle: back to showroom condition (a restored classic is worth more for it). */
+export function serviceVehicle(ctx: Ctx, vehicleId: number): void {
+  const s = ctx.s;
+  const v = s.assets.vehicles.find((x) => x.id === vehicleId);
+  if (!v) throw new EngineError('no such vehicle');
+  if (v.condition >= 100) throw new EngineError('it’s already in perfect condition');
+  const cost = serviceCost(s, vehicleId);
+  if (s.money.cash < cost) throw new EngineError(`the service costs ${formatMoney(s, cost)}`);
+  s.money.cash -= cost;
+  const def = VEHICLE_BY_ID[v.model];
+  const classic = def?.collectible && def.to !== undefined && s.year > def.to;
+  const gain = 100 - v.condition;
+  v.condition = 100;
+  v.value = Math.round(v.value * (1 + (gain / 100) * (classic ? 0.3 : 0.1)));
+  ctx.log(
+    'money',
+    classic
+      ? `🔧 A specialist restores your ${vehicleName(v)} to concours condition: ${formatMoney(s, cost)}. Collectors notice.`
+      : `🔧 A full service on your ${vehicleName(v)}: new parts, a valet, and it drives like new. ${formatMoney(s, cost)}.`,
+  );
+}
+
 /**
  * What a model costs this year, new and used (reference dollars; null: not to be had).
  * New while in production; used from a year after launch (worn, about 55%), for up to 25
@@ -334,7 +363,8 @@ export function assetsTick(ctx: Ctx): void {
       0,
       Math.round(v.value * (classic ? 1 + r.normal(0.06, 0.05) : 1 - r.normal(0.15, 0.03))),
     );
-    v.condition = clampStat(v.condition - r.int(classic ? 1 : 2, classic ? 3 : 6));
+    // The yearly running costs cover the basics, so wear is gentle; a service puts it right.
+    v.condition = clampStat(v.condition - r.int(classic ? 0 : 1, classic ? 2 : 4));
     // Running costs follow the car: a supercar's service costs what a small car does.
     maintenance += money(s, 400 + (100 - v.condition) * 15) + Math.round(v.value * 0.015);
   }

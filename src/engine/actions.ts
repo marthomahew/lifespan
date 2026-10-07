@@ -22,6 +22,7 @@ import {
   buyVehicle,
   moveInto,
   renovate,
+  serviceVehicle,
   sellAsset,
   type Financing,
 } from './systems/assets';
@@ -61,6 +62,7 @@ export type PlayerAction =
   | { type: 'sell_asset'; id: number }
   | { type: 'move_home'; id: number }
   | { type: 'renovate'; id: number }
+  | { type: 'service_vehicle'; id: number }
   | { type: 'buy_vehicle'; model: string; financed: boolean; used?: boolean }
   | { type: 'buy_item'; item: string }
   | { type: 'crime'; id: string }
@@ -143,6 +145,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'renovate':
       renovate(ctx, action.id);
+      break;
+    case 'service_vehicle':
+      serviceVehicle(ctx, action.id);
       break;
     case 'buy_vehicle':
       buyVehicle(ctx, action.model, action.financed, action.used ?? false);

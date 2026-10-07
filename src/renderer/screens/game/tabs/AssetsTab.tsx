@@ -1,5 +1,5 @@
 import { cap } from '../../../components/text';
-import { itemName, vehicleName } from '../../../../engine/systems/assets';
+import { itemName, serviceCost, vehicleName } from '../../../../engine/systems/assets';
 import { useState } from 'react';
 import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
 import { BuyDialog, type BuyTarget } from './BuyDialog';
@@ -235,6 +235,15 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
                     · {formatMoney(game, v.value)} · condition {v.condition}
                   </span>
                 </span>
+                {v.condition < 100 && (
+                  <button
+                    data-testid={`btn-service-${v.id}`}
+                    title="Back to perfect condition; a restored classic gains value"
+                    onClick={() => run({ type: 'service_vehicle', id: v.id })}
+                  >
+                    Service ({formatMoneyShort(game, serviceCost(game, v.id))})
+                  </button>
+                )}
                 <button onClick={() => run({ type: 'sell_asset', id: v.id })}>Sell</button>
               </li>
             ))}

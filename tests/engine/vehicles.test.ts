@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { act, ageUp, newLife, runCheat, type GameState } from '../../src/engine';
 import { VEHICLE_BY_ID } from '../../src/content/assets';
 import { CATALOGUE_VEHICLES } from '../../src/content/vehicles';
-import { vehicleOffer } from '../../src/engine/systems/assets';
+import { serviceCost, vehicleOffer } from '../../src/engine/systems/assets';
 
 const rich = (birthYear: number, age = 40): GameState => {
   const s0 = newLife({ birthYear, country: 'us' }, 4500);
@@ -47,5 +47,22 @@ describe('the car catalogue', () => {
     const after959 = s.assets.vehicles.find((v) => v.model === 'porsche_959')!.value;
     expect(after911).toBeLessThan(before.a);
     expect(after959).toBeGreaterThan(before.b);
+  });
+
+  it('a service puts a worn car back to perfect condition, and wear is gentle when it is kept up', () => {
+    let s = rich(1960, 50);
+    s = act(s, { type: 'buy_vehicle', model: 'porsche_911', financed: false, used: true }).state;
+    const car = s.assets.vehicles[0]!;
+    expect(car.condition).toBeLessThan(100);
+    const cost = serviceCost(s, car.id);
+    expect(cost).toBeGreaterThan(0);
+    const cash = s.money.cash;
+    s = act(s, { type: 'service_vehicle', id: car.id }).state;
+    expect(s.assets.vehicles[0]!.condition).toBe(100);
+    expect(cash - s.money.cash).toBe(cost);
+    expect(() => act(s, { type: 'service_vehicle', id: car.id })).toThrow(/perfect/);
+    s = ageUp({ ...s, pending: [] }).state;
+    const crashed = s.log.some((l) => /You crash|You scrape/.test(l.text));
+    if (!crashed) expect(s.assets.vehicles[0]!.condition).toBeGreaterThanOrEqual(96);
   });
 });
