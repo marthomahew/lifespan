@@ -11,6 +11,17 @@ const substanceLevel = (s: GameState): number =>
     s.vices.levels.hard_drugs,
   );
 
+/** How common smoking was in a year, relative to 2000 (US adults: 42% in 1965, 23% in 2000, 12% in 2020). */
+export function smokingEra(year: number): number {
+  const pct =
+    year <= 1965
+      ? 42
+      : year <= 2000
+        ? 42 - ((year - 1965) * 19) / 35
+        : Math.max(10, 23 - ((year - 2000) * 11) / 20);
+  return pct / 23;
+}
+
 export const HEALTH_EVENTS: EventDef[] = [
   // ---------------------------------------------------------------- teen (13–17)
   {
@@ -18,7 +29,8 @@ export const HEALTH_EVENTS: EventDef[] = [
     kind: 'choice',
     category: 'health',
     ages: [13, 17],
-    weight: 8,
+    // As common as smoking was: everywhere in the sixties, rare by the twenties.
+    weight: (s) => Math.round(8 * smokingEra(s.year) * 10) / 10,
     cooldownYears: 3,
     bind: { pal: { role: 'friend' } },
     text: 'Behind the sports hall, {pal.first} holds out a crumpled pack like it is a membership card. Three older kids are watching to see what you do.',
@@ -1363,6 +1375,81 @@ export const HEALTH_EVENTS: EventDef[] = [
               { stat: 'happiness', delta: 3 },
               { stat: 'discipline', delta: 2 },
             ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'hl_era_smoke_everywhere',
+    kind: 'choice',
+    category: 'health',
+    ages: [18, 60],
+    weight: 7,
+    cooldownYears: 6,
+    toYear: 1989,
+    text: 'Everyone smokes: at their desks, on the bus, in the cinema, on planes. Someone at the party taps out a cigarette and offers you one without even asking.',
+    choices: [
+      {
+        id: 'take',
+        label: 'Take it, like everyone else',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'It is what grown-ups do, apparently. You smoke it with the confidence of someone who has been told it is fine.',
+            effects: [
+              { vice: 'smoking', delta: 8 },
+              { stat: 'stress', delta: -2 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'decline',
+        label: 'No thanks, you don’t',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You say no and get a look as though you had refused a handshake. Your lungs will thank you in thirty years.',
+            effects: [{ stat: 'health', delta: 1 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'hl_teen_vape_offer',
+    kind: 'choice',
+    category: 'health',
+    ages: [13, 18],
+    weight: 7,
+    cooldownYears: 3,
+    fromYear: 2012,
+    bind: { pal: { role: 'friend' } },
+    text: '{pal.first} pulls a vape the size of a USB stick out of a sleeve and offers it to you. It smells of something called “blue razz ice”.',
+    choices: [
+      {
+        id: 'try',
+        label: 'Try it',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'It tastes like sweets and hits like a headache. You get why people do it, and you also get dizzy.',
+            effects: [
+              { vice: 'smoking', delta: 6 },
+              { rel: 'pal', delta: 2, memory: 'the vape behind the science block' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'pass',
+        label: 'Pass',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You shake your head. {pal.first} shrugs and blows a cloud the size of a sofa.',
+            effects: [{ stat: 'health', delta: 1 }],
           },
         ],
       },

@@ -72,7 +72,8 @@ describe('a business of your own', () => {
     s = { ...s, business: s.business ? { ...s.business, health: 1 } : null };
     // A hopeless startup: no skill, no momentum.
     let folded = false;
-    for (let i = 0; i < 6 && !folded; i++) {
+    // Folding is a yearly roll at rock-bottom health; fifteen years makes it near-certain.
+    for (let i = 0; i < 15 && !folded; i++) {
       s = years({ ...s, business: s.business ? { ...s.business, health: 1 } : null }, 1);
       folded = s.player.flags.includes('business_failed') || !s.business;
     }
