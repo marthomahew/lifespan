@@ -119,11 +119,13 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             value={d.country}
             onChange={(e) => set({ country: e.target.value, city: '' })}
           >
-            {COUNTRIES.map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.flag} {x.name}
-              </option>
-            ))}
+            {[...COUNTRIES]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.flag} {x.name}
+                </option>
+              ))}
           </select>
         </label>
         <label className="cl-field">
@@ -134,11 +136,13 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             onChange={(e) => set({ city: e.target.value })}
           >
             <option value="">Random</option>
-            {c?.cities.map((x) => (
-              <option key={x} value={x}>
-                {x}
-              </option>
-            ))}
+            {[...(c?.cities ?? [])]
+              .sort((a, b) => a.localeCompare(b))
+              .map((x) => (
+                <option key={x} value={x}>
+                  {x}
+                </option>
+              ))}
           </select>
         </label>
         <label className="cl-field">

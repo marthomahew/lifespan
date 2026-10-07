@@ -12,7 +12,9 @@ export function EmigrateSection({
   game: GameState;
   onError: (e: string | null) => void;
 }): React.JSX.Element | null {
-  const others = COUNTRIES.filter((c) => c.id !== game.player.country);
+  const others = COUNTRIES.filter((c) => c.id !== game.player.country).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
   const [country, setCountry] = useState(others[0]?.id ?? 'us');
   const [city, setCity] = useState('');
   if (game.player.age < 16) return null;
@@ -50,9 +52,11 @@ export function EmigrateSection({
           onChange={(e) => setCity(e.target.value)}
         >
           <option value="">Any city</option>
-          {target?.cities.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
+          {[...(target?.cities ?? [])]
+            .sort((a, b) => a.localeCompare(b))
+            .map((c) => (
+              <option key={c}>{c}</option>
+            ))}
         </select>
         <button
           type="submit"
