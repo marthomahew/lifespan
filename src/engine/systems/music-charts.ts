@@ -44,8 +44,14 @@ export function genreMoment(g: Genre, year: number): number {
   }
 }
 
-/** What an artist earns per unit sold, by era (today's dollars): records, CDs, downloads, streams. */
-const perUnit = (year: number): number => (year < 2000 ? 1.6 : year < 2015 ? 0.7 : 0.45);
+/**
+ * What an artist earns per unit sold, by era (today's dollars): a royalty on a record or CD,
+ * then on a download, then on an album's worth of streams (1,500 of them).
+ */
+const perUnit = (year: number): number => (year < 2000 ? 2 : 1.2);
+
+/** A star's pull: the famous sell many times more of a hit (up to about twelve times). */
+const starPower = (fame: number): number => 1 + 11 * (fame / 100) ** 3;
 
 /** chart: the peak position (0: didn't chart). */
 export type ReleaseResult = { chart: number; sales: number; cert?: string; pay: number };
@@ -63,7 +69,9 @@ export function releaseResult(ctx: Ctx, quality: number, signed: boolean): Relea
   // Sales (units: records and CDs, then downloads, then streams' equivalent).
   const era = s.year < 2000 ? 1 : s.year < 2015 ? 0.55 : 0.8;
   const sales = Math.round(
-    (chart ? 400000 / Math.sqrt(chart) : 2000 + pull * 20000) * era * (0.7 + ctx.rng.next() * 0.6),
+    (chart ? (400000 / Math.sqrt(chart)) * starPower(fame) : 2000 + pull * 20000) *
+      era *
+      (0.7 + ctx.rng.next() * 0.6),
   );
   const cert =
     sales >= 1000000
@@ -73,8 +81,10 @@ export function releaseResult(ctx: Ctx, quality: number, signed: boolean): Relea
       : sales >= 500000
         ? 'gold'
         : undefined;
+  // Stars negotiate a bigger royalty; going it alone keeps far more of each sale.
+  const deal = signed ? (fame >= 80 ? 1.5 : 1) : 2.5;
   const pay = Math.round(
-    sales * perUnit(s.year) * s.inflation * countryOf(s).currency.perUsd * (signed ? 1 : 2.5),
+    sales * perUnit(s.year) * s.inflation * countryOf(s).currency.perUsd * deal,
   );
   return { chart, sales, ...(cert ? { cert } : {}), pay };
 }
@@ -126,3 +136,18 @@ export function catalogueRoyalties(s: GameState): number {
 
 export const royaltiesLine = (s: GameState, pay: number): string =>
   `Royalties from your records this year: ${formatMoney(s, pay)}.`;
+
+/**
+ * What a tour pays you after crew, venues and the band (today's dollars). A club act clears
+ * thousands; a stadium star clears tens of millions (the biggest real tours gross $500M to $2B).
+ * Ticket prices rose much faster than inflation from the late 1990s, and fans who saw you last
+ * year are slower to buy again.
+ */
+export function tourTake(s: GameState, fame: number, lastTour: number | null): number {
+  const era = s.year < 1980 ? 0.3 : s.year < 2000 ? 0.55 : 1;
+  const star = 100_000_000 * (fame / 100) ** 5 * era;
+  const latest = s.music.releases[s.music.releases.length - 1];
+  const album = latest && latest.year >= s.year - 2 ? 0.7 + latest.quality / 200 : 0.7;
+  const tired = lastTour !== null && lastTour >= s.year - 1 ? 0.5 : 1;
+  return (20000 + fame * 3000 + star * album) * tired;
+}

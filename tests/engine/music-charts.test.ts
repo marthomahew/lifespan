@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { act, ageUp, newLife, runCheat, type GameState } from '../../src/engine';
-import { genreMoment } from '../../src/engine/systems/music-charts';
+import { genreMoment, tourTake } from '../../src/engine/systems/music-charts';
 
 const star = (birthYear: number, seed = 5200): GameState => {
   let s = runCheat(newLife({ birthYear, country: 'us' }, seed), 'age.set', { age: 25 }).state;
@@ -37,5 +37,24 @@ describe('the record business', () => {
     expect(s.log.some((l) => /streams/.test(l.text))).toBe(true);
     s = act(s, { type: 'music_genre', genre: 'hiphop' }).state;
     expect(s.music.genre).toBe('hiphop');
+  });
+
+  it('a superstar earns like one: millions per hit album, tens of millions per stadium tour', () => {
+    let s = star(1995, 5202);
+    s = { ...s, player: { ...s.player, stats: { ...s.player.stats, fame: 100 } } };
+    s = { ...s, music: { ...s.music, stage: 5 } };
+    const c0 = s.money.cash;
+    s = act(s, { type: 'music', id: 'release' }).state;
+    const album = s.money.cash - c0;
+    const r = s.music.releases.at(-1)!;
+    if (r.chart === 1) expect(r.sales ?? 0).toBeGreaterThan(1_500_000);
+    expect(album).toBeGreaterThan(1_000_000);
+    // A stadium star clears tens of millions; a club act thousands; touring every year tires fans.
+    expect(tourTake(s, 100, null)).toBeGreaterThan(50_000_000);
+    expect(tourTake(s, 20, null)).toBeLessThan(200_000);
+    expect(tourTake(s, 100, s.year - 1)).toBeLessThan(tourTake(s, 100, null));
+    const c1 = s.money.cash;
+    s = act({ ...s, pending: [] }, { type: 'music', id: 'tour' }).state;
+    expect(s.money.cash - c1).toBeGreaterThan(10_000_000);
   });
 });

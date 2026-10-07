@@ -5,6 +5,7 @@ import {
   releaseLine,
   releaseResult,
   royaltiesLine,
+  tourTake,
   type Genre,
 } from './music-charts';
 import { luck } from './luck';
@@ -255,11 +256,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
         `You release "${title}". ${quality > 80 ? (mum ? 'Critics call it a masterpiece; your mum agrees.' : 'Critics call it a masterpiece, and for once you agree.') : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 30 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
-      ctx.log(
-        'fame',
-        `${run.chart === 1 ? '🥇' : '📀'} ${releaseLine(s, run)}`,
-        run.chart > 0,
-      );
+      ctx.log('fame', `${run.chart === 1 ? '🥇' : '📀'} ${releaseLine(s, run)}`, run.chart > 0);
       awardSeason(ctx, title, quality, run.chart);
       if (!m.label && quality >= 60 - 15 * luck(s, 'music') && m.stage === 3) {
         const def = EVENT_BY_ID['fame_record_deal_offer'];
@@ -269,9 +266,12 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
     }
     case 'tour': {
       const fame = s.player.stats.fame;
+      const tired = m.lastTour !== undefined && m.lastTour >= s.year - 1;
+      const take = money(s, tourTake(s, fame, m.lastTour ?? null), 'wage');
+      m.lastTour = s.year;
       // A quarter of tours go wrong: cancelled dates, a voice that gives out, a van in a ditch.
       if (r.chance(0.25 * Math.max(0, 1 - luck(s, 'music')))) {
-        const pay = money(s, 5000 + fame * 600, 'wage');
+        const pay = Math.round(take * 0.35);
         s.money.cash += pay;
         addStat(s, 'health', -8);
         addStat(s, 'stress', 10);
@@ -289,13 +289,30 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
         );
         return;
       }
-      const pay = money(s, 20000 + fame * 3000, 'wage');
+      const pay = Math.round(take * (0.7 + r.next() * 0.6));
       s.money.cash += pay;
       addStat(s, 'fame', 3);
       addStat(s, 'health', -4);
       addStat(s, 'stress', 6);
       m.touring = true;
       m.stage = Math.max(m.stage, 5);
+      if (fame >= 80) {
+        ctx.log(
+          'fame',
+          pickFresh(ctx, [
+            `🏟️ A world stadium tour: ${r.int(40, 90)} nights, ${r.int(1, 4)} million tickets, and your take after crew and band is ${formatMoney(s, pay)}.`,
+            `🏟️ ${r.int(20, 40)} countries, a stage that takes three days to build, and a city that renames a street for the week you play. Your take: ${formatMoney(s, pay)}.`,
+            `🏟️ Tickets sell out in minutes and the resale prices make the news. ${r.int(50, 120)} stadium nights later you clear ${formatMoney(s, pay)}.`,
+          ]),
+          true,
+        );
+        if (tired)
+          ctx.log(
+            'fame',
+            'Back on the road a year after the last tour: some fans sit this one out.',
+          );
+        return;
+      }
       ctx.log(
         'fame',
         pickFresh(ctx, [

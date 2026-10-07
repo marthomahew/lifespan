@@ -150,6 +150,8 @@ export type MusicState = {
   /** Award nominations and wins. */
   awards?: string[];
   touring: boolean;
+  /** The year of your last tour (fans who just saw you are slower to buy again). */
+  lastTour?: number;
   lastWork: number;
 };
 
