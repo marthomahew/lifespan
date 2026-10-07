@@ -5,6 +5,7 @@ import {
   choose,
   currentPopup,
   freeTime,
+  workTime,
   newLife,
   runCheat,
   type GameState,
@@ -159,5 +160,24 @@ describe('sport, season by season', () => {
     const test = currentPopup(s)?.choices.find((c) => c.id === 'test');
     expect(test?.note).toMatch(/leave your job as/);
     expect(currentPopup(s)?.choices.find((c) => c.id === 'decline')?.note).toBeUndefined();
+  });
+
+  it('extra training uses work time, twice a year at most, and lifts the season', () => {
+    const base = act(kid(2450), { type: 'sport', sport: 'football' }).state;
+    const once = act(base, { type: 'sport_train' }).state;
+    expect(workTime(once).left).toBe(workTime(base).left - 1);
+    const twice = act(once, { type: 'sport_train' }).state;
+    expect(() => act(twice, { type: 'sport_train' })).toThrow(/2 extra sessions/);
+    // Over many seasons, trained players have better form on average.
+    let lazy = 0;
+    let keen = 0;
+    for (let i = 0; i < 30; i++) {
+      const s = { ...act(kid(2500 + i), { type: 'sport', sport: 'football' }).state, pending: [] };
+      lazy += ageUp(s).state.sport?.form ?? 0;
+      const t = act(act(s, { type: 'sport_train' }).state, { type: 'sport_train' }).state;
+      keen += ageUp(t).state.sport?.form ?? 0;
+    }
+    expect(keen).toBeGreaterThan(lazy + 30 * 8);
+    expect(ageUp(twice).state.sport?.extra).toBe(0);
   });
 });

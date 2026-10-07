@@ -4,6 +4,8 @@ import {
   CHESS_TIERS,
   TITLE_NAMES,
   SPORT_COST,
+  EXTRA_TRAINING,
+  trainReason,
   levelLabel,
   takeUpReason,
   playingStrength,
@@ -58,11 +60,21 @@ function SportPanel({
             </span>
           </div>
           <div className="muted">
-            Next: {def.levels[r.level + 1] ?? 'the top: stay there'}. A strong season gets you
-            picked; a poor one can drop you. Training takes {SPORT_COST} pip of free time a year.
+            Next: {def.levels[r.level + 1] ?? 'the top: stay there'}. Seasons play themselves out on
+            your birthday: a strong one gets you picked, a poor one can drop you. Being on the team
+            keeps {SPORT_COST} pip of your free time each year. Extra training uses work time and
+            lifts your next season.
           </div>
           {r.honours.length > 0 && <div className="muted">Honours: {r.honours.join(', ')}</div>}
           <div className="btn-row">
+            <button
+              data-testid="sport-train"
+              disabled={trainReason(game) !== null}
+              title={trainReason(game) ?? 'One work-time pip: a better season ahead'}
+              onClick={() => onError(doAct({ type: 'sport_train' }))}
+            >
+              💪 Extra training{r.extra ? ` (${r.extra}/${EXTRA_TRAINING})` : ''}
+            </button>
             <button
               className="quiet-danger"
               data-testid="sport-stop"

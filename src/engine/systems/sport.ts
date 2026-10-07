@@ -9,6 +9,8 @@ import type { GameState } from '../types';
 import { addInjury } from './injuries';
 import { luck } from './luck';
 import { addSkill } from './skills';
+import { workTime } from './activities';
+import { markUsed } from './usage';
 
 /** A sport you play, season by season: the level you have reached, your form, your honours. */
 export type SportRecord = {
@@ -22,6 +24,8 @@ export type SportRecord = {
   honours: string[];
   /** Still playing (false once you hang up your boots). */
   active: boolean;
+  /** Extra training sessions this year (each lifts the coming season). */
+  extra?: number;
 };
 export const SPORT_COST = 1;
 
@@ -57,6 +61,34 @@ export function takeUpSport(ctx: Ctx, id: string | null): void {
   );
 }
 
+export const EXTRA_TRAINING = 2;
+
+/** Why you can't put in extra training now, or null. */
+export function trainReason(s: GameState): string | null {
+  const r = s.sport;
+  if (!r?.active) return 'not on a team';
+  if (s.legal.prison) return 'not from prison';
+  if ((r.extra ?? 0) >= EXTRA_TRAINING) return `${EXTRA_TRAINING} extra sessions a year`;
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
+  return null;
+}
+
+/** Extra training: a work-time pip for a better season (and a little athletics). */
+export function trainExtra(ctx: Ctx): void {
+  const s = ctx.s;
+  const why = trainReason(s);
+  if (why) throw new EngineError(why);
+  const r = s.sport as SportRecord;
+  r.extra = (r.extra ?? 0) + 1;
+  markUsed(s, 'w:total');
+  addSkill(s, 'athletics', 1);
+  const def = sportDef(r);
+  ctx.log(
+    'activity',
+    `${def?.emoji ?? '🏅'} Extra sessions: early mornings, drills and video. The coaches notice.`,
+  );
+}
+
 /**
  * A season, on your birthday. How well you play: athletics, health, a gift for it, form,
  * and luck. A strong season moves you up a level (selection); a poor one can drop you.
@@ -84,7 +116,9 @@ export function sportTick(ctx: Ctx): void {
     gift +
     ageMod +
     18 * luck(s, 'sport') +
+    7 * (r.extra ?? 0) +
     ctx.rng.normal(0, 10);
+  r.extra = 0;
   r.form = Math.max(0, Math.min(100, Math.round(perf)));
   r.seasons += 1;
   addSkill(s, 'athletics', 2);

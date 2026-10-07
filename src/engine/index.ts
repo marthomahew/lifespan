@@ -95,7 +95,15 @@ export {
   worldRank,
   type ChessRecord,
 } from './systems/chess';
-export { levelLabel, sportOf, takeUpReason, SPORT_COST, type SportRecord } from './systems/sport';
+export {
+  EXTRA_TRAINING,
+  levelLabel,
+  sportOf,
+  takeUpReason,
+  trainReason,
+  SPORT_COST,
+  type SportRecord,
+} from './systems/sport';
 export { knownFor, knownForLine } from './fame';
 export { MAJORS, isChampion, majorReason, type Major, type MajorId } from './systems/chess-crown';
 export { letReason, rentFor, type Tenancy } from './systems/lettings';
