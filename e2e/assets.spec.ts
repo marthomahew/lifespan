@@ -43,6 +43,13 @@ test('finances view shows last year and a net worth graph; investing works', asy
   await page.getByTestId('fin-amount').fill('1000');
   await page.getByTestId('fin-invest').click();
   await expect(page.getByTestId('holdings')).toContainText('1,000');
+  // Max spends the cash on hand; Sell all empties the holding.
+  await expect(page.getByTestId('sell-all-KO')).toBeDisabled();
+  await page.getByTestId('max-KO').click();
+  await expect(page.getByTestId('sell-all-KO')).toBeEnabled();
+  await expect(page.getByTestId('max-KO')).toBeDisabled();
+  await page.getByTestId('sell-all-KO').click();
+  await expect(page.getByTestId('sell-all-KO')).toBeDisabled();
   await page.keyboard.press('Escape');
   await expect(page.getByTestId('finances')).toHaveCount(0);
 });

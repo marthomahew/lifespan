@@ -37,7 +37,9 @@ export function SharesSection({
           : ''}
         {blocked ? ` You can’t trade: ${blocked}.` : ''}
         {onRadar(game, 'BTC') && Number.isFinite(btcAllowance(game))
-          ? ` Bitcoin’s market is tiny: about ${Math.floor(btcAllowance(game)).toLocaleString()} more coins can be had this year without moving the price.`
+          ? btcAllowance(game) < 1
+            ? ' You’ve bought every bitcoin anyone would sell you this year; try again next year.'
+            : ` Bitcoin’s market is tiny: about ${Math.floor(btcAllowance(game)).toLocaleString()} more coins can be had this year without moving the price.`
           : ''}
       </p>
       <label className="row small">
@@ -74,6 +76,20 @@ export function SharesSection({
                       Buy
                     </button>
                     <button
+                      data-testid={`max-${t.id}`}
+                      title="Spend all your cash, or buy as much as can be had this year"
+                      disabled={
+                        blocked !== null ||
+                        game.money.cash <= 0 ||
+                        (t.id === 'BTC' && btcAllowance(game) <= 0)
+                      }
+                      onClick={() =>
+                        run({ type: 'shares', id: t.id, op: 'buy', amount: game.money.cash })
+                      }
+                    >
+                      Max
+                    </button>
+                    <button
                       data-testid={`sell-${t.id}`}
                       disabled={have <= 0}
                       onClick={() =>
@@ -86,6 +102,13 @@ export function SharesSection({
                       }
                     >
                       Sell
+                    </button>
+                    <button
+                      data-testid={`sell-all-${t.id}`}
+                      disabled={have <= 0}
+                      onClick={() => run({ type: 'shares', id: t.id, op: 'sell', amount: have })}
+                    >
+                      Sell all
                     </button>
                   </td>
                 </tr>
