@@ -1,3 +1,4 @@
+import { teenRomance } from './teen-romance';
 import type { Ctx } from '../ctx';
 import { addNpc, remember } from '../npc';
 import type { Gender, Npc, Role } from '../types';
@@ -17,10 +18,16 @@ export function applyStatusEffect(
   const s = ctx.s;
   const p = s.player;
   switch (kind) {
+    case 'sweetheart':
+    case 'sweetheart_end':
+      teenRomance(ctx, kind, npc);
+      return;
     case 'meet': {
       if (p.age < 18 || currentPartner(ctx)) return;
       // Someone you already know (a coworker, a friend) becomes more than that.
       if (npc && npc.alive && npc.age >= 18 && fitsAttraction(p.attraction, npc.gender)) {
+        // A school sweetheart, now grown up, becomes a partner.
+        npc.roles = npc.roles.filter((r) => r !== 'sweetheart');
         if (!npc.roles.includes('partner')) npc.roles.push('partner');
         npc.romance = { stage: 'dating', since: s.year, prenup: false };
         if (ctx.rng.chance(0.45)) npc.flags.push('no_kids');

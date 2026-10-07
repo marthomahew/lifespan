@@ -12,7 +12,7 @@ const GROUPS: { label: string; roles: string[] }[] = [
     label: 'Family',
     roles: ['mother', 'father', 'stepparent', 'sibling', 'grandparent', 'aunt_uncle', 'nibling'],
   },
-  { label: 'Love', roles: ['spouse', 'partner'] },
+  { label: 'Love', roles: ['spouse', 'partner', 'sweetheart'] },
   { label: 'Children', roles: ['child', 'grandchild'] },
   { label: 'Friends', roles: ['friend', 'bandmate'] },
   {

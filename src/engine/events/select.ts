@@ -28,6 +28,7 @@ export const ROLES: Role[] = [
   'bandmate',
   'stepparent',
   'grandchild',
+  'sweetheart',
   'nibling',
   'aunt_uncle',
   'acquaintance',
@@ -84,6 +85,7 @@ export function matches(s: GameState, n: Npc, q: NpcQuery, adultsOnly: boolean):
   if (q.maxRelationship !== undefined && n.rel > q.maxRelationship) return false;
   if (q.minAge !== undefined && n.age < q.minAge) return false;
   if (q.maxAge !== undefined && n.age > q.maxAge) return false;
+  if (q.nearAge !== undefined && Math.abs(n.age - s.player.age) > q.nearAge) return false;
   if (adultsOnly && n.age < 18) return false;
   if (q.sameCountry && n.country !== s.player.country) return false;
   if (q.gender && n.gender !== q.gender) return false;

@@ -15,7 +15,7 @@ Everyone ages on screen, from baby to grey, and their faces follow their mood. P
 
 When you die you get an obituary with a life title and your face through the years, and you can continue as any living child. The Dynasty view keeps every generation and a legacy score, and the start screen keeps records across every life (oldest, richest, most children, most achievements). The free-time limit can be switched off in Settings, and Settings decides how often a random life starts with a background (off by default).
 
-Romance, dating, and pregnancy are for adults only and fade to black. Crime and drugs stay abstract.
+Teenagers can go out with someone their own age (14–17, two years apart at most): crushes, dances, notes and first heartbreak, with nothing physical described. Romance, sex and pregnancy between adults fade to black. Crime and drugs stay abstract.
 
 ## Controls
 

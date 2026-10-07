@@ -23,6 +23,7 @@ import { specialPathsTick } from './special-paths';
 import { languageTick } from './emigration';
 import { npcLifecycle, relationshipDecay } from './npcs';
 import { romanceTick } from './romance';
+import { teenRomanceTick } from './teen-romance';
 import { bonusLine, perkBonus, perkEffect } from './perks';
 import { injuryPenalty } from './injuries';
 import { formatMoney } from '../economy';
@@ -109,6 +110,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   memoryTick(ctx);
   projectsTick(ctx);
   romanceTick(ctx);
+  teenRomanceTick(ctx);
   // 5. Chain steps due this year.
   ctx.phase('chains');
   if (!s.death) runDueChains(ctx);

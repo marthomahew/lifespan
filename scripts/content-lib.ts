@@ -271,6 +271,15 @@ export function validateEvents(
         ) {
           err(where, `${ef.status} needs an adults-only event (ages 18+)`);
         }
+        // Teen going-out is for peers only: a teen event, and everyone in it 14–17.
+        if ('status' in ef && ef.status === 'sweetheart') {
+          const [lo, hi] = e.ages ?? [0, 120];
+          if (lo < 14 || hi > 17 || e.adultsOnly || e.category === 'romance')
+            err(where, 'sweetheart events are teen social events (ages 14–17)');
+          for (const [name, q] of Object.entries(queries))
+            if ((q.minAge ?? 0) < 14 || (q.maxAge ?? 120) > 17)
+              err(where, `sweetheart binding ${name} needs ages 14–17`);
+        }
       }
     });
 

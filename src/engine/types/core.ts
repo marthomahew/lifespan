@@ -150,6 +150,8 @@ export type Role =
   | 'bandmate'
   | 'stepparent'
   | 'grandchild'
+  /** A teenage boyfriend or girlfriend (14–17, a peer; never with an adult). */
+  | 'sweetheart'
   /** A sibling's child, and a parent's sibling (after you continue as an heir). */
   | 'nibling'
   | 'aunt_uncle'

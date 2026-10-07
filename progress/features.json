@@ -889,5 +889,10 @@
     "title": "The job board (fit, pay ladder, ceiling, sorting, search) and special careers that find you (astronaut, politician, intelligence officer, diplomat, film actor; Olympics, restaurant star, Nobel)",
     "passes": true,
     "evidence": "tests/engine/job-board.test.ts; tests/engine/special-paths.test.ts; e2e/careers.spec.ts"
+  },
+  "S83": {
+    "title": "Teenage relationships between peers (14–17), nothing physical; becomes an adult relationship at 18 together",
+    "passes": true,
+    "evidence": "tests/engine/teen-romance.test.ts; content:check"
   }
 }

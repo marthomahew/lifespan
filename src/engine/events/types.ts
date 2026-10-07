@@ -10,6 +10,8 @@ export type NpcQuery = {
   maxRelationship?: number;
   minAge?: number;
   maxAge?: number;
+  /** Within this many years of the player's own age (peers). */
+  nearAge?: number;
   sameCountry?: boolean;
   gender?: 'male' | 'female';
   /** The NPC must remember something about you. */
@@ -51,7 +53,10 @@ export type Effect =
         | 'adopt'
         | 'friend'
         | 'enemy'
-        | 'npc_dies';
+        | 'npc_dies'
+        /** Teen peers going out (14–17, two years apart at most), and its end. */
+        | 'sweetheart'
+        | 'sweetheart_end';
       with?: string;
       role?: Role;
       /** A new friend or enemy the text has already named. */
