@@ -1,3 +1,4 @@
+import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../content/assets';
 import { GIFT_BY_ID } from '../../content/gifts';
 import { SKILL_BY_ID } from '../../content/skills';
 import { TRAIT_BY_ID } from '../../content/traits';
@@ -11,6 +12,15 @@ export function playerOdds(s: GameState, key: OddsKey): number {
   for (const [id, lvl] of Object.entries(s.player.skills))
     t += ((SKILL_BY_ID[id]?.odds[key] ?? 0) * lvl) / 100;
   for (const id of s.player.gifts ?? []) t += GIFT_BY_ID[id]?.odds?.[key] ?? 0;
+  // Things you own that open doors (once per kind: two sports cars don't double the effect).
+  const kinds = new Set([
+    ...s.assets.vehicles.map((v) => `v:${v.model}`),
+    ...s.assets.possessions.map((p) => `p:${p.item}`),
+  ]);
+  for (const k of kinds) {
+    const def = k.startsWith('v:') ? VEHICLE_BY_ID[k.slice(2)] : POSSESSION_BY_ID[k.slice(2)];
+    t += def?.perks?.[key] ?? 0;
+  }
   return t;
 }
 

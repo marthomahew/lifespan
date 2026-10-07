@@ -148,6 +148,7 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'meridian_gt',
+    perks: { romance: 0.06, social: 0.03 },
     label: 'Sports car',
     eras: [
       { from: 1953, name: 'Chevrolet Corvette' },
@@ -177,6 +178,7 @@ export const VEHICLES: VehicleDef[] = [
   },
   {
     id: 'sable_luxe',
+    perks: { social: 0.04, work: 0.02 },
     label: 'Luxury saloon',
     eras: [
       { from: 1954, name: 'Cadillac Fleetwood' },
@@ -302,6 +304,7 @@ export const POSSESSIONS: PossessionDef[] = [
   },
   {
     id: 'diamond_ring',
+    perks: { romance: 0.03 },
     label: 'Diamond ring',
     eras: [{ from: 1886, name: 'Tiffany solitaire ring' }],
     emoji: '💍',
@@ -312,6 +315,7 @@ export const POSSESSIONS: PossessionDef[] = [
   },
   {
     id: 'gold_watch',
+    perks: { work: 0.03, social: 0.02 },
     label: 'Gold watch',
     eras: [
       { from: 1953, name: 'Rolex Submariner' },
@@ -327,6 +331,7 @@ export const POSSESSIONS: PossessionDef[] = [
   },
   {
     id: 'oil_painting',
+    perks: { social: 0.02 },
     label: 'Oil painting',
     emoji: '🖼️',
     kind: 'art',
@@ -336,6 +341,7 @@ export const POSSESSIONS: PossessionDef[] = [
   },
   {
     id: 'bronze_sculpture',
+    perks: { social: 0.02 },
     label: 'Bronze sculpture',
     emoji: '🗿',
     kind: 'art',
@@ -406,6 +412,7 @@ export const POSSESSIONS: PossessionDef[] = [
   },
   {
     id: 'racing_bike',
+    perks: { athletic: 0.03 },
     label: 'Racing bike',
     eras: [
       { from: 1950, name: 'Raleigh racer' },

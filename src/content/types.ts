@@ -337,6 +337,8 @@ export type HomeTypeDef = {
 export type VehicleDef = {
   id: string;
   label: string;
+  /** What owning it does for you: success-odds tilts while you own one (once per kind). */
+  perks?: Partial<Record<OddsKey, number>>;
   /** Real models by era: the one on sale is the latest whose year has come. */
   eras?: { from: number; name: string }[];
   /** Not on sale before this year. */
@@ -349,6 +351,8 @@ export type VehicleDef = {
 export type PossessionDef = {
   id: string;
   label: string;
+  /** What owning it does for you: success-odds tilts while you own one (once per kind). */
+  perks?: Partial<Record<OddsKey, number>>;
   /** Real models by era: the one on sale is the latest whose year has come. */
   eras?: { from: number; name: string }[];
   /** Not on sale before this year. */

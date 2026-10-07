@@ -199,6 +199,11 @@ function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
         </select>
       </label>
       {v && <p className="muted small">{v.description}</p>}
+      {v?.perks && (
+        <p className="small" data-testid="buy-perks">
+          {perkText(v.perks)}
+        </p>
+      )}
       {adult && (
         <label className="check">
           <input
@@ -247,10 +252,33 @@ function ItemForm({ game, onBuy }: FormProps): React.JSX.Element {
         </select>
       </label>
       {p && <p className="muted small">{p.description}</p>}
+      {p?.perks && (
+        <p className="small" data-testid="buy-perks">
+          {perkText(p.perks)}
+        </p>
+      )}
       <p className="small">You have {formatMoney(game, game.money.cash)}.</p>
       <button className="primary" type="submit" data-testid="buy-confirm">
         Buy it
       </button>
     </form>
   );
+}
+
+const PERK_LABEL: Record<string, string> = {
+  romance: 'romance',
+  social: 'social life',
+  work: 'work',
+  athletic: 'sport',
+  money: 'money',
+  study: 'study',
+  creative: 'creative work',
+  crime: 'crime',
+};
+/** "While you own it: romance +6%, social life +3%." */
+function perkText(perks: Partial<Record<string, number>>): string {
+  const parts = Object.entries(perks)
+    .filter(([, v]) => v)
+    .map(([k, v]) => `${PERK_LABEL[k] ?? k} +${Math.round((v ?? 0) * 100)}%`);
+  return `While you own one: ${parts.join(', ')} odds.`;
 }

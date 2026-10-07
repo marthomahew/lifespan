@@ -57,3 +57,16 @@ describe('letting out a home', () => {
     expect(gain(tired)).toBeGreaterThan(gain(tidy));
   });
 });
+
+describe('things you own that matter', () => {
+  it('a sports car helps in romance, once per kind', async () => {
+    const { playerOdds } = await import('../../src/engine/systems/odds');
+    let s = landlord(2603);
+    const before = playerOdds(s, 'romance');
+    s = runCheat(s, 'asset.spawn', { asset: 'vehicle:meridian_gt' }).state;
+    const one = playerOdds(s, 'romance');
+    s = runCheat({ ...s, pending: [] }, 'asset.spawn', { asset: 'vehicle:meridian_gt' }).state;
+    expect(one).toBeCloseTo(before + 0.06, 5);
+    expect(playerOdds(s, 'romance')).toBeCloseTo(one, 5);
+  });
+});

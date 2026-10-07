@@ -929,5 +929,10 @@
     "title": "An activity for every skill; skill-based crimes (hacking, forgery, a con) and crime odds that use the crime’s own skill",
     "passes": true,
     "evidence": "tests/engine/skill-crimes.test.ts"
+  },
+  "S91": {
+    "title": "Possessions that matter: a sports car, a luxury saloon, a fine watch, art, a racing bike and a ring tilt odds while you own one; shown in the shop",
+    "passes": true,
+    "evidence": "tests/engine/lettings.test.ts"
   }
 }
