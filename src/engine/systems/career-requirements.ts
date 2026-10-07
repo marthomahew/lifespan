@@ -1,3 +1,4 @@
+import { SPORT_BY_ID } from '../../content/sports';
 import { inRecession } from './markets';
 import { JOBS } from '../../content/jobs';
 import { SPECIALTY_BY_ID } from '../../content/military';
@@ -73,8 +74,12 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
   if (r.licence && !s.assets.licence) out.push("driver's licence");
   if (r.countries?.length && !r.countries.includes(p.country))
     out.push('not available in this country');
-  if (job.id === 'professional_athlete' && !(s.sport?.active && s.sport.level >= 3))
-    out.push('a sport played at national youth level or better (Pursuits)');
+  if (job.id === 'professional_athlete') {
+    if (!(s.sport?.active && s.sport.level >= 3))
+      out.push('a sport played at national youth level or better (Pursuits)');
+    const route = SPORT_BY_ID[s.sport?.sport ?? '']?.route;
+    if (route && p.age < route.age) out.push(`age ${route.age} in this sport`);
+  }
   if (s.legal.prison) out.push('not from prison');
   if (s.military?.active) out.push('not while serving');
   return out;

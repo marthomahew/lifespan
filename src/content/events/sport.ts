@@ -40,4 +40,156 @@ export const SPORT_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'sport_pro_draft',
+    kind: 'choice',
+    category: 'work',
+    emoji: '🎤',
+    ages: [19, 30],
+    weight: 1,
+    chainOnly: true,
+    text: 'Draft night. You sit in a borrowed suit with your family around a phone, and in the second hour a professional {sport} team says your name out loud on live television.',
+    choices: [
+      {
+        id: 'sign',
+        label: 'Sign your rookie contract',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You pull on the team cap for the cameras and sign a rookie deal the next week. From training camp on, {sport} is your job.',
+            effects: [
+              { system: 'hire', arg: 'professional_athlete' },
+              { stat: 'happiness', delta: 10 },
+              { flag: 'pro_athlete' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'amateur',
+        label: 'Turn it down and keep your future open',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You thank them and walk away from the draft, to the disbelief of everyone you know. The phone stops ringing within a month.',
+            effects: [{ stat: 'stress', delta: -3 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sport_pro_tour',
+    kind: 'choice',
+    category: 'work',
+    emoji: '🎾',
+    ages: [16, 30],
+    weight: 1,
+    chainOnly: true,
+    text: 'Your results have earned you a ranking and a racket sponsor who wants you on the professional {sport} tour: entry fees, flights, coaching, and a year of living out of a suitcase.',
+    choices: [
+      {
+        id: 'sign',
+        label: 'Turn professional',
+        outcomes: [
+          {
+            chance: 1,
+            text: "You play your first event as a professional in a half-empty stadium and win a round. From now on, {sport} pays the bills, or doesn't.",
+            effects: [
+              { system: 'hire', arg: 'professional_athlete' },
+              { stat: 'happiness', delta: 10 },
+              { flag: 'pro_athlete' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'amateur',
+        label: 'Stay amateur for now',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You decline the sponsor and keep playing local tournaments. Nobody books you a flight anywhere.',
+            effects: [{ stat: 'stress', delta: -3 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sport_pro_sponsor',
+    kind: 'choice',
+    category: 'work',
+    emoji: '👟',
+    ages: [18, 34],
+    weight: 1,
+    chainOnly: true,
+    text: 'A sportswear company has noticed your times. They offer a sponsorship deal to compete in {sport} full-time: a stipend, kit, coaching and bonuses for every medal.',
+    choices: [
+      {
+        id: 'sign',
+        label: 'Sign the deal and go full-time',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You sign in a branded tracksuit that arrives two sizes too big. From now on, {sport} is your full-time job.',
+            effects: [
+              { system: 'hire', arg: 'professional_athlete' },
+              { stat: 'happiness', delta: 10 },
+              { flag: 'pro_athlete' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'amateur',
+        label: 'Keep it a passion, not a living',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You keep training around everything else. It is slower, but nobody owns your Saturdays.',
+            effects: [{ stat: 'stress', delta: -3 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sport_pro_team',
+    kind: 'choice',
+    category: 'work',
+    emoji: '🚴',
+    ages: [19, 32],
+    weight: 1,
+    chainOnly: true,
+    text: 'A professional {sport} team wants you as a neo-pro: a two-year contract, a team car, a bike worth more than a family car, and a race calendar that never seems to end.',
+    choices: [
+      {
+        id: 'sign',
+        label: 'Sign with the team',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You get your team kit and a number pinned to your back by a mechanic who has done it ten thousand times. From now on, {sport} is your job.',
+            effects: [
+              { system: 'hire', arg: 'professional_athlete' },
+              { stat: 'happiness', delta: 10 },
+              { flag: 'pro_athlete' },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'amateur',
+        label: 'Stay with the amateur club',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You decline and keep racing for the club on weekends. The team signs someone else by Friday.',
+            effects: [{ stat: 'stress', delta: -3 }],
+          },
+        ],
+      },
+    ],
+  },
 ];

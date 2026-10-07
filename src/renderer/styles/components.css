@@ -460,3 +460,13 @@
 .nowrap {
   white-space: nowrap;
 }
+
+.choice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.choice-note {
+  font-size: 0.85em;
+  color: var(--amber);
+}

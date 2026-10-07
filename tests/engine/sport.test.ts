@@ -120,4 +120,44 @@ describe('sport, season by season', () => {
     expect(s.sport?.sport).toBe('american_football');
     expect(SPORT_BY_ID['american_football']?.pro.titles[0]).toBe('Practice Squad Player');
   });
+
+  it('each sport has its own way in: no teenager is drafted into American football', () => {
+    const star = (age: number, sport: string): GameState => {
+      const s = runCheat(kid(2430 + age), 'age.set', { age }).state;
+      return {
+        ...s,
+        pending: [],
+        sport: { sport, level: 4, best: 4, form: 95, seasons: 10, honours: [], active: true },
+        player: { ...s.player, skills: { ...s.player.skills, athletics: 100 } },
+      };
+    };
+    const offers = (s: GameState): string[] => {
+      const seen: string[] = [];
+      let t = s;
+      for (let i = 0; i < 8; i++) {
+        t = ageUp({ ...t, pending: [] }).state;
+        seen.push(...t.pending.map((p) => p.eventId).filter((id) => id.startsWith('sport_pro')));
+        t = { ...t, sport: { ...t.sport!, level: 4, form: 95 } };
+      }
+      return seen;
+    };
+    // Eight seasons from 13: still too young for the draft at 20.
+    expect(offers(star(12, 'american_football'))).toEqual([]);
+    expect(offers(star(21, 'american_football'))).toContain('sport_pro_draft');
+    expect(offers(star(17, 'tennis'))).toContain('sport_pro_tour');
+    expect(offers(star(20, 'cycling'))).toContain('sport_pro_team');
+    expect(SPORT_BY_ID['football']?.route).toEqual({ kind: 'club', age: 17 });
+  });
+
+  it('an offer that would take you away from your job says so', () => {
+    let s = runCheat(kid(2440), 'age.set', { age: 24 }).state;
+    s = runCheat({ ...s, pending: [] }, 'job.set', { job: 'accountant' }).state;
+    s = runCheat({ ...s, pending: [] }, 'event.fire', {
+      event: 'sp_screen_test',
+      force: 'on',
+    }).state;
+    const test = currentPopup(s)?.choices.find((c) => c.id === 'test');
+    expect(test?.note).toMatch(/leave your job as/);
+    expect(currentPopup(s)?.choices.find((c) => c.id === 'decline')?.note).toBeUndefined();
+  });
 });

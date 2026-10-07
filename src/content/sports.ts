@@ -16,6 +16,11 @@ export type SportDef = {
    * 2024–25 figures, roughly (league minimums, typical contracts, the top earners).
    */
   pro: { titles: string[]; pay: [number, number][] };
+  /**
+   * How a career starts, and the youngest it can: a club contract, the draft (after college),
+   * turning pro on the tour, a sponsor's deal, or a professional team's neo-pro contract.
+   */
+  route: { kind: 'club' | 'draft' | 'tour' | 'sponsor' | 'team'; age: number };
 };
 
 export const SPORTS: SportDef[] = [
@@ -37,6 +42,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['A steady season in midfield: no headlines, no mistakes, plenty of mud.'],
     bad: ['You spend most of the season on the bench, and the rest in the rain.'],
+    route: { kind: 'club', age: 17 },
     pro: {
       titles: [
         'Lower-League Pro',
@@ -72,6 +78,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['A solid season off the bench, and a jump shot that is finally consistent.'],
     bad: ['A season of air balls and a coach who has stopped looking at you.'],
+    route: { kind: 'draft', age: 19 },
     pro: {
       titles: [
         'Overseas / G League Pro',
@@ -107,6 +114,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['Some wins, some three-set losses, and a serve that is getting there.'],
     bad: ['A season of double faults and early exits.'],
+    route: { kind: 'tour', age: 16 },
     pro: {
       titles: [
         'Challenger Tour Player',
@@ -142,6 +150,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['Personal bests in training, near misses in races.'],
     bad: ['A hamstring that never quite settles, and a season of slow times.'],
+    route: { kind: 'sponsor', age: 18 },
     pro: {
       titles: [
         'Semi-Pro Athlete',
@@ -177,6 +186,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['Long early sessions, steady times, and permanently chlorinated hair.'],
     bad: ['You miss the qualifying time by a hundredth, three meets in a row.'],
+    route: { kind: 'sponsor', age: 18 },
     pro: {
       titles: [
         'Club Professional',
@@ -212,6 +222,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['Long rides, a few top-ten finishes, and legs like tree trunks.'],
     bad: ['A crash in the first race and a season spent getting your nerve back.'],
+    route: { kind: 'team', age: 19 },
     pro: {
       titles: [
         'Continental Team Rider',
@@ -247,6 +258,7 @@ export const SPORTS: SportDef[] = [
     ],
     fair: ['A grinding season in the trenches: bruises, film sessions and a few good drives.'],
     bad: ['A torn hamstring in week three and a season spent watching from the sideline.'],
+    route: { kind: 'draft', age: 21 },
     pro: {
       titles: ['Practice Squad Player', 'Backup', 'Starter', 'Pro Bowler', 'Franchise Star'],
       pay: [

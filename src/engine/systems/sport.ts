@@ -101,21 +101,26 @@ export function sportTick(ctx: Ctx): void {
     if (r.level >= 3) r.honours.push(`${def.levels[r.level]} (${s.year})`);
     addStat(s, 'happiness', 6);
     addStat(s, 'fame', r.level >= 4 ? 4 : r.level >= 3 ? 1 : 0);
-    // A professional contract, for the best of them.
-    if (
-      r.level >= 3 &&
-      age >= 16 &&
-      !s.career.jobId &&
-      !s.player.flags.includes(`pro_offer:${s.year}`)
-    ) {
-      s.player.flags.push(`pro_offer:${s.year}`);
-      const ev = EVENT_BY_ID['sport_pro_offer'];
-      if (ev) fireEvent(ctx, ev, 'system', { sport: def.label.toLowerCase() });
-    }
   } else if (band === 'bad' && r.level > 0) {
     r.level -= 1;
     ctx.log('activity', `${def.emoji} You are dropped back to ${def.levels[r.level]}.`);
     addStat(s, 'happiness', -4);
+  }
+  // A professional career, for the best of them, by the sport's own route and at its own
+  // age: a club contract at 17, the draft after college, a sponsor's deal, a team's offer.
+  const promoted = band === 'good';
+  if (
+    r.level >= 3 &&
+    age >= def.route.age &&
+    band !== 'bad' &&
+    s.career.jobId !== 'professional_athlete' &&
+    !s.player.flags.includes(`pro_offer:${s.year}`) &&
+    (promoted || ctx.rng.chance(0.5))
+  ) {
+    s.player.flags.push(`pro_offer:${s.year}`);
+    const ev =
+      EVENT_BY_ID[def.route.kind === 'club' ? 'sport_pro_offer' : `sport_pro_${def.route.kind}`];
+    if (ev) fireEvent(ctx, ev, 'system', { sport: def.label.toLowerCase() });
   }
   // Contact sports and long seasons bring knocks (a born athlete shrugs off most).
   if (ctx.rng.chance(0.08 * (1 - 0.6 * Math.min(1, luck(s, 'sport')))))

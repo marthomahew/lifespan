@@ -73,7 +73,10 @@ export function EventModal({ game }: { game: GameState }): React.JSX.Element | n
               <span className="choice-num" aria-hidden="true">
                 {i + 1}
               </span>
-              {c.label}
+              <span className="choice-body">
+                {c.label}
+                {c.note && <span className="choice-note">{c.note}</span>}
+              </span>
             </button>
           ))}
         </div>

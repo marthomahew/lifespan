@@ -11,7 +11,9 @@ import { applyOutcome, pickOutcome } from './apply';
 import { prunePending, selectableChoices } from './select';
 import { checkAchievements } from '../systems/achievements';
 import { renderText } from './tokens';
-import type { EventDef } from './types';
+import type { ChoiceDef, EventDef } from './types';
+import { JOB_BY_ID } from '../../content/jobs';
+import { titleFor } from '../systems/careers';
 import { edgeReason } from './skill-check';
 
 export type PopupView = {
@@ -19,7 +21,8 @@ export type PopupView = {
   emoji: string;
   category: string;
   text: string;
-  choices: { id: string; label: string; enabled: boolean }[];
+  /** `note`: a consequence worth knowing before you pick (leaving your job, say). */
+  choices: { id: string; label: string; enabled: boolean; note?: string }[];
   /** The people the event is about (living NPCs bound to its roles), first two. */
   npcIds: number[];
   /** The animal it is about, when its text names one. */
@@ -67,14 +70,34 @@ export function popupView(s: GameState, pe: PendingEvent): PopupView | null {
     emoji: def.emoji ?? categoryEmoji(def.category),
     category: def.category,
     text: renderText(s, def.text, pe.bindings, pe.payload),
-    choices: (def.choices ?? []).map((c) => ({
-      id: c.id,
-      label: renderText(s, c.label, pe.bindings, pe.payload),
-      enabled: selectable.has(c.id),
-    })),
+    choices: (def.choices ?? []).map((c) => {
+      const note = choiceNote(s, c);
+      return {
+        id: c.id,
+        label: renderText(s, c.label, pe.bindings, pe.payload),
+        enabled: selectable.has(c.id),
+        ...(note ? { note } : {}),
+      };
+    }),
     npcIds: popupFaces(s, pe, renderText(s, def.text, pe.bindings, pe.payload)),
     petId: popupPet(s, def.text),
   };
+}
+
+/** A choice that can hand you a new full-time job says which one you'd leave for it. */
+function choiceNote(s: GameState, c: ChoiceDef): string | undefined {
+  const cur = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
+  if (!cur) return undefined;
+  const hires = c.outcomes.some((o) =>
+    o.effects.some((e) => {
+      if (!('system' in e) || e.system !== 'hire' || !e.arg) return false;
+      const next = JOB_BY_ID[e.arg];
+      return next !== undefined && !next.partTime && next.id !== cur.id;
+    }),
+  );
+  return hires
+    ? `If it works out, you leave your job as ${titleFor(s, cur, s.career.level)}.`
+    : undefined;
 }
 
 /** Resolve the first pending popup on a working draft. */

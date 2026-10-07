@@ -85,7 +85,12 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
     );
     return;
   }
-  if (c.jobId) endJob(ctx, 'moved on');
+  if (c.jobId) {
+    const was = JOB_BY_ID[c.jobId];
+    if (was && !quiet)
+      ctx.log('work', `You leave your job as ${titleFor(s, was, c.level)} for the new one.`, true);
+    endJob(ctx, 'moved on');
+  }
   // A full-time job and your own shop don't both fit in a day: a manager takes over.
   if (s.business?.hands === 'self') {
     s.business.hands = 'manager';
