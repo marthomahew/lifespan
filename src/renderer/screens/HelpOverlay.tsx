@@ -70,7 +70,7 @@ export const GUIDE: [string, string][] = [
   ],
   [
     'Fame',
-    'Fame comes from what you are known for. Once you are famous, Occupation › Cash in on fame has sponsorships, appearances, a memoir and an online channel; a world champion or Olympic champion earns double.',
+    'Fame comes from what you are known for. Once you are famous, Occupation › Cash in on fame has sponsorships, appearances, a memoir and an online channel; a world champion or Olympic champion earns double. Pay is modest for a local name and runs to tens of millions at fame 100. Athletes get the biggest sponsorships, musicians sell brands and build followings, and chess players, scientists and authors are paid most to speak and write.',
   ],
   [
     'Cheats',

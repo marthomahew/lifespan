@@ -6,6 +6,7 @@ import {
   knownForLine,
   type GameState,
 } from '../../../../engine';
+import { fameLanes, laneBonus, LANE_NOTE } from '../../../../engine/systems/fame-deals';
 import { doAct } from '../../../store/app';
 
 /** Cash in on fame: deals open to anyone known for something. */
@@ -23,8 +24,12 @@ export function FameSection({
     <section className="panel-section" data-testid="fame-deals">
       <h3 className="section-title">🌟 Cash in on fame</h3>
       <p className="muted small">
-        {line} Fame {game.player.stats.fame}: sponsors, publishers and promoters pay for your name.
-        Each deal takes a pip of work time.
+        {line} Fame {game.player.stats.fame}: sponsors, publishers and promoters pay for your name,
+        a little at first and enormously at the very top. Deals take no pips.
+        {fameLanes(game).length > 0 &&
+          ` ${fameLanes(game)
+            .map((l) => LANE_NOTE[l])
+            .join(' ')}`}
       </p>
       <ul className="plain col">
         {FAME_DEALS.map((d) => {
@@ -41,7 +46,8 @@ export function FameSection({
                 {d.emoji} {d.label}
               </button>
               <span className="muted">
-                {why ?? `about ${formatMoney(game, fameDealPay(game, d.id))}`}
+                {why ??
+                  `about ${formatMoney(game, fameDealPay(game, d.id))}${laneBonus(game, d.id) > 1 ? ' (your kind of fame pays extra)' : ''}`}
               </span>
             </li>
           );

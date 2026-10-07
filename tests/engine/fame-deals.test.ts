@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { act, newLife, runCheat, type GameState } from '../../src/engine';
-import { fameDealPay, fameDealReason } from '../../src/engine/systems/fame-deals';
+import { fameDealPay, fameDealReason, laneBonus } from '../../src/engine/systems/fame-deals';
 import { workTime } from '../../src/engine/systems/activities';
 
 const star = (fame: number, crowned = false): GameState => {
@@ -53,5 +53,21 @@ describe('cashing in on fame', () => {
     expect(
       fameDealReason({ ...s, year: s.year + 5, usage: { year: 0, used: {} } }, 'book'),
     ).toBeNull();
+  });
+
+  it('pays modestly for a local name and enormously at the top; each kind of fame has its market', () => {
+    // star() is a grandmaster: a champion of the mind earns more for talks and books.
+    const top = star(100);
+    expect(fameDealPay(top, 'sponsor')).toBeGreaterThan(20_000_000);
+    expect(fameDealPay(star(40), 'sponsor')).toBeLessThan(100_000);
+    expect(laneBonus(top, 'book')).toBeGreaterThan(1);
+    expect(laneBonus(top, 'sponsor')).toBe(1);
+    const athlete: GameState = {
+      ...top,
+      chess: null,
+      player: { ...top.player, flags: [...top.player.flags, 'olympic_gold'] },
+    };
+    expect(laneBonus(athlete, 'sponsor')).toBeGreaterThan(1);
+    expect(fameDealPay(athlete, 'sponsor')).toBeGreaterThan(fameDealPay(top, 'sponsor'));
   });
 });

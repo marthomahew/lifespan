@@ -9,7 +9,9 @@ import { markUsed, usedThisYear } from './usage';
 
 /**
  * Fame you can spend: once you're known for something, sponsors, publishers and promoters
- * pay for your name. Pay in today's dollars (a global market), growing with fame.
+ * pay for your name. Pay in today's dollars (a global market), growing with fame: modest for a
+ * local name, then steeply at the top (the most famous people alive earn tens of millions a year
+ * from endorsements, appearance fees, book advances and channels).
  */
 export type FameDeal = {
   id: 'sponsor' | 'appearance' | 'book' | 'channel';
@@ -30,7 +32,7 @@ export const FAME_DEALS: FameDeal[] = [
     label: 'Sign a sponsorship deal',
     emoji: '🤝',
     perYear: 1,
-    pay: (f) => Math.round(f * f * 30),
+    pay: (f) => Math.round(f * f * 30 + 25_000_000 * (f / 100) ** 7),
     blurb: 'A brand puts your face on its adverts.',
   },
   {
@@ -38,7 +40,7 @@ export const FAME_DEALS: FameDeal[] = [
     label: 'Paid appearances',
     emoji: '🎤',
     perYear: 2,
-    pay: (f) => Math.round(f * f * 10),
+    pay: (f) => Math.round(f * f * 10 + 1_000_000 * (f / 100) ** 7),
     blurb: 'Talks, openings, exhibitions: they pay to have you in the room.',
   },
   {
@@ -47,7 +49,7 @@ export const FAME_DEALS: FameDeal[] = [
     emoji: '📖',
     perYear: 1,
     everyYears: 5,
-    pay: (f) => Math.round(f * f * 60),
+    pay: (f) => Math.round(f * f * 60 + 15_000_000 * (f / 100) ** 7),
     blurb: 'A publisher pays an advance for your story.',
   },
   {
@@ -56,7 +58,7 @@ export const FAME_DEALS: FameDeal[] = [
     emoji: '📺',
     perYear: 1,
     fromYear: 2008,
-    pay: (f) => Math.round(f * f * 15),
+    pay: (f) => Math.round(f * f * 15 + 5_000_000 * (f / 100) ** 7),
     blurb: 'A year of videos and streams about what you do.',
   },
 ];
@@ -75,10 +77,57 @@ function pinnacle(s: GameState): boolean {
   );
 }
 
+type Lane = 'sport' | 'music' | 'mind';
+
+/** What kind of fame you have: sport, music, or the mind (chess, science, books, space). */
+export function fameLanes(s: GameState): Lane[] {
+  const f = s.player.flags;
+  const out: Lane[] = [];
+  if (
+    s.career.jobId === 'professional_athlete' ||
+    s.proSport ||
+    f.includes('olympic_gold') ||
+    f.includes('olympic_medal') ||
+    (s.sport?.best ?? 0) >= 4
+  )
+    out.push('sport');
+  if (s.music.releases.length && (s.music.stage >= 3 || s.player.stats.fame >= 30))
+    out.push('music');
+  if (
+    s.chess?.title ||
+    f.includes('nobel_laureate') ||
+    f.includes('been_to_space') ||
+    f.includes('young_composer') ||
+    (s.projects?.books ?? 0) > 0
+  )
+    out.push('mind');
+  return out;
+}
+
+/**
+ * Each kind of fame sells best in its own market: athletes get the biggest kit deals,
+ * musicians brands and a following online, and thinkers the lecture circuit and publishers.
+ */
+const LANE_BONUS: Record<Lane, Partial<Record<FameDeal['id'], number>>> = {
+  sport: { sponsor: 1.6 },
+  music: { sponsor: 1.3, channel: 1.5 },
+  mind: { appearance: 1.8, book: 1.6 },
+};
+export const LANE_NOTE: Record<Lane, string> = {
+  sport: 'Athletes get the biggest sponsorships.',
+  music: 'Musicians sell brands and build followings.',
+  mind: 'Champions of the mind are paid to speak and to write.',
+};
+
+/** The best bonus your kinds of fame earn on this deal. */
+export function laneBonus(s: GameState, id: FameDeal['id']): number {
+  return fameLanes(s).reduce((m, l) => Math.max(m, LANE_BONUS[l][id] ?? 1), 1);
+}
+
 /** What this deal would pay you now, in local money. */
 export function fameDealPay(s: GameState, id: FameDeal['id']): number {
   const d = FAME_DEAL_BY_ID[id];
-  const ref = d.pay(s.player.stats.fame) * (pinnacle(s) ? 2 : 1);
+  const ref = d.pay(s.player.stats.fame) * (pinnacle(s) ? 2 : 1) * laneBonus(s, id);
   return Math.round(ref * s.inflation * countryOf(s).currency.perUsd);
 }
 
