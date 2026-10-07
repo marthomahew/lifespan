@@ -1,3 +1,4 @@
+import type { Tenancy } from '../systems/lettings';
 import type { Category, ViceKey } from './core';
 
 export type Lifestyle = 'frugal' | 'normal' | 'lavish';
@@ -218,6 +219,8 @@ export type Home = {
   city: string;
   country: string;
   livingIn: boolean;
+  /** Let to a tenant (a home you own but don't live in). */
+  let?: Tenancy | null;
 };
 export type Vehicle = {
   id: number;

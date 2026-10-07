@@ -126,6 +126,8 @@ export function moveInto(ctx: Ctx, homeId: number): void {
   const s = ctx.s;
   const h = s.assets.homes.find((x) => x.id === homeId);
   if (!h) throw new EngineError('no such home');
+  // Moving into a let home ends the tenancy.
+  if (h.let) h.let = null;
   for (const x of s.assets.homes) x.livingIn = x.id === homeId;
   if (!s.legal.prison && !s.military?.active) s.assets.housing = 'owning';
 }
@@ -160,8 +162,10 @@ export function renovate(ctx: Ctx, homeId: number): void {
   const cost = Math.round(h.value * 0.05);
   if (s.money.cash < cost) throw new EngineError(`renovating costs ${formatMoney(s, cost)}`);
   s.money.cash -= cost;
+  // Value follows repair: a tired place done up gains more than a tidy one touched up.
+  const before = h.condition;
   h.condition = clampStat(h.condition + 35);
-  h.value = Math.round(h.value * 1.04);
+  h.value = Math.round(h.value * (1 + ((h.condition - before) / 100) * 0.3));
   ctx.log(
     'money',
     `You renovate ${h.name}. Builders find something alarming behind a wall, then fix it.`,

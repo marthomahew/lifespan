@@ -5,6 +5,9 @@ import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
 import { BuyDialog, type BuyTarget } from './BuyDialog';
 import {
   formatMoney,
+  formatMoneyShort,
+  letReason,
+  rentFor,
   homeLabel,
   netWorth,
   type GameState,
@@ -136,11 +139,31 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
                   <span className="muted small">
                     {' '}
                     · {formatMoney(game, h.value)} · condition {h.condition}
+                    {h.let &&
+                      ` · let to ${h.let.tenant} for ${formatMoney(game, h.let.rent)} a year`}
                   </span>
                 </span>
                 {!h.livingIn && (
                   <button onClick={() => run({ type: 'move_home', id: h.id })}>Move in</button>
                 )}
+                {!h.livingIn &&
+                  (h.let ? (
+                    <button
+                      data-testid={`unlet-${h.id}`}
+                      onClick={() => run({ type: 'let_home', id: h.id, on: false })}
+                    >
+                      End tenancy
+                    </button>
+                  ) : (
+                    <button
+                      data-testid={`let-${h.id}`}
+                      disabled={letReason(game, h) !== null}
+                      title={letReason(game, h) ?? 'An agent finds a tenant and takes a tenth.'}
+                      onClick={() => run({ type: 'let_home', id: h.id, on: true })}
+                    >
+                      Let it out ({formatMoneyShort(game, rentFor(h))}/yr)
+                    </button>
+                  ))}
                 <button onClick={() => run({ type: 'renovate', id: h.id })}>Renovate</button>
                 <button
                   data-testid={`sell-${h.id}`}
@@ -160,7 +183,8 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
                     {l.name.charAt(0).toUpperCase() + l.name.slice(1)}
                   </span>
                   <span className="muted small listing-meta">
-                    {formatMoney(game, l.price)} · condition {l.condition}
+                    {formatMoney(game, l.price)} · condition {l.condition} · would let for about{' '}
+                    {formatMoneyShort(game, rentFor({ value: l.price, condition: l.condition }))}/yr
                   </span>
                 </span>
                 <button

@@ -1,4 +1,10 @@
-import { countryOf, formatMoneyShort, formatMoney, type GameState } from '../../../engine';
+import {
+  countryOf,
+  formatMoneyShort,
+  formatMoney,
+  knownForLine,
+  type GameState,
+} from '../../../engine';
 import { Portrait } from '../../portrait/Portrait';
 import { moodOf } from '../../portrait/parts';
 import { go, persist, useApp, app } from '../../store/app';
@@ -53,7 +59,11 @@ export function Header({ game }: { game: GameState }): React.JSX.Element {
       </div>
       <div className="header-badges">
         {fame > 0 && (
-          <span className="badge fame" data-testid="fame-badge" title={`Fame ${fame}/100`}>
+          <span
+            className="badge fame"
+            data-testid="fame-badge"
+            title={`Fame ${fame}/100. ${knownForLine(game)}`}
+          >
             🌟 {fame}
           </span>
         )}

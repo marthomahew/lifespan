@@ -914,5 +914,10 @@
     "title": "Sport season by season from age six (six sports, levels from school to national team, selection, injuries, pro contract, Olympics gated and named); skill 100 is world number one, and hard to reach",
     "passes": true,
     "evidence": "tests/engine/sport.test.ts; tests/engine/chess.test.ts"
+  },
+  "S88": {
+    "title": "Fame says what for (known for: titles, records, books, roles, honours); homes can be let to tenants (rent taxed as income, tenant stories, rent shown on listings); renovation value follows repair",
+    "passes": true,
+    "evidence": "tests/engine/fame.test.ts; tests/engine/lettings.test.ts"
   }
 }

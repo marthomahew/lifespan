@@ -29,6 +29,7 @@ import { bonusLine, perkBonus, perkEffect } from './perks';
 import { injuryPenalty } from './injuries';
 import { formatMoney } from '../economy';
 import { businessYear } from './business';
+import { rentYear } from './lettings';
 
 /** Inputs to stat drift derived from the rest of the state. */
 export function yearCircumstances(s: GameState): Circumstances {
@@ -79,7 +80,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
       `You sign on for unemployment support: ${formatMoney(s, unemploymentBenefit(s))} a year. It covers the basics, and none of the dignity.`,
     );
   }
-  const profit = businessYear(ctx);
+  const profit = businessYear(ctx) + rentYear(ctx);
   runFinances(ctx, { salary: income.salary + militaryPay(s), other: income.other + profit });
   // 3. Drift.
   ctx.phase('drift');

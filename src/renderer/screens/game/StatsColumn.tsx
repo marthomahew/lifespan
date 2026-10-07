@@ -5,6 +5,7 @@ import {
   stageOf,
   traitModifiers,
   type GameState,
+  knownForLine,
 } from '../../../engine';
 import { TRAIT_BY_ID } from '../../../content/traits';
 import { StatBar } from '../../components/StatBar';
@@ -115,6 +116,12 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
         <div data-testid="fact-networth">
           <span className="muted">Net worth</span> {formatMoney(game, netWorth(game))}
         </div>
+        {p.stats.fame >= 10 && (
+          <div data-testid="fact-fame">
+            <span className="muted">Fame</span> {p.stats.fame}{' '}
+            <span className="muted small">{knownForLine(game)}</span>
+          </div>
+        )}
       </section>
     </aside>
   );
