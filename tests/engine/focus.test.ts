@@ -48,25 +48,31 @@ describe('a focus, and how fast you learn', () => {
     expect(learnRate(quick, 'art')).toBe(2);
   });
 
-  it('a focus costs free time and brings an ordinary adult to mastery-ish in about seven years', () => {
+  it('a focus costs free time and brings an ordinary adult to a solid level in seven years', () => {
     let s = life(4, 25);
     const before = freeTime(s).total;
     s = act(s, { type: 'focus', target: 'instrument' }).state;
     expect(s.player.focus).toBe('instrument');
     expect(freeTime(s).total).toBe(before - 2);
     s = years(s, 7);
-    expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(70);
+    // Steady to 50, slower after: good, not world-class.
+    expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(60);
+    expect(s.player.skills['instrument'] ?? 0).toBeLessThan(80);
   });
 
-  it('a child prodigy who focuses masters it in a few years, and keeps it while focused', () => {
+  it('a child prodigy who focuses masters it in about a decade, and keeps it while focused', () => {
     let s = life(5, 5, { talent: 'instrument', talentLevel: 'prodigy' });
     s = act(s, { type: 'focus', target: 'instrument' }).state;
     s = years(s, 1);
-    // Fast, but not overnight: at most 40 points a year.
-    expect(s.player.skills['instrument']).toBeLessThanOrEqual(55);
+    // Fast, but not overnight: 25 points a calendar year (the first birthday can straddle two).
+    expect(s.player.skills['instrument']).toBeLessThanOrEqual(50);
     s = years(s, 4);
+    // Strong after five years, but the top takes far longer.
+    expect(s.player.skills['instrument']).toBeGreaterThanOrEqual(65);
+    expect(s.player.skills['instrument']).toBeLessThan(95);
+    s = years(s, 8);
     expect(s.player.skills['instrument']).toBe(100);
-    s = years(s, 5);
+    s = years(s, 3);
     expect(s.log.filter((l) => /mastered it/.test(l.text))).toHaveLength(1);
     expect(s.player.skills['instrument']).toBe(100);
     expect(s.player.focus).toBe('instrument');

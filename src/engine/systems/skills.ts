@@ -23,6 +23,21 @@ export function learnRate(s: GameState, skill?: string): number {
   return young * gift * quick * lucky;
 }
 
+/**
+ * How much a skill can still grow this year, from every source together. The base is 12
+ * points (a gift 18, a prodigy 25, more for a quick study), and it shrinks near the top:
+ * half from 50, a fifth from 70, an eighth from 90. So the best start young and still take
+ * years: a chess prodigy who starts at six reaches grandmaster strength at about twelve.
+ */
+export function skillYearRoom(s: GameState, id: string): number {
+  const cur = s.player.skills[id] ?? 0;
+  const talent = s.player.talent === id ? (s.player.talentLevel === 'prodigy' ? 25 : 18) : 12;
+  const quick = (s.player.gifts ?? []).reduce((m, g) => m * (GIFT_BY_ID[g]?.learn ?? 1), 1);
+  const band = cur >= 90 ? 0.125 : cur >= 70 ? 0.2 : cur >= 50 ? 0.5 : 1;
+  const gained = s.usage.year === s.year ? (s.usage.used[`sk:${id}`] ?? 0) : 0;
+  return Math.max(0, talent * quick * band - gained);
+}
+
 /** Add to a skill (0..100). Positive deltas count as practice this year, at your learning rate. */
 export function addSkill(s: GameState, id: string, delta: number): void {
   const cur = s.player.skills[id] ?? 0;
@@ -30,7 +45,13 @@ export function addSkill(s: GameState, id: string, delta: number): void {
   // 100 is the best in the world.
   const slow = cur >= 90 ? 0.35 : cur >= 80 ? 0.6 : 1;
   const raw = delta * learnRate(s, id) * slow;
-  const d = delta > 0 ? (cur >= 90 ? Math.round(raw) : Math.max(1, Math.round(raw))) : delta;
+  let d = delta > 0 ? (cur >= 90 ? Math.round(raw) : Math.max(1, Math.round(raw))) : delta;
+  if (d > 0) {
+    // However many sources pile in (focus, practice, tournaments), a year only holds so much.
+    d = Math.min(d, Math.floor(skillYearRoom(s, id)));
+    if (s.usage.year !== s.year) s.usage = { year: s.year, used: {} };
+    s.usage.used[`sk:${id}`] = (s.usage.used[`sk:${id}`] ?? 0) + d;
+  }
   s.player.skills[id] = clampStat(cur + d);
   if (delta > 0) s.player.skillPractice[id] = s.year;
 }

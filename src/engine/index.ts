@@ -89,6 +89,7 @@ export {
   TITLE_NAMES,
   chessOf,
   playingStrength,
+  tierPayLine,
   tournamentReason,
   worldRank,
   type ChessRecord,
@@ -96,4 +97,12 @@ export {
 export { levelLabel, sportOf, takeUpReason, SPORT_COST, type SportRecord } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
 export { letReason, rentFor, type Tenancy } from './systems/lettings';
-export { TRADABLES, btcAllowance, inRecession, investBlock, onRadar, priceLocal, sharesValue } from './systems/markets';
+export {
+  TRADABLES,
+  btcAllowance,
+  inRecession,
+  investBlock,
+  onRadar,
+  priceLocal,
+  sharesValue,
+} from './systems/markets';

@@ -54,7 +54,8 @@ export function costsFreeTime(def: ActivityDef): boolean {
  */
 export function freeTime(s: GameState): { total: number; left: number; why: string[] } {
   const why: string[] = [];
-  let total = s.player.age < 13 ? 4 : 6;
+  // Children have the most free time: no job, no bills, long holidays.
+  let total = s.player.age < 6 ? 4 : s.player.age < 13 ? 7 : 6;
   if (s.player.age >= 18) {
     if (s.career.jobId || s.military?.active || s.business?.hands === 'self') {
       total -= 2;

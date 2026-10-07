@@ -4,11 +4,10 @@ import {
   CHESS_TIERS,
   TITLE_NAMES,
   SPORT_COST,
-  formatMoney,
   levelLabel,
-  money,
   takeUpReason,
   playingStrength,
+  tierPayLine,
   tournamentReason,
   worldRank,
   type GameState,
@@ -159,10 +158,7 @@ function ChessPanel({
               key={t.id}
               data-testid={`chess-${t.id}`}
               disabled={why !== null}
-              title={
-                why ??
-                `Field around ${t.field}. The winner takes ${formatMoney(game, money(game, t.prize, 'wage'))}.`
-              }
+              title={why ?? `Field around ${t.field}. ${tierPayLine(game, t)}`}
               onClick={() => onError(doAct({ type: 'chess', tier: t.id }))}
             >
               {t.label}
