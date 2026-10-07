@@ -1,3 +1,4 @@
+import { UNUSUAL_JOBS } from '../../content/events/conditions';
 import { EVENT_BY_ID } from '../../content/events';
 import type { Ctx } from '../ctx';
 import { fireEvent } from '../events/select';
@@ -10,6 +11,9 @@ export function crossroadsTick(ctx: Ctx): void {
   const s = ctx.s;
   const c = s.career;
   if (!c.jobId || s.legal.prison || s.player.age < 26 || s.player.age > 62) return;
+  // Office crossroads (management, sabbaticals, poaching) aren't how a pro athlete's or an
+  // actor's career turns.
+  if (UNUSUAL_JOBS.includes(c.jobId)) return;
   // The clock starts when you're hired (promotions don't reset it), and never in the first three years.
   const hired = c.history.at(-1)?.from ?? c.since;
   const last = Math.max(c.crossroadsYear ?? hired, hired);

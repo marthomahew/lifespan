@@ -28,7 +28,11 @@ export const statBelow =
   (k: keyof GameState['player']['stats'], v: number) =>
   (s: GameState): boolean =>
     s.player.stats[k] < v;
-export const hasJob = (s: GameState): boolean => s.career.jobId !== null;
+/** Lives that don't run on desks, rotas and office fridges: generic workplace events skip them. */
+export const UNUSUAL_JOBS = ['professional_athlete', 'film_actor', 'politician', 'astronaut'];
+/** In an ordinary job (not a pro athlete, actor, politician or astronaut). */
+export const hasJob = (s: GameState): boolean =>
+  s.career.jobId !== null && !UNUSUAL_JOBS.includes(s.career.jobId);
 /** Working full-time in a job field (healthcare, law, trades...). */
 export const inField =
   (field: string) =>
