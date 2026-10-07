@@ -11,6 +11,7 @@ import {
 import {
   CHESS_TIERS,
   appearanceFee,
+  openConditions,
   chessMoney,
   playingStrength,
   worldRank,
@@ -151,5 +152,30 @@ describe('chess, over the board', () => {
     }
     expect(gm).toBeGreaterThanOrEqual(11);
     expect(gm).toBeLessThanOrEqual(15);
+  });
+
+  it('top grandmasters are paid to play opens, and gain little rating beating weaker fields', () => {
+    expect(openConditions(2500)).toBe(0);
+    expect(openConditions(2700)).toBe(7500);
+    const s = player(100, 30);
+    const gm = {
+      ...s,
+      chess: {
+        rating: 2750,
+        best: 2750,
+        title: 'GM' as const,
+        imNorms: 3,
+        gmNorms: 3,
+        events: 40,
+        wins: 10,
+        recent: [],
+      },
+    };
+    const after = act(gm, { type: 'chess', tier: 'international' }).state;
+    expect(after.money.cash - gm.money.cash).toBeGreaterThanOrEqual(
+      Math.round(openConditions(2750) * gm.inflation) - 1,
+    );
+    // K = 10 at this level: even a perfect score moves the rating by no more than 10 points.
+    expect(Math.abs((after.chess?.rating ?? 0) - 2750)).toBeLessThanOrEqual(12);
   });
 });

@@ -90,6 +90,14 @@ export function appearanceFee(rating: number): number {
 }
 export const PER_YEAR = 6;
 
+/**
+ * "Conditions" at an open: organisers pay strong grandmasters to come (fee and hotel), about
+ * $2,500 at 2600, $7,500 at 2700 and $12,500 at 2800.
+ */
+export function openConditions(rating: number): number {
+  return rating >= 2600 ? Math.round((rating - 2550) * 50) : 0;
+}
+
 export const chessOf = (s: GameState): ChessRecord | null => s.chess ?? null;
 
 /** How strong you play today: your skill (100 is the world number one, about 2850), your age (sharpest at 20–45), and a charmed life. */
@@ -156,7 +164,11 @@ export function chessMoney(s: GameState, t: ChessTier, ref: number): number {
 export function tierPayLine(s: GameState, t: ChessTier): string {
   const first = formatMoney(s, chessMoney(s, t, t.prize));
   if (t.id === 'international')
-    return `Prize funds vary: first is often around ${first}, up to four times that at the biggest opens.`;
+    return `Prize funds vary: first is often around ${first}, up to four times that at the biggest opens.${
+      openConditions(s.chess?.rating ?? 0)
+        ? ` As a top grandmaster you're also paid about ${formatMoney(s, chessMoney(s, t, openConditions(s.chess?.rating ?? 0)))} to come.`
+        : ''
+    }`;
   if (t.id === 'elite') {
     const fee = formatMoney(s, chessMoney(s, t, appearanceFee(s.chess?.rating ?? t.minRating)));
     return `An appearance fee of about ${fee} just to play, and ${first} to the winner.`;
@@ -209,7 +221,9 @@ export function playTournament(ctx: Ctx, tierId: string): void {
   let rival = 0;
   for (let i = 0; i < ROUNDS; i++)
     rival += game(ctx, rivalStrength, t.field + ctx.rng.int(-120, 120));
-  const k = rec.rating < 2300 ? (s.player.age < 18 ? 40 : 20) : 10;
+  // FIDE's K-factors: 40 for juniors under 2300, 10 once you have ever reached 2400, else 20.
+  const k =
+    s.player.age < 18 && rec.rating < 2300 ? 40 : Math.max(rec.best, rec.rating) >= 2400 ? 10 : 20;
   const change = Math.round(k * (score - exp));
   rec.rating = Math.max(100, rec.rating + change);
   rec.best = Math.max(rec.best, rec.rating);
@@ -242,13 +256,19 @@ export function playTournament(ctx: Ctx, tierId: string): void {
       true,
     );
   }
-  const fee = t.id === 'elite' ? appearanceFee(rec.rating - change) : 0;
+  const before = rec.rating - change;
+  const fee =
+    t.id === 'elite'
+      ? appearanceFee(before)
+      : t.id === 'international'
+        ? openConditions(before)
+        : 0;
   const toLocal = (ref: number): number => chessMoney(s, t, ref);
   const pay = prize ? toLocal(prize) : 0;
   const feePaid = fee ? toLocal(fee) : 0;
   s.money.cash += pay + feePaid;
   rec.recent = [...rec.recent, { year: s.year, tier: t.id, score, change, place }].slice(-6);
-  const head = `♟️ ${t.label}: ${fmtScore(score)}/${ROUNDS}, finishing ${place}. Rating ${rec.rating} (${change >= 0 ? '+' : ''}${change}).${feePaid ? ` Appearance fee: ${formatMoney(s, feePaid)}.` : ''}${pay ? ` Prize: ${formatMoney(s, pay)}.` : ''}`;
+  const head = `♟️ ${t.label}: ${fmtScore(score)}/${ROUNDS}, finishing ${place}. Rating ${rec.rating} (${change >= 0 ? '+' : ''}${change}).${feePaid ? ` ${t.id === 'elite' ? 'Appearance fee' : 'Conditions (fee and hotel)'}: ${formatMoney(s, feePaid)}.` : ''}${pay ? ` Prize: ${formatMoney(s, pay)}.` : ''}`;
   ctx.log('activity', head, place === 'first');
   if (place === 'first') addStat(s, 'happiness', 5);
   if (t.norms && perf >= 2600) rec.gmNorms += 1;
