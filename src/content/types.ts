@@ -287,6 +287,8 @@ export type JobDef = {
   partTime?: boolean;
   /** Only reached through a special path (astronaut, politician...); never in the listings. */
   special?: boolean;
+  /** The job doesn't exist before this year (web developers before the web). */
+  fromYear?: number;
 };
 
 export type MajorDef = {

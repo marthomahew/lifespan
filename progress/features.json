@@ -944,5 +944,10 @@
     "title": "Market hunches and the bitcoin story: the internet in 1997, the dot-com bubble, early mining for the tech-savvy, the dead drive, the exchange collapse, the manias; the first smartphone; AI chips",
     "passes": true,
     "evidence": "tests/engine/markets.test.ts; content:check"
+  },
+  "S94": {
+    "title": "Living through history: ~50 real moments by year and country (tragedies included; lockdown and draft with real effects), decade childhoods, jobs by era, same-sex marriage by country and year, generations",
+    "passes": true,
+    "evidence": "tests/engine/era.test.ts; content:check"
   }
 }

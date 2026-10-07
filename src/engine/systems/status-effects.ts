@@ -1,3 +1,4 @@
+import { marriageLegal } from './interactions';
 import { teenRomance } from './teen-romance';
 import type { Ctx } from '../ctx';
 import { addNpc, remember } from '../npc';
@@ -94,6 +95,17 @@ export function applyStatusEffect(
     case 'marry': {
       const n = npc ?? currentPartner(ctx);
       if (!n || p.age < 18 || n.age < 18) return;
+      // Where and when the law doesn't allow it: a ceremony that means everything, legally nothing.
+      if (!marriageLegal(s, n)) {
+        if (!n.flags.includes('commitment_ceremony')) n.flags.push('commitment_ceremony');
+        remember(s, n, 'the ceremony the law would not call a wedding', 12);
+        ctx.log(
+          'romance',
+          `The law won’t let you marry ${n.first} here yet. You hold a ceremony anyway, and it means everything.`,
+          true,
+        );
+        return;
+      }
       marry(ctx, n, n.romance?.prenup ?? false);
       remember(s, n, 'your wedding', 15);
       ctx.log('romance', `You marry ${n.first}.`, true);

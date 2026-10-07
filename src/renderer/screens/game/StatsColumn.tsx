@@ -1,3 +1,4 @@
+import { generationOf } from '../../../content/history/norms';
 import {
   netWorth,
   formatMoney,
@@ -112,6 +113,9 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
         </div>
         <div data-testid="fact-relationship">
           <span className="muted">Love</span> {facts.relationship}
+        </div>
+        <div data-testid="fact-generation">
+          <span className="muted">Born</span> {p.birthYear}, {generationOf(p.birthYear)}
         </div>
         <div data-testid="fact-networth">
           <span className="muted">Net worth</span> {formatMoney(game, netWorth(game))}

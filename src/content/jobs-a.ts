@@ -205,6 +205,7 @@ export const JOBS_A: JobDef[] = [
   // ── technology ──────────────────────────────────────────────
   {
     id: 'it_support',
+    fromYear: 1975,
     field: 'technology',
     titles: [
       'Help Desk Technician',
@@ -227,6 +228,7 @@ export const JOBS_A: JobDef[] = [
   },
   {
     id: 'web_developer',
+    fromYear: 1995,
     field: 'technology',
     titles: ['Junior Web Developer', 'Web Developer', 'Senior Web Developer', 'Front-End Lead'],
     salary: [
@@ -244,6 +246,7 @@ export const JOBS_A: JobDef[] = [
   },
   {
     id: 'software_engineer',
+    fromYear: 1955,
     field: 'technology',
     titles: [
       'Junior Developer',
@@ -274,6 +277,7 @@ export const JOBS_A: JobDef[] = [
   },
   {
     id: 'data_scientist',
+    fromYear: 2010,
     field: 'technology',
     titles: [
       'Data Analyst',

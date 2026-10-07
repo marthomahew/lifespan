@@ -31,6 +31,7 @@ import { formatMoney } from '../economy';
 import { businessYear } from './business';
 import { rentYear } from './lettings';
 import { marketsTick } from './markets';
+import { historyTick } from './history';
 
 /** Inputs to stat drift derived from the rest of the state. */
 export function yearCircumstances(s: GameState): Circumstances {
@@ -119,6 +120,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   // 5. Chain steps due this year.
   ctx.phase('chains');
   if (!s.death) runDueChains(ctx);
+  historyTick(ctx);
   // 6. Random events.
   ctx.phase('events');
   if (!s.death) drawRandomEvents(ctx);

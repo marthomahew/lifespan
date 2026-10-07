@@ -1,3 +1,4 @@
+import { SAME_SEX_MARRIAGE } from '../../content/history/norms';
 import { INTERACTION_BY_ID, INTERACTIONS } from '../../content/interactions';
 import type { InteractionDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -91,6 +92,8 @@ export function interactionReason(s: GameState, n: Npc, def: InteractionDef): st
     if (carriers.every((c) => c.age >= 45 && c.fertility < 5))
       return 'too late for that now; adoption is still open';
   }
+  if ((def.special === 'wedding' || def.special === 'propose') && !marriageLegal(s, n))
+    return marriageBlock(s);
   if (def.special === 'wedding' && p.age < countryOf(s).ages.marriage)
     return `marriage age is ${countryOf(s).ages.marriage}`;
   const cost = def.special === 'wedding' ? WEDDING_COST.small : (def.cost ?? 0);
@@ -243,3 +246,18 @@ const PRISON_TALK = [
   'A phone call with {npc.first}, eleven minutes long. You save up things to tell {npc.them} all week.',
   '{npc.first} writes back, three pages, mostly about the neighbours. You read it four times.',
 ];
+
+/** Can you two legally marry here, this year? */
+export function marriageLegal(s: GameState, n: Npc): boolean {
+  const p = s.player;
+  const same = p.gender !== 'nonbinary' && n.gender !== 'nonbinary' && p.gender === n.gender;
+  if (!same) return true;
+  const from = SAME_SEX_MARRIAGE[p.country];
+  return from !== null && from !== undefined && s.year >= from;
+}
+function marriageBlock(s: GameState): string {
+  const from = SAME_SEX_MARRIAGE[s.player.country];
+  return from
+    ? `same-sex couples can’t marry here until ${from}`
+    : 'same-sex couples can’t marry here';
+}

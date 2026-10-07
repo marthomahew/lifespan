@@ -1,3 +1,5 @@
+import { generationOf } from '../content/history/norms';
+import { knownForLine } from './fame';
 import { relLabel } from './npc';
 import { petsEver } from './systems/pets';
 import type { Ctx } from './ctx';
@@ -57,6 +59,10 @@ export function obituary(s: GameState): Obituary | null {
   if (!s.death) return null;
   const p = s.player;
   const summary: string[] = [];
+  // Born when, and into which generation; what the world did meanwhile shows up below.
+  summary.push(`Born in ${p.birthYear}, ${generationOf(p.birthYear)}.`);
+  const fame = knownForLine(s);
+  if (fame && p.stats.fame >= 20) summary.push(fame);
   const job = s.career.history.at(-1);
   if (job)
     summary.push(

@@ -55,6 +55,8 @@ export function unmetRequirements(s: GameState, job: JobDef): string[] {
   const vet = isVeteran(s) && r.veteranBonus;
   if (s.legal.fugitive && !p.flags.includes('false_papers'))
     out.push('papers you cannot show while on the run');
+  if (job.fromYear && s.year < job.fromYear)
+    out.push(`a job that won’t exist until about ${job.fromYear}`);
   if (p.age < r.minAge) out.push(`age ${r.minAge}+`);
   if (r.education && !vet && !hasEducation(s, r.education, r.majors))
     out.push(
@@ -82,7 +84,10 @@ export type Listing = { job: JobDef; unmet: string[]; salary: number; current: b
 
 export function jobListings(s: GameState): Listing[] {
   // Special careers find you; they are listed only while you hold one.
-  return JOBS.filter((j) => !j.special || s.career.jobId === j.id).map((job) => ({
+  // Special careers find you (listed only while you hold one); jobs years from existing are hidden.
+  return JOBS.filter(
+    (j) => (!j.special || s.career.jobId === j.id) && !(j.fromYear && s.year < j.fromYear - 5),
+  ).map((job) => ({
     job,
     unmet: unmetRequirements(s, job),
     salary: money(s, ((job.salary[0]?.[0] ?? 0) + (job.salary[0]?.[1] ?? 0)) / 2, 'wage'),
