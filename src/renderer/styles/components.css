@@ -456,3 +456,7 @@
 .palette-item.sel {
   background: var(--accent-soft);
 }
+
+.nowrap {
+  white-space: nowrap;
+}

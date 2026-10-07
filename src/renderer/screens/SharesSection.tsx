@@ -43,7 +43,7 @@ export function SharesSection({
           : ''}
       </p>
       <label className="row small">
-        Amount
+        <span className="nowrap">Amount ({countryOf(game).currency.symbol})</span>
         <input
           type="number"
           min={0}
@@ -52,6 +52,13 @@ export function SharesSection({
           onChange={(e) => setAmount(e.target.value)}
         />
       </label>
+      <p className="small muted" data-testid="shares-hint">
+        Buy spends this much; Sell sells this much worth.
+        {n > 0 && open.some((t) => t.id === 'BTC')
+          ? ` That’s about ${btcCoins(game, n)} bitcoin.`
+          : ''}
+      </p>
+
       {open.length ? (
         <table className="breakdown">
           <tbody>
@@ -128,4 +135,12 @@ function sharePrice(game: GameState, price: number): string {
   if (price >= 100) return formatMoney(game, Math.round(price));
   const sym = countryOf(game).currency.symbol;
   return `${sym}${price.toFixed(price < 0.1 ? 3 : 2)}`;
+}
+
+/** How many coins an amount of money buys at this year's price. */
+function btcCoins(game: GameState, amount: number): string {
+  const price = priceLocal(game, 'BTC') ?? 0;
+  if (price <= 0) return '0';
+  const c = amount / price;
+  return c >= 100 ? Math.round(c).toLocaleString() : c.toFixed(c >= 1 ? 2 : 4);
 }
