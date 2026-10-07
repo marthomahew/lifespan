@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FOCUS_COST } from '../../src/engine/systems/focus';
+import { FOCUS_COST, focusForecast } from '../../src/engine/systems/focus';
 import {
   act,
   ageUp,
@@ -88,5 +88,15 @@ describe('a focus, and how fast you learn', () => {
     expect(() => act(life(7, 2), { type: 'focus', target: 'art' })).toThrow(/from age 4/);
     const off = act(s, { type: 'focus', target: null }).state;
     expect(off.player.focus).toBeNull();
+  });
+
+  it('the forecast is next year’s gain, whatever was practised this year', () => {
+    let s = life(8, 25);
+    s = runCheat(s, 'skill.set', { skill: 'programming', value: 24 }).state;
+    const before = focusForecast(s, 'programming');
+    expect(before).toBeGreaterThan(0);
+    // Use up this year's room with practice; next year's focus is unaffected.
+    s = { ...s, usage: { year: s.year, used: { ...s.usage.used, 'sk:programming': 50 } } };
+    expect(focusForecast(s, 'programming')).toBe(before);
   });
 });

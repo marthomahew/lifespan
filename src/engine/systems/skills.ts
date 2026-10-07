@@ -29,12 +29,12 @@ export function learnRate(s: GameState, skill?: string): number {
  * 60% from 50, a quarter from 70, a fifth from 90 (still 2–5 points a year at the very top). So the best start young and still take
  * years: a chess prodigy who starts at six reaches grandmaster strength at about twelve.
  */
-export function skillYearRoom(s: GameState, id: string): number {
+export function skillYearRoom(s: GameState, id: string, freshYear = false): number {
   const cur = s.player.skills[id] ?? 0;
   const talent = s.player.talent === id ? (s.player.talentLevel === 'prodigy' ? 25 : 18) : 12;
   const quick = (s.player.gifts ?? []).reduce((m, g) => m * (GIFT_BY_ID[g]?.learn ?? 1), 1);
   const band = cur >= 90 ? 0.2 : cur >= 70 ? 0.25 : cur >= 50 ? 0.6 : 1;
-  const gained = s.usage.year === s.year ? (s.usage.used[`sk:${id}`] ?? 0) : 0;
+  const gained = !freshYear && s.usage.year === s.year ? (s.usage.used[`sk:${id}`] ?? 0) : 0;
   return Math.max(0, talent * quick * band - gained);
 }
 

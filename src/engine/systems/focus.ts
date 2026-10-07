@@ -117,6 +117,7 @@ export function focusForecast(s: GameState, id: string): number {
     cur = Math.min(100, cur + Math.max(1, Math.round(g * rate)));
   }
   const gain = Math.min(cur, start + yearCap(s, id)) - start;
-  // A skill also has this year's room (shared with tournaments and practice).
-  return lang ? gain : Math.min(gain, Math.floor(skillYearRoom(s, id)));
+  // Focus lands at the start of next year, so it gets that year's full room, untouched by
+  // whatever you have practised this year.
+  return lang ? gain : Math.min(gain, Math.floor(skillYearRoom(s, id, true)));
 }
