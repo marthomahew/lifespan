@@ -71,13 +71,13 @@ const PER_YEAR = 3;
 
 export const chessOf = (s: GameState): ChessRecord | null => s.chess ?? null;
 
-/** How strong you play today: your skill (100 is world-class, about 2700), your age (sharpest at 20–45), and a charmed life. */
+/** How strong you play today: your skill (100 is the world number one, about 2850), your age (sharpest at 20–45), and a charmed life. */
 export function playingStrength(s: GameState): number {
   const skill = s.player.skills['chess'] ?? 0;
   const age = s.player.age;
   const ageMod = age < 12 ? -(12 - age) * 25 : age > 45 ? -(age - 45) * 8 : 0;
   // A charmed life plays a little above itself.
-  return Math.round(600 + skill * 21 + ageMod + 40 * charmed(s));
+  return Math.round(600 + skill * 22.5 + ageMod + 40 * charmed(s));
 }
 const charmed = (s: GameState): number => ((s.player.gifts ?? []).includes('charmed') ? 1 : 0);
 

@@ -909,5 +909,10 @@
     "title": "Chess over the board: Elo rating from results, tournaments by level, norms and titles at the real thresholds, world ranking, prize money; a Chess panel under Pursuits",
     "passes": true,
     "evidence": "tests/engine/chess.test.ts"
+  },
+  "S87": {
+    "title": "Sport season by season from age six (six sports, levels from school to national team, selection, injuries, pro contract, Olympics gated and named); skill 100 is world number one, and hard to reach",
+    "passes": true,
+    "evidence": "tests/engine/sport.test.ts; tests/engine/chess.test.ts"
   }
 }

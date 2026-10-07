@@ -234,10 +234,10 @@ export const SPECIAL_PATH_EVENTS: EventDef[] = [
     id: 'sp_olympics',
     kind: 'choice',
     category: 'fame',
-    ages: [17, 32],
+    ages: [17, 34],
     weight: 1,
     chainOnly: true,
-    text: 'The national federation rings with news: you have been selected for the Olympic Games. A kit bag arrives with your name on it, spelled correctly at the second attempt.',
+    text: 'The national federation rings with news: you have been selected for the Olympic Games, in {sport}. A kit bag arrives with your name on it, spelled correctly at the second attempt.',
     choices: [
       {
         id: 'compete',

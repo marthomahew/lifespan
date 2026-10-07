@@ -1,3 +1,4 @@
+import { SPORT_BY_ID } from './sports';
 import type { GameState } from '../engine/types';
 
 /**
@@ -84,7 +85,13 @@ export const SPECIAL_PATHS: SpecialPath[] = [
   {
     id: 'olympics',
     event: 'sp_olympics',
-    when: (s) => free(s) && age(s, 17, 32) && (s.player.skills['athletics'] ?? 0) >= 85,
+    // Only for someone already on the national team in an Olympic sport.
+    when: (s) =>
+      free(s) &&
+      age(s, 17, 34) &&
+      !!s.sport?.active &&
+      s.sport.level >= 4 &&
+      !!SPORT_BY_ID[s.sport.sport]?.olympic,
   },
   {
     id: 'michelin',

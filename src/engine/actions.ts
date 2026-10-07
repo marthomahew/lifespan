@@ -32,6 +32,7 @@ import { checkChallenge } from './systems/challenge';
 import { setFocus } from './systems/focus';
 import { businessAction, type BusinessOp } from './systems/business';
 import { playTournament } from './systems/chess';
+import { takeUpSport } from './systems/sport';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -58,7 +59,8 @@ export type PlayerAction =
   | { type: 'pet'; petId: number; id: PetActionId }
   | { type: 'focus'; target: string | null }
   | { type: 'business'; action: BusinessOp }
-  | { type: 'chess'; tier: string };
+  | { type: 'chess'; tier: string }
+  | { type: 'sport'; sport: string | null };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -141,6 +143,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'chess':
       playTournament(ctx, action.tier);
+      break;
+    case 'sport':
+      takeUpSport(ctx, action.sport);
       break;
   }
   prunePending(ctx.s);

@@ -1,4 +1,5 @@
 import { tournamentReason } from '../systems/chess';
+import { SPORTS } from '../../content/sports';
 import { ACTIVITY_BY_ID } from '../../content/activities';
 import { act } from '../actions';
 import { ageUp } from '../age';
@@ -77,8 +78,8 @@ const PLANS: Partial<Record<PersonaId, (s: GameState, rng: Rng, t: typeof tryAct
 /** One year's worth of a persona's own choices; the default persona follows DONE §4. */
 function planYear(s: GameState, persona: PersonaId, rng: Rng): GameState {
   const plan = PLANS[persona];
-  if (plan) return chessSeason(plan(s, rng, tryAct), rng);
-  let cur = chessSeason(s, rng);
+  if (plan) return sportStart(chessSeason(plan(s, rng, tryAct), rng), rng);
+  let cur = sportStart(chessSeason(s, rng), rng);
   if (rng.chance(0.5)) {
     const n = rng.int(0, 2);
     for (let i = 0; i < n; i++) {
@@ -133,4 +134,10 @@ function chessSeason(s: GameState, rng: Rng): GameState {
     cur = tryAct(cur, { type: 'chess', tier });
   }
   return cur;
+}
+
+/** Some children take up a sport and stick with it. */
+function sportStart(s: GameState, rng: Rng): GameState {
+  if (s.sport || s.player.age < 6 || s.player.age > 14 || !rng.chance(0.15)) return s;
+  return tryAct(s, { type: 'sport', sport: rng.pick(SPORTS).id });
 }

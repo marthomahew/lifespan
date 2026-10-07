@@ -26,7 +26,11 @@ export function learnRate(s: GameState, skill?: string): number {
 /** Add to a skill (0..100). Positive deltas count as practice this year, at your learning rate. */
 export function addSkill(s: GameState, id: string, delta: number): void {
   const cur = s.player.skills[id] ?? 0;
-  const d = delta > 0 ? Math.max(1, Math.round(delta * learnRate(s, id))) : delta;
+  // The top is hard: above 80 gains shrink, and above 90 a small one can round to nothing.
+  // 100 is the best in the world.
+  const slow = cur >= 90 ? 0.35 : cur >= 80 ? 0.6 : 1;
+  const raw = delta * learnRate(s, id) * slow;
+  const d = delta > 0 ? (cur >= 90 ? Math.round(raw) : Math.max(1, Math.round(raw))) : delta;
   s.player.skills[id] = clampStat(cur + d);
   if (delta > 0) s.player.skillPractice[id] = s.year;
 }

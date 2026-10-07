@@ -141,7 +141,7 @@ export function runSpecial(
       const line = pickFresh(ctx, band);
       ctx.log('activity', `${club.emoji} ${line}`);
       if (club.skill) addSkill(s, club.skill, outcomeIndex === 2 ? 1 : outcomeIndex === 1 ? 2 : 4);
-      if (club.stat) addStat(s, club.stat, outcomeIndex === 2 ? 0 : 2);
+      if (club.stat && outcomeIndex === 0) addStat(s, club.stat, 1);
       addStat(s, 'happiness', outcomeIndex === 0 ? 4 : outcomeIndex === 1 ? 1 : -1);
       // A story that mentions a new friend brings one.
       if (/friend/.test(line)) applyStatusEffect(ctx, 'friend', undefined);

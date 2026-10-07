@@ -10,6 +10,7 @@ const NULLABLE: RegExp[] = [
   /^\$\.challenge$/,
   /^\$\.business$/,
   /^\$\.chess$/,
+  /^\$\.sport$/,
   /^\$\.chess\.title$/,
   /^\$\.player\.background$/,
   /^\$\.legal\.fugitive$/,

@@ -1,5 +1,6 @@
 import { novelReason } from './projects';
 import { FOCUS_COST } from './focus';
+import { SPORT_COST } from './sport';
 import { activityPreview } from './activity-preview';
 import { pickFresh } from '../fresh';
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
@@ -75,6 +76,10 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
       total -= 1;
       why.push('small children');
     }
+  }
+  if (s.sport?.active && !s.legal.prison) {
+    total -= SPORT_COST;
+    why.push(`training`);
   }
   if (s.player.focus && !s.legal.prison && s.player.age >= 4) {
     total -= FOCUS_COST;

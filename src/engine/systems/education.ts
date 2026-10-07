@@ -11,7 +11,7 @@ import { hasEducation } from './careers';
 import { borrowForStudy, startStudentRepayment } from './loans';
 import { playerOdds } from './odds';
 
-export const UNIVERSITY_MIN_GRADE = 70;
+export const UNIVERSITY_MIN_GRADE = 72;
 
 export const inSchoolAge = (s: GameState): boolean =>
   s.player.age >= 6 && s.player.age <= 17 && !s.education.droppedOut;
@@ -31,7 +31,9 @@ function gradeTarget(s: GameState): number {
     (st.discipline - 50) * 0.3 +
     (studied ? 12 : 0) +
     playerOdds(s, 'study') * 60 -
-    Math.max(0, st.stress - 70) * 0.3
+    Math.max(0, st.stress - 70) * 0.3 -
+    // Serious training (county level and up) takes hours that homework would have had.
+    (s.sport?.active && s.sport.level >= 2 ? 5 : 0)
   );
 }
 
@@ -300,6 +302,13 @@ export function universityTick(ctx: Ctx): void {
   addStat(s, 'smarts', 2);
   if (perf < 25 && ctx.rng.chance(0.25)) {
     ctx.log('school', 'Your grades are bad enough that the university asks you to leave.', true);
+    s.education.enrollment = null;
+    startStudentRepayment(s);
+    return;
+  }
+  // A hard year makes some students leave for work instead (not everyone who starts finishes).
+  if (perf < 40 && en.year < en.length && ctx.rng.chance(0.15)) {
+    ctx.log('school', 'A hard year, and you leave your course to start earning instead.', true);
     s.education.enrollment = null;
     startStudentRepayment(s);
     return;

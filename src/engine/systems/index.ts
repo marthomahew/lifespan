@@ -17,6 +17,7 @@ import { legalTick } from './crime';
 import { vicesTick } from './vices';
 import { skillDecay } from './skills';
 import { focusTick } from './focus';
+import { sportTick } from './sport';
 import { prodigyTick } from './prodigy';
 import { backgroundTick } from './backgrounds';
 import { specialPathsTick } from './special-paths';
@@ -86,6 +87,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   vicesTick(ctx);
   relationshipDecay(ctx);
   focusTick(ctx);
+  sportTick(ctx);
   prodigyTick(ctx);
   backgroundTick(ctx);
   skillDecay(s);
