@@ -10,6 +10,7 @@ import { TRAIT_BY_ID } from '../../../content/traits';
 import { StatBar } from '../../components/StatBar';
 import { quickFacts } from './facts';
 import { SkillsCard } from './SkillsCard';
+import { PeopleCard } from './PeopleCard';
 import { useApp } from '../../store/app';
 import { HIDDEN_STATS, VICES } from '../../../engine';
 import { AspirationsCard } from './AspirationsCard';
@@ -97,6 +98,7 @@ export function StatsColumn({ game }: { game: GameState }): React.JSX.Element {
           })}
         </div>
       </section>
+      <PeopleCard game={game} />
       <SkillsCard game={game} />
       <ThreadsCard game={game} />
       <AspirationsCard game={game} />

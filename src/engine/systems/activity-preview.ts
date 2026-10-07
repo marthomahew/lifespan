@@ -68,9 +68,7 @@ export function activityPreview(s: GameState, def: ActivityDef): string {
     (t, o) => t + (o.success && typeof o.chance === 'number' ? o.chance : 0),
     0,
   );
-  const odds =
-    total > 0 && good > 0
-      ? ` · goes well about ${Math.round((100 * good) / total)}% of the time`
-      : '';
+  const pct = total > 0 ? Math.round((100 * good) / total) : 0;
+  const odds = pct > 0 && pct < 100 ? ` · goes well about ${pct}% of the time` : '';
   return parts.length ? `${parts.join(' · ')}${odds}` : '';
 }

@@ -899,5 +899,10 @@
     "title": "Owner feedback 1: chess named in its popups, pips on the Occupation tab, real clubs to pick, activity effect previews, focus forecasts",
     "passes": true,
     "evidence": "tests/engine/previews.test.ts"
+  },
+  "S85": {
+    "title": "Your people card (closest people with faces, role and closeness; sketch on hover); popups show the person their text names",
+    "passes": true,
+    "evidence": "tests/engine/people.test.ts"
   }
 }

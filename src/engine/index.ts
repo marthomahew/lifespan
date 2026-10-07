@@ -83,3 +83,4 @@ export {
   type BusinessOp,
 } from './systems/business';
 export { jobBoard, sortBoard, type BoardRow, type BoardSort, type Rung } from './systems/job-board';
+export { closestPeople, closeness, npcSketch } from './people';

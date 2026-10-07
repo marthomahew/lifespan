@@ -72,9 +72,7 @@ export function popupView(s: GameState, pe: PendingEvent): PopupView | null {
       label: renderText(s, c.label, pe.bindings, pe.payload),
       enabled: selectable.has(c.id),
     })),
-    npcIds: [...new Set(Object.values(pe.bindings))]
-      .filter((id) => s.npcs.some((n) => n.id === id && n.alive))
-      .slice(0, 2),
+    npcIds: popupFaces(s, pe, renderText(s, def.text, pe.bindings, pe.payload)),
     petId: popupPet(s, def.text),
   };
 }
@@ -119,4 +117,27 @@ function popupPet(s: GameState, text: string): number | null {
   const tok = tokensIn(text).find((t) => t === 'pet' || t === 'pet.kind' || PET_BY_ID[t]);
   if (!tok) return null;
   return favouritePet(s, PET_BY_ID[tok] ? tok : undefined)?.id ?? null;
+}
+
+/** Who to show in a popup: the people it binds, or the one its text names ("your mother"). */
+function popupFaces(s: GameState, pe: PendingEvent, text: string): number[] {
+  const bound = [...new Set(Object.values(pe.bindings))].filter((id) =>
+    s.npcs.some((n) => n.id === id && n.alive),
+  );
+  if (bound.length) return bound.slice(0, 2);
+  const MENTIONS: [RegExp, string[]][] = [
+    [/\byour (mum|mother)\b/i, ['mother']],
+    [/\byour (dad|father)\b/i, ['father']],
+    [/\byour (husband|wife|spouse)\b/i, ['spouse']],
+    [/\byour (partner|boyfriend|girlfriend)\b/i, ['partner', 'sweetheart']],
+  ];
+  for (const [re, roles] of MENTIONS) {
+    if (!re.test(text)) continue;
+    const n = s.npcs.find(
+      (x) =>
+        x.alive && x.roles.some((r) => roles.includes(r)) && !x.flags.includes('absent_parent'),
+    );
+    if (n) return [n.id];
+  }
+  return [];
 }
