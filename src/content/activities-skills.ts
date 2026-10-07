@@ -3,6 +3,37 @@ import type { ActivityDef } from './types';
 /** One activity per skill, with its own stories (Practise a skill remains for any of them). */
 export const SKILL_ACTIVITIES: ActivityDef[] = [
   {
+    id: 'audition',
+    label: 'Audition for acting work',
+    emoji: '🎬',
+    group: 'fun',
+    ages: [16, 70],
+    limitPerYear: 1,
+    special: 'audition',
+    description: 'Headshots, a monologue, and a room of strangers deciding in thirty seconds.',
+    outcomes: [
+      {
+        chance: 0.45,
+        success: true,
+        text: 'You nail the monologue. Someone at the table stops writing and actually looks up.',
+        effects: [
+          { stat: 'happiness', delta: 4 },
+          { skill: 'voice', delta: 2 },
+        ],
+      },
+      {
+        chance: 0.4,
+        text: 'You give it everything. They say “thank you, we’ll be in touch”, which means they won’t.',
+        effects: [{ stat: 'stress', delta: 2 }],
+      },
+      {
+        chance: 0.15,
+        text: 'You forget the second half of your speech and improvise something about a goat. Nobody laughs.',
+        effects: [{ stat: 'happiness', delta: -4 }],
+      },
+    ],
+  },
+  {
     id: 'code_project',
     label: 'Code a side project',
     emoji: '💻',

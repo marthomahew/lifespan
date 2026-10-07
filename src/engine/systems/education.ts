@@ -400,8 +400,14 @@ export function parentalHelp(s: GameState, total: number, dryRun = false): numbe
   for (const n of s.npcs) {
     if (!n.alive || !(n.roles.includes('mother') || n.roles.includes('father')) || n.rel < 30)
       continue;
-    const give = Math.min(Math.max(0, n.money) * 0.5, total / 2);
-    if (!dryRun) n.money -= give;
+    // Savings and investments both count (they sell some to help).
+    const liquid = Math.max(0, n.money) + Math.max(0, n.invest ?? 0);
+    const give = Math.min(liquid * 0.5, total / 2);
+    if (!dryRun) {
+      const fromCash = Math.min(Math.max(0, n.money), give);
+      n.money -= fromCash;
+      if (give > fromCash) n.invest = Math.max(0, (n.invest ?? 0) - (give - fromCash));
+    }
     paid += give;
   }
   return Math.round(paid);

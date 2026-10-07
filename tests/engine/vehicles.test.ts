@@ -5,7 +5,9 @@ import { CATALOGUE_VEHICLES } from '../../src/content/vehicles';
 import { vehicleOffer } from '../../src/engine/systems/assets';
 
 const rich = (birthYear: number, age = 40): GameState => {
-  const s = runCheat(newLife({ birthYear, country: 'us' }, 4500), 'age.set', { age }).state;
+  const s0 = newLife({ birthYear, country: 'us' }, 4500);
+  // Immortal, so a test's few years can't end in a heart attack.
+  const s = runCheat({ ...s0, cheats: { ...s0.cheats, immortal: true } }, 'age.set', { age }).state;
   return {
     ...runCheat({ ...s, pending: [] }, 'money.add', { amount: 50_000_000 }).state,
     pending: [],

@@ -10,6 +10,7 @@ import { barColour } from '../../components/StatBar';
 import { app, doAct } from '../../store/app';
 import { GiftForm } from './GiftForm';
 import type { GiftParams } from '../../../engine/systems/gifts';
+import { EDU_LABEL, npcMoneyLine } from '../../../engine/systems/npc-economy';
 
 /** Someone in your life: who they are, what they remember, and what you can do together. */
 export function NpcPanel({
@@ -74,6 +75,12 @@ export function NpcPanel({
               {n.job ? ` · ${n.job}` : ''}
               {game.family.custodyLost.includes(n.id) ? ' · lives with your ex' : ''}
             </div>
+            {n.alive && n.age >= 18 && (n.edu || n.pay !== undefined) && (
+              <div className="muted small" data-testid="npc-money">
+                {n.edu ? `${EDU_LABEL[n.edu]} · ` : ''}
+                {npcMoneyLine(game, n)}
+              </div>
+            )}
             <div className="chips">
               {n.traits.map((t) => (
                 <span key={t} className="chip">

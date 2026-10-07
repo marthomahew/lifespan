@@ -1,3 +1,4 @@
+import type { Upbringing } from '../systems/upbringing';
 import type { UnderworldRecord } from '../systems/underworld';
 import type { MissionRecord } from '../systems/missions';
 import type { PoliticsRecord } from '../systems/politics';
@@ -117,6 +118,8 @@ export type GameState = {
   politics?: PoliticsRecord | null;
   /** Astronaut flights, spy operations, diplomatic postings. */
   missions?: MissionRecord | null;
+  /** Childhood by class: the school you went to and the home you grew up in. */
+  upbringing?: Upbringing;
   /** Organised crime: crew, rank, respect, heat. */
   underworld?: UnderworldRecord | null;
   /** Your chess record, once you have played a rated tournament. */

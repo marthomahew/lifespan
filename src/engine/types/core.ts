@@ -183,8 +183,15 @@ export type Npc = {
   parentIds: number[];
   lastContact: number;
   romance?: { stage: RomanceStage; since: number; prenup: boolean };
-  /** Their own wealth in local currency (gifts, inheritance). */
+  /** Their cash and savings in local currency (gifts, inheritance, what they put by). */
   money: number;
+  /** Their education, pay, investments, home and debts (adults whose lives you follow). */
+  edu?: 'none' | 'school' | 'college' | 'degree' | 'postgrad';
+  pay?: number;
+  invest?: number;
+  home?: number;
+  mortgage?: number;
+  debt?: number;
   attraction: Attraction;
   fertility: number;
   /** Seeds their portrait (else their id): someone you met as a drawn candidate keeps that face. */

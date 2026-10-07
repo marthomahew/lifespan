@@ -124,5 +124,12 @@ export function interviewOdds(s: GameState, job: JobDef): number {
   if (hasAdultRecord(s)) o -= 0.25;
   if (s.player.age >= 18 && !speaksLocal(s)) o -= 0.15;
   if (s.career.jobId) o += 0.05;
+  // The old school network: a private education opens doors in suits.
+  if (
+    s.upbringing &&
+    s.upbringing.school !== 'state' &&
+    ['law', 'finance', 'public_service'].includes(job.field)
+  )
+    o += 0.08;
   return clampOdds(o);
 }

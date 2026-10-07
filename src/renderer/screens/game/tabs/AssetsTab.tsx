@@ -111,6 +111,23 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
           </ul>
         </section>
       )}
+      {!adult && game.upbringing && (
+        <section className="panel-section" data-testid="upbringing">
+          <h3 className="section-title">Growing up</h3>
+          <p data-testid="upbringing-home">You live with your family in {game.upbringing.home}.</p>
+          {game.player.age >= 5 && (
+            <p className="muted small" data-testid="upbringing-school">
+              {game.upbringing.school === 'state'
+                ? 'You go to the local state school.'
+                : game.upbringing.school === 'boarding'
+                  ? game.player.age >= 11
+                    ? 'You board at a private school, home in the holidays.'
+                    : 'You go to a private prep school; at eleven you’ll board.'
+                  : 'You go to a private school: smaller classes, better grades, useful friends.'}
+            </p>
+          )}
+        </section>
+      )}
       {adult && (
         <section className="panel-section" data-testid="housing">
           <h3 className="section-title">Home</h3>

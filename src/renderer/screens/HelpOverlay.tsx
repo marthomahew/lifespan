@@ -57,6 +57,14 @@ export const GUIDE: [string, string][] = [
     'Real history drives prices, mortgage rates, index funds and famous shares (year-end prices to 2025). Bitcoin appears once you have heard of it. When money is tight, Assets › Making ends meet has gig work and other options; with wealth, The good life opens tier by tier.',
   ],
   [
+    'Growing up',
+    'Your family’s wealth shapes your childhood: the home, state or private school (private lifts grades and later helps in law, finance and public service), pocket money, lessons, holidays and hard years. Your parents pay from their own savings, and may give you a car at 17 and a trust fund or gift at 18.',
+  ],
+  [
+    'Other people’s money',
+    'Family, partners and close friends have educations, jobs that pay, savings that follow the markets, homes with mortgages and debts. Their profile shows it; when someone dies, their whole estate, home included, is shared among their heirs.',
+  ],
+  [
     'Cars and homes',
     'The showroom has real models by category, new or used; collectors’ cars gain value after production. Home listings follow what you can afford, from mobile homes to castles, and grand homes come with perks.',
   ],

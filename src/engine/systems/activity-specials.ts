@@ -1,3 +1,4 @@
+import { hire } from './careers';
 import { CLUBS, CLUB_BY_ID, type ClubDef } from '../../content/clubs';
 import { applyStatusEffect } from './status-effects';
 import { luck } from './luck';
@@ -38,6 +39,7 @@ export function specialReason(s: GameState, def: ActivityDef): string | null {
   if (sp === 'prison:diploma' && s.education.degrees.some((d) => d.level === 'high_school'))
     return 'you already have a diploma';
   if (sp === 'surrender' && !s.legal.fugitive) return 'nobody is looking for you';
+  if (sp === 'audition' && s.career.jobId === 'film_actor') return 'you already act for a living';
   if (sp === 'driving_test' && s.legal.prison) return 'not from prison';
   if (sp === 'adopt_pet') {
     const reasons = PET_KIND_IDS.map((k) => adoptReason(s, k));
@@ -89,6 +91,22 @@ export function runSpecial(
         if (mental.severity <= 5)
           s.health.illnesses = s.health.illnesses.filter((i) => i !== mental);
         ctx.log('health', 'Therapy is helping. The fog lifts a little more each month.');
+      }
+      return;
+    }
+    case 'audition': {
+      // Landing a part: your face, your fame, a voice, and luck. A good audition gets you hired.
+      if (outcomeIndex !== 0) return;
+      const st = s.player.stats;
+      const odds =
+        0.15 + (st.looks - 50) / 200 + st.fame / 200 + (s.player.skills['voice'] ?? 0) / 400;
+      if (ctx.rng.chance(Math.max(0.05, Math.min(0.7, odds)))) {
+        hire(ctx, 'film_actor', true);
+        ctx.log(
+          'work',
+          '🎬 The casting director calls back: you have a part. A small one, but it is yours.',
+          true,
+        );
       }
       return;
     }

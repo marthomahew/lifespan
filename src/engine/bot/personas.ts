@@ -116,7 +116,7 @@ export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
       cur = tryAct(cur, { type: 'apply_job', jobId: job });
   }
   // Some careerists go into politics, and play the game once elected.
-  if (p.age >= 25 && p.age <= 60 && cur.career.jobId !== 'politician' && rng.chance(0.04))
+  if (p.age >= 25 && p.age <= 60 && cur.career.jobId !== 'politician' && rng.chance(0.1))
     cur = tryAct(cur, { type: 'politics', action: { op: 'run_again' } });
   if (cur.career.jobId === 'politician') {
     for (const op of ['campaign', 'fundraise', 'run_higher', 'run_leader'] as const)

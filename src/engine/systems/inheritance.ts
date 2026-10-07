@@ -1,3 +1,4 @@
+import { npcNetWorth } from './npc-economy';
 import { productPhrase } from './assets';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
@@ -12,6 +13,12 @@ const isChildOf = (n: Npc, parentId: number): boolean => n.parentIds.includes(pa
 /** When someone close dies, they may leave you money by relation and relationship (SPEC §5.1). */
 export function inheritFrom(ctx: Ctx, dead: Npc): void {
   const s = ctx.s;
+  // The estate is everything: savings, investments and the house, less what they owed.
+  dead.money = Math.max(0, npcNetWorth(dead));
+  dead.invest = 0;
+  dead.home = 0;
+  dead.mortgage = 0;
+  dead.debt = 0;
   if (dead.money <= 0 || dead.rel < 15) return;
   let share = 0;
   if (dead.roles.includes('spouse')) share = 1;

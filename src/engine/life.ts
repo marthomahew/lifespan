@@ -5,6 +5,7 @@ import { FAMILY_WEALTH, PARENT_JOBS, SKIN_TONES } from '../content/family';
 import { TRAIT_BY_ID } from '../content/traits';
 import { GIFT_BY_ID } from '../content/gifts';
 import { Ctx } from './ctx';
+import { settleFinances } from './systems/npc-economy';
 import { addNpc, randomName, randomSurname, randomTraits } from './npc';
 import { seedRng } from './rng';
 import { applyLocks } from './stats';
@@ -415,6 +416,15 @@ function generateFamily(ctx: Ctx, opts: NewLifeOptions = {}): void {
     job: r.chance(0.85) ? r.pick(PARENT_JOBS[tier]) : null,
     money: familyMoney / 2,
   });
+  // Their wealth is more than cash: a home (most families), savings and investments.
+  for (const parent of [mother, father]) {
+    settleFinances(ctx, parent, tier);
+    const total = familyMoney / 2;
+    const equity = (parent.home ?? 0) - (parent.mortgage ?? 0);
+    const liquid = Math.max(0, total - Math.max(0, equity));
+    parent.money = Math.round(liquid * 0.35);
+    parent.invest = Math.round(liquid * 0.65);
+  }
   const relFlag = together ? (r.chance(0.75) ? 'parents_happy' : 'parents_rocky') : 'parents_split';
   mother.flags.push(relFlag);
   father.flags.push(relFlag);
