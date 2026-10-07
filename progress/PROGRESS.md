@@ -68,3 +68,8 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - Owner requests: S73 year focus + faster childhood learning + prodigy/quick-study gifts; S74 prodigy paths (chess skill and tournaments, chess/music milestones, other-skill prodigies, burnout); S75 own business; S76 eight backgrounds (off by default; Settings off/rare/common); S77 luck gifts by area; S78 real product names by era.
 - Reviewer pass on S73–S78: 13 findings, fixed in S79 (business currency on emigration, random-life background roll, talent caps, family-business inheritance, luck gaps, setup consistency, names).
 - Coverage 651/658 (98.9%) with backgrounds and prodigies in a share of coverage lives.
+
+## 2026-10-07 (S80–S83)
+- S80 help guide for the systems; tabs open at top. S81 playtest of the new systems (12 scripted lives): 15 findings fixed (doubled "your", absent parents, memories in third person, immigrant names, prodigy caps, prison blocks, cottage price, peak-pay pensions, unique names, business lines by kind, moving family).
+- S82 job board (fit/start/ceiling sorting, ladders, odds, search) and special careers (astronaut, politician, intelligence officer, diplomat, film actor; Olympics, restaurant star, Nobel). S83 teen relationships between peers (owner override of the adults-only rule; limits in DECISIONS).
+- Coverage 684/692 (98.8%).
