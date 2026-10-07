@@ -84,6 +84,29 @@ export function SettingsScreen(): React.JSX.Element {
           />
           <span>Free time: a year only holds so many activities</span>
         </label>
+        <label className="setting">
+          <span>Pips each year</span>
+          <select
+            data-testid="set-pace"
+            value={s.pace}
+            onChange={(e) =>
+              updateSettings({ pace: e.target.value as 'relaxed' | 'standard' | 'challenging' })
+            }
+          >
+            <option value="relaxed">Relaxed: 3 more free-time pips, 9 work-time</option>
+            <option value="standard">Standard</option>
+            <option value="challenging">Challenging: 2 fewer free-time pips, 4 work-time</option>
+          </select>
+        </label>
+        <label className="setting check">
+          <input
+            type="checkbox"
+            data-testid="set-language-decay"
+            checked={s.languageDecay}
+            onChange={(e) => updateSettings({ languageDecay: e.target.checked })}
+          />
+          <span>Languages fade without use (from 30, unless fluent)</span>
+        </label>
         <label className="setting check">
           <input
             type="checkbox"

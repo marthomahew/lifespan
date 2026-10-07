@@ -160,6 +160,7 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
     },
     theSeed,
   );
+  game.settings = { ...game.settings, pace: s.pace, languageDecay: s.languageDecay };
   app.set({
     game,
     screen: 'game',
@@ -221,7 +222,13 @@ export function updateSettings(patch: Partial<Settings>): void {
   saveSettings(settings);
   applySettingsToDocument(settings);
   const g = app.get().game;
-  if (g && (patch.popupsPerYear !== undefined || patch.freeTime !== undefined)) {
+  if (
+    g &&
+    (patch.popupsPerYear !== undefined ||
+      patch.freeTime !== undefined ||
+      patch.pace !== undefined ||
+      patch.languageDecay !== undefined)
+  ) {
     app.set({
       game: {
         ...g,
@@ -229,6 +236,8 @@ export function updateSettings(patch: Partial<Settings>): void {
           ...g.settings,
           popupsPerYear: settings.popupsPerYear,
           freeTime: settings.freeTime,
+          pace: settings.pace,
+          languageDecay: settings.languageDecay,
         },
       },
     });

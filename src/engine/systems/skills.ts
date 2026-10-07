@@ -1,3 +1,4 @@
+import { SKILL_BY_ID } from '../../content/skills';
 import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { COUNTRY_BY_ID } from '../../content/countries';
@@ -80,12 +81,26 @@ export function addLanguage(s: GameState, id: string, delta: number): void {
 
 /** Skills decay slowly without practice (SPEC §5.12); foreign languages fade too. */
 export function skillDecay(s: GameState): void {
+  const age = s.player.age;
   for (const [id, lvl] of Object.entries(s.player.skills)) {
     const last = s.player.skillPractice[id] ?? -100;
     // Rust is slow, and the young don't rust at all: from 30, after four idle years, a point a year.
-    if (lvl > 0 && s.player.age >= 30 && s.year - last > 4)
-      s.player.skills[id] = clampStat(lvl - 1);
+    let loss = lvl > 0 && age >= 30 && s.year - last > 4 ? 1 : 0;
+    // Age itself: athletes slow in their thirties; cooks and writers hold on into old age.
+    const decline = SKILL_BY_ID[id]?.ageDecline;
+    if (decline && age >= decline.from && lvl > 0) {
+      const practised = s.year - last <= 1;
+      const frac = (s.player.skillFrac ??= {});
+      const key = `age:${id}`;
+      const total =
+        (frac[key] ?? 0) + decline.rate * (practised ? 0.5 : 1) * (1 + (age - decline.from) / 20);
+      const whole = Math.floor(total);
+      frac[key] = total - whole;
+      loss += whole;
+    }
+    if (loss > 0) s.player.skills[id] = clampStat(lvl - loss);
   }
+  if (s.settings.languageDecay === false) return;
   const native = new Set(COUNTRY_BY_ID[s.player.country]?.languages ?? []);
   for (const [id, lvl] of Object.entries(s.player.languages)) {
     if (native.has(id) || id === COUNTRY_BY_ID[s.player.birthCountry]?.languages[0]) continue;

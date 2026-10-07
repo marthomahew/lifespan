@@ -7,6 +7,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '🎸',
     description: 'Playing something with strings, keys, or a mouthpiece.',
     odds: { creative: 0.25 },
+    ageDecline: { from: 70, rate: 0.5 },
   },
   {
     id: 'voice',
@@ -14,6 +15,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '🎤',
     description: 'Singing on purpose, in tune.',
     odds: { creative: 0.25, social: 0.05 },
+    ageDecline: { from: 60, rate: 0.7 },
   },
   {
     id: 'athletics',
@@ -21,6 +23,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '🏅',
     description: 'Running, jumping, catching, not falling over.',
     odds: { athletic: 0.3 },
+    ageDecline: { from: 30, rate: 1.5 },
   },
   {
     id: 'programming',
@@ -28,6 +31,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '💻',
     description: 'Telling computers what to do, then why they did something else.',
     odds: { work: 0.15 },
+    ageDecline: { from: 70, rate: 0.5 },
   },
   {
     id: 'cooking',
@@ -35,6 +39,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '🍳',
     description: 'Turning groceries into dinner instead of smoke.',
     odds: { social: 0.05, romance: 0.05 },
+    ageDecline: { from: 80, rate: 0.3 },
   },
   {
     id: 'art',
@@ -42,6 +47,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '🖌️',
     description: 'Drawing, painting, and explaining what it means.',
     odds: { creative: 0.2 },
+    ageDecline: { from: 80, rate: 0.3 },
   },
   {
     id: 'writing',
@@ -49,6 +55,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '✍️',
     description: 'Sentences that people finish reading.',
     odds: { creative: 0.15, work: 0.05 },
+    ageDecline: { from: 82, rate: 0.25 },
   },
   {
     id: 'chess',
@@ -56,6 +63,7 @@ export const SKILLS: SkillDef[] = [
     emoji: '♟️',
     description: 'Seeing six moves ahead, and the trap in the fourth.',
     odds: { study: 0.15 },
+    ageDecline: { from: 55, rate: 0.4 },
   },
 ];
 

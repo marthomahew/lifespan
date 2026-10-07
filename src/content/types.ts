@@ -157,6 +157,8 @@ export type SkillDef = {
   description: string;
   /** Odds domains the skill boosts at 100 (scaled linearly). */
   odds: Partial<Record<OddsKey, number>>;
+  /** Age takes its toll from this age, this many points a year (halved if you practise). */
+  ageDecline?: { from: number; rate: number };
 };
 
 export type LanguageDef = { id: string; label: string };

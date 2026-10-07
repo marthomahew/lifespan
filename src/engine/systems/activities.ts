@@ -92,8 +92,12 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
     total += bought;
     why.push('staff and private travel');
   }
+  // The pace you chose in Settings: a more forgiving or a stricter year.
+  const pace = s.settings.pace ?? 'standard';
+  if (pace === 'relaxed') total += 3;
+  if (pace === 'challenging') total -= 2;
   // Never so busy that there's no time for anything.
-  total = Math.max(3, total);
+  total = Math.max(pace === 'challenging' ? 2 : 3, total);
   return { total, left: Math.max(0, total - usedThisYear(s, 'a:total')), why };
 }
 
@@ -106,7 +110,9 @@ export const WORK_TIME = 6;
  * extra study), so they never compete with hobbies and family for the same hours.
  */
 export function workTime(s: GameState): { total: number; left: number } {
-  const total = s.player.age < 6 ? 0 : WORK_TIME;
+  const pace = s.settings.pace ?? 'standard';
+  const total =
+    s.player.age < 6 ? 0 : pace === 'relaxed' ? 9 : pace === 'challenging' ? 4 : WORK_TIME;
   return { total, left: Math.max(0, total - usedThisYear(s, 'w:total')) };
 }
 

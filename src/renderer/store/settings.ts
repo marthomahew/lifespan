@@ -11,6 +11,10 @@ export type Settings = {
   reducedMotion: boolean;
   /** A yearly budget for activities (off: do as much as you like). */
   freeTime: boolean;
+  /** How many pips a year holds. */
+  pace: 'relaxed' | 'standard' | 'challenging';
+  /** Foreign languages fade without use. */
+  languageDecay: boolean;
   /** How often a life left to chance starts with a background (family business, a twin...). */
   backgrounds: BackgroundFrequency;
 };
@@ -23,6 +27,8 @@ export const DEFAULT_SETTINGS: Settings = {
   autosave: true,
   reducedMotion: false,
   freeTime: true,
+  pace: 'standard',
+  languageDecay: true,
   backgrounds: 'off',
 };
 
@@ -43,6 +49,9 @@ export function loadSettings(): Settings {
     if (typeof v.autosave === 'boolean') out.autosave = v.autosave;
     if (typeof v.reducedMotion === 'boolean') out.reducedMotion = v.reducedMotion;
     if (typeof v.freeTime === 'boolean') out.freeTime = v.freeTime;
+    if (v.pace === 'relaxed' || v.pace === 'standard' || v.pace === 'challenging')
+      out.pace = v.pace;
+    if (typeof v.languageDecay === 'boolean') out.languageDecay = v.languageDecay;
     if (v.backgrounds === 'off' || v.backgrounds === 'rare' || v.backgrounds === 'common')
       out.backgrounds = v.backgrounds;
     return out;

@@ -270,6 +270,13 @@ export type CheatState = {
 };
 
 /** Per-life rules the player sets. `freeTime: false` lifts the yearly activity budget. */
-export type SimSettings = { popupsPerYear: number; freeTime?: boolean };
+export type SimSettings = {
+  popupsPerYear: number;
+  freeTime?: boolean;
+  /** How many pips a year holds: relaxed (more), standard, challenging (fewer). */
+  pace?: 'relaxed' | 'standard' | 'challenging';
+  /** Foreign languages fade without use (on unless switched off). */
+  languageDecay?: boolean;
+};
 
 export type { RngState };
