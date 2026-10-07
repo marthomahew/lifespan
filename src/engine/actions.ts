@@ -53,7 +53,7 @@ export type PlayerAction =
   | { type: 'sell_asset'; id: number }
   | { type: 'move_home'; id: number }
   | { type: 'renovate'; id: number }
-  | { type: 'buy_vehicle'; model: string; financed: boolean }
+  | { type: 'buy_vehicle'; model: string; financed: boolean; used?: boolean }
   | { type: 'buy_item'; item: string }
   | { type: 'crime'; id: string }
   | { type: 'treat'; illness: string; method: Treatment }
@@ -130,7 +130,7 @@ export function act(input: GameState, action: PlayerAction): Step {
       renovate(ctx, action.id);
       break;
     case 'buy_vehicle':
-      buyVehicle(ctx, action.model, action.financed);
+      buyVehicle(ctx, action.model, action.financed, action.used ?? false);
       break;
     case 'buy_item':
       buyPossession(ctx, action.item);

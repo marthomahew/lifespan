@@ -345,6 +345,22 @@ export type VehicleDef = {
   eras?: { from: number; name: string }[];
   /** Not on sale before this year. */
   from?: number;
+  /** Last model year new (after it, only used, if at all). */
+  to?: number;
+  /** Shop category; generic older entries without one stay valid but aren't listed. */
+  category?:
+    | 'economy'
+    | 'family'
+    | 'suv'
+    | 'electric'
+    | 'luxury'
+    | 'sports'
+    | 'supercar'
+    | 'classic'
+    | 'bike'
+    | 'van';
+  /** Collectors want it: found used after production, and it gains value with age. */
+  collectible?: boolean;
   emoji: string;
   price: number;
   /** Safety 0..100 lowers accident harm. */ safety: number;

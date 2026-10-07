@@ -1,3 +1,4 @@
+import type { VehicleDef } from '../../content/types';
 import { historicalMortgage, houseReturn } from './markets';
 import {
   HOME_TYPE_BY_ID,
@@ -176,14 +177,44 @@ export function renovate(ctx: Ctx, homeId: number): void {
   );
 }
 
-export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean): void {
+/**
+ * What a model costs this year, new and used (reference dollars; null: not to be had).
+ * New while in production; used from a year after launch (worn, about 55%), for up to 25
+ * years after the last one was made; collectors' cars at any age, at a price that grows.
+ */
+export function vehicleOffer(
+  def: VehicleDef,
+  year: number,
+): { fresh: number | null; used: number | null } {
+  const from = def.from ?? 0;
+  const inProduction = year >= from && (def.to === undefined || year <= def.to);
+  const fresh = inProduction ? def.price : null;
+  if (year < from + 1) return { fresh, used: null };
+  if (def.to !== undefined && year > def.to) {
+    if (def.collectible)
+      return { fresh: null, used: Math.round(def.price * 1.05 ** (year - def.to)) };
+    return { fresh: null, used: year - def.to <= 25 ? Math.round(def.price * 0.35) : null };
+  }
+  return { fresh, used: Math.round(def.price * 0.55) };
+}
+
+export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean, used = false): void {
   const s = ctx.s;
   const v = VEHICLE_BY_ID[modelId];
   if (!v) throw new EngineError('unknown vehicle');
-  if (!onSale(v, s.year)) throw new EngineError(`not on sale until ${v.from}`);
+  const offer = vehicleOffer(v, s.year);
+  const ref = used ? offer.used : offer.fresh;
+  if (ref === null)
+    throw new EngineError(
+      used
+        ? 'none for sale used'
+        : v.from && s.year < v.from
+          ? `not on sale until ${v.from}`
+          : 'no longer made new',
+    );
   if (s.legal.prison) throw new EngineError('not from prison');
   if (s.player.age < 16) throw new EngineError('from age 16');
-  const price = money(s, v.price);
+  const price = money(s, ref);
   const id = s.assets.nextAssetId++;
   if (financed) {
     const down = Math.round(price * 0.1);
@@ -200,10 +231,14 @@ export function buyVehicle(ctx: Ctx, modelId: string, financed: boolean): void {
     model: v.id,
     value: price,
     paid: price,
-    condition: 100,
+    condition: used ? (v.collectible && v.to !== undefined && s.year > v.to ? 85 : 65) : 100,
     bought: s.year,
   });
-  ctx.log('money', `You buy ${productPhrase(v, s.year)}. ${v.description}`, true);
+  ctx.log(
+    'money',
+    `You buy ${used ? 'a used ' + productName(v, s.year) : productPhrase(v, s.year)}. ${v.description}`,
+    true,
+  );
   addStat(s, 'happiness', 5);
 }
 
@@ -268,9 +303,16 @@ export function assetsTick(ctx: Ctx): void {
     if (h.condition < 25) h.value = Math.round(h.value * 0.97);
   }
   for (const v of s.assets.vehicles) {
-    v.value = Math.max(0, Math.round(v.value * (1 - r.normal(0.15, 0.03))));
-    v.condition = clampStat(v.condition - r.int(4, 10));
-    maintenance += money(s, 400 + (100 - v.condition) * 15);
+    const def = VEHICLE_BY_ID[v.model];
+    // Collectors' cars, once out of production, gain value; everything else loses it.
+    const classic = def?.collectible && def.to !== undefined && s.year > def.to;
+    v.value = Math.max(
+      0,
+      Math.round(v.value * (classic ? 1 + r.normal(0.06, 0.05) : 1 - r.normal(0.15, 0.03))),
+    );
+    v.condition = clampStat(v.condition - r.int(classic ? 1 : 4, classic ? 4 : 10));
+    // Running costs follow the car: a supercar's service costs what a small car does.
+    maintenance += money(s, 400 + (100 - v.condition) * 15) + Math.round(v.value * 0.015);
   }
   for (const p of s.assets.possessions) {
     const def = POSSESSION_BY_ID[p.item];

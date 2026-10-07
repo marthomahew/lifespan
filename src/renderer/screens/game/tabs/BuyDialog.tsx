@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { POSSESSIONS, VEHICLES, onSale, productName } from '../../../../content/assets';
+import { POSSESSIONS, onSale, productName } from '../../../../content/assets';
 import { formatMoney, money, type GameState, type PlayerAction } from '../../../../engine';
 import { mortgageQuote, type Financing } from '../../../../engine/systems/assets';
-import { annuityPayment } from '../../../../engine/systems/loans';
 import { Modal } from '../../../components/Modal';
 import { doAct } from '../../../store/app';
+import { VehicleForm } from './VehicleForm';
 
 export type BuyTarget = { kind: 'home'; index: number } | { kind: 'vehicle' } | { kind: 'item' };
 
@@ -46,7 +46,7 @@ export function BuyDialog({
   );
 }
 
-type FormProps = { game: GameState; onBuy: (a: PlayerAction) => void };
+export type FormProps = { game: GameState; onBuy: (a: PlayerAction) => void };
 
 function HomeForm({ game, index, onBuy }: FormProps & { index: number }): React.JSX.Element {
   const l = game.assets.listings[index];
@@ -159,74 +159,6 @@ function HomeForm({ game, index, onBuy }: FormProps & { index: number }): React.
   );
 }
 
-function VehicleForm({ game, onBuy }: FormProps): React.JSX.Element {
-  const forSale = VEHICLES.filter((x) => onSale(x, game.year));
-  const [model, setModel] = useState(forSale[0]?.id ?? '');
-  const [financed, setFinanced] = useState(false);
-  const v = VEHICLES.find((x) => x.id === model);
-  const price = v ? money(game, v.price) : 0;
-  const deposit = Math.round(price * 0.1);
-  const yearly = Math.round(annuityPayment(price - deposit, 0.08, 5));
-  const adult = game.player.age >= 18;
-  return (
-    <form
-      className="buy-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onBuy({ type: 'buy_vehicle', model, financed: adult && financed });
-      }}
-    >
-      {!game.assets.licence && (
-        <p className="muted small" data-testid="no-licence-note">
-          You have no driving licence yet: you can own it, but someone else will be doing the
-          driving. The driving test is under Activities.
-        </p>
-      )}
-      <label>
-        Model
-        <select
-          data-testid="vehicle-model"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-        >
-          {forSale.map((x) => (
-            <option key={x.id} value={x.id}>
-              {x.emoji} {productName(x, game.year)}
-              {productName(x, game.year) !== x.label ? ` (${x.label.toLowerCase()})` : ''} ·{' '}
-              {formatMoney(game, money(game, x.price))}
-            </option>
-          ))}
-        </select>
-      </label>
-      {v && <p className="muted small">{v.description}</p>}
-      {v?.perks && (
-        <p className="small" data-testid="buy-perks">
-          {perkText(v.perks)}
-        </p>
-      )}
-      {adult && (
-        <label className="check">
-          <input
-            type="checkbox"
-            data-testid="buy-finance"
-            checked={financed}
-            onChange={(e) => setFinanced(e.target.checked)}
-          />{' '}
-          Finance it: {formatMoney(game, deposit)} now, then {formatMoney(game, yearly)} a year for
-          5 years at 8%
-        </label>
-      )}
-      <p className="small">
-        Pay now: <strong>{formatMoney(game, adult && financed ? deposit : price)}</strong> · you
-        have {formatMoney(game, game.money.cash)}
-      </p>
-      <button className="primary" type="submit" data-testid="buy-confirm">
-        Buy it
-      </button>
-    </form>
-  );
-}
-
 function ItemForm({ game, onBuy }: FormProps): React.JSX.Element {
   const forSale = POSSESSIONS.filter((x) => onSale(x, game.year));
   const [item, setItem] = useState(forSale[0]?.id ?? '');
@@ -276,7 +208,7 @@ const PERK_LABEL: Record<string, string> = {
   crime: 'crime',
 };
 /** "While you own it: romance +6%, social life +3%." */
-function perkText(perks: Partial<Record<string, number>>): string {
+export function perkText(perks: Partial<Record<string, number>>): string {
   const parts = Object.entries(perks)
     .filter(([, v]) => v)
     .map(([k, v]) => `${PERK_LABEL[k] ?? k} +${Math.round((v ?? 0) * 100)}%`);

@@ -1,4 +1,5 @@
 import type { HomeTypeDef, PossessionDef, VehicleDef } from './types';
+import { CATALOGUE_VEHICLES } from './vehicles';
 
 /** Home types (SPEC §5.7). Listings are type × condition × the country's price level. */
 export const HOME_TYPES: HomeTypeDef[] = [
@@ -71,7 +72,8 @@ export const HOME_TYPES: HomeTypeDef[] = [
 ];
 
 /** Vehicles by kind, with real models by era (the model on sale in a given year). */
-export const VEHICLES: VehicleDef[] = [
+/** Generic kinds from before the catalogue (older saves and tests use them). */
+const GENERIC_VEHICLES: VehicleDef[] = [
   {
     id: 'pelican_runabout',
     label: 'Small hatchback',
@@ -244,6 +246,8 @@ export const VEHICLES: VehicleDef[] = [
     description: 'A house on wheels, if the house leaked slightly and had a gas hob.',
   },
 ];
+
+export const VEHICLES: VehicleDef[] = [...GENERIC_VEHICLES, ...CATALOGUE_VEHICLES];
 
 /** Possessions (SPEC §5.7): instruments feed the music skill; art can appreciate. */
 export const POSSESSIONS: PossessionDef[] = [
