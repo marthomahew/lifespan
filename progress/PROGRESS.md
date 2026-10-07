@@ -73,3 +73,14 @@ Append an entry after each milestone or every couple of hours, 10 lines max, in 
 - S80 help guide for the systems; tabs open at top. S81 playtest of the new systems (12 scripted lives): 15 findings fixed (doubled "your", absent parents, memories in third person, immigrant names, prodigy caps, prison blocks, cottage price, peak-pay pensions, unique names, business lines by kind, moving family).
 - S82 job board (fit/start/ceiling sorting, ladders, odds, search) and special careers (astronaut, politician, intelligence officer, diplomat, film actor; Olympics, restaurant star, Nobel). S83 teen relationships between peers (owner override of the adults-only rule; limits in DECISIONS).
 - Coverage 684/692 (98.8%).
+
+## 2026-10-07 (S84–S105)
+- Owner playtest rounds: clubs, previews and pips; people cards; chess Elo/norms/titles and the world title cycle (prizes checked against Wikipedia); youth sport with Olympics by level; fame "known for"; lettings; results careers; activities per skill; skill crimes; item perks.
+- Timeline: real markets (Yahoo year-end prices for 8 stocks and BTC, BLS CPI 1950–2025), bitcoin early buying, ~90 real history moments incl. 12 new countries, decade childhoods, jobs by era, same-sex marriage laws, generations.
+- 25 countries, 79 US cities, 24 destinations; character creation redesign; web lookups allowed by owner (curl).
+
+## 2026-10-07 (S106–S127)
+- "Fun over punitive balance" (owner): more pips, separate work time, no yearly skill cap, momentum, no rust before 30, fair promotions, champions keep titles.
+- Sports: real routes and age stages, scholarships, draft with rookie scales, positions, contracts, stats, honours, 28 pro events, ice hockey and American football. Actors climb billing, 25 actor events.
+- Wealth: car showroom (~95 real models, Porsches, collectors), homes by budget (mobile home → castle), the good life (4 tiers), making ends meet, fame deals, 33 life-by-wealth events, smoking by era.
+- Verify green ~140 s; unit 632, e2e 80; sim bands pass.
