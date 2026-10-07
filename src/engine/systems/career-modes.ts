@@ -52,6 +52,30 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
     return true;
   }
   if (job.id === 'film_actor') {
+    // Billing follows your name: fame most of all, then the work you put in, then your face.
+    const st = s.player.stats;
+    const score = st.fame * 0.6 + c.performance * 0.3 + st.looks * 0.1;
+    const NEED = [0, 30, 48, 66, 82];
+    const target = NEED.filter((n) => score >= n).length - 1;
+    if (target > c.level) {
+      c.level += 1;
+      c.since = s.year;
+      const title = titleFor(s, job, c.level);
+      const rec = c.history.at(-1);
+      if (rec) rec.title = title;
+      ctx.log(
+        'work',
+        `🎬 Your agent calls with the news: casting directors want you now. You're a ${title.toLowerCase()}.`,
+        true,
+      );
+      addStat(s, 'happiness', 6);
+    } else if (c.level > 0 && score < (NEED[c.level] ?? 0) - 15) {
+      c.level -= 1;
+      const title = titleFor(s, job, c.level);
+      const rec = c.history.at(-1);
+      if (rec) rec.title = title;
+      ctx.log('work', `🎬 The offers thin out. You're billed as a ${title.toLowerCase()} again.`);
+    }
     // Parts come and go: a year's fee swings with the work, around what your billing commands.
     const base = salaryFor(ctx, job, c.level);
     const year = ctx.rng.next();

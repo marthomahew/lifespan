@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { GameState } from '../../engine';
+import { freeTime, workTime, type GameState } from '../../engine';
 import { doAgeUp, useApp } from '../store/app';
 import { yearChanges } from '../store/result';
 import { EventModal } from './game/EventModal';
@@ -24,6 +24,7 @@ export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
       <main className="center">
         <LogView game={game} />
         <div className="ageup-bar">
+          <UnusedPips game={game} />
           <button
             className="primary ageup"
             data-testid="age-up"
@@ -51,5 +52,23 @@ export function GameScreen({ game }: { game: GameState }): React.JSX.Element {
       <RightPanel game={game} />
       <EventModal game={game} />
     </div>
+  );
+}
+
+/** A nudge before you age up: pips you haven't spent this year are gone on your birthday. */
+function UnusedPips({ game }: { game: GameState }): React.JSX.Element | null {
+  if (game.settings.freeTime === false || game.player.age < 6 || game.legal.prison) return null;
+  const free = freeTime(game).left;
+  const work = workTime(game).left;
+  if (free <= 0 && work <= 0) return null;
+  const parts = [
+    free > 0 ? `${free} free-time ${free === 1 ? 'pip' : 'pips'}` : '',
+    work > 0 ? `${work} work-time ${work === 1 ? 'pip' : 'pips'}` : '',
+  ].filter(Boolean);
+  return (
+    <p className="unused-pips small" data-testid="unused-pips">
+      <span aria-hidden="true">⚠️ </span>Unused this year: {parts.join(', ')}. They don't carry
+      over.
+    </p>
   );
 }

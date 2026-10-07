@@ -496,3 +496,9 @@ button.fold-toggle:focus-visible {
   font-weight: 500;
   color: var(--text-2);
 }
+
+.unused-pips {
+  margin: 0 0 6px;
+  color: var(--text-2);
+  text-align: center;
+}
