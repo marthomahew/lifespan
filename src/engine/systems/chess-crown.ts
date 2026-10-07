@@ -24,12 +24,12 @@ export const MAJORS: Major[] = [
   {
     id: 'candidates',
     label: 'The Candidates',
-    pay: 'Eight players, fourteen rounds: the winner challenges for the world title.',
+    pay: 'Eight players, fourteen rounds: about $52,000 to the winner plus $3,800 a half-point, and a shot at the world title.',
   },
   {
     id: 'title',
     label: 'World Championship match',
-    pay: 'Fourteen games for a fund of about $2.5 million: 60% to the winner.',
+    pay: 'Fourteen games for $2.5 million: $200,000 for each game won, the rest shared.',
   },
 ];
 
@@ -75,12 +75,24 @@ export function majorReason(s: GameState, id: MajorId): string | null {
 }
 
 /** A best-of-two (or longer) match decided in rapid tiebreaks: did you win it? */
-function match(ctx: Ctx, me: number, opp: number, games: number): { won: boolean; score: number } {
+function match(
+  ctx: Ctx,
+  me: number,
+  opp: number,
+  games: number,
+): { won: boolean; score: number; wins: number; losses: number; tiebreak: boolean } {
   let score = 0;
-  for (let i = 0; i < games; i++) score += game(ctx, me, opp);
-  if (score !== games / 2) return { won: score > games / 2, score };
+  let wins = 0;
+  let losses = 0;
+  for (let i = 0; i < games; i++) {
+    const g = game(ctx, me, opp);
+    score += g;
+    if (g === 1) wins++;
+    else if (g === 0) losses++;
+  }
+  if (score !== games / 2) return { won: score > games / 2, score, wins, losses, tiebreak: false };
   // Rapid tiebreaks: the best classical players are usually the best at rapid too.
-  return { won: ctx.rng.chance(expected(me, opp)), score };
+  return { won: ctx.rng.chance(expected(me, opp)), score, wins, losses, tiebreak: true };
 }
 
 function rate(rec: ChessRecord, score: number, exp: number): number {
@@ -174,7 +186,9 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
       rival += game(ctx, 2780, 2750 + ctx.rng.int(-30, 30));
     }
     const won = score > rival || (score === rival && ctx.rng.chance(0.5));
-    prize = won ? 55000 : score >= rival - 1 ? 40000 : 15000;
+    // 2024 terms: €48k / €36k / €24k for the top three, plus €3,500 a half-point for everyone.
+    const place = won ? 52000 : score >= rival - 1 ? 39000 : score >= rival - 2 ? 26000 : 0;
+    prize = place + score * 2 * 3800;
     const change = rate(rec, score, exp);
     if (won) rec.challenger = s.year;
     result = won ? 'winner: challenger for the world title' : `${score}/14, not enough`;
@@ -190,7 +204,12 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
     const opp = champ ? 2785 : 2800;
     const m = match(ctx, me, opp, 14);
     rate(rec, m.score, 14 * expected(rec.rating, opp));
-    prize = m.won ? 1500000 : 1000000;
+    // 2024 terms: $200k per game won, the rest of $2.5M split evenly; a tiebreak is 1.3M / 1.2M.
+    prize = m.tiebreak
+      ? m.won
+        ? 1300000
+        : 1200000
+      : 200000 * m.wins + (2500000 - 200000 * (m.wins + m.losses)) / 2;
     if (m.won) rec.crowns = [...(rec.crowns ?? []), s.year];
     result = m.won
       ? champ

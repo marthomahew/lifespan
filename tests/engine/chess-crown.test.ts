@@ -59,7 +59,8 @@ describe('the world title cycle', () => {
       const s = star(2016, 2850, 3300 + i, { challenger: 2016 });
       const after = act(s, { type: 'chess_major', id: 'title' }).state;
       const won = after.money.cash - s.money.cash;
-      expect(won).toBeGreaterThanOrEqual(Math.round(1_000_000 * s.inflation) - 1);
+      // Even a heavy loss pays the loser over half a million (2024 terms).
+      expect(won).toBeGreaterThanOrEqual(Math.round(500_000 * s.inflation) - 1);
       if (after.chess?.crowns?.includes(2016)) crowned = after;
     }
     expect(crowned).not.toBeNull();
