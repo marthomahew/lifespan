@@ -11,6 +11,7 @@ import {
   STOCKS,
   fromAnchors,
 } from '../../content/history/markets';
+import { JOB_BY_ID } from '../../content/jobs';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
@@ -123,11 +124,41 @@ export function marketsTick(ctx: Ctx): void {
   sim.year = s.year;
 }
 
+/** Close enough to computers to notice things early: code, or a job in tech. */
+export const techSavvy = (s: GameState): boolean =>
+  (s.player.skills['programming'] ?? 0) >= 30 ||
+  JOB_BY_ID[s.career.jobId ?? '']?.field === 'technology';
+
+/** Flags that mean someone has told you about bitcoin. */
+export const HEARD_BITCOIN = [
+  'heard_bitcoin',
+  'ignored_bitcoin',
+  'early_miner',
+  'early_buyer',
+  'bitcoin_dabbler',
+];
+
+/**
+ * Shares are listed for anyone, but bitcoin is not on most people's radar: you see it if
+ * you're close to computers, someone has told you about it, you already hold some, or
+ * (from 2021) when it's in adverts everywhere.
+ */
+export function onRadar(s: GameState, id: string): boolean {
+  if (id !== 'BTC') return true;
+  return (
+    techSavvy(s) ||
+    (s.money.shares?.['BTC'] ?? 0) > 0 ||
+    s.player.flags.some((f) => HEARD_BITCOIN.includes(f)) ||
+    s.year >= 2021
+  );
+}
+
 /** Buy or sell shares, by local amount (buy) or share count (sell). */
 export function tradeShares(ctx: Ctx, id: string, op: 'buy' | 'sell', amount: number): void {
   const s = ctx.s;
   const price = priceLocal(s, id);
   if (price === null) throw new EngineError('not trading yet');
+  if (op === 'buy' && !onRadar(s, id)) throw new EngineError('you have never heard of it');
   if (s.legal.prison) throw new EngineError('not from prison');
   if (s.player.age < 18) throw new EngineError('from age 18');
   const held = (s.money.shares ??= {});

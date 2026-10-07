@@ -3,6 +3,7 @@ import {
   TRADABLES,
   formatMoney,
   inRecession,
+  onRadar,
   priceLocal,
   type GameState,
   type PlayerAction,
@@ -19,7 +20,7 @@ export function SharesSection({
   const [amount, setAmount] = useState('1000');
   const n = Math.max(0, Number(amount) || 0);
   const held = game.money.shares ?? {};
-  const open = TRADABLES.filter((t) => game.year >= t.listed);
+  const open = TRADABLES.filter((t) => game.year >= t.listed && onRadar(game, t.id));
   return (
     <section data-testid="shares">
       <h3 className="section-title">Shares and crypto</h3>

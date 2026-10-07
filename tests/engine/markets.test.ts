@@ -76,4 +76,20 @@ describe('markets that follow history', () => {
     anyone = choose(anyone, 'big').state;
     expect(anyone.money.shares?.['BTC'] ?? 0).toBeGreaterThan(0);
   });
+
+  it('bitcoin is off most people’s radar until someone tells them', async () => {
+    const { onRadar } = await import('../../src/engine/systems/markets');
+    const plain = at(1980, 33);
+    expect(plain.year).toBe(2013);
+    expect(onRadar(plain, 'AAPL')).toBe(true);
+    expect(onRadar(plain, 'BTC')).toBe(false);
+    expect(() => act(plain, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
+      /never heard/,
+    );
+    const coder = runCheat(plain, 'skill.set', { skill: 'programming', value: 35 }).state;
+    expect(onRadar(coder, 'BTC')).toBe(true);
+    const told = { ...plain, player: { ...plain.player, flags: ['ignored_bitcoin'] } };
+    expect(onRadar(told, 'BTC')).toBe(true);
+    expect(onRadar(at(1980, 41), 'BTC')).toBe(true);
+  });
 });

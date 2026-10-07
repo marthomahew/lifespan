@@ -1,13 +1,8 @@
 import type { EventDef } from '../../engine/events/types';
 import type { GameState } from '../../engine/types';
-import { JOB_BY_ID } from '../jobs';
-import { holdingValue } from '../../engine/systems/markets';
+import { HEARD_BITCOIN, holdingValue, techSavvy } from '../../engine/systems/markets';
 import { money } from '../../engine/economy';
 
-/** Close enough to computers to notice things early: code, or a job in tech. */
-const techSavvy = (s: GameState): boolean =>
-  (s.player.skills['programming'] ?? 0) >= 30 ||
-  JOB_BY_ID[s.career.jobId ?? '']?.field === 'technology';
 const adult = (s: GameState): boolean => s.player.age >= 18 && !s.legal.prison;
 const holds =
   (id: string, ref = 1) =>
@@ -163,16 +158,18 @@ export const MARKET_EVENTS: EventDef[] = [
     kind: 'choice',
     category: 'money',
     emoji: '🪙',
-    ages: [16, 85],
-    weight: 6,
+    ages: [18, 85],
+    weight: 2,
     once: true,
-    fromYear: 2011,
-    toYear: 2017,
+    fromYear: 2013,
+    toYear: 2020,
+    // Someone who isn't into computers hears about it only by chance, and later.
     when: (s) =>
       !s.legal.prison &&
+      !techSavvy(s) &&
       holdingValue(s, 'BTC') <= 0 &&
-      !s.player.flags.some((f) => ['ignored_bitcoin', 'early_miner', 'early_buyer'].includes(f)),
-    text: 'Someone at a party will not stop talking about bitcoin: internet money, no banks, and it has gone up again. Half the room is rolling its eyes. The other half is listening.',
+      !s.player.flags.some((f) => HEARD_BITCOIN.includes(f)),
+    text: 'A friend of a friend at a party will not stop talking about something called bitcoin. Internet money, no banks, “the future”. Last year it was a juice diet, and before that a pyramid scheme with candles.',
     choices: [
       {
         id: 'small',
@@ -206,7 +203,7 @@ export const MARKET_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: 1,
-            text: 'You change the subject. It may well be a scam. It may also be the most expensive conversation you ever walked away from.',
+            text: 'You change the subject to the food, which is better than the conversation.',
             effects: [{ flag: 'ignored_bitcoin' }],
           },
         ],
@@ -362,6 +359,45 @@ export const MARKET_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You hold, and practise saying “it’s a long-term thing” to your relatives.',
             effects: [{ stat: 'stress', delta: 4 }],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'mk_btc_crash',
+    kind: 'choice',
+    category: 'money',
+    emoji: '📉',
+    ages: [18, 95],
+    weight: 12,
+    cooldownYears: 3,
+    fromYear: 2014,
+    when: (s) => [2014, 2018, 2022].includes(s.year) && holds('BTC', 300)(s),
+    text: 'Bitcoin has fallen by more than half. The news calls it a bubble bursting, a colleague calls it “a lesson”, and the app on your phone is entirely red.',
+    choices: [
+      {
+        id: 'sell',
+        label: 'Get out before it hits zero',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You sell everything and delete the app. The relief lasts about a week.',
+            effects: [
+              { system: 'sell_shares', arg: 'BTC:1' },
+              { stat: 'stress', delta: -4 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'hold',
+        label: 'Hold and stop looking',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You hold, and try to stop checking the price at red lights.',
+            effects: [{ stat: 'stress', delta: 6 }],
           },
         ],
       },
