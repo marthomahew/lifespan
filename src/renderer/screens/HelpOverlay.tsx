@@ -17,12 +17,12 @@ export const SHORTCUTS: [string, string][] = [
 /** Short notes on the systems that aren't obvious from the screen. */
 export const GUIDE: [string, string][] = [
   [
-    'Free time',
-    'Each year holds a few activities (fewer with a full-time job or small children, more in retirement). Health care and paperwork are free. It refills on your birthday, and can be switched off in Settings.',
+    'Free time and work time',
+    'Each year holds free-time pips for activities (nine for children, eight for adults; fewer with a full-time job, a team or small children, more in retirement or with household staff) and six work-time pips for career moves in Occupation: tournaments, gigs, extra training, fame deals. Health care and paperwork are free. Both refill on your birthday; unused pips don’t carry over. Settings can switch the limits off.',
   ],
   [
     'A focus',
-    'In Activities, give your spare time to one skill or language. It practises itself every year for two pips of free time, and keeps a mastered skill from fading. Children learn fastest, and so do the gifted.',
+    'In Activities, give your spare time to one skill or language for one pip a year. It practises itself every year, and each year in a row adds momentum (up to +60%). Practice on top of a focus counts in full. Children learn fastest, and so do the gifted; the last points to 100 come slowly but steadily. Skills don’t rust before 30.',
   ],
   [
     'Gifts and prodigies',
@@ -43,6 +43,26 @@ export const GUIDE: [string, string][] = [
   [
     'Memory and chains',
     'People remember what you did and bring it back years later. Many choices schedule a follow-up: what you decide now may come round again.',
+  ],
+  [
+    'Sport',
+    'Take up a sport (and a position) in Occupation › Pursuits. Seasons play out on your birthday; rungs open with age. Strong school athletes in the US are offered scholarships; each sport goes pro its own way (a club at 17, the draft after college, the tour, a sponsor). Pros get contracts, statistics, honours and trades.',
+  ],
+  [
+    'Chess',
+    'Tournaments earn an Elo rating and norms toward titles (GM at 2500 with three norms). At the top: the World Rapid & Blitz, the World Cup, the Candidates and the title match. A champion keeps the title until beaten.',
+  ],
+  [
+    'Money and markets',
+    'Real history drives prices, mortgage rates, index funds and famous shares (year-end prices to 2025). Bitcoin appears once you have heard of it. When money is tight, Assets › Making ends meet has gig work and other options; with wealth, The good life opens tier by tier.',
+  ],
+  [
+    'Cars and homes',
+    'The showroom has real models by category, new or used; collectors’ cars gain value after production. Home listings follow what you can afford, from mobile homes to castles, and grand homes come with perks.',
+  ],
+  [
+    'Fame',
+    'Fame comes from what you are known for. Once you are famous, Occupation › Cash in on fame has sponsorships, appearances, a memoir and an online channel; a world champion or Olympic champion earns double.',
   ],
   [
     'Cheats',
