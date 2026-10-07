@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { act, ageUp, newLife, runCheat, type GameState } from '../../src/engine';
-import { inRecession, marketReturn, priceIndex, priceUsd } from '../../src/engine/systems/markets';
+import {
+  btcAllowance,
+  inRecession,
+  marketReturn,
+  onRadar,
+  priceIndex,
+  priceUsd,
+} from '../../src/engine/systems/markets';
 import { mortgageRate } from '../../src/engine/systems/assets';
 
 const at = (birthYear: number, age: number, seed = 2900): GameState => {
@@ -77,25 +84,44 @@ describe('markets that follow history', () => {
     expect(anyone.money.shares?.['BTC'] ?? 0).toBeGreaterThan(0);
   });
 
-  it('anyone can buy bitcoin from 2009, but only a little a year while it is young', () => {
-    const plain = runCheat(at(1980, 29), 'money.add', { amount: 1_000_000 }).state;
-    expect(plain.year).toBe(2009);
-    const bought = act(plain, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state;
-    expect(bought.money.shares?.['BTC']).toBeCloseTo(100, 5);
-    expect(plain.money.cash - bought.money.cash).toBeLessThan(10);
-    expect(() => act(bought, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
-      /nobody will sell/,
+  it('bitcoin is off most people’s radar until someone tells them', () => {
+    const plain = at(1980, 33);
+    expect(plain.year).toBe(2013);
+    expect(onRadar(plain, 'AAPL')).toBe(true);
+    expect(onRadar(plain, 'BTC')).toBe(false);
+    expect(() => act(plain, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
+      /never heard/,
     );
     const coder = runCheat(plain, 'skill.set', { skill: 'programming', value: 35 }).state;
-    expect(
-      act(coder, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state.money.shares?.[
-        'BTC'
-      ],
-    ).toBeCloseTo(1000, 5);
-    const later = runCheat(at(1980, 38), 'money.add', { amount: 1_000_000 }).state;
-    expect(later.year).toBe(2018);
-    const big = act(later, { type: 'shares', id: 'BTC', op: 'buy', amount: 500_000 }).state;
-    expect(later.money.cash - big.money.cash).toBe(500_000);
+    expect(onRadar(coder, 'BTC')).toBe(true);
+    const told = { ...plain, player: { ...plain.player, flags: ['ignored_bitcoin'] } };
+    expect(onRadar(told, 'BTC')).toBe(true);
+    expect(onRadar(at(1980, 41), 'BTC')).toBe(true);
+  });
+
+  it('once you know, you can buy as much as the market can quietly sell you', () => {
+    const rich = (age: number): GameState => {
+      const s = runCheat(at(1980, age), 'skill.set', { skill: 'programming', value: 60 }).state;
+      return runCheat(s, 'money.add', { amount: 10_000_000 }).state;
+    };
+    // 2009: a few forum trades, so only about 1,500 coins could be had at all.
+    const y2009 = rich(29);
+    expect(y2009.year).toBe(2009);
+    const first = act(y2009, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state;
+    expect(first.money.shares?.['BTC']).toBeCloseTo(1500, 0);
+    expect(y2009.money.cash - first.money.cash).toBeLessThan(10);
+    expect(() => act(first, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
+      /too thin/,
+    );
+    // 2011: far more can be had than most people could pay for.
+    const y2011 = rich(31);
+    const lots = act(y2011, { type: 'shares', id: 'BTC', op: 'buy', amount: 100_000 }).state;
+    expect(y2011.money.cash - lots.money.cash).toBe(100_000);
+    // From 2017 the market is deep: no limit at all.
+    const y2018 = rich(38);
+    expect(btcAllowance(y2018)).toBe(Infinity);
+    const big = act(y2018, { type: 'shares', id: 'BTC', op: 'buy', amount: 5_000_000 }).state;
+    expect(y2018.money.cash - big.money.cash).toBe(5_000_000);
   });
 
   it('a child invests through an account a parent opens in their name', () => {

@@ -6,6 +6,7 @@ import {
   inRecession,
   btcAllowance,
   investBlock,
+  onRadar,
   priceLocal,
   type GameState,
   type PlayerAction,
@@ -23,7 +24,7 @@ export function SharesSection({
   const n = Math.max(0, Number(amount) || 0);
   const held = game.money.shares ?? {};
   const blocked = investBlock(game);
-  const open = TRADABLES.filter((t) => game.year >= t.listed);
+  const open = TRADABLES.filter((t) => game.year >= t.listed && onRadar(game, t.id));
   return (
     <section data-testid="shares">
       <h3 className="section-title">Shares and crypto</h3>
@@ -35,8 +36,8 @@ export function SharesSection({
           ? ' Under 18, a parent opens the account in your name.'
           : ''}
         {blocked ? ` You can’t trade: ${blocked}.` : ''}
-        {Number.isFinite(btcAllowance(game)) && game.year >= 2009
-          ? ` Bitcoin is hard to come by: up to ${Math.floor(btcAllowance(game)).toLocaleString()} more coins this year.`
+        {onRadar(game, 'BTC') && Number.isFinite(btcAllowance(game))
+          ? ` Bitcoin’s market is tiny: about ${Math.floor(btcAllowance(game)).toLocaleString()} more coins can be had this year without moving the price.`
           : ''}
       </p>
       <label className="row small">

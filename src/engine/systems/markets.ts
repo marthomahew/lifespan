@@ -136,24 +136,47 @@ export const HEARD_BITCOIN = [
 ];
 
 /**
- * Most coins anyone can buy in a year while bitcoin is young: [anyone, the tech-savvy].
- * In 2009 there was no exchange, only a handful of strangers on a forum; even after the
- * first exchanges opened, there was little to buy and getting money in was a chore.
+ * Shares are listed for anyone, but bitcoin is not on most people's radar: you see it if
+ * you're close to computers, someone has told you about it, you already hold some, or
+ * (from 2021) when it's in adverts everywhere.
  */
-const BTC_CAPS: [number, number, number][] = [
-  [2009, 100, 1000],
-  [2010, 200, 2000],
-  [2011, 100, 1000],
-  [2012, 100, 500],
-  [2013, 10, 50],
-  [2016, 50, 250],
-];
+export function onRadar(s: GameState, id: string): boolean {
+  if (id !== 'BTC') return true;
+  return (
+    techSavvy(s) ||
+    (s.money.shares?.['BTC'] ?? 0) > 0 ||
+    s.player.flags.some((f) => HEARD_BITCOIN.includes(f)) ||
+    s.year >= 2021
+  );
+}
 
-/** Coins you can still buy this year (Infinity once the market is grown up). */
+/**
+ * Bitcoin's early market, roughly: dollars traded in the whole year, and coins that existed
+ * by its end. In 2009 there was no exchange, only a few forum trades worth pocket money.
+ */
+const BTC_MARKET: Record<number, [volumeUsd: number, supply: number]> = {
+  2009: [30, 1_600_000],
+  2010: [1_000_000, 5_000_000],
+  2011: [150_000_000, 8_000_000],
+  2012: [300_000_000, 10_600_000],
+  2013: [10_000_000_000, 12_200_000],
+  2014: [20_000_000_000, 13_700_000],
+  2015: [20_000_000_000, 15_000_000],
+  2016: [40_000_000_000, 16_100_000],
+};
+/** The share of a year's trading one buyer can take before the price notices them. */
+const QUIET_SHARE = 0.05;
+
+/**
+ * Coins you can still buy this year without moving the price (Infinity once the market is
+ * deep enough that no one person matters): a twentieth of the year's trading, and never
+ * more than a fiftieth of the coins in existence.
+ */
 export function btcAllowance(s: GameState): number {
-  const row = BTC_CAPS.find(([until]) => s.year <= until);
-  if (!row) return Infinity;
-  const cap = techSavvy(s) ? row[2] : row[1];
+  const m = BTC_MARKET[s.year];
+  const price = priceUsd(s, 'BTC');
+  if (!m || !price) return Infinity;
+  const cap = Math.min((m[0] * QUIET_SHARE) / price, m[1] * 0.02);
   const bought = s.usage.year === s.year ? (s.usage.used['btc_coins'] ?? 0) : 0;
   return Math.max(0, cap - bought);
 }
@@ -181,8 +204,9 @@ export function tradeShares(ctx: Ctx, id: string, op: 'buy' | 'sell', amount: nu
   if (blocked) throw new EngineError(blocked);
   const held = (s.money.shares ??= {});
   if (op === 'buy') {
+    if (!onRadar(s, id)) throw new EngineError('you have never heard of it');
     const left = id === 'BTC' ? btcAllowance(s) : Infinity;
-    if (left <= 0) throw new EngineError('nobody will sell you more this year');
+    if (left <= 0) throw new EngineError('the market is too thin to buy more this year');
     const spend = Math.min(Math.round(amount), Math.max(0, s.money.cash), Math.ceil(left * price));
     if (spend <= 0) throw new EngineError('enter an amount you have');
     s.money.cash -= spend;
