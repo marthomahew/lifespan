@@ -11,6 +11,8 @@ import { luck } from './luck';
 import { addSkill } from './skills';
 import { workTime } from './activities';
 import { markUsed } from './usage';
+import { draftPick } from './sport-pro';
+import { PRO_LEAGUES } from '../../content/sport-pro';
 import { athleticScholarship } from './education';
 import { hasEducation } from './careers';
 
@@ -28,6 +30,8 @@ export type SportRecord = {
   active: boolean;
   /** Extra training sessions this year (each lifts the coming season). */
   extra?: number;
+  /** Your position or event (quarterback, sprinter...), from the sport's pro league. */
+  position?: string;
 };
 export const SPORT_COST = 1;
 
@@ -67,7 +71,7 @@ export function takeUpReason(s: GameState, id: string): string | null {
 }
 
 /** Take up a sport (or switch: you start again at the bottom), or hang up your boots (null). */
-export function takeUpSport(ctx: Ctx, id: string | null): void {
+export function takeUpSport(ctx: Ctx, id: string | null, position?: string): void {
   const s = ctx.s;
   if (id === null) {
     if (s.sport?.active) {
@@ -79,7 +83,20 @@ export function takeUpSport(ctx: Ctx, id: string | null): void {
   const why = takeUpReason(s, id);
   if (why) throw new EngineError(why);
   const def = SPORT_BY_ID[id] as SportDef;
-  s.sport = { sport: id, level: 0, best: 0, form: 50, seasons: 0, honours: [], active: true };
+  const positions = PRO_LEAGUES[id]?.positions ?? [];
+  const pos =
+    positions.find((x) => x.id === position)?.id ??
+    (positions.length ? ctx.rng.pick(positions).id : undefined);
+  s.sport = {
+    sport: id,
+    level: 0,
+    best: 0,
+    form: 50,
+    seasons: 0,
+    honours: [],
+    active: true,
+    ...(pos ? { position: pos } : {}),
+  };
   ctx.log(
     'activity',
     `${def.emoji} You take up ${def.label.toLowerCase()}: ${rungLabel(def, 0, s.player.age)} first.`,
@@ -179,7 +196,7 @@ export function sportTick(ctx: Ctx): void {
   const ageMod = age < 14 ? 0 : age <= 30 ? 6 : -(age - 30) * 3;
   const gift = s.player.talent === 'athletics' ? (s.player.talentLevel === 'prodigy' ? 14 : 7) : 0;
   const perf =
-    ath * 0.55 +
+    ath * 0.7 +
     (s.player.stats.health - 50) * 0.25 +
     (s.player.stats.discipline - 50) * 0.15 +
     gift +
@@ -262,7 +279,12 @@ export function sportTick(ctx: Ctx): void {
     s.player.flags.push(`pro_offer:${s.year}`);
     const ev =
       EVENT_BY_ID[def.route.kind === 'club' ? 'sport_pro_offer' : `sport_pro_${def.route.kind}`];
-    if (ev) fireEvent(ctx, ev, 'system', { sport: def.label.toLowerCase() });
+    const draft = def.route.kind === 'draft' ? draftPick(ctx) : null;
+    if (ev)
+      fireEvent(ctx, ev, 'system', {
+        sport: def.label.toLowerCase(),
+        ...(draft ? { pick: draft.pick, draftline: draft.line } : {}),
+      });
   }
   // College sport lasts as long as college does (the draft above gets its chance first).
   if (def.recruited?.includes(r.level) && !s.education.enrollment && age > 18) {

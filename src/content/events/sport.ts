@@ -20,7 +20,7 @@ export const SPORT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You sign at the training ground with a photographer in the room. From Monday, {sport} is your job.',
             effects: [
-              { system: 'hire', arg: 'professional_athlete' },
+              { system: 'turn_pro' },
               { stat: 'happiness', delta: 10 },
               { flag: 'pro_athlete' },
             ],
@@ -48,7 +48,7 @@ export const SPORT_EVENTS: EventDef[] = [
     ages: [19, 30],
     weight: 1,
     chainOnly: true,
-    text: 'Draft night. You sit in a borrowed suit with your family around a phone, and in the second hour a professional {sport} team says your name out loud on live television.',
+    text: 'Draft night. You sit in a borrowed suit with your family around a phone, waiting for a professional {sport} team to say your name on live television. {$draftline}',
     choices: [
       {
         id: 'sign',
@@ -58,7 +58,7 @@ export const SPORT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You pull on the team cap for the cameras and sign a rookie deal the next week. From training camp on, {sport} is your job.',
             effects: [
-              { system: 'hire', arg: 'professional_athlete' },
+              { system: 'turn_pro' },
               { stat: 'happiness', delta: 10 },
               { flag: 'pro_athlete' },
             ],
@@ -96,7 +96,7 @@ export const SPORT_EVENTS: EventDef[] = [
             chance: 1,
             text: "You play your first event as a professional in a half-empty stadium and win a round. From now on, {sport} pays the bills, or doesn't.",
             effects: [
-              { system: 'hire', arg: 'professional_athlete' },
+              { system: 'turn_pro' },
               { stat: 'happiness', delta: 10 },
               { flag: 'pro_athlete' },
             ],
@@ -134,7 +134,7 @@ export const SPORT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You sign in a branded tracksuit that arrives two sizes too big. From now on, {sport} is your full-time job.',
             effects: [
-              { system: 'hire', arg: 'professional_athlete' },
+              { system: 'turn_pro' },
               { stat: 'happiness', delta: 10 },
               { flag: 'pro_athlete' },
             ],
@@ -172,7 +172,7 @@ export const SPORT_EVENTS: EventDef[] = [
             chance: 1,
             text: 'You get your team kit and a number pinned to your back by a mechanic who has done it ten thousand times. From now on, {sport} is your job.',
             effects: [
-              { system: 'hire', arg: 'professional_athlete' },
+              { system: 'turn_pro' },
               { stat: 'happiness', delta: 10 },
               { flag: 'pro_athlete' },
             ],

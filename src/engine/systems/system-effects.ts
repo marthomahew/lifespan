@@ -1,3 +1,4 @@
+import { turnPro } from './sport-pro';
 import { acceptScholarship, takeUpSport } from './sport';
 import { SPORT_BY_ID } from '../../content/sports';
 import { JOB_BY_ID } from '../../content/jobs';
@@ -153,6 +154,11 @@ export function applySystemEffect(
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';
       return;
+    case 'turn_pro': {
+      const pick = typeof payload['pick'] === 'number' ? payload['pick'] : undefined;
+      turnPro(ctx, pick);
+      return;
+    }
     case 'sport_scholarship':
       if (arg) acceptScholarship(ctx, arg);
       return;

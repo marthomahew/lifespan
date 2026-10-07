@@ -128,6 +128,14 @@ export function FinancesView({ game }: { game: GameState }): React.JSX.Element {
               data-testid="fin-amount"
               onChange={(e) => setAmount(e.target.value)}
             />
+            <button
+              type="button"
+              data-testid="fin-max"
+              title="All your cash on hand"
+              onClick={() => setAmount(String(Math.max(0, Math.floor(m.cash))))}
+            >
+              Max
+            </button>
           </label>
           <div className="btn-row">
             <button
@@ -163,7 +171,10 @@ export function FinancesView({ game }: { game: GameState }): React.JSX.Element {
                         onChange={() => setFund(k)}
                         aria-label={INVESTMENTS[k].label}
                       />{' '}
-                      {INVESTMENTS[k].label}
+                      <span className="col">
+                        <span>{INVESTMENTS[k].label}</span>
+                        <span className="muted small fund-blurb">{INVESTMENTS[k].blurb}</span>
+                      </span>
                     </label>
                   </th>
                   <td>{formatMoney(game, m.holdings[k])}</td>

@@ -9,12 +9,39 @@ import { addLoan, annuityPayment, bankruptcyCheck, serviceLoans } from './loans'
 /** Investment vehicles (SPEC §5.6): mean and sd of yearly returns, plus a crash chance. */
 export const INVESTMENTS: Record<
   InvestKey,
-  { label: string; mean: number; sd: number; crash: number }
+  { label: string; mean: number; sd: number; crash: number; blurb: string }
 > = {
-  bonds: { label: 'Bond fund', mean: 0.035, sd: 0.06, crash: 0 },
-  index: { label: 'Index fund', mean: 0.07, sd: 0.15, crash: 0 },
-  growth: { label: 'Growth stocks', mean: 0.09, sd: 0.3, crash: 0 },
-  coin: { label: 'Speculative coin', mean: 0.1, sd: 0.8, crash: 0.05 },
+  bonds: {
+    label: 'Bond fund',
+    mean: 0.035,
+    sd: 0.06,
+    crash: 0,
+    blurb: 'Safe and steady: small returns that rarely fall. For money you will need soon.',
+  },
+  index: {
+    label: 'Index fund',
+    mean: 0.07,
+    sd: 0.15,
+    crash: 0,
+    blurb:
+      'The whole market (the S&P 500 in real years): about 7% a year over time, with bad years. The sensible long-term choice.',
+  },
+  growth: {
+    label: 'Growth stocks',
+    mean: 0.09,
+    sd: 0.3,
+    crash: 0,
+    blurb:
+      'Tech-heavy (the Nasdaq in real years): higher returns over decades, bigger swings, painful crashes.',
+  },
+  coin: {
+    label: 'Speculative coin',
+    mean: 0.1,
+    sd: 0.8,
+    crash: 0.05,
+    blurb:
+      'A basket of small cryptocurrencies: it can double in a year or lose 90%. Only money you can lose.',
+  },
 };
 
 /** Living costs in reference dollars a year by housing, scaled by lifestyle. */

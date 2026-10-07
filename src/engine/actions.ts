@@ -65,7 +65,7 @@ export type PlayerAction =
   | { type: 'business'; action: BusinessOp }
   | { type: 'chess'; tier: string }
   | { type: 'chess_major'; id: MajorId }
-  | { type: 'sport'; sport: string | null }
+  | { type: 'sport'; sport: string | null; position?: string }
   | { type: 'sport_train' }
   | { type: 'fame_deal'; id: FameDeal['id'] }
   | { type: 'let_home'; id: number; on: boolean }
@@ -164,7 +164,7 @@ export function act(input: GameState, action: PlayerAction): Step {
       playMajor(ctx, action.id);
       break;
     case 'sport':
-      takeUpSport(ctx, action.sport);
+      takeUpSport(ctx, action.sport, action.position);
       break;
     case 'sport_train':
       trainExtra(ctx);

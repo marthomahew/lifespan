@@ -4,6 +4,7 @@ import { luck } from './luck';
 import { pickFresh } from '../fresh';
 import { JOB_BY_ID } from '../../content/jobs';
 import { SPORT_BY_ID } from '../../content/sports';
+import { PRO_LEAGUES } from '../../content/sport-pro';
 import { GRAD_BY_ID } from '../../content/education';
 import type { JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -36,7 +37,10 @@ export function salaryFor(ctx: Ctx, job: JobDef, level: number): number {
     // Each sport pays its own way. The top two rungs are a global market, paid in dollars;
     // below that, pay follows the local game.
     const [lo, hi] = sport.pro.pay[Math.min(level, sport.pro.pay.length - 1)] ?? [20000, 30000];
-    const ref = Math.round(lo * Math.pow(hi / lo, ctx.rng.next()));
+    const posPay =
+      PRO_LEAGUES[ctx.s.sport?.sport ?? '']?.positions.find((p) => p.id === ctx.s.sport?.position)
+        ?.pay ?? 1;
+    const ref = Math.round(lo * Math.pow(hi / lo, ctx.rng.next()) * posPay);
     return level >= 3
       ? Math.round(ref * ctx.s.inflation * countryOf(ctx.s).currency.perUsd)
       : money(ctx.s, ref, 'wage');

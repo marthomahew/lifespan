@@ -50,10 +50,17 @@ export function CareerSection({
             </span>
           </div>
           <div className="btn-row">
-            <button data-testid="btn-work-harder" onClick={() => act('work_harder')}>
-              Work harder
-            </button>
-            {RESULTS_REASON[c.jobId ?? ''] ? (
+            {c.jobId === 'professional_athlete' ? (
+              <span className="muted small" data-testid="results-career">
+                Your standing, honours and contracts follow your form: see your sport under
+                Pursuits.
+              </span>
+            ) : (
+              <button data-testid="btn-work-harder" onClick={() => act('work_harder')}>
+                Work harder
+              </button>
+            )}
+            {c.jobId === 'professional_athlete' ? null : RESULTS_REASON[c.jobId ?? ''] ? (
               <span className="muted small" data-testid="results-career">
                 No raises or promotions to ask for: {RESULTS_REASON[c.jobId ?? '']}.
               </span>

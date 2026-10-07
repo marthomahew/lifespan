@@ -21,6 +21,7 @@ import { TEEN_ROMANCE_EVENTS } from './teen-romance';
 import { SPORT_EVENTS } from './sport';
 import { MARKET_EVENTS } from './markets';
 import { HISTORY_EVENTS } from './history';
+import { PRO_SPORT_EVENTS } from './pro-sport';
 import { WORLD_HISTORY_EVENTS } from './history-world';
 import { DECADE_EVENTS } from './decades';
 import { SPECIAL_PATH_EVENTS } from './special-paths';
@@ -112,6 +113,7 @@ export const EVENTS: EventDef[] = [
   ...SPORT_EVENTS,
   ...MARKET_EVENTS,
   ...HISTORY_EVENTS,
+  ...PRO_SPORT_EVENTS,
   ...WORLD_HISTORY_EVENTS,
   ...DECADE_EVENTS,
   ...SPECIAL_PATH_EVENTS,

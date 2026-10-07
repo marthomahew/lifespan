@@ -1,3 +1,4 @@
+import type { ProRecord } from '../systems/sport-pro';
 import type { Projects } from '../systems/projects';
 import type { Business } from '../systems/business';
 import type { ChessRecord } from '../systems/chess';
@@ -102,6 +103,8 @@ export type GameState = {
   market?: MarketSim | null;
   /** The sport you play, season by season. */
   sport?: SportRecord | null;
+  /** A professional sports career: team, contract, numbers, honours. */
+  proSport?: ProRecord | null;
   /** Your chess record, once you have played a rated tournament. */
   chess?: ChessRecord | null;
   /** A business of your own (one at a time). */

@@ -1,8 +1,8 @@
 import type { JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
-import { formatMoney } from '../economy';
 import { addStat } from '../stats';
 import { endJob, salaryFor, titleFor } from './careers';
+import { proSeason } from './sport-pro';
 
 /**
  * Careers that aren't ladders. An athlete's standing follows their form, season by season;
@@ -32,23 +32,7 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
       endJob(ctx, 'retired from playing');
       return true;
     }
-    const level = sp.form >= 88 ? 4 : sp.form >= 76 ? 3 : sp.form >= 63 ? 2 : sp.form >= 50 ? 1 : 0;
-    if (level !== c.level) {
-      const up = level > c.level;
-      c.level = level;
-      c.since = s.year;
-      c.salary = salaryFor(ctx, job, level);
-      const title = titleFor(s, job, level);
-      const rec = c.history.at(-1);
-      if (rec) rec.title = title;
-      ctx.log(
-        'work',
-        up
-          ? `A season like that changes your standing: ${title.toLowerCase()} now, on ${formatMoney(s, c.salary)} a year.`
-          : `Your form dips and your new contract says so: ${title.toLowerCase()}, on ${formatMoney(s, c.salary)}.`,
-        up,
-      );
-    }
+    proSeason(ctx);
     return true;
   }
   if (job.id === 'film_actor') {

@@ -15,6 +15,8 @@ import {
   type GameState,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { ProSportPanel } from './ProSportPanel';
+import { PRO_LEAGUES } from '../../../../content/sport-pro';
 import { ChessMajors } from './ChessMajors';
 
 /** Pursuits: things you can get good at that keep their own record. */
@@ -42,6 +44,7 @@ function SportPanel({
   onError: (e: string | null) => void;
 }): React.JSX.Element | null {
   const [pick, setPick] = useState(SPORTS[0]?.id ?? 'football');
+  const [position, setPosition] = useState('');
   const r = game.sport ?? null;
   const def = r ? SPORT_BY_ID[r.sport] : undefined;
   if (game.player.age > 45 && !r?.active) return null;
@@ -50,7 +53,28 @@ function SportPanel({
       <h3 className="section-title">
         {def && r?.active ? `${def.emoji} ${def.label}` : '🏅 Sport'}
       </h3>
-      {r && def && r.active ? (
+      {r && def && r.active && game.proSport && game.career.jobId === 'professional_athlete' ? (
+        <div className="col small">
+          <ProSportPanel game={game} />
+          <div className="btn-row">
+            <button
+              data-testid="sport-train"
+              disabled={trainReason(game) !== null}
+              title={trainReason(game) ?? 'One work-time pip: a better season ahead'}
+              onClick={() => onError(doAct({ type: 'sport_train' }))}
+            >
+              💪 Extra training{r.extra ? ` (${r.extra}/${EXTRA_TRAINING})` : ''}
+            </button>
+            <button
+              className="quiet-danger"
+              data-testid="sport-stop"
+              onClick={() => onError(doAct({ type: 'sport', sport: null }))}
+            >
+              Retire from playing
+            </button>
+          </div>
+        </div>
+      ) : r && def && r.active ? (
         <div className="col small">
           <div data-testid="sport-level">
             <strong>Playing for {levelLabel(r, game.player.age)}</strong>{' '}
@@ -90,7 +114,10 @@ function SportPanel({
             aria-label="Sport"
             data-testid="sport-pick"
             value={pick}
-            onChange={(e) => setPick(e.target.value)}
+            onChange={(e) => {
+              setPick(e.target.value);
+              setPosition('');
+            }}
           >
             {SPORTS.map((x) => (
               <option key={x.id} value={x.id}>
@@ -98,11 +125,28 @@ function SportPanel({
               </option>
             ))}
           </select>
+          {(PRO_LEAGUES[pick]?.positions.length ?? 0) > 1 && (
+            <select
+              aria-label="Position"
+              data-testid="sport-position"
+              value={position}
+              onChange={(e) => setPosition(e.target.value)}
+            >
+              <option value="">Any position</option>
+              {PRO_LEAGUES[pick]?.positions.map((x) => (
+                <option key={x.id} value={x.id}>
+                  {x.label}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             data-testid="sport-start"
             disabled={takeUpReason(game, pick) !== null}
             title={takeUpReason(game, pick) ?? `Start at ${SPORT_BY_ID[pick]?.levels[0]}`}
-            onClick={() => onError(doAct({ type: 'sport', sport: pick }))}
+            onClick={() =>
+              onError(doAct({ type: 'sport', sport: pick, ...(position ? { position } : {}) }))
+            }
           >
             Take it up
           </button>
