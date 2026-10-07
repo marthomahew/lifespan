@@ -15,6 +15,18 @@ export const SAME_SEX_MARRIAGE: Record<string, number | null> = {
   au: 2017,
   br: 2013,
   de: 2017,
+  it: null,
+  es: 2005,
+  ie: 2015,
+  nl: 2001,
+  pl: null,
+  tr: null,
+  cn: null,
+  ph: null,
+  nz: 2013,
+  za: 2006,
+  eg: null,
+  ar: 2010,
 };
 
 /** The generation a birth year belongs to (as commonly labelled). */

@@ -40,6 +40,10 @@ export const brazil: Country = {
     'Porto Alegre',
     'Curitiba',
     'Fortaleza',
+    'Brasília',
+    'Manaus',
+    'Belém',
+    'Florianópolis',
   ],
   names: {
     male: [

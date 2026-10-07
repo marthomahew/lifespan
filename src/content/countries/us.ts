@@ -40,6 +40,16 @@ export const unitedStates: Country = {
     'Savannah',
     'Boise',
     'Pittsburgh',
+    'New York',
+    'Los Angeles',
+    'Chicago',
+    'Houston',
+    'Atlanta',
+    'Denver',
+    'Seattle',
+    'New Orleans',
+    'Boston',
+    'Phoenix',
   ],
   names: {
     male: [

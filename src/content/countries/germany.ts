@@ -31,7 +31,21 @@ export const germany: Country = {
   mortgageRate: 0.038,
   pensionPerYear: 640,
   languages: ['german'],
-  cities: ['Leipzig', 'Hamburg', 'Cologne', 'Munich', 'Bremen', 'Dresden', 'Freiburg', 'Hanover'],
+  cities: [
+    'Leipzig',
+    'Hamburg',
+    'Cologne',
+    'Munich',
+    'Bremen',
+    'Dresden',
+    'Freiburg',
+    'Hanover',
+    'Berlin',
+    'Frankfurt',
+    'Stuttgart',
+    'Düsseldorf',
+    'Nuremberg',
+  ],
   names: {
     male: [
       'Lukas',

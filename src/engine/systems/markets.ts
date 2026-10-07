@@ -43,11 +43,8 @@ export function marketReturn(year: number, kind: string): number | null {
     const sp = SP500[year];
     return sp !== undefined ? (sp * 1.25) / 100 : null;
   }
-  if (kind === 'coin') {
-    const a = BITCOIN[year - 1];
-    const b = BITCOIN[year];
-    return a && b ? b / a - 1 : null;
-  }
+  // The speculative coin fund stays simulated (SPEC): following bitcoin's real history would
+  // hand its growth to anyone, when bitcoin itself only reaches those who hear about it.
   return null;
 }
 
@@ -69,7 +66,7 @@ export function historicalMortgage(s: GameState): number | null {
 export type Tradable = { id: string; name: string; emoji: string; listed: number };
 export const TRADABLES: Tradable[] = [
   ...STOCKS.map((x) => ({ id: x.id, name: x.name, emoji: x.emoji, listed: x.listed })),
-  { id: 'BTC', name: 'Bitcoin', emoji: '₿', listed: 2010 },
+  { id: 'BTC', name: 'Bitcoin', emoji: '₿', listed: 2009 },
 ];
 
 /** A share's price in US dollars this year (or null before it existed). */
@@ -139,18 +136,40 @@ export const HEARD_BITCOIN = [
 ];
 
 /**
- * Shares are listed for anyone, but bitcoin is not on most people's radar: you see it if
- * you're close to computers, someone has told you about it, you already hold some, or
- * (from 2021) when it's in adverts everywhere.
+ * Most coins anyone can buy in a year while bitcoin is young: [anyone, the tech-savvy].
+ * In 2009 there was no exchange, only a handful of strangers on a forum; even after the
+ * first exchanges opened, there was little to buy and getting money in was a chore.
  */
-export function onRadar(s: GameState, id: string): boolean {
-  if (id !== 'BTC') return true;
-  return (
-    techSavvy(s) ||
-    (s.money.shares?.['BTC'] ?? 0) > 0 ||
-    s.player.flags.some((f) => HEARD_BITCOIN.includes(f)) ||
-    s.year >= 2021
+const BTC_CAPS: [number, number, number][] = [
+  [2009, 100, 1000],
+  [2010, 200, 2000],
+  [2011, 100, 1000],
+  [2012, 100, 500],
+  [2013, 10, 50],
+  [2016, 50, 250],
+];
+
+/** Coins you can still buy this year (Infinity once the market is grown up). */
+export function btcAllowance(s: GameState): number {
+  const row = BTC_CAPS.find(([until]) => s.year <= until);
+  if (!row) return Infinity;
+  const cap = techSavvy(s) ? row[2] : row[1];
+  const bought = s.usage.year === s.year ? (s.usage.used['btc_coins'] ?? 0) : 0;
+  return Math.max(0, cap - bought);
+}
+
+/**
+ * Why you can't invest right now, or null. A child invests through a custodial account a
+ * parent or guardian opens in their name, so they need one alive to sign the forms.
+ */
+export function investBlock(s: GameState): string | null {
+  if (s.legal.prison) return 'not from prison';
+  if (s.player.age >= 18) return null;
+  const guardian = s.npcs.some(
+    (n) =>
+      n.alive && n.roles.some((r) => ['mother', 'father', 'stepparent', 'grandparent'].includes(r)),
   );
+  return guardian ? null : 'a child needs a parent or guardian to open the account';
 }
 
 /** Buy or sell shares, by local amount (buy) or share count (sell). */
@@ -158,15 +177,21 @@ export function tradeShares(ctx: Ctx, id: string, op: 'buy' | 'sell', amount: nu
   const s = ctx.s;
   const price = priceLocal(s, id);
   if (price === null) throw new EngineError('not trading yet');
-  if (op === 'buy' && !onRadar(s, id)) throw new EngineError('you have never heard of it');
-  if (s.legal.prison) throw new EngineError('not from prison');
-  if (s.player.age < 18) throw new EngineError('from age 18');
+  const blocked = investBlock(s);
+  if (blocked) throw new EngineError(blocked);
   const held = (s.money.shares ??= {});
   if (op === 'buy') {
-    const spend = Math.min(Math.round(amount), Math.max(0, s.money.cash));
+    const left = id === 'BTC' ? btcAllowance(s) : Infinity;
+    if (left <= 0) throw new EngineError('nobody will sell you more this year');
+    const spend = Math.min(Math.round(amount), Math.max(0, s.money.cash), Math.ceil(left * price));
     if (spend <= 0) throw new EngineError('enter an amount you have');
     s.money.cash -= spend;
-    held[id] = (held[id] ?? 0) + spend / price;
+    const coins = Math.min(left, spend / price);
+    held[id] = (held[id] ?? 0) + coins;
+    if (id === 'BTC' && left < Infinity) {
+      if (s.usage.year !== s.year) s.usage = { year: s.year, used: {} };
+      s.usage.used['btc_coins'] = (s.usage.used['btc_coins'] ?? 0) + coins;
+    }
     ctx.log('money', `You buy ${formatMoney(s, spend)} of ${nameOf(id)}.`);
   } else {
     const have = held[id] ?? 0;

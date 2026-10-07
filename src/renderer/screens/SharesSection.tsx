@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import {
   TRADABLES,
+  countryOf,
   formatMoney,
   inRecession,
-  onRadar,
+  btcAllowance,
+  investBlock,
   priceLocal,
   type GameState,
   type PlayerAction,
@@ -20,7 +22,8 @@ export function SharesSection({
   const [amount, setAmount] = useState('1000');
   const n = Math.max(0, Number(amount) || 0);
   const held = game.money.shares ?? {};
-  const open = TRADABLES.filter((t) => game.year >= t.listed && onRadar(game, t.id));
+  const blocked = investBlock(game);
+  const open = TRADABLES.filter((t) => game.year >= t.listed);
   return (
     <section data-testid="shares">
       <h3 className="section-title">Shares and crypto</h3>
@@ -28,6 +31,13 @@ export function SharesSection({
         Prices as of {game.year}
         {inRecession(game.year) ? ' · the economy is in recession' : ''}. Companies appear the year
         they list.
+        {game.player.age < 18 && !blocked
+          ? ' Under 18, a parent opens the account in your name.'
+          : ''}
+        {blocked ? ` You can’t trade: ${blocked}.` : ''}
+        {Number.isFinite(btcAllowance(game)) && game.year >= 2009
+          ? ` Bitcoin is hard to come by: up to ${Math.floor(btcAllowance(game)).toLocaleString()} more coins this year.`
+          : ''}
       </p>
       <label className="row small">
         Amount
@@ -49,16 +59,15 @@ export function SharesSection({
                 <tr key={t.id} data-testid={`share-${t.id}`}>
                   <th scope="row">
                     {t.emoji} {t.name}{' '}
-                    <span className="muted small">
-                      {formatMoney(game, Math.round(price * 100) / 100)}
-                      {price < 1 ? ` (${price.toFixed(3)})` : ''}
-                    </span>
+                    <span className="muted small">{sharePrice(game, price)}</span>
                   </th>
                   <td>{have > 0 ? formatMoney(game, Math.round(have * price)) : '—'}</td>
                   <td className="btn-row">
                     <button
                       data-testid={`buy-${t.id}`}
-                      disabled={game.player.age < 18 || n <= 0}
+                      disabled={
+                        blocked !== null || n <= 0 || (t.id === 'BTC' && btcAllowance(game) <= 0)
+                      }
                       onClick={() => run({ type: 'shares', id: t.id, op: 'buy', amount: n })}
                     >
                       Buy
@@ -88,4 +97,11 @@ export function SharesSection({
       )}
     </section>
   );
+}
+
+/** A share price: whole units when it's large, pennies when it's small (Nvidia in 2009). */
+function sharePrice(game: GameState, price: number): string {
+  if (price >= 100) return formatMoney(game, Math.round(price));
+  const sym = countryOf(game).currency.symbol;
+  return `${sym}${price.toFixed(price < 0.1 ? 3 : 2)}`;
 }

@@ -12,6 +12,18 @@ import { india } from './india';
 import { brazil } from './brazil';
 import { mexico } from './mexico';
 import { nigeria } from './nigeria';
+import { italy } from './italy';
+import { spain } from './spain';
+import { ireland } from './ireland';
+import { netherlands } from './netherlands';
+import { poland } from './poland';
+import { turkey } from './turkey';
+import { china } from './china';
+import { philippines } from './philippines';
+import { newZealand } from './new-zealand';
+import { southAfrica } from './south-africa';
+import { egypt } from './egypt';
+import { argentina } from './argentina';
 
 export const COUNTRIES: Country[] = [
   unitedStates,
@@ -27,6 +39,18 @@ export const COUNTRIES: Country[] = [
   brazil,
   mexico,
   nigeria,
+  italy,
+  spain,
+  ireland,
+  netherlands,
+  poland,
+  turkey,
+  china,
+  philippines,
+  newZealand,
+  southAfrica,
+  egypt,
+  argentina,
 ];
 
 export const COUNTRY_BY_ID: Record<string, Country> = Object.fromEntries(

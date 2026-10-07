@@ -40,6 +40,11 @@ export const france: Country = {
     'Nantes',
     'Strasbourg',
     'Montpellier',
+    'Paris',
+    'Nice',
+    'Rennes',
+    'Grenoble',
+    'Dijon',
   ],
   names: {
     male: [

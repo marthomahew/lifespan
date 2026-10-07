@@ -40,6 +40,11 @@ export const canada: Country = {
     'Winnipeg',
     'Quebec City',
     'Saskatoon',
+    'Ottawa',
+    'Edmonton',
+    'Victoria',
+    'Regina',
+    "St. John's",
   ],
   names: {
     male: [

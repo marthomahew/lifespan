@@ -31,7 +31,20 @@ export const nigeria: Country = {
   mortgageRate: 0.135,
   pensionPerYear: 100,
   languages: ['english', 'yoruba'],
-  cities: ['Lagos', 'Abuja', 'Ibadan', 'Kano', 'Port Harcourt', 'Enugu', 'Benin City', 'Kaduna'],
+  cities: [
+    'Lagos',
+    'Abuja',
+    'Ibadan',
+    'Kano',
+    'Port Harcourt',
+    'Enugu',
+    'Benin City',
+    'Kaduna',
+    'Jos',
+    'Calabar',
+    'Owerri',
+    'Abeokuta',
+  ],
   names: {
     male: [
       'Chinedu',

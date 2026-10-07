@@ -76,6 +76,12 @@ export const LANGUAGES: LanguageDef[] = [
   { id: 'yoruba', label: 'Yoruba' },
   { id: 'italian', label: 'Italian' },
   { id: 'mandarin', label: 'Mandarin' },
+  { id: 'dutch', label: 'Dutch' },
+  { id: 'polish', label: 'Polish' },
+  { id: 'turkish', label: 'Turkish' },
+  { id: 'filipino', label: 'Filipino' },
+  { id: 'zulu', label: 'Zulu' },
+  { id: 'arabic', label: 'Arabic' },
 ];
 
 export const LANGUAGE_BY_ID: Record<string, LanguageDef> = Object.fromEntries(

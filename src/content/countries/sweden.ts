@@ -30,7 +30,20 @@ export const sweden: Country = {
   mortgageRate: 0.041,
   pensionPerYear: 680,
   languages: ['swedish'],
-  cities: ['Gothenburg', 'Malmö', 'Uppsala', 'Västerås', 'Örebro', 'Linköping', 'Umeå', 'Lund'],
+  cities: [
+    'Gothenburg',
+    'Malmö',
+    'Uppsala',
+    'Västerås',
+    'Örebro',
+    'Linköping',
+    'Umeå',
+    'Lund',
+    'Stockholm',
+    'Helsingborg',
+    'Jönköping',
+    'Sundsvall',
+  ],
   names: {
     male: [
       'Erik',

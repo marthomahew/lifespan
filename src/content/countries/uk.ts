@@ -39,6 +39,11 @@ export const unitedKingdom: Country = {
     'Belfast',
     'Norwich',
     'Newcastle',
+    'London',
+    'Birmingham',
+    'Edinburgh',
+    'Liverpool',
+    'Brighton',
   ],
   names: {
     male: [

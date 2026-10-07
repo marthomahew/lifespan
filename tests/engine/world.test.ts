@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { act, newLife, runCheat, interviewOdds, type GameState } from '../../src/engine';
 import { COUNTRIES } from '../../src/content/countries';
 import { TRAITS } from '../../src/content/traits';
-import { SKILLS } from '../../src/content/skills';
+import { LANGUAGE_BY_ID, SKILLS } from '../../src/content/skills';
+import { SAME_SEX_MARRIAGE } from '../../src/content/history/norms';
 import { EVENTS } from '../../src/content/events';
 import { JOB_BY_ID } from '../../src/content/jobs';
 import { validateCountries } from '../../scripts/content-lib';
@@ -27,6 +28,17 @@ describe('countries (M9.1)', () => {
     expect(COUNTRIES.length).toBeGreaterThanOrEqual(12);
     expect(validateCountries()).toEqual([]);
     expect(new Set(COUNTRIES.flatMap((c) => c.languages)).size).toBeGreaterThanOrEqual(8);
+  });
+
+  it('every country speaks known languages, has a marriage law, and can be born into', () => {
+    for (const c of COUNTRIES) {
+      for (const l of c.languages) expect(LANGUAGE_BY_ID[l], `${c.id} ${l}`).toBeDefined();
+      expect(c.id in SAME_SEX_MARRIAGE, c.id).toBe(true);
+      const s = newLife({ country: c.id }, 7);
+      expect(s.player.country).toBe(c.id);
+      expect(c.cities).toContain(s.player.city);
+      expect(s.player.languages[c.languages[0] ?? '']).toBe(100);
+    }
   });
 
   it('newborns speak their native language fluently', () => {

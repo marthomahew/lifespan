@@ -31,7 +31,21 @@ export const japan: Country = {
   mortgageRate: 0.02,
   pensionPerYear: 380,
   languages: ['japanese'],
-  cities: ['Sapporo', 'Sendai', 'Nagoya', 'Kanazawa', 'Kobe', 'Hiroshima', 'Fukuoka', 'Matsuyama'],
+  cities: [
+    'Sapporo',
+    'Sendai',
+    'Nagoya',
+    'Kanazawa',
+    'Kobe',
+    'Hiroshima',
+    'Fukuoka',
+    'Matsuyama',
+    'Tokyo',
+    'Osaka',
+    'Kyoto',
+    'Yokohama',
+    'Naha',
+  ],
   names: {
     male: [
       'Haruto',

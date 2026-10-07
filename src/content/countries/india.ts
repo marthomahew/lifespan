@@ -30,7 +30,21 @@ export const india: Country = {
   mortgageRate: 0.085,
   pensionPerYear: 150,
   languages: ['hindi', 'english'],
-  cities: ['Mumbai', 'Delhi', 'Bengaluru', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Jaipur'],
+  cities: [
+    'Mumbai',
+    'Delhi',
+    'Bengaluru',
+    'Chennai',
+    'Kolkata',
+    'Hyderabad',
+    'Pune',
+    'Jaipur',
+    'Ahmedabad',
+    'Lucknow',
+    'Kochi',
+    'Chandigarh',
+    'Goa',
+  ],
   names: {
     male: [
       'Aarav',

@@ -807,7 +807,7 @@ export const HISTORY_EVENTS: EventDef[] = [
     once: true,
     fromYear: 2002,
     toYear: 2002,
-    when: inCountry('fr', 'de'),
+    when: inCountry('fr', 'de', 'it', 'es', 'ie', 'nl'),
     text: 'On New Year’s Day the old notes and coins stop being money, and euro cash goes into every till. For months, everyone quietly converts prices back in their heads.',
     outcomes: one(
       'You keep a few old coins in a drawer, out of loyalty. You are convinced the café doubled the price of a coffee overnight, and you may be right.',

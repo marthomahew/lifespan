@@ -77,19 +77,51 @@ describe('markets that follow history', () => {
     expect(anyone.money.shares?.['BTC'] ?? 0).toBeGreaterThan(0);
   });
 
-  it('bitcoin is off most people’s radar until someone tells them', async () => {
-    const { onRadar } = await import('../../src/engine/systems/markets');
-    const plain = at(1980, 33);
-    expect(plain.year).toBe(2013);
-    expect(onRadar(plain, 'AAPL')).toBe(true);
-    expect(onRadar(plain, 'BTC')).toBe(false);
-    expect(() => act(plain, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
-      /never heard/,
+  it('anyone can buy bitcoin from 2009, but only a little a year while it is young', () => {
+    const plain = runCheat(at(1980, 29), 'money.add', { amount: 1_000_000 }).state;
+    expect(plain.year).toBe(2009);
+    const bought = act(plain, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state;
+    expect(bought.money.shares?.['BTC']).toBeCloseTo(100, 5);
+    expect(plain.money.cash - bought.money.cash).toBeLessThan(10);
+    expect(() => act(bought, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
+      /nobody will sell/,
     );
     const coder = runCheat(plain, 'skill.set', { skill: 'programming', value: 35 }).state;
-    expect(onRadar(coder, 'BTC')).toBe(true);
-    const told = { ...plain, player: { ...plain.player, flags: ['ignored_bitcoin'] } };
-    expect(onRadar(told, 'BTC')).toBe(true);
-    expect(onRadar(at(1980, 41), 'BTC')).toBe(true);
+    expect(
+      act(coder, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state.money.shares?.[
+        'BTC'
+      ],
+    ).toBeCloseTo(1000, 5);
+    const later = runCheat(at(1980, 38), 'money.add', { amount: 1_000_000 }).state;
+    expect(later.year).toBe(2018);
+    const big = act(later, { type: 'shares', id: 'BTC', op: 'buy', amount: 500_000 }).state;
+    expect(later.money.cash - big.money.cash).toBe(500_000);
+  });
+
+  it('a child invests through an account a parent opens in their name', () => {
+    const kid = runCheat(at(2000, 12), 'money.add', { amount: 5000 }).state;
+    const after = act(kid, { type: 'shares', id: 'AAPL', op: 'buy', amount: 1000 }).state;
+    expect(after.money.shares?.['AAPL'] ?? 0).toBeGreaterThan(0);
+    const fund = act(kid, {
+      type: 'money',
+      action: { op: 'invest', key: 'index', amount: 1000 },
+    }).state;
+    expect(fund.money.holdings.index).toBe(1000);
+    const orphan = {
+      ...kid,
+      npcs: kid.npcs.map((n) =>
+        n.roles.some((r) => ['mother', 'father', 'stepparent', 'grandparent'].includes(r))
+          ? { ...n, alive: false }
+          : n,
+      ),
+    };
+    expect(() => act(orphan, { type: 'shares', id: 'AAPL', op: 'buy', amount: 1000 })).toThrow(
+      /guardian/,
+    );
+  });
+
+  it('the speculative coin fund stays simulated, not a back door into bitcoin’s history', () => {
+    for (const y of [2011, 2013, 2017, 2020]) expect(marketReturn(y, 'coin')).toBeNull();
+    expect(marketReturn(2017, 'index')).not.toBeNull();
   });
 });

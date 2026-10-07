@@ -4,6 +4,7 @@ import { EngineError } from '../errors';
 import type { InvestKey, Lifestyle } from '../types';
 import { hasAdultRecord } from './careers';
 import { INVESTMENTS } from './finance';
+import { investBlock } from './markets';
 import { addLoan, payOffLoan } from './loans';
 
 export type MoneyAction =
@@ -40,7 +41,8 @@ export function moneyAction(ctx: Ctx, a: MoneyAction): void {
       return;
     }
     case 'invest': {
-      if (s.player.age < 18) throw new EngineError('investing is for adults');
+      const blocked = investBlock(s);
+      if (blocked) throw new EngineError(blocked);
       if (a.key === 'coin' && s.year < 2013) throw new EngineError('no crypto funds until 2013');
       if (a.key === 'growth' && s.year < 1972) throw new EngineError('no growth funds until 1972');
       const n = Math.min(positive(a.amount), Math.max(0, m.cash));

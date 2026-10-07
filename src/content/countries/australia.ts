@@ -31,7 +31,21 @@ export const australia: Country = {
   mortgageRate: 0.062,
   pensionPerYear: 600,
   languages: ['english'],
-  cities: ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Hobart', 'Darwin', 'Geelong'],
+  cities: [
+    'Sydney',
+    'Melbourne',
+    'Brisbane',
+    'Perth',
+    'Adelaide',
+    'Hobart',
+    'Darwin',
+    'Geelong',
+    'Canberra',
+    'Gold Coast',
+    'Newcastle',
+    'Cairns',
+    'Townsville',
+  ],
   names: {
     male: [
       'Jack',

@@ -40,6 +40,10 @@ export const mexico: Country = {
     'Mérida',
     'Tijuana',
     'Querétaro',
+    'Cancún',
+    'León',
+    'Chihuahua',
+    'Veracruz',
   ],
   names: {
     male: [

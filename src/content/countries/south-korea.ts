@@ -31,7 +31,20 @@ export const southKorea: Country = {
   mortgageRate: 0.042,
   pensionPerYear: 300,
   languages: ['korean'],
-  cities: ['Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon', 'Gwangju', 'Suwon', 'Jeonju'],
+  cities: [
+    'Seoul',
+    'Busan',
+    'Incheon',
+    'Daegu',
+    'Daejeon',
+    'Gwangju',
+    'Suwon',
+    'Jeonju',
+    'Ulsan',
+    'Jeju',
+    'Changwon',
+    'Pohang',
+  ],
   names: {
     male: [
       'Minjun',
