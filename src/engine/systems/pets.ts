@@ -1,7 +1,7 @@
 import { pickFresh } from '../fresh';
 import { PET_BY_ID, PET_KINDS, type PetKindDef } from '../../content/pets';
 import type { Ctx } from '../ctx';
-import { formatMoney, refToLocal } from '../economy';
+import { formatMoney, money, refToLocal } from '../economy';
 import { EngineError } from '../errors';
 import { addStat } from '../stats';
 import type { GameState, Pet } from '../types';
@@ -192,7 +192,12 @@ export function petsTick(ctx: Ctx): void {
       continue;
     }
     if (pet.lastPlay < s.year - 1) pet.bond = clampStat(pet.bond - 6);
-    if (s.player.age >= 18) s.money.cash -= refToLocal(s, def.upkeep);
+    if (s.player.age >= 18) {
+      // Feed, bedding and the farrier are local costs, paid in local wages.
+      const upkeep = money(s, def.upkeep, 'wage');
+      s.money.cash -= upkeep;
+      if (s.money.last) s.money.last.maintenance += upkeep;
+    }
     const old = pet.age / pet.lifespan;
     if (old > 0.75) pet.health = clampStat(pet.health - r.int(6, 16));
     // Past their years the odds rise fast, and nothing lives far beyond its span.

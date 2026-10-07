@@ -237,7 +237,9 @@ export function playTournament(ctx: Ctx, tierId: string): void {
     t.field + 400 * Math.log10(Math.max(0.01, frac) / Math.max(0.01, 1 - frac)),
   );
   const place =
-    score > rival || (score === rival && ctx.rng.chance(0.5))
+    // Outscore the strongest rival, with a winning score: 4/9 never wins a tournament.
+    (score > rival || (score === rival && ctx.rng.chance(0.5))) &&
+    score >= (t.id === 'elite' ? 5.5 : 6.5)
       ? 'first'
       : score >= rival - 1
         ? 'in the top three'
@@ -273,9 +275,13 @@ export function playTournament(ctx: Ctx, tierId: string): void {
   const head = `♟️ ${t.label}: ${fmtScore(score)}/${ROUNDS}, finishing ${place}. Rating ${rec.rating} (${change >= 0 ? '+' : ''}${change}).${feePaid ? ` ${t.id === 'elite' ? 'Appearance fee' : 'Conditions (fee and hotel)'}: ${formatMoney(s, feePaid)}.` : ''}${pay ? ` Prize: ${formatMoney(s, pay)}.` : ''}`;
   ctx.log('activity', head, place === 'first');
   if (place === 'first') addStat(s, 'happiness', 5);
-  if (t.norms && perf >= 2600) rec.gmNorms += 1;
-  else if (t.norms && perf >= 2450) rec.imNorms += 1;
-  if (t.norms && perf >= 2450)
+  // Norms only matter on the way to a title: a grandmaster doesn't collect them.
+  const chasing = rec.title !== 'GM';
+  const gmNorm = chasing && t.norms && perf >= 2600;
+  const imNorm = chasing && rec.title !== 'IM' && t.norms && perf >= 2450 && !gmNorm;
+  if (gmNorm) rec.gmNorms += 1;
+  else if (imNorm) rec.imNorms += 1;
+  if (gmNorm || imNorm)
     ctx.log(
       'activity',
       `📜 A ${perf >= 2600 ? 'grandmaster' : 'international master'} norm (performance ${perf}).`,

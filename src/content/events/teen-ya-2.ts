@@ -10,7 +10,9 @@ export const TEEN_YA_EVENTS_2: EventDef[] = [
     ages: [15, 17],
     weight: 7,
     once: true,
-    text: 'Your first pay cheque from bagging groceries at the Fennwick Market arrives in a tiny envelope with your name spelled wrong.',
+    // Only for teens with a part-time job (not the teenage world champion).
+    when: (s) => s.career.partTimeId !== null,
+    text: 'Your first pay cheque from your part-time job arrives in a tiny envelope with your name spelled wrong.',
     outcomes: [
       {
         chance: 0.6,

@@ -5,6 +5,8 @@ import { SPORT_BY_ID } from '../../content/sports';
 import type { Ctx } from '../ctx';
 import { countryOf, formatMoney } from '../economy';
 import { addStat } from '../stats';
+import { EVENT_BY_ID } from '../../content/events';
+import { fireEvent } from '../events/select';
 import type { GameState } from '../types';
 import { hire, salaryFor, titleFor } from './careers';
 
@@ -78,7 +80,11 @@ export function turnPro(ctx: Ctx, pick?: number): void {
   const job = JOB_BY_ID['professional_athlete'];
   const lg = leagueOf(s);
   if (!job) return;
-  hire(ctx, 'professional_athlete', true);
+  // The signing is the announcement (no generic 'you're hired' line).
+  const was = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
+  if (was && was.id !== 'professional_athlete')
+    ctx.log('work', `You leave your job as ${titleFor(s, was, s.career.level)} to play full-time.`);
+  hire(ctx, 'professional_athlete', true, true);
   if (s.career.jobId !== 'professional_athlete' || !lg) return;
   const c = s.career;
   const form = s.sport?.form ?? 50;
@@ -144,8 +150,10 @@ export function proSeason(ctx: Ctx): void {
       level > was,
     );
   }
+  // Stars are household names: fame follows standing, season after season.
+  addStat(s, 'fame', [0, 0, 1, 3, 5][level] ?? 0);
   // Honours: the all-star nod, the individual award, and (sometimes) the lot.
-  if (form >= 85 && ctx.rng.chance(0.75)) {
+  if (form >= 80 && ctx.rng.chance(Math.min(0.9, 0.5 + (form - 80) / 40))) {
     p.honours.push(`${lg.allStar} (${s.year})`);
     ctx.log('work', `⭐ You're picked for ${lg.allStar}.`, true);
     addStat(s, 'fame', 3);
@@ -155,11 +163,20 @@ export function proSeason(ctx: Ctx): void {
     ctx.log('work', `🏆 You're named ${lg.mvp}.`, true);
     addStat(s, 'fame', 6);
   }
-  if (ctx.rng.chance(Math.max(0.03, 0.05 + (form - 60) / 220))) {
+  if (ctx.rng.chance(Math.max(0.02, 0.03 + (form - 70) / 400))) {
     p.honours.push(`${lg.title} (${s.year})`);
     ctx.log('work', `🏆 You win ${lg.title}! The celebrations last a week.`, true);
     addStat(s, 'fame', 5);
     addStat(s, 'happiness', 10);
+  }
+  // Later in a career, a question each year: retire, or one more season?
+  const age = s.player.age;
+  if (age >= 33 && (form < 78 || age >= 36)) {
+    const ev = EVENT_BY_ID['sport_pro_retire'];
+    if (ev)
+      fireEvent(ctx, ev, 'system', {
+        sport: SPORT_BY_ID[sp.sport]?.label.toLowerCase() ?? 'sport',
+      });
   }
   // Contracts: when one runs out, the market says what you're worth now.
   p.contractYears -= 1;
@@ -186,10 +203,17 @@ export function proSeason(ctx: Ctx): void {
       );
   } else if (lg.nicknames.length && ctx.rng.chance(0.05)) {
     const from = p.team;
-    p.team = teamName(ctx, lg);
+    let to = teamName(ctx, lg);
+    for (let i = 0; i < 5 && to.split(' ').at(-1) === from.split(' ').at(-1); i++)
+      to = teamName(ctx, lg);
+    p.team = to;
     ctx.log(
       'work',
-      `${emoji} You're traded from ${from} to ${p.team}. You pack the same bag you unpacked a year ago.`,
+      `${emoji} You're traded from ${from} to ${to}. ${
+        p.seasons > 4
+          ? 'After years in one city, you pack up a whole life in a week.'
+          : 'You pack the bag you only just unpacked.'
+      }`,
     );
   }
 }

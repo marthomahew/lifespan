@@ -57,7 +57,7 @@ export const PRO_LEAGUES: Record<string, ProLeague> = {
       {
         id: 'qb',
         label: 'Quarterback',
-        pay: 1.6,
+        pay: 1.25,
         stats: (q, r) =>
           `${n(1800 + q * 2900 + r * 400)} passing yards and ${n(8 + q * 30 + r * 5)} touchdowns`,
       },

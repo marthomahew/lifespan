@@ -75,6 +75,8 @@ export type Player = {
   stats: Stats;
   skills: Record<string, number>;
   skillPractice: Record<string, number>;
+  /** Fractions of a point built up from competing (experience). */
+  skillFrac?: Record<string, number>;
   /** Language id -> fluency 0..100. */
   languages: Record<string, number>;
   flags: string[];

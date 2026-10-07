@@ -1,3 +1,4 @@
+import { refreshListings } from './systems/assets';
 import { petAction, type PetActionId } from './systems/pets';
 import { Ctx, type Step } from './ctx';
 import { EngineError } from './errors';
@@ -198,6 +199,8 @@ export function act(input: GameState, action: PlayerAction): Step {
   checkAchievements(ctx);
   checkAspirations(ctx);
   checkChallenge(ctx);
+  // A windfall brings a fresh set of homes to look at.
+  refreshListings(ctx, true);
   return ctx.finish();
 }
 

@@ -275,7 +275,7 @@ export const SPORTS: SportDef[] = [
     recruited: [3, 4],
     olympic: false,
     good: [
-      'You run back the opening kick-off for a touchdown, and the stands do not sit down again.',
+      'You make the play of the season in the rivalry game, and the stands do not sit down again.',
       'A season of big plays on Friday nights; scouts start sitting in the front row.',
     ],
     fair: ['A grinding season in the trenches: bruises, film sessions and a few good drives.'],

@@ -105,6 +105,16 @@ export function takeUpSport(ctx: Ctx, id: string | null, position?: string): voi
 
 export const EXTRA_TRAINING = 2;
 
+/** Seasons as a child sound like a child's seasons, whatever the sport. */
+const YOUTH: Record<'good' | 'fair' | 'bad', string[]> = {
+  good: [
+    'A brilliant season: you are the one the other parents point at from the sideline.',
+    'You win the end-of-season trophy, and sleep with it on your pillow.',
+  ],
+  fair: ['A fun season: some wins, some losses, and orange slices at half-time.'],
+  bad: ['A tough season: you spend a lot of it on the bench, eating the orange slices.'],
+};
+
 /**
  * Athletic scholarships (in the US, where they exist): a strong school athlete finishing high
  * school is offered a university place with the fees paid. Once.
@@ -120,7 +130,7 @@ function scholarshipOffer(ctx: Ctx, def: SportDef, r: SportRecord, band: string)
     band === 'bad' ||
     r.form < 50 ||
     s.education.enrollment ||
-    !hasEducation(s, 'high_school') ||
+    !(hasEducation(s, 'high_school') || s.education.inSchool) ||
     s.career.jobId === 'professional_athlete' ||
     s.player.flags.includes('scholarship_offered')
   )
@@ -134,6 +144,16 @@ function scholarshipOffer(ctx: Ctx, def: SportDef, r: SportRecord, band: string)
 export function acceptScholarship(ctx: Ctx, programId: string): void {
   const s = ctx.s;
   const r = s.sport;
+  // Signed in senior year: it starts the autumn after the diploma.
+  if (!hasEducation(s, 'high_school')) {
+    s.player.flags.push(`scholarship_signed:${programId}`);
+    ctx.log(
+      'school',
+      'You sign a letter of intent. College starts once you have your diploma.',
+      true,
+    );
+    return;
+  }
   if (!athleticScholarship(ctx, programId) || !r?.active) return;
   const def = sportDef(r);
   const first = def?.recruited?.[0];
@@ -209,11 +229,23 @@ export function sportTick(ctx: Ctx): void {
   r.seasons += 1;
   addSkill(s, 'athletics', 2, 'experience');
   addStat(s, 'health', 1);
+  // A professional's season is played out in their career (contracts, numbers, honours).
+  if (s.career.jobId === 'professional_athlete') {
+    if (ctx.rng.chance(0.08 * (1 - 0.6 * Math.min(1, luck(s, 'sport')))))
+      addInjury(ctx, ctx.rng.int(8, 18), [`${def.label}: a bad fall in a match, on your knee.`]);
+    return;
+  }
+  // A signed scholarship starts once the diploma is in hand.
+  const signed = s.player.flags.find((f) => f.startsWith('scholarship_signed:'));
+  if (signed && hasEducation(s, 'high_school') && !s.education.enrollment) {
+    s.player.flags = s.player.flags.filter((f) => f !== signed);
+    acceptScholarship(ctx, signed.split(':')[1] ?? 'business');
+  }
   // What each level asks of you.
   const need = [0, 25, 42, 58, 72][r.level + 1] ?? 999;
   const keep = [0, 15, 32, 48, 62][r.level] ?? 0;
   const band = perf >= need ? 'good' : perf >= keep ? 'fair' : 'bad';
-  ctx.log('activity', `${def.emoji} ${pickFresh(ctx, def[band])}`);
+  ctx.log('activity', `${def.emoji} ${pickFresh(ctx, age < 13 ? YOUTH[band] : def[band])}`);
   // A senior with good form hears from colleges first (before school sport ends).
   scholarshipOffer(ctx, def, r, band);
   const next = r.level + 1;
@@ -228,6 +260,8 @@ export function sportTick(ctx: Ctx): void {
     band === 'good' &&
     next < def.levels.length &&
     age >= (def.ages[next] ?? 99) &&
+    // School teams are for school-age players.
+    !(schoolRung(def, next) && age > 18) &&
     // College teams are reached by a scholarship (below), not by being picked.
     !(def.recruited?.includes(next) && !def.recruited.includes(r.level))
   ) {

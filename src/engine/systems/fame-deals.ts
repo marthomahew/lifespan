@@ -4,7 +4,6 @@ import { EngineError } from '../errors';
 import { knownFor } from '../fame';
 import { addStat } from '../stats';
 import type { GameState } from '../types';
-import { workTime } from './activities';
 import { isChampion } from './chess-crown';
 import { markUsed, usedThisYear } from './usage';
 
@@ -98,8 +97,7 @@ export function fameDealReason(s: GameState, id: FameDeal['id']): string | null 
     .map((f) => Number(f.split(':')[1]))
     .sort((a, b) => b - a)[0];
   if (d.everyYears && last !== undefined && s.year - last < d.everyYears)
-    return `again in ${d.everyYears - (s.year - last)} years`;
-  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
+    return `again in ${d.everyYears - (s.year - last)} ${d.everyYears - (s.year - last) === 1 ? 'year' : 'years'}`;
   return null;
 }
 
@@ -111,7 +109,6 @@ export function takeFameDeal(ctx: Ctx, id: FameDeal['id']): void {
   const d = FAME_DEAL_BY_ID[id];
   const pay = fameDealPay(s, id);
   markUsed(s, `fame:${id}`);
-  markUsed(s, 'w:total');
   s.player.flags.push(`fame_${id}:${s.year}`);
   s.money.cash += pay;
   const what = knownFor(s)[0] ?? 'being you';

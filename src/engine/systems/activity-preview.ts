@@ -59,7 +59,7 @@ export function activityPreview(s: GameState, def: ActivityDef): string {
   // Activities whose effect is their own system say what it is.
   if (def.special === 'practice') {
     parts.push(
-      `🎯 the skill you pick: about +${Math.max(1, Math.round(8 * learnRate(s)))} (less as you improve)`,
+      `🎯 the skill you pick: about +${Math.max(1, Math.round(7 * learnRate(s)))} (less as you improve)`,
     );
   } else if (def.special === 'language') {
     parts.push(`🗣️ the language you pick: about +${Math.max(2, Math.round(12 * learnRate(s)))}`);

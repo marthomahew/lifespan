@@ -150,9 +150,9 @@ describe('chess, over the board', () => {
       s = season(s, 6);
       if (s.chess?.title === 'GM') gm = s.player.age;
     }
-    // With focus, practice and six events a year: around the real record (12), a little under.
+    // With a focus and six events a year: young, near the real record (12), never a toddler.
     expect(gm).toBeGreaterThanOrEqual(9);
-    expect(gm).toBeLessThanOrEqual(14);
+    expect(gm).toBeLessThanOrEqual(16);
   });
 
   it('top grandmasters are paid to play opens, and gain little rating beating weaker fields', () => {

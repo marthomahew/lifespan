@@ -1,3 +1,4 @@
+import { sharesValue } from './markets';
 import { vehicleName } from './assets';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
@@ -184,6 +185,49 @@ export function payFromLiquid(s: GameState, amount: number, useCash = true): num
  * ceiling, savings and investments go to creditors and the court wipes the rest.
  * Secured loans (mortgages, car loans) are untouched.
  */
+/**
+ * Sell owned things to raise money, most luxurious first: lifestyle items, shares, cars,
+ * possessions, then homes you don't live in. Returns what was raised (90% of values).
+ */
+export function fireSale(ctx: Ctx, need: number): number {
+  const s = ctx.s;
+  let raised = 0;
+  const take = (v: number): number => Math.round(v * 0.9);
+  const lux = [...(s.lifestyle ?? [])]
+    .filter((x) => (x.value ?? 0) > 0)
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+  for (const x of lux) {
+    if (raised >= need) break;
+    raised += take(x.value ?? 0);
+    s.lifestyle = (s.lifestyle ?? []).filter((y) => y.key !== x.key);
+  }
+  if (raised < need && s.money.shares) {
+    raised += take(sharesValue(s));
+    s.money.shares = {};
+  }
+  for (const v of [...s.assets.vehicles].sort((a, b) => b.value - a.value)) {
+    if (raised >= need) break;
+    raised += take(v.value);
+    s.assets.vehicles = s.assets.vehicles.filter((x) => x.id !== v.id);
+  }
+  for (const p of [...s.assets.possessions].sort((a, b) => b.value - a.value)) {
+    if (raised >= need) break;
+    raised += take(p.value);
+    s.assets.possessions = s.assets.possessions.filter((x) => x.id !== p.id);
+  }
+  for (const h of s.assets.homes.filter((x) => !x.livingIn)) {
+    if (raised >= need) break;
+    const owed = s.money.loans
+      .filter((l) => l.collateral === h.id)
+      .reduce((t, l) => t + l.balance, 0);
+    raised += Math.max(0, take(h.value) - owed);
+    s.money.loans = s.money.loans.filter((l) => l.collateral !== h.id);
+    s.assets.homes = s.assets.homes.filter((x) => x.id !== h.id);
+  }
+  s.money.cash += raised;
+  return raised;
+}
+
 export function bankruptcyCheck(ctx: Ctx, salary: number): void {
   const s = ctx.s;
   const m = s.money;
@@ -198,6 +242,20 @@ export function bankruptcyCheck(ctx: Ctx, salary: number): void {
     ctx.log(
       'money',
       `You sell ${formatMoney(s, total)} of savings and investments to clear the overdraft.`,
+    );
+    return;
+  }
+  // Before any court: sell what you own (the yacht before the house you live in).
+  const raised = fireSale(ctx, total - liquid);
+  if (liquid + raised >= total) {
+    // The sale's proceeds go to the creditors first; savings cover any rest.
+    m.cash -= Math.min(raised, total);
+    payFromLiquid(s, Math.max(0, total - raised), false);
+    m.loans = m.loans.filter((l) => !unsecured.includes(l));
+    ctx.log(
+      'money',
+      `To clear ${formatMoney(s, total)} of debt you sell what you must: ${formatMoney(s, raised)} raised. You keep your home.`,
+      true,
     );
     return;
   }

@@ -248,6 +248,8 @@ export type AssetState = {
   possessions: Possession[];
   listings: HomeListing[];
   listingsYear: number;
+  /** Buying power when the listings were made (a windfall brings new ones). */
+  listingsPower?: number;
   nextAssetId: number;
   licence: boolean;
   housing: Housing;

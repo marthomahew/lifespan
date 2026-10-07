@@ -150,7 +150,7 @@ export function runSpecial(
     case 'practice': {
       const skill = typeof params['skill'] === 'string' ? params['skill'] : 'instrument';
       // A solid session; the better you are, the slower it goes (addSkill's level factor).
-      const gain = 8 + ctx.rng.int(0, 2);
+      const gain = 6 + ctx.rng.int(0, 2);
       // (A gift, youth and a quick mind all speed it up: see learnRate.)
       addSkill(s, skill, gain);
       return;

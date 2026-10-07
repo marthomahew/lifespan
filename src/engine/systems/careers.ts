@@ -4,6 +4,7 @@ import { luck } from './luck';
 import { pickFresh } from '../fresh';
 import { JOB_BY_ID } from '../../content/jobs';
 import { SPORT_BY_ID } from '../../content/sports';
+import { netWorth } from '../networth';
 import { PRO_LEAGUES } from '../../content/sport-pro';
 import { GRAD_BY_ID } from '../../content/education';
 import type { JobDef } from '../../content/types';
@@ -336,6 +337,8 @@ export function unemploymentBenefit(s: GameState): number {
   if (s.legal.prison || s.military?.active || s.legal.fugitive) return 0;
   // Means-tested: savings above a modest cushion mean you live on those first.
   if (s.money.cash + s.money.savings > money(s, 30000)) return 0;
+  // ...and so does wealth of any kind (a yacht is not hardship).
+  if (netWorth(s) > money(s, 100000)) return 0;
   return money(s, 7000, 'wage');
 }
 

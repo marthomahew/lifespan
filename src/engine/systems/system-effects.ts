@@ -87,7 +87,20 @@ export function applySystemEffect(
     case 'lockdown': {
       // The pandemic year: shops, bars and stages close; desks move home; school goes remote.
       const field = s.career.jobId ? JOB_BY_ID[s.career.jobId]?.field : undefined;
-      if (field && ['hospitality', 'retail', 'arts'].includes(field) && ctx.rng.chance(0.45)) {
+      const job = s.career.jobId;
+      if (job === 'professional_athlete')
+        ctx.log(
+          'work',
+          'The season stops, then restarts in empty stadiums with cardboard fans in the seats.',
+        );
+      else if (job === 'film_actor')
+        ctx.log(
+          'work',
+          'Every set shuts down. You film a heartfelt video from your kitchen instead.',
+        );
+      else if (job === 'politician')
+        ctx.log('work', 'Parliament goes online. You learn to unmute yourself, eventually.');
+      else if (field && ['hospitality', 'retail', 'arts'].includes(field) && ctx.rng.chance(0.45)) {
         applyCareerEffect(ctx, 'fire');
         ctx.log(
           'work',
@@ -153,6 +166,9 @@ export function applySystemEffect(
       return;
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';
+      return;
+    case 'hang_up':
+      takeUpSport(ctx, null);
       return;
     case 'turn_pro': {
       const pick = typeof payload['pick'] === 'number' ? payload['pick'] : undefined;

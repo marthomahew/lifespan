@@ -114,7 +114,8 @@ describe('friends (M5.4)', () => {
     let s = runCheat(immortal(newLife({}, 9)), 'age.set', { age: 30 }).state;
     s = { ...s, cheats: { ...s.cheats, forceSuccess: false } };
     let made = 0;
-    for (let i = 0; i < 12; i++) {
+    // A club brings a friend when its story does (a share of the time): give it years.
+    for (let i = 0; i < 25 && made === 0; i++) {
       const before = s.npcs.filter((n) => n.roles.includes('friend')).length;
       s = act(s, { type: 'activity', id: 'join_club' }).state;
       if (s.npcs.filter((n) => n.roles.includes('friend')).length > before) made++;

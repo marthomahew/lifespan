@@ -31,7 +31,7 @@ describe('cashing in on fame', () => {
     expect(fameDealReason(star(60), 'sponsor')).toBeNull();
   });
 
-  it('a world champion is worth twice as much, and a deal uses work time', () => {
+  it('a world champion is worth twice as much, and a deal takes no pips', () => {
     const plain = star(80);
     const champ = star(80, true);
     expect(
@@ -39,7 +39,8 @@ describe('cashing in on fame', () => {
     ).toBeLessThan(3);
     const after = act(champ, { type: 'fame_deal', id: 'sponsor' }).state;
     expect(after.money.cash - champ.money.cash).toBe(fameDealPay(champ, 'sponsor'));
-    expect(workTime(after).left).toBe(workTime(champ).left - 1);
+    // Deals take no pips: a famous player can play and still cash in.
+    expect(workTime(after).left).toBe(workTime(champ).left);
     expect(after.log.some((l) => /world chess champion/.test(l.text))).toBe(true);
     expect(() => act(after, { type: 'fame_deal', id: 'sponsor' })).toThrow(/done this year/);
   });

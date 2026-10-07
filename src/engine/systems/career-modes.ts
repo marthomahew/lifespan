@@ -38,7 +38,9 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
   if (job.id === 'film_actor') {
     // Billing follows your name: fame most of all, then the work you put in, then your face.
     const st = s.player.stats;
-    const score = st.fame * 0.6 + c.performance * 0.3 + st.looks * 0.1;
+    // Years in the business count too: people learn your name, slowly.
+    const seasons = Math.min(15, s.year - (c.history.at(-1)?.from ?? s.year));
+    const score = st.fame * 0.5 + c.performance * 0.4 + st.looks * 0.1 + seasons;
     const NEED = [0, 30, 48, 66, 82];
     const target = NEED.filter((n) => score >= n).length - 1;
     if (target > c.level) {
@@ -73,6 +75,8 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
           : 'A big year: two films, a press tour and your face on the side of a bus.',
     );
     if (year < 0.25) addStat(s, 'happiness', -3);
+    // Work on screen makes you known; a big year makes you famous.
+    addStat(s, 'fame', year < 0.25 ? 0 : year < 0.75 ? 1 + c.level : 3 + c.level * 2);
     return true;
   }
   // Politicians: elections decide (the campaign events), not the annual review.

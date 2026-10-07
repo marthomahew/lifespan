@@ -34,16 +34,16 @@ function years(s: GameState, n: number): GameState {
 }
 
 describe('a focus, and how fast you learn', () => {
-  it('children learn faster; a gift adds half again, a prodigy triples, a quick study doubles', () => {
+  it('children learn faster; a gift adds half again, a prodigy more, a quick study doubles', () => {
     const kid = life(1, 8, { talent: 'instrument' });
     const teen = life(1, 15);
     const adult = life(1, 30);
     expect(learnRate(adult, 'art')).toBe(1);
-    expect(learnRate(teen, 'art')).toBe(1.5);
-    expect(learnRate(kid, 'art')).toBe(2);
-    expect(learnRate(kid, 'instrument')).toBe(3);
+    expect(learnRate(teen, 'art')).toBe(1.25);
+    expect(learnRate(kid, 'art')).toBe(1.5);
+    expect(learnRate(kid, 'instrument')).toBe(2.25);
     const prodigy = life(2, 30, { talent: 'instrument', talentLevel: 'prodigy' });
-    expect(learnRate(prodigy, 'instrument')).toBe(3);
+    expect(learnRate(prodigy, 'instrument')).toBe(2.5);
     expect(prodigy.player.skills['instrument']).toBeGreaterThanOrEqual(15);
     const quick = life(3, 30, { gifts: ['quick_study'] });
     expect(learnRate(quick, 'art')).toBe(2);
@@ -57,21 +57,24 @@ describe('a focus, and how fast you learn', () => {
     expect(freeTime(s).total).toBe(before - FOCUS_COST);
     s = years(s, 7);
     // Steady to 50, slower after: good, not world-class.
-    expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(60);
-    expect(s.player.skills['instrument'] ?? 0).toBeLessThan(90);
+    expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(45);
+    expect(s.player.skills['instrument'] ?? 0).toBeLessThan(80);
   });
 
-  it('a child prodigy who focuses masters it in about a decade, and keeps it while focused', () => {
+  it('a child prodigy who focuses becomes excellent; the very top takes far longer; mastery stays', () => {
     let s = life(5, 5, { talent: 'instrument', talentLevel: 'prodigy' });
     s = act(s, { type: 'focus', target: 'instrument' }).state;
     s = years(s, 1);
-    // Fast, but not overnight: 25 points a calendar year (the first birthday can straddle two).
+    // Fast, but not overnight (the first birthday can straddle two calendar years).
     expect(s.player.skills['instrument']).toBeLessThanOrEqual(50);
     s = years(s, 4);
     // Strong after five years of focus.
     expect(s.player.skills['instrument']).toBeGreaterThanOrEqual(65);
     s = years(s, 8);
-    expect(s.player.skills['instrument']).toBe(100);
+    // Excellent by the late teens; 100 is the best in the world and still a way off.
+    expect(s.player.skills['instrument']).toBeGreaterThanOrEqual(85);
+    // Once mastered, a focus keeps it there.
+    s = runCheat(s, 'skill.set', { skill: 'instrument', value: 100 }).state;
     s = years(s, 3);
     expect(s.log.filter((l) => /mastered it/.test(l.text))).toHaveLength(1);
     expect(s.player.skills['instrument']).toBe(100);

@@ -183,8 +183,11 @@ const BASE_ACTIVITIES: ActivityDef[] = [
       },
       {
         chance: 0.1,
-        text: 'The match falls through at the last minute. It hurts more than you expected.',
-        effects: [{ stat: 'happiness', delta: -8 }],
+        text: 'The match falls through at the last minute. It hurts more than you expected. The agency refunds half its fee.',
+        effects: [
+          { stat: 'happiness', delta: -8 },
+          { money: 4000, kind: 'price' },
+        ],
       },
     ],
   },

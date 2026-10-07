@@ -1,3 +1,4 @@
+import { refreshListings } from '../systems/assets';
 import { Ctx, type Step } from '../ctx';
 import { EngineError } from '../errors';
 import { applyLocks } from '../stats';
@@ -106,6 +107,7 @@ export function runCheat(
   if (!def.readOnly) ctx.s.cheats.used = true;
   prunePending(ctx.s);
   applyLocks(ctx.s);
+  refreshListings(ctx, true);
   return { ...ctx.finish(), message };
 }
 

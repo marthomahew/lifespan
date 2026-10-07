@@ -10,9 +10,9 @@ import { GIFT_BY_ID } from '../../content/gifts';
  */
 export function learnRate(s: GameState, skill?: string): number {
   const age = s.player.age;
-  const young = age < 12 ? 2 : age < 18 ? 1.5 : 1;
+  const young = age < 12 ? 1.5 : age < 18 ? 1.25 : 1;
   const gift =
-    skill && s.player.talent === skill ? (s.player.talentLevel === 'prodigy' ? 3 : 1.5) : 1;
+    skill && s.player.talent === skill ? (s.player.talentLevel === 'prodigy' ? 2.5 : 1.5) : 1;
   const quick = (s.player.gifts ?? []).reduce((m, g) => m * (GIFT_BY_ID[g]?.learn ?? 1), 1);
   // A born athlete takes to sport, a golden ear to music.
   const lucky =
@@ -25,10 +25,21 @@ export function learnRate(s: GameState, skill?: string): number {
 
 /**
  * How much one session is worth at your level: everything counts, but the top is slow.
- * Full value below 50, 80% from 50, 60% from 70, 40% from 90 (never less than a point).
+ * Full value below 30, then 35% from 30, 20% from 50, 10% from 70, 5% from 85 and 2.5% from 95:
+ * the last points to 100 (the best in the world) take years.
  */
 export function levelFactor(cur: number): number {
-  return cur >= 90 ? 0.4 : cur >= 70 ? 0.6 : cur >= 50 ? 0.8 : 1;
+  return cur >= 95
+    ? 0.025
+    : cur >= 85
+      ? 0.05
+      : cur >= 70
+        ? 0.1
+        : cur >= 50
+          ? 0.2
+          : cur >= 30
+            ? 0.35
+            : 1;
 }
 
 /**
@@ -45,9 +56,18 @@ export function addSkill(
   pool: SkillPool = 'practice',
 ): void {
   const cur = s.player.skills[id] ?? 0;
+  if (delta <= 0) {
+    s.player.skills[id] = clampStat(cur + delta);
+    return;
+  }
+  // Competing teaches a little whatever your age; study and practice go at your learning rate.
   const rate = pool === 'experience' ? 1 : learnRate(s, id);
-  const d = delta > 0 ? Math.max(1, Math.round(delta * rate * levelFactor(cur))) : delta;
-  s.player.skills[id] = clampStat(cur + d);
+  // Gains add up exactly, fractions included: near the top a session moves you part of a point.
+  const frac = (s.player.skillFrac ??= {});
+  const total = (frac[id] ?? 0) + delta * rate * levelFactor(cur);
+  const whole = Math.floor(total);
+  frac[id] = total - whole;
+  s.player.skills[id] = clampStat(cur + whole);
   if (delta > 0) s.player.skillPractice[id] = s.year;
 }
 

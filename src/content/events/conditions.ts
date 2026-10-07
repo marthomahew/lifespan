@@ -37,7 +37,10 @@ export const hasJob = (s: GameState): boolean =>
 export const inField =
   (field: string) =>
   (s: GameState): boolean =>
-    s.career.jobId !== null && JOB_BY_ID[s.career.jobId]?.field === field;
+    s.career.jobId !== null &&
+    JOB_BY_ID[s.career.jobId]?.field === field &&
+    // Field events are for the field's ordinary jobs (an actor isn't a graphic designer).
+    !['film_actor', 'politician', 'astronaut'].includes(s.career.jobId);
 /** Office work: the fields at desks, and the desk jobs in the others (reply-all, badges, slides). */
 const OFFICE_FIELDS = ['technology', 'finance', 'law', 'science'];
 const OFFICE_JOBS = [

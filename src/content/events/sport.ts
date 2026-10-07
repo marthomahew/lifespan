@@ -237,4 +237,38 @@ export const SPORT_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'sport_pro_retire',
+    kind: 'choice',
+    category: 'work',
+    emoji: '🧢',
+    ages: [30, 45],
+    weight: 1,
+    chainOnly: true,
+    text: 'The mornings are harder now. Younger players are quicker than they were, and your agent has started saying “legacy” a lot. Is it time to retire from professional {sport}?',
+    choices: [
+      {
+        id: 'retire',
+        label: 'Retire on your own terms',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You announce it at a press conference with your family in the front row. The standing ovation at your last game goes on for a long time.',
+            effects: [{ system: 'hang_up' }, { stat: 'happiness', delta: 6 }, { fame: 3 }],
+          },
+        ],
+      },
+      {
+        id: 'one_more',
+        label: 'One more season',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You tape up, ice down, and go again. The fire is still there, even if the knees file complaints.',
+            effects: [{ stat: 'stress', delta: 3 }],
+          },
+        ],
+      },
+    ],
+  },
 ];

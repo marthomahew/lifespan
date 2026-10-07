@@ -25,13 +25,19 @@ import { addInjury } from './injuries';
 const conditionMult = (c: number): number => 0.6 + c / 250;
 
 /** Fresh listings each year: type × condition × the country's price level (SPEC §5.7). */
-export function refreshListings(ctx: Ctx): void {
+export function refreshListings(ctx: Ctx, windfallOnly = false): void {
   const s = ctx.s;
-  if (s.player.age < 18 || s.assets.listingsYear === s.year) return;
-  const r = ctx.rng;
+  if (s.player.age < 18) return;
   // What the market shows you depends on what you could buy: savings and borrowing power.
   const income = localToRef(s, s.career.salary + (s.money.last?.otherIncome ?? 0));
   const power = Math.max(0, netWorthRef(s)) + income * 4.5;
+  // New listings each year, or straight away when you are suddenly much richer.
+  const fresh = s.assets.listingsYear === s.year;
+  if (fresh && power <= (s.assets.listingsPower ?? 0) * 3 + 1) return;
+  // Between birthdays, only a windfall (not the passing of time) brings new listings.
+  if (windfallOnly && !fresh) return;
+  s.assets.listingsPower = power;
+  const r = ctx.rng;
   const byPrice = [...HOME_TYPES].sort((a, b) => a.price - b.price);
   const within = byPrice.filter((h) => h.price <= Math.max(power * 1.1, byPrice[2]?.price ?? 0));
   // The best few you can manage, a couple of cheaper ones, and one to dream about.
@@ -328,7 +334,7 @@ export function assetsTick(ctx: Ctx): void {
       0,
       Math.round(v.value * (classic ? 1 + r.normal(0.06, 0.05) : 1 - r.normal(0.15, 0.03))),
     );
-    v.condition = clampStat(v.condition - r.int(classic ? 1 : 4, classic ? 4 : 10));
+    v.condition = clampStat(v.condition - r.int(classic ? 1 : 2, classic ? 3 : 6));
     // Running costs follow the car: a supercar's service costs what a small car does.
     maintenance += money(s, 400 + (100 - v.condition) * 15) + Math.round(v.value * 0.015);
   }
@@ -432,7 +438,8 @@ export function vehicleName(v: { model: string; bought: number }): string {
   const def = VEHICLE_BY_ID[v.model];
   if (!def) return 'vehicle';
   const name = productName(def, v.bought);
-  return name === def.label ? lowerLabel(name) : name;
+  // Catalogue cars are real makes and keep their capitals ("the Porsche 911").
+  return name === def.label && !def.category ? lowerLabel(name) : name;
 }
 /** An owned possession's make: the one on sale the year you got it. */
 export function itemName(p: { item: string; bought: number }): string {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ageUp, newLife, runCheat, type GameState } from '../../src/engine';
+import { ageUp, choose, newLife, runCheat, type GameState } from '../../src/engine';
 import { Ctx } from '../../src/engine/ctx';
 import { clone } from '../../src/engine/util';
 import { seedRng } from '../../src/engine/rng';
@@ -66,5 +66,21 @@ describe('a professional career', () => {
     expect(s.proSport?.last).toMatch(/passing yards/);
     expect(s.proSport?.honours.length ?? 0).toBeGreaterThan(0);
     expect(s.log.some((l) => /new deal|re-sign/.test(l.text))).toBe(true);
+  });
+});
+
+describe('the end of a career', () => {
+  it('an older pro is asked whether to retire; retiring ends the playing career', () => {
+    const ctx = new Ctx(clone(prospect(70)));
+    turnPro(ctx, 100);
+    let s = runCheat(ctx.s, 'age.set', { age: 36 }).state;
+    s = ageUp({ ...s, pending: [] }).state;
+    const ask = s.pending.find((p) => p.eventId === 'sport_pro_retire');
+    expect(ask).toBeDefined();
+    s = { ...s, pending: [ask!] };
+    s = choose(s, 'retire').state;
+    expect(s.sport?.active).toBe(false);
+    s = ageUp({ ...s, pending: [] }).state;
+    expect(s.career.jobId).not.toBe('professional_athlete');
   });
 });
