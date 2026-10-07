@@ -76,7 +76,7 @@ test('after Age Up, a line sums up what this year has done', async ({ page }) =>
 
 test('an event about someone shows their face', async ({ page }) => {
   await startSeeded(page, 3131, async (p) => {
-    await p.getByTestId('f-parents').selectOption('together');
+    await p.getByTestId('f-parents-together').click();
   });
   await cheat(page, 'age set 7');
   await clearPopups(page);

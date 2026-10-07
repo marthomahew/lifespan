@@ -23,39 +23,49 @@ export function NewLifeScreen(): React.JSX.Element {
   const rollAll = (): void =>
     set((cur) => Object.values(DICE).reduce((acc, roll) => roll(acc), { ...cur }));
   return (
-    <div className="screen" data-testid="new-life-screen">
-      <div className="screen-head">
+    <div className="screen cl" data-testid="new-life-screen">
+      <div className="cl-top">
         <button className="ghost" data-testid="btn-back" onClick={() => go('start')}>
           ← Back
         </button>
-        <h1>New Life</h1>
-        <span className="grow" />
-        <button className="ghost" data-testid="btn-reset-life" onClick={() => set(() => START)}>
-          Clear
-        </button>
-        <button className="ghost" data-testid="btn-challenges" onClick={() => setChallenges(true)}>
-          🏆 Challenges
-        </button>
-        <button className="ghost" data-testid="btn-roll-all" onClick={rollAll}>
-          🎲 Roll everything
-        </button>
-        <button data-testid="btn-random-life" onClick={() => startLife({})}>
-          🎲 Random life
-        </button>
+        <div className="cl-title">
+          <h1>Create a life</h1>
+          <p className="muted">
+            Fill in as much or as little as you like. Blanks are left to fate.
+          </p>
+        </div>
+        <div className="cl-actions">
+          <button className="ghost" data-testid="btn-reset-life" onClick={() => set(() => START)}>
+            Clear
+          </button>
+          <button
+            className="ghost"
+            data-testid="btn-challenges"
+            onClick={() => setChallenges(true)}
+          >
+            🏆 Challenges
+          </button>
+          <button data-testid="btn-roll-all" onClick={rollAll}>
+            🎲 Roll everything
+          </button>
+          <button data-testid="btn-random-life" onClick={() => startLife({})}>
+            ⚡ Random life
+          </button>
+        </div>
       </div>
-      <form className="newlife" onSubmit={begin} data-testid="custom-form" aria-label="Custom life">
-        <div className="nl-sections">
+      <form className="cl-body" onSubmit={begin} data-testid="custom-form" aria-label="Custom life">
+        <Preview d={d} onSeed={(v) => set({ seed: v })}>
+          <button className="primary cl-begin" type="submit" data-testid="btn-begin">
+            Begin life →
+          </button>
+        </Preview>
+        <div className="cl-sections">
           <IdentitySection d={d} set={set} />
           <LookSection d={d} set={set} />
           <OriginsSection d={d} set={set} />
           <NatureSection d={d} set={set} />
           <StatsSection d={d} set={set} />
         </div>
-        <Preview d={d} onSeed={(v) => set({ seed: v })}>
-          <button className="primary big" type="submit" data-testid="btn-begin">
-            Begin life
-          </button>
-        </Preview>
       </form>
       {challenges && (
         <ChallengePicker

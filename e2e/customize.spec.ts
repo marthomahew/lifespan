@@ -3,7 +3,7 @@ import { cheat, clearPopups, startSeeded } from './helpers';
 
 test('in life: practise a picked skill, get a new look, change your name', async ({ page }) => {
   await startSeeded(page, 9090, async (p) => {
-    await p.getByTestId('f-gender').selectOption('male');
+    await p.getByTestId('f-gender-male').click();
     await p.getByTestId('look-tab-hair').click();
     await p.getByTestId('look-opt-hair-short').click();
   });

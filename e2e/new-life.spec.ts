@@ -30,13 +30,13 @@ test('flow 2: custom life with every field set', async ({ page }) => {
   await page.getByTestId('btn-new-life').click();
   await page.getByTestId('f-first').fill('Philippa');
   await page.getByTestId('f-last').fill('Drummond');
-  await page.getByTestId('f-gender').selectOption('nonbinary');
-  await page.getByTestId('f-attraction').selectOption('everyone');
+  await page.getByTestId('f-gender-nonbinary').click();
+  await page.getByTestId('f-attraction-everyone').click();
   await page.getByTestId('f-country').selectOption('ca');
   await page.getByTestId('f-city').selectOption({ index: 2 });
   const city = await page.getByTestId('f-city').inputValue();
   await page.getByTestId('f-year').fill('1988');
-  await page.getByTestId('f-wealth').selectOption('rich');
+  await page.getByTestId('f-wealth-rich').click();
   await page.getByTestId('look-opt-skin-5').click();
   await page.getByTestId('f-trait-bookish').click();
   await page.getByTestId('f-trait-funny').click();
@@ -86,8 +86,8 @@ test('achievements: a toast when earned and an Achievements screen', async ({ pa
 test('custom life leaves gender and attraction to chance unless chosen', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('btn-new-life').click();
-  await expect(page.getByTestId('f-gender')).toHaveValue('');
-  await expect(page.getByTestId('f-attraction')).toHaveValue('');
+  await expect(page.getByTestId('f-gender-any')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.getByTestId('f-attraction-any')).toHaveAttribute('aria-checked', 'true');
   await page.getByTestId('btn-begin').click();
   await expect(page.getByTestId('game-screen')).toBeVisible();
 });
@@ -99,7 +99,7 @@ test('full customization: look, family, talent, preview, and the life that follo
   await page.getByTestId('btn-new-life').click();
   await page.getByTestId('f-first').fill('Isolde');
   await page.getByTestId('f-last').fill('Marchetti');
-  await page.getByTestId('f-gender').selectOption('female');
+  await page.getByTestId('f-gender-female').click();
   // The look builder: every option is drawn on your own face.
   await page.getByTestId('look-opt-skin-3').click();
   await page.getByTestId('look-freckles').check();
@@ -116,8 +116,8 @@ test('full customization: look, family, talent, preview, and the life that follo
     page.getByTestId('look-portrait').locator('[data-layer="freckles"]').first(),
   ).toBeAttached();
   await page.getByTestId('f-country').selectOption('fr');
-  await page.getByTestId('f-parents').selectOption('mother');
-  await page.getByTestId('f-siblings').selectOption('2');
+  await page.getByTestId('f-parents-mother').click();
+  await page.getByTestId('f-siblings-2').click();
   await page.getByTestId('f-talent').selectOption('instrument');
   await page.getByTestId('f-trait-creative').click();
   await expect(page.getByTestId('preview-name')).toHaveText('Isolde Marchetti');
@@ -148,8 +148,8 @@ test('roll everything fills every section', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('btn-new-life').click();
   await page.getByTestId('btn-roll-all').click();
-  await expect(page.getByTestId('f-gender')).not.toHaveValue('');
-  await expect(page.getByTestId('f-parents')).not.toHaveValue('');
+  await expect(page.getByTestId('f-gender-any')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.getByTestId('f-parents-any')).toHaveAttribute('aria-checked', 'false');
   await page.getByTestId('btn-begin').click();
   await expect(page.getByTestId('game-screen')).toBeVisible();
 });

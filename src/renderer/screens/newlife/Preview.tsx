@@ -43,24 +43,36 @@ export function Preview({
       : d.siblings === '0'
         ? 'no siblings yet'
         : `${d.siblings} sibling${d.siblings === '1' ? '' : 's'}`;
+  const facts = [
+    `${c?.flag ?? ''} ${d.city || c?.name || ''}`.trim(),
+    `Born ${d.birthYear}`,
+    `${Cap(WEALTH[d.wealth] ?? d.wealth)} family`,
+    ...(talent ? [`${talent.emoji} ${d.prodigy ? 'Prodigy' : 'Talent'}`] : []),
+  ];
   return (
-    <aside className="card pad nl-preview" data-testid="life-preview" aria-label="Your new life">
-      <div className="nl-avatars" aria-label="Through the years">
-        {[1, 8, 30, 75].map((age) => (
-          <figure key={age}>
-            <Portrait
-              look={look}
-              age={age}
-              gender={g}
-              size={age === 30 ? 72 : 52}
-              testId={`preview-age-${age}`}
-            />
-            <figcaption className="muted small">{age}</figcaption>
-          </figure>
+    <aside className="cl-hero" data-testid="life-preview" aria-label="Your new life">
+      <div className="cl-hero-band" aria-hidden="true" />
+      <div className="cl-hero-face">
+        <Portrait
+          look={look}
+          age={30}
+          gender={g}
+          size={150}
+          label="Your look as an adult"
+          testId="look-portrait"
+        />
+      </div>
+      <h2 className="cl-name" data-testid="preview-name">
+        {name}
+      </h2>
+      <div className="cl-facts">
+        {facts.map((f) => (
+          <span key={f} className="cl-fact">
+            {f}
+          </span>
         ))}
       </div>
-      <h2 data-testid="preview-name">{name}</h2>
-      <p className="nl-summary" data-testid="preview-summary">
+      <p className="cl-summary" data-testid="preview-summary">
         Born {d.birthYear} {d.city ? `in ${d.city},` : 'somewhere in'} {c?.flag} {c?.name}, into a{' '}
         {WEALTH[d.wealth] ?? d.wealth} family, raised by{' '}
         {d.parents ? PARENTS[d.parents] : 'whoever fate decides'}, with {sibs}.
@@ -73,17 +85,27 @@ export function Preview({
         {BACKGROUND_BY_ID[d.background] &&
           ` ${BACKGROUND_BY_ID[d.background]?.emoji} ${BACKGROUND_BY_ID[d.background]?.label}.`}
       </p>
-      <label className="nl-seed">
-        Seed <span className="muted small">(optional; the same seed replays the same life)</span>
+      <div className="cl-ages" aria-label="Through the years">
+        {[1, 8, 18, 30, 50, 80].map((age) => (
+          <figure key={age}>
+            <Portrait look={look} age={age} gender={g} size={44} testId={`preview-age-${age}`} />
+            <figcaption>{age}</figcaption>
+          </figure>
+        ))}
+      </div>
+      {children}
+      <label className="cl-seed" title="The same seed replays the same life">
+        <span className="cl-label">Seed</span>
         <input
           data-testid="f-seed"
           inputMode="numeric"
           value={d.seed}
           onChange={(e) => onSeed(e.target.value)}
-          placeholder="Random"
+          placeholder="Random (optional)"
         />
       </label>
-      {children}
     </aside>
   );
 }
+
+const Cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);

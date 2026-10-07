@@ -9,6 +9,7 @@ import './styles/features.css';
 import './styles/boards.css';
 import './styles/portrait.css';
 import './styles/cheats.css';
+import './styles/newlife.css';
 
 const rootEl = document.getElementById('root');
 if (!rootEl) throw new Error('missing #root');

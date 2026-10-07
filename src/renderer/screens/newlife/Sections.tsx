@@ -1,55 +1,38 @@
-import { useMemo } from 'react';
 import { COUNTRIES } from '../../../content/countries';
 import { SKILLS } from '../../../content/skills';
 import { TRAITS } from '../../../content/traits';
 import { GIFTS } from '../../../content/gifts';
 import { BACKGROUNDS, BACKGROUND_BY_ID } from '../../../content/backgrounds';
-import { WEALTH_TIERS, type Attraction, type Gender, type WealthTier } from '../../../engine';
+import { WEALTH_TIERS } from '../../../engine';
 import { LookBuilder } from '../../portrait/LookBuilder';
-import { Portrait } from '../../portrait/Portrait';
 import type { ParentSetup } from '../../../engine/types';
-import { DICE, shownLook, STATS, toggleTrait, type Draft } from './useNewLife';
+import { shownLook, STATS, toggleTrait, type Draft } from './useNewLife';
+import { useMemo } from 'react';
+import { Section, Segmented, type SetDraft } from './parts';
 
-type Props = { d: Draft; set: (patch: Partial<Draft> | ((d: Draft) => Draft)) => void };
+type Props = { d: Draft; set: SetDraft };
 
 const Cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
-
-function Section({
-  title,
-  dice,
-  set,
-  children,
-}: {
-  title: string;
-  dice: keyof typeof DICE;
-  set: Props['set'];
-  children: React.ReactNode;
-}): React.JSX.Element {
-  return (
-    <section className="card pad nl-section" aria-label={title}>
-      <div className="nl-section-head">
-        <h2>{title}</h2>
-        <button
-          type="button"
-          className="ghost small"
-          data-testid={`dice-${dice}`}
-          title={`Roll ${title.toLowerCase()}`}
-          onClick={() => set(DICE[dice])}
-        >
-          🎲 Roll
-        </button>
-      </div>
-      {children}
-    </section>
-  );
-}
+const STAT_EMOJI: Record<string, string> = {
+  happiness: '😊',
+  health: '❤️',
+  smarts: '🧠',
+  looks: '✨',
+};
 
 export function IdentitySection({ d, set }: Props): React.JSX.Element {
   return (
-    <Section title="Who" dice="identity" set={set}>
-      <div className="form-grid">
-        <label>
-          First name
+    <Section
+      n={1}
+      icon="🪪"
+      title="Who"
+      hint="Leave a name blank and one is picked to suit where you're born."
+      dice="identity"
+      set={set}
+    >
+      <div className="cl-grid">
+        <label className="cl-field">
+          <span className="cl-label">First name</span>
           <input
             data-testid="f-first"
             value={d.first}
@@ -58,8 +41,8 @@ export function IdentitySection({ d, set }: Props): React.JSX.Element {
             onChange={(e) => set({ first: e.target.value })}
           />
         </label>
-        <label>
-          Last name
+        <label className="cl-field">
+          <span className="cl-label">Last name</span>
           <input
             data-testid="f-last"
             value={d.last}
@@ -68,33 +51,31 @@ export function IdentitySection({ d, set }: Props): React.JSX.Element {
             onChange={(e) => set({ last: e.target.value })}
           />
         </label>
-        <label>
-          Gender
-          <select
-            data-testid="f-gender"
-            value={d.gender}
-            onChange={(e) => set({ gender: e.target.value as Gender | '' })}
-          >
-            <option value="">Surprise me</option>
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="nonbinary">Nonbinary</option>
-          </select>
-        </label>
-        <label>
-          Attracted to
-          <select
-            data-testid="f-attraction"
-            value={d.attraction}
-            onChange={(e) => set({ attraction: e.target.value as Attraction | '' })}
-          >
-            <option value="">Surprise me</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="everyone">Everyone</option>
-          </select>
-        </label>
       </div>
+      <Segmented
+        label="Gender"
+        testId="f-gender"
+        value={d.gender}
+        onChange={(v) => set({ gender: v })}
+        options={[
+          { value: '', label: '🎲 Any' },
+          { value: 'female', label: 'Female' },
+          { value: 'male', label: 'Male' },
+          { value: 'nonbinary', label: 'Nonbinary' },
+        ]}
+      />
+      <Segmented
+        label="Attracted to"
+        testId="f-attraction"
+        value={d.attraction}
+        onChange={(v) => set({ attraction: v })}
+        options={[
+          { value: '', label: '🎲 Any' },
+          { value: 'men', label: 'Men' },
+          { value: 'women', label: 'Women' },
+          { value: 'everyone', label: 'Everyone' },
+        ]}
+      />
     </Section>
   );
 }
@@ -102,22 +83,19 @@ export function IdentitySection({ d, set }: Props): React.JSX.Element {
 export function LookSection({ d, set }: Props): React.JSX.Element {
   const look = useMemo(() => shownLook(d), [d]);
   return (
-    <Section title="Look" dice="look" set={set}>
-      <div className="nl-look">
-        <Portrait
-          look={look}
-          age={30}
-          gender={d.gender || 'nonbinary'}
-          size={132}
-          label="Your look as an adult"
-          testId="look-portrait"
-        />
-        <LookBuilder
-          look={look}
-          gender={d.gender || 'nonbinary'}
-          onChange={(look) => set({ look, lookSet: true })}
-        />
-      </div>
+    <Section
+      n={2}
+      icon="🎨"
+      title="Look"
+      hint="Shown as an adult; you'll grow into it. The card on the left updates as you go."
+      dice="look"
+      set={set}
+    >
+      <LookBuilder
+        look={look}
+        gender={d.gender || 'nonbinary'}
+        onChange={(look) => set({ look, lookSet: true })}
+      />
     </Section>
   );
 }
@@ -125,10 +103,17 @@ export function LookSection({ d, set }: Props): React.JSX.Element {
 export function OriginsSection({ d, set }: Props): React.JSX.Element {
   const c = COUNTRIES.find((x) => x.id === d.country) ?? COUNTRIES[0];
   return (
-    <Section title="Where and when" dice="origins" set={set}>
-      <div className="form-grid">
-        <label>
-          Country
+    <Section
+      n={3}
+      icon="🌍"
+      title="Where and when"
+      hint="Your birth year matters: prices, jobs, phones and history all follow it."
+      dice="origins"
+      set={set}
+    >
+      <div className="cl-grid">
+        <label className="cl-field">
+          <span className="cl-label">Country</span>
           <select
             data-testid="f-country"
             value={d.country}
@@ -141,8 +126,8 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             ))}
           </select>
         </label>
-        <label>
-          City
+        <label className="cl-field">
+          <span className="cl-label">City</span>
           <select
             data-testid="f-city"
             value={d.city}
@@ -156,8 +141,8 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             ))}
           </select>
         </label>
-        <label>
-          Birth year
+        <label className="cl-field">
+          <span className="cl-label">Birth year</span>
           <input
             data-testid="f-year"
             type="number"
@@ -167,51 +152,8 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
             onChange={(e) => set({ birthYear: Number(e.target.value) || 2000 })}
           />
         </label>
-        <label>
-          Family wealth
-          <select
-            data-testid="f-wealth"
-            value={d.wealth}
-            onChange={(e) => set({ wealth: e.target.value as WealthTier })}
-          >
-            {WEALTH_TIERS.map((w) => (
-              <option key={w} value={w}>
-                {Cap(w)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Raised by
-          <select
-            data-testid="f-parents"
-            value={d.parents}
-            onChange={(e) => set({ parents: e.target.value as ParentSetup | '' })}
-          >
-            <option value="">Surprise me</option>
-            <option value="together">Both parents, together</option>
-            <option value="apart">Both parents, separated</option>
-            <option value="mother">A single mother</option>
-            <option value="father">A single father</option>
-          </select>
-        </label>
-        <label>
-          Siblings at birth
-          <select
-            data-testid="f-siblings"
-            value={d.siblings}
-            onChange={(e) => set({ siblings: e.target.value })}
-          >
-            <option value="">Surprise me</option>
-            {[0, 1, 2, 3, 4].map((n) => (
-              <option key={n} value={String(n)}>
-                {n === 0 ? 'None (an only child, for now)' : n}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Background
+        <label className="cl-field">
+          <span className="cl-label">Background</span>
           <select
             data-testid="f-background"
             value={d.background}
@@ -227,6 +169,37 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
           </select>
         </label>
       </div>
+      <Segmented
+        label="Family wealth"
+        testId="f-wealth"
+        value={d.wealth}
+        onChange={(v) => set({ wealth: v })}
+        options={WEALTH_TIERS.map((w) => ({ value: w, label: Cap(w) }))}
+      />
+      <Segmented
+        label="Raised by"
+        testId="f-parents"
+        value={d.parents}
+        onChange={(v) => set({ parents: v })}
+        options={[
+          { value: '' as ParentSetup | '', label: '🎲 Any' },
+          { value: 'together', label: 'Both parents' },
+          { value: 'apart', label: 'Separated parents' },
+          { value: 'mother', label: 'Single mother' },
+          { value: 'father', label: 'Single father' },
+        ]}
+      />
+      <Segmented
+        label="Siblings at birth"
+        testId="f-siblings"
+        value={d.siblings}
+        onChange={(v) => set({ siblings: v })}
+        options={[
+          { value: '', label: '🎲 Any' },
+          { value: '0', label: 'Only child' },
+          ...['1', '2', '3', '4'].map((n) => ({ value: n, label: n })),
+        ]}
+      />
       {BACKGROUND_BY_ID[d.background] && (
         <p className="muted small" data-testid="background-note">
           {BACKGROUND_BY_ID[d.background]?.description}
@@ -238,9 +211,16 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
 
 export function NatureSection({ d, set }: Props): React.JSX.Element {
   return (
-    <Section title="Nature" dice="nature" set={set}>
-      <div className="trait-pick" role="group" aria-label="Traits (up to 3)">
-        <span className="nl-pick-label">Traits (up to 3)</span>
+    <Section
+      n={4}
+      icon="✨"
+      title="Nature"
+      hint="Up to three traits, a talent, and gifts that bend the odds."
+      dice="nature"
+      set={set}
+    >
+      <span className="cl-label">Traits (up to 3)</span>
+      <div className="cl-chips" role="group" aria-label="Traits (up to 3)">
         {TRAITS.map((t) => (
           <button
             type="button"
@@ -255,8 +235,8 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
           </button>
         ))}
       </div>
-      <label className="nl-talent">
-        A gift for
+      <label className="cl-field cl-talent">
+        <span className="cl-label">A talent for</span>
         <select
           data-testid="f-talent"
           value={d.talent}
@@ -274,7 +254,7 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
         </span>
       </label>
       {d.talent && (
-        <label className="nl-check">
+        <label className="cl-check">
           <input
             type="checkbox"
             data-testid="f-prodigy"
@@ -284,12 +264,14 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
           🌟 A prodigy: starts further ahead and learns it three times as fast
         </label>
       )}
-      <div className="nl-gifts" role="group" aria-label="Gifts">
-        <span className="muted small">
-          Gifts (only if you pick them; the dice never roll these)
-        </span>
+      <span className="cl-label">Gifts (only if you pick them; the dice never roll these)</span>
+      <div className="cl-gifts" role="group" aria-label="Gifts">
         {GIFTS.map((g) => (
-          <label key={g.id} className="nl-check" title={g.description}>
+          <label
+            key={g.id}
+            className={`cl-gift${d.gifts.includes(g.id) ? ' on' : ''}`}
+            title={g.description}
+          >
             <input
               type="checkbox"
               data-testid={`gift-${g.id}`}
@@ -300,7 +282,13 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
                 })
               }
             />
-            {g.emoji} {g.label} <span className="muted small">{g.description}</span>
+            <span className="cl-gift-emoji" aria-hidden="true">
+              {g.emoji}
+            </span>
+            <span className="cl-gift-text">
+              <strong>{g.label}</strong>
+              <span className="muted small">{g.description}</span>
+            </span>
           </label>
         ))}
       </div>
@@ -310,12 +298,26 @@ export function NatureSection({ d, set }: Props): React.JSX.Element {
 
 export function StatsSection({ d, set }: Props): React.JSX.Element {
   return (
-    <Section title="Starting stats" dice="stats" set={set}>
-      <div className="stat-pick">
+    <Section
+      n={5}
+      icon="📊"
+      title="Starting stats"
+      hint="Where you begin. Life moves them from here."
+      dice="stats"
+      set={set}
+    >
+      <div className="cl-stats">
         {STATS.map((k) => (
-          <label key={k}>
-            <span className="nl-stat-head">
-              {Cap(k)} <strong>{d.stats[k]}</strong>
+          <label
+            key={k}
+            className="cl-stat"
+            style={{ '--v': `${d.stats[k]}%` } as React.CSSProperties}
+          >
+            <span className="cl-stat-head">
+              <span>
+                {STAT_EMOJI[k]} {Cap(k)}
+              </span>{' '}
+              <strong>{d.stats[k]}</strong>
             </span>
             <input
               type="range"
