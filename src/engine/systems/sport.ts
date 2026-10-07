@@ -31,7 +31,30 @@ export const SPORT_COST = 1;
 
 export const sportOf = (s: GameState): SportRecord | null => s.sport ?? null;
 export const sportDef = (r: SportRecord): SportDef | undefined => SPORT_BY_ID[r.sport];
-export const levelLabel = (r: SportRecord): string => sportDef(r)?.levels[r.level] ?? '';
+/** The rung's name for someone this age: adults at the bottom play in an adult league. */
+export function rungLabel(def: SportDef, level: number, age: number): string {
+  if (level === 0 && age >= 18) return def.adult;
+  return def.levels[level] ?? '';
+}
+export const levelLabel = (r: SportRecord, age = 18): string => {
+  const def = sportDef(r);
+  return def ? rungLabel(def, r.level, age) : '';
+};
+
+/** The highest rung someone this age can be on (no college football at 13). */
+export function topRungFor(def: SportDef, age: number): number {
+  let top = 0;
+  def.ages.forEach((a, i) => {
+    if (age >= a) top = i;
+  });
+  return top;
+}
+
+/** School-age rungs end with school: past 18 they lead to college or to adult leagues. */
+function schoolRung(def: SportDef, level: number): boolean {
+  const first = def.recruited?.[0];
+  return first !== undefined && level > 0 && level < first;
+}
 
 export function takeUpReason(s: GameState, id: string): string | null {
   if (!SPORT_BY_ID[id]) return 'unknown sport';
@@ -57,7 +80,7 @@ export function takeUpSport(ctx: Ctx, id: string | null): void {
   s.sport = { sport: id, level: 0, best: 0, form: 50, seasons: 0, honours: [], active: true };
   ctx.log(
     'activity',
-    `${def.emoji} You take up ${def.label.toLowerCase()}: ${def.levels[0]} first.`,
+    `${def.emoji} You take up ${def.label.toLowerCase()}: ${rungLabel(def, 0, s.player.age)} first.`,
   );
 }
 
@@ -106,6 +129,8 @@ export function sportTick(ctx: Ctx): void {
     ctx.log('activity', `${def.emoji} At ${age}, you play your last competitive season.`);
     return;
   }
+  // Nobody is on a rung beyond their age (older saves could be).
+  r.level = Math.min(r.level, topRungFor(def, age));
   const ath = s.player.skills['athletics'] ?? 0;
   const ageMod = age < 14 ? 0 : age <= 30 ? 6 : -(age - 30) * 3;
   const gift = s.player.talent === 'athletics' ? (s.player.talentLevel === 'prodigy' ? 14 : 7) : 0;
@@ -128,17 +153,47 @@ export function sportTick(ctx: Ctx): void {
   const keep = [0, 15, 32, 48, 62][r.level] ?? 0;
   const band = perf >= need ? 'good' : perf >= keep ? 'fair' : 'bad';
   ctx.log('activity', `${def.emoji} ${pickFresh(ctx, def[band])}`);
-  if (band === 'good' && r.level < def.levels.length - 1 && !(r.level >= 3 && age < 16)) {
-    r.level += 1;
+  const next = r.level + 1;
+  if (age > 18 && schoolRung(def, r.level) && !(band === 'good' && def.recruited?.includes(next))) {
+    // School is over and no college called: an adult league from here.
+    r.level = 0;
+    ctx.log(
+      'activity',
+      `${def.emoji} School sport ends, and no college calls. You play on in ${def.adult}.`,
+    );
+  } else if (band === 'good' && next < def.levels.length && age >= (def.ages[next] ?? 99)) {
+    r.level = next;
+    // A school star can be recruited straight into a major programme.
+    const jump =
+      def.recruited?.includes(next) &&
+      def.recruited.includes(next + 1) &&
+      r.form >= 88 &&
+      age >= (def.ages[next + 1] ?? 99);
+    if (jump) r.level = next + 1;
     r.best = Math.max(r.best, r.level);
-    ctx.log('activity', `${def.emoji} You are picked for ${def.levels[r.level]}.`, true);
-    if (r.level >= 3) r.honours.push(`${def.levels[r.level]} (${s.year})`);
+    const where = def.levels[r.level] ?? '';
+    const wasRecruited = def.recruited?.includes(r.level);
+    ctx.log(
+      'activity',
+      wasRecruited
+        ? def.recruited?.includes(r.level - 1) && !jump
+          ? `${def.emoji} After a season like that you transfer to ${where}.`
+          : `${def.emoji} Recruiters come calling: you sign with ${where}.`
+        : `${def.emoji} You are picked for ${where}.`,
+      true,
+    );
+    if (r.level >= 3) r.honours.push(`${where} (${s.year})`);
     addStat(s, 'happiness', 6);
     addStat(s, 'fame', r.level >= 4 ? 4 : r.level >= 3 ? 1 : 0);
-  } else if (band === 'bad' && r.level > 0) {
+  } else if (band === 'bad' && r.level > 0 && !def.recruited?.includes(r.level)) {
     r.level -= 1;
-    ctx.log('activity', `${def.emoji} You are dropped back to ${def.levels[r.level]}.`);
+    ctx.log('activity', `${def.emoji} You are dropped back to ${rungLabel(def, r.level, age)}.`);
     addStat(s, 'happiness', -4);
+  } else if (band === 'bad' && def.recruited?.includes(r.level)) {
+    ctx.log(
+      'activity',
+      `${def.emoji} A season on the bench. You keep your scholarship, just about.`,
+    );
   }
   // A professional career, for the best of them, by the sport's own route and at its own
   // age: a club contract at 17, the draft after college, a sponsor's deal, a team's offer.

@@ -53,7 +53,7 @@ function SportPanel({
       {r && def && r.active ? (
         <div className="col small">
           <div data-testid="sport-level">
-            <strong>Playing for {levelLabel(r)}</strong>{' '}
+            <strong>Playing for {levelLabel(r, game.player.age)}</strong>{' '}
             <span className="muted">
               · form {r.form} · {r.seasons} {r.seasons === 1 ? 'season' : 'seasons'}
               {r.best > r.level ? ` · reached ${def.levels[r.best]}` : ''}

@@ -3,8 +3,14 @@ export type SportDef = {
   id: string;
   label: string;
   emoji: string;
-  /** Rungs from the school team to the national side. */
+  /** Rungs from the first team you join to the national side. */
   levels: string[];
+  /** The youngest age for each rung: nobody plays college football at 13. */
+  ages: number[];
+  /** Where an adult beginner starts (instead of the youth rung). */
+  adult: string;
+  /** Rungs you reach by being recruited or transferring, not by being picked. */
+  recruited?: number[];
   olympic: boolean;
   /** What a good season looks like, in this sport. */
   good: string[];
@@ -29,12 +35,14 @@ export const SPORTS: SportDef[] = [
     label: 'Football',
     emoji: '⚽',
     levels: [
-      'the school team',
-      'a local club',
-      'the county squad',
+      'a youth club',
+      'a district select side',
       'a professional academy',
+      'the national youth team',
       'the national team',
     ],
+    ages: [6, 9, 12, 15, 18],
+    adult: 'a Sunday league side',
     olympic: true,
     good: [
       'You score in the cup final and the whole team piles on top of you.',
@@ -65,12 +73,15 @@ export const SPORTS: SportDef[] = [
     label: 'Basketball',
     emoji: '🏀',
     levels: [
+      'a youth league',
       'the school team',
-      'a club side',
-      'the regional squad',
-      'the national junior programme',
+      'an elite travel team',
+      'a college team',
       'the national team',
     ],
+    ages: [6, 12, 14, 18, 19],
+    adult: 'a pickup league',
+    recruited: [3],
     olympic: true,
     good: [
       'You hit the buzzer-beater in the league final and the gym explodes.',
@@ -101,12 +112,14 @@ export const SPORTS: SportDef[] = [
     label: 'Tennis',
     emoji: '🎾',
     levels: [
-      'the school team',
-      'club tournaments',
-      'regional rankings',
-      'the national junior circuit',
-      'the professional tour',
+      'club lessons',
+      'junior tournaments',
+      'the national junior rankings',
+      'the junior international circuit',
+      'the national team',
     ],
+    ages: [6, 9, 12, 14, 17],
+    adult: 'club league tennis',
     olympic: true,
     good: [
       'You win the regional title without dropping a set.',
@@ -137,12 +150,14 @@ export const SPORTS: SportDef[] = [
     label: 'Athletics',
     emoji: '🏃',
     levels: [
-      'school sports day',
-      'a running club',
-      'the county championships',
-      'the national juniors',
+      'the school team',
+      'an athletics club',
+      'regional championships',
+      'the national junior squad',
       'the national team',
     ],
+    ages: [6, 9, 12, 15, 18],
+    adult: 'a running club',
     olympic: true,
     good: [
       'You win your event at the championships with a personal best by half a second.',
@@ -173,12 +188,14 @@ export const SPORTS: SportDef[] = [
     label: 'Swimming',
     emoji: '🏊',
     levels: [
-      'school galas',
       'a swimming club',
-      'the county championships',
-      'the national age-group squad',
+      'the county squad',
+      'regional championships',
+      'the national junior squad',
       'the national team',
     ],
+    ages: [6, 9, 11, 14, 16],
+    adult: 'masters swimming',
     olympic: true,
     good: [
       'A gold at the championships, and a club record that stands for years.',
@@ -215,6 +232,8 @@ export const SPORTS: SportDef[] = [
       'a development team',
       'the national team',
     ],
+    ages: [6, 10, 13, 17, 19],
+    adult: 'a cycling club',
     olympic: true,
     good: [
       'You win the regional road race in a sprint you will replay for years.',
@@ -245,12 +264,15 @@ export const SPORTS: SportDef[] = [
     label: 'American football',
     emoji: '🏈',
     levels: [
-      'flag football',
-      'the high-school team',
+      'youth flag football',
+      'the high-school junior varsity',
+      'the high-school varsity team',
       'a college team',
-      'a top college programme',
-      'the all-American team',
+      'a major college programme',
     ],
+    ages: [6, 14, 15, 18, 18],
+    adult: 'a recreational league',
+    recruited: [3, 4],
     olympic: false,
     good: [
       'You run back the opening kick-off for a touchdown, and the stands do not sit down again.',
@@ -267,6 +289,38 @@ export const SPORTS: SportDef[] = [
         [2000000, 10000000],
         [10000000, 30000000],
         [30000000, 55000000],
+      ],
+    },
+  },
+  {
+    id: 'ice_hockey',
+    label: 'Ice hockey',
+    emoji: '🏒',
+    levels: [
+      'youth hockey',
+      'a travel team',
+      'major junior hockey',
+      'the national junior team',
+      'the national team',
+    ],
+    ages: [6, 10, 16, 17, 19],
+    adult: 'a beer league',
+    olympic: true,
+    good: [
+      'A hat-trick in the play-off final, and the rink fills with hats.',
+      'A season of goals and hard checks; scouts with clipboards start turning up at practice.',
+    ],
+    fair: ['A steady season on the third line: good shifts, sore shoulders, cold mornings.'],
+    bad: ['A season spent mostly in the penalty box, and the rest on the bench.'],
+    route: { kind: 'draft', age: 18 },
+    pro: {
+      titles: ['Minor-League Pro', 'Fourth-Liner', 'Regular Starter', 'All-Star', 'Franchise Star'],
+      pay: [
+        [50000, 100000],
+        [775000, 1500000],
+        [1500000, 5000000],
+        [5000000, 10000000],
+        [10000000, 16000000],
       ],
     },
   },

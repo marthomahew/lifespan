@@ -1,3 +1,5 @@
+import { takeUpSport } from './sport';
+import { SPORT_BY_ID } from '../../content/sports';
 import { JOB_BY_ID } from '../../content/jobs';
 import { MAJORS } from '../../content/education';
 import { COUNTRY_BY_ID } from '../../content/countries';
@@ -151,6 +153,11 @@ export function applySystemEffect(
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';
       return;
+    case 'take_up_sport': {
+      // Making a team means playing the sport for real (unless you already play one).
+      if (arg && !s.sport?.active && SPORT_BY_ID[arg]) takeUpSport(ctx, arg);
+      return;
+    }
     case 'hire': {
       const jobId = arg ?? (typeof payload['jobId'] === 'string' ? payload['jobId'] : undefined);
       if (jobId) hire(ctx, jobId);

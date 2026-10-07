@@ -78,6 +78,8 @@ export function skillDecay(s: GameState): void {
   for (const [id, lvl] of Object.entries(s.player.languages)) {
     if (native.has(id) || id === COUNTRY_BY_ID[s.player.birthCountry]?.languages[0]) continue;
     const last = s.player.skillPractice[`lang:${id}`] ?? -100;
-    if (lvl > 0 && s.year - last > 3) s.player.languages[id] = clampStat(lvl - 1);
+    // Fluency stays with you, and nobody under 30 loses a language they once learned.
+    if (lvl >= 80 || s.player.age < 30) continue;
+    if (lvl > 0 && s.year - last > 4) s.player.languages[id] = clampStat(lvl - 1);
   }
 }

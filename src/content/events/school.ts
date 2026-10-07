@@ -1404,18 +1404,20 @@ export const SCHOOL_EVENTS: EventDef[] = [
     ages: [12, 16],
     weight: 8,
     cooldownYears: 3,
-    when: inSchool,
-    text: 'Coach Mbeki is holding trials for the school hockey team. The equipment cupboard smells of a hundred years of shin pads.',
+    // Ice hockey where it's the winter game; elsewhere the trials are for football.
+    when: (s) => inSchool(s) && !s.sport?.active && ['us', 'ca', 'se'].includes(s.player.country),
+    text: 'Coach Mbeki is holding tryouts for the school ice hockey team. The rink smells of cold air, rubber mats and a hundred years of sweaty pads.',
     choices: [
       {
         id: 'try',
-        label: 'Go to trials',
+        label: 'Go to the trials',
         outcomes: [
           {
             chance: oddsBy('health', 0.45),
             success: true,
-            text: 'You make the squad and get a shirt two sizes too big. Coach Mbeki calls you "Wheels", for reasons nobody explains.',
+            text: 'You make the team and get a jersey two sizes too big. Coach Mbeki calls you "Wheels", for reasons nobody explains. Practice is at six in the morning, all winter.',
             effects: [
+              { system: 'take_up_sport', arg: 'ice_hockey' },
               { skill: 'athletics', delta: 5 },
               { stat: 'happiness', delta: 5 },
               { stat: 'discipline', delta: 3 },
@@ -1423,7 +1425,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
           },
           {
             chance: 0.5,
-            text: 'You spend trials mostly hitting your own ankles. Coach Mbeki suggests you might enjoy keeping score.',
+            text: 'You spend tryouts mostly sliding into the boards. Coach Mbeki suggests you might enjoy running the scoreboard.',
             effects: [{ stat: 'happiness', delta: -3 }, { injury: 1 }],
           },
         ],
@@ -1436,7 +1438,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
             chance: 1,
             text: '{friend.first} makes the team and you do not, but you become the loudest supporter on the sideline every Saturday.',
             effects: [
-              { rel: 'friend', delta: 6, memory: 'you cheering at every hockey match' },
+              { rel: 'friend', delta: 6, memory: 'you cheering at every hockey game' },
               { stat: 'happiness', delta: 2 },
             ],
           },
@@ -1449,6 +1451,68 @@ export const SCHOOL_EVENTS: EventDef[] = [
           {
             chance: 1,
             text: "The library is warm and smells of radiator dust. You read an entire novel about a lighthouse keeper's cat.",
+            effects: [
+              { stat: 'smarts', delta: 2 },
+              { stat: 'happiness', delta: 1 },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'school_s_football_trials',
+    kind: 'choice',
+    category: 'school',
+    ages: [12, 16],
+    weight: 8,
+    cooldownYears: 3,
+    when: (s) => inSchool(s) && !s.sport?.active && !['us', 'ca', 'se'].includes(s.player.country),
+    text: 'Coach Mbeki is holding trials for the school football team. The kit cupboard smells of a hundred years of muddy boots.',
+    choices: [
+      {
+        id: 'try',
+        label: 'Go to the trials',
+        outcomes: [
+          {
+            chance: oddsBy('health', 0.45),
+            success: true,
+            text: 'You make the squad and get a shirt two sizes too big. Coach Mbeki calls you "Wheels" after one sprint down the wing, and it sticks.',
+            effects: [
+              { system: 'take_up_sport', arg: 'football' },
+              { skill: 'athletics', delta: 5 },
+              { stat: 'happiness', delta: 5 },
+              { stat: 'discipline', delta: 3 },
+            ],
+          },
+          {
+            chance: 0.5,
+            text: 'You spend trials mostly kicking the ground. Coach Mbeki suggests you might enjoy running the line with a flag.',
+            effects: [{ stat: 'happiness', delta: -3 }, { injury: 1 }],
+          },
+        ],
+      },
+      {
+        id: 'with_friend',
+        label: 'Go only if {friend.first} goes too',
+        outcomes: [
+          {
+            chance: 1,
+            text: '{friend.first} makes the squad and you do not. You turn up to every match anyway with a flask of tea and opinions about the referee.',
+            effects: [
+              { rel: 'friend', delta: 6, memory: 'you cheering at every football match' },
+              { stat: 'happiness', delta: 2 },
+            ],
+          },
+        ],
+      },
+      {
+        id: 'skip',
+        label: 'Stay in the library',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You spend the trials hour in the library with the radiator ticking, and finish a book about a submarine that nobody else has borrowed since 1987.',
             effects: [
               { stat: 'smarts', delta: 2 },
               { stat: 'happiness', delta: 1 },

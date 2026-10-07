@@ -15,6 +15,9 @@ import { SPORT_BY_ID } from '../../src/content/sports';
 import { JOB_BY_ID } from '../../src/content/jobs';
 import { salaryFor, titleFor } from '../../src/engine/systems/careers';
 import { Ctx } from '../../src/engine/ctx';
+import { applyEffect } from '../../src/engine/events/apply';
+import { clone } from '../../src/engine/util';
+import { EVENT_BY_ID } from '../../src/content/events';
 import { seedRng } from '../../src/engine/rng';
 
 const kid = (seed: number, opts: Parameters<typeof newLife>[0] = {}): GameState => {
@@ -179,5 +182,36 @@ describe('sport, season by season', () => {
     }
     expect(keen).toBeGreaterThan(lazy + 30 * 8);
     expect(ageUp(twice).state.sport?.extra).toBe(0);
+  });
+
+  it('American football follows school and college: no college team at 13', () => {
+    let s = act(kid(2460, { talent: 'athletics', talentLevel: 'prodigy' }), {
+      type: 'sport',
+      sport: 'american_football',
+    }).state;
+    s = { ...s, player: { ...s.player, skills: { ...s.player.skills, athletics: 100 } } };
+    for (let age = 8; age <= 17; age++) {
+      s = seasons(s, 1);
+      const def = SPORT_BY_ID['american_football']!;
+      expect(def.ages[s.sport?.level ?? 0] ?? 0).toBeLessThanOrEqual(s.player.age);
+      expect(s.sport?.level ?? 0).toBeLessThan(3);
+    }
+    // At 18 a star is recruited into college football.
+    for (let i = 0; i < 4 && (s.sport?.level ?? 0) < 3; i++) s = seasons(s, 1);
+    expect(s.sport?.level ?? 0).toBeGreaterThanOrEqual(3);
+    expect(s.log.some((l) => /Recruiters come calling/.test(l.text))).toBe(true);
+  });
+
+  it('school tryouts that you pass start the sport for real', () => {
+    const s = runCheat(kid(2470, { country: 'ca' }), 'age.set', { age: 13 }).state;
+    const trials = EVENT_BY_ID['school_s_sports_trials']!;
+    const made = trials.choices?.[0]?.outcomes.find((o) => o.success);
+    expect(made?.effects).toContainEqual({ system: 'take_up_sport', arg: 'ice_hockey' });
+    const ctx = new Ctx(clone(s));
+    applyEffect(ctx, { system: 'take_up_sport', arg: 'ice_hockey' }, {}, {}, 'test');
+    expect(ctx.s.sport?.sport).toBe('ice_hockey');
+    // Already playing something else: making a school team doesn't switch your sport.
+    applyEffect(ctx, { system: 'take_up_sport', arg: 'football' }, {}, {}, 'test');
+    expect(ctx.s.sport?.sport).toBe('ice_hockey');
   });
 });
