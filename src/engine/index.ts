@@ -41,7 +41,14 @@ export {
 } from './actions';
 export { interactionsFor, interactionOdds, type InteractionView } from './systems/interactions';
 export { activitiesFor, freeTime, type ActivityView } from './systems/activities';
-export { focusOptions, focusLabel, focusLevel, focusReason, FOCUS_COST } from './systems/focus';
+export {
+  focusForecast,
+  focusOptions,
+  focusLabel,
+  focusLevel,
+  focusReason,
+  FOCUS_COST,
+} from './systems/focus';
 export { learnRate } from './systems/skills';
 export { estatePlan } from './systems/inheritance';
 export { familyTree, type TreeNode } from './family-tree';

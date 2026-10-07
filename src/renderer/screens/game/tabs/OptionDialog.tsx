@@ -4,6 +4,8 @@ import { formatMoney, type GameState } from '../../../../engine';
 import { money } from '../../../../engine/economy';
 import { ACTIVITY_BY_ID } from '../../../../content/activities';
 import { DESTINATIONS } from '../../../../content/destinations';
+import { CLUBS } from '../../../../content/clubs';
+import { clubOpen } from '../../../../engine/systems/activity-specials';
 import { LOOK_TABS, LookBuilder } from '../../../portrait/LookBuilder';
 import { Portrait } from '../../../portrait/Portrait';
 import { PetPicker } from './PetPicker';
@@ -25,6 +27,7 @@ export const OPTION_ACTIVITIES = [
   'find_date',
   'dating_app',
   'vacation',
+  'join_club',
 ];
 
 /** What a salon, a razor, an optician and a shop can change. */
@@ -93,6 +96,24 @@ export function OptionDialog({
                 {p.talent === k.id && <span className="talent-star"> ★</span>}
               </span>
               <span className="muted small">{p.skills[k.id] ?? 0}</span>
+            </button>
+          ))}
+        </div>
+      )}
+      {activity === 'join_club' && (
+        <div className="option-grid">
+          {CLUBS.filter((c) => clubOpen(game, c)).map((c) => (
+            <button
+              key={c.id}
+              className="option"
+              data-testid={`opt-club-${c.id}`}
+              onClick={() => onRun({ club: c.id })}
+            >
+              <span className="option-emoji">{c.emoji}</span>
+              <span className="grow">{c.label}</span>
+              {c.skill && (
+                <span className="muted small">{SKILLS.find((k) => k.id === c.skill)?.label}</span>
+              )}
             </button>
           ))}
         </div>

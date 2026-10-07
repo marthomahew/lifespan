@@ -1,3 +1,5 @@
+import { CLUBS, CLUB_BY_ID, type ClubDef } from '../../content/clubs';
+import { applyStatusEffect } from './status-effects';
 import { luck } from './luck';
 import { LANGUAGE_BY_ID } from '../../content/skills';
 import type { ActivityDef } from '../../content/types';
@@ -128,6 +130,22 @@ export function runSpecial(
       if (outcomeIndex === 0) s.player.look = wanted;
       if (outcomeIndex === 2)
         s.player.look = { ...wanted, nose: ctx.rng.pick(NOSES.map((n) => n.id)) };
+      return;
+    }
+    case 'club': {
+      // The club you picked (or, for the bots, any that fits your age and era).
+      const open = CLUBS.filter((c) => clubOpen(s, c));
+      const asked = typeof params['club'] === 'string' ? CLUB_BY_ID[params['club']] : undefined;
+      const club = asked && clubOpen(s, asked) ? asked : ctx.rng.pick(open);
+      if (!club) return;
+      const band = outcomeIndex === 0 ? club.good : outcomeIndex === 1 ? club.fair : club.bad;
+      const line = pickFresh(ctx, band);
+      ctx.log('activity', `${club.emoji} ${line}`);
+      if (club.skill) addSkill(s, club.skill, outcomeIndex === 2 ? 1 : outcomeIndex === 1 ? 2 : 4);
+      if (club.stat) addStat(s, club.stat, outcomeIndex === 2 ? 0 : 2);
+      addStat(s, 'happiness', outcomeIndex === 0 ? 4 : outcomeIndex === 1 ? 1 : -1);
+      // A story that mentions a new friend brings one.
+      if (/friend/.test(line)) applyStatusEffect(ctx, 'friend', undefined);
       return;
     }
     case 'chess': {
@@ -328,3 +346,7 @@ function pickKeys(
 ): Record<string, unknown> {
   return Object.fromEntries(keys.filter((k) => k in o).map((k) => [k, o[k]]));
 }
+
+/** A club you're old enough for, in a year it exists. */
+export const clubOpen = (s: GameState, c: ClubDef): boolean =>
+  s.player.age >= (c.minAge ?? 8) && s.year >= (c.fromYear ?? 0);

@@ -2,7 +2,7 @@ import { LANGUAGE_BY_ID, SKILL_BY_ID } from '../../content/skills';
 import type { Ctx } from '../ctx';
 import { EngineError } from '../errors';
 import type { GameState } from '../types';
-import { addLanguage, addSkill } from './skills';
+import { addLanguage, addSkill, learnRate } from './skills';
 
 /**
  * A focus: the thing you give your free time to, year after year. Worth about three
@@ -101,4 +101,20 @@ export function focusTick(ctx: Ctx): void {
   else s.player.skills[f] = after;
   if (after >= 100) mastered();
   else ctx.log('activity', `🎯 A year devoted to ${label}: ${before} → ${after}.`);
+}
+
+/** About how much a year of this focus would add now (your age, your gift, the cap). */
+export function focusForecast(s: GameState, id: string): number {
+  const lang = id.startsWith('lang:');
+  const rate = learnRate(s, lang ? undefined : id);
+  const start = focusLevel(s, id);
+  let cur = start;
+  for (let i = 0; i < SESSIONS && cur < 100; i++) {
+    // The same steps the year itself takes (focusTick, then addSkill's learning rate).
+    const g = lang
+      ? Math.max(2, Math.round((100 - cur) / 8))
+      : Math.max(1, Math.round((100 - cur) / 12));
+    cur = Math.min(100, cur + Math.max(1, Math.round(g * rate)));
+  }
+  return Math.min(cur, start + yearCap(s, id)) - start;
 }

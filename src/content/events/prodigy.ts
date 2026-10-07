@@ -14,6 +14,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   // ── Chess ────────────────────────────────────────────────────────────────
   {
     id: 'pr_chess_club',
+    emoji: '♟️',
     kind: 'notice',
     category: 'school',
     ages: [4, 13],
@@ -35,12 +36,13 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_chess_junior',
+    emoji: '♟️',
     kind: 'choice',
     category: 'school',
     ages: [6, 16],
     weight: 1,
     chainOnly: true,
-    text: 'The national junior championship is in a hotel ballroom three hours away: two hundred children, silent clocks, and parents pacing the corridor.',
+    text: 'The national junior chess championship is in a hotel ballroom three hours away: two hundred children, two hundred chessboards, silent clocks, and parents pacing the corridor.',
     choices: [
       {
         id: 'enter',
@@ -79,6 +81,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_chess_master',
+    emoji: '♟️',
     kind: 'choice',
     category: 'school',
     ages: [8, 18],
@@ -120,12 +123,13 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_chess_grandmaster',
+    emoji: '♟️',
     kind: 'notice',
     category: 'fame',
     ages: [10, 31],
     weight: 1,
     chainOnly: true,
-    text: 'A third grandmaster norm, in a cold tournament hall at the end of a long season.',
+    text: 'A third grandmaster norm at the chessboard, in a cold tournament hall at the end of a long season.',
     outcomes: [
       {
         chance: 1,
@@ -143,6 +147,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   // ── Music ────────────────────────────────────────────────────────────────
   {
     id: 'pr_music_recital',
+    emoji: '🎻',
     kind: 'notice',
     category: 'fame',
     ages: [4, 12],
@@ -159,6 +164,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_music_conservatory',
+    emoji: '🎻',
     kind: 'choice',
     category: 'school',
     ages: [6, 15],
@@ -206,6 +212,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_music_debut',
+    emoji: '🎻',
     kind: 'choice',
     category: 'fame',
     ages: [8, 17],
@@ -253,6 +260,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_music_composer',
+    emoji: '🎻',
     kind: 'notice',
     category: 'fame',
     ages: [10, 20],
@@ -276,6 +284,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   // ── Other gifts ─────────────────────────────────────────────────────────
   {
     id: 'pr_art_exhibit',
+    emoji: '🎨',
     kind: 'choice',
     category: 'fame',
     ages: [6, 15],
@@ -314,6 +323,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_sport_academy',
+    emoji: '🏅',
     kind: 'choice',
     category: 'school',
     ages: [8, 15],
@@ -352,6 +362,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_code_app',
+    emoji: '💻',
     kind: 'choice',
     category: 'money',
     ages: [9, 16],
@@ -390,6 +401,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_young_author',
+    emoji: '📚',
     kind: 'choice',
     category: 'fame',
     ages: [8, 16],
@@ -428,6 +440,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   },
   {
     id: 'pr_junior_chef',
+    emoji: '🍳',
     kind: 'choice',
     category: 'fame',
     ages: [8, 15],
@@ -474,6 +487,7 @@ export const PRODIGY_EVENTS: EventDef[] = [
   // ── The cost of it ───────────────────────────────────────────────────────
   {
     id: 'pr_burnout',
+    emoji: '😮‍💨',
     kind: 'choice',
     category: 'school',
     ages: [11, 17],

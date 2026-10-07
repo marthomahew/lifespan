@@ -6,6 +6,7 @@ import { EducationSection } from '../occupation/EducationSection';
 import { MilitarySection, MusicSection } from '../occupation/ServiceSection';
 import { LegalSection } from '../occupation/LegalSection';
 import { BusinessSection } from '../occupation/BusinessSection';
+import { FreeTime } from './FreeTime';
 
 export function OccupationTab({ game }: { game: GameState }): React.JSX.Element {
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,10 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
           </p>
         )}
       </section>
+      {/* Studying, music and other actions here use the same yearly free time. */}
+      {game.player.age >= 5 && !game.legal.prison && game.settings.freeTime !== false && (
+        <FreeTime game={game} />
+      )}
       {error && (
         <p className="error small" role="alert" data-testid="occupation-error">
           {error}

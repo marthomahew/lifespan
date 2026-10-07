@@ -894,5 +894,10 @@
     "title": "Teenage relationships between peers (14–17), nothing physical; becomes an adult relationship at 18 together",
     "passes": true,
     "evidence": "tests/engine/teen-romance.test.ts; content:check"
+  },
+  "S84": {
+    "title": "Owner feedback 1: chess named in its popups, pips on the Occupation tab, real clubs to pick, activity effect previews, focus forecasts",
+    "passes": true,
+    "evidence": "tests/engine/previews.test.ts"
   }
 }

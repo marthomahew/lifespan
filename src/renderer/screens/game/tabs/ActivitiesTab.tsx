@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { activitiesFor, formatMoney, freeTime, type GameState } from '../../../../engine';
+import { activitiesFor, formatMoney, type GameState } from '../../../../engine';
 import { doAct } from '../../../store/app';
 import { WillEditor } from './WillEditor';
 import { CrimeSection } from './CrimeSection';
@@ -8,6 +8,7 @@ import { HealthSection } from './HealthSection';
 import { FocusCard } from './FocusCard';
 import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
 import { cap } from '../../../components/text';
+import { FreeTime } from './FreeTime';
 
 const GROUP_LABEL: Record<string, string> = {
   mind_body: 'Mind and body',
@@ -98,6 +99,11 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
                       <span className="muted small activity-desc">
                         {a.reason ? cap(a.reason) : a.description}
                       </span>
+                      {a.preview && !a.reason && (
+                        <span className="small activity-preview" data-testid={`preview-${a.id}`}>
+                          {a.preview}
+                        </span>
+                      )}
                     </span>
                     {a.cost > 0 && <span className="muted small">{formatMoney(game, a.cost)}</span>}
                     {a.parentsPay && <span className="muted small">Parents pay</span>}
@@ -121,29 +127,6 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
         <p className="muted">{game.player.age < 3 ? 'Babies mostly nap.' : 'Nothing matches.'}</p>
       )}
       {will && <WillEditor game={game} onClose={() => setWill(false)} />}
-    </div>
-  );
-}
-
-/** This year's free time: a row of pips and what is eating it. */
-function FreeTime({ game }: { game: GameState }): React.JSX.Element {
-  const f = freeTime(game);
-  return (
-    <div
-      className="free-time"
-      data-testid="free-time"
-      data-left={f.left}
-      title="Activities that fit in a year. Health care and paperwork are free. It refills on your birthday."
-    >
-      <span className="free-time-label">Free time</span>
-      <span className="pips" aria-hidden="true">
-        {Array.from({ length: f.total }, (_, i) => (
-          <span key={i} className={i < f.left ? 'pip on' : 'pip'} />
-        ))}
-      </span>
-      <span className="muted small">
-        {f.left} of {f.total} left{f.why.length > 0 && ` · ${f.why.join(', ')}`}
-      </span>
     </div>
   );
 }

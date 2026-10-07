@@ -1,5 +1,6 @@
 import { novelReason } from './projects';
 import { FOCUS_COST } from './focus';
+import { activityPreview } from './activity-preview';
 import { pickFresh } from '../fresh';
 import { ACTIVITIES, ACTIVITY_BY_ID } from '../../content/activities';
 import type { ActivityDef } from '../../content/types';
@@ -34,6 +35,8 @@ export type ActivityView = {
   cost: number;
   /** A child's parents cover the cost. */
   parentsPay: boolean;
+  /** What it is likely to do (stat and skill ranges, and how often it goes well). */
+  preview: string;
 };
 
 /** Groups and specials that never cost free time: paperwork, prison life and health care. */
@@ -124,6 +127,7 @@ export function activitiesFor(s: GameState): ActivityView[] {
       reason: why ?? '',
       cost: def.cost && !parentsPay(s, def) ? money(s, def.cost) : 0,
       parentsPay: !!def.cost && parentsPay(s, def),
+      preview: activityPreview(s, def),
     };
   });
 }
@@ -211,7 +215,9 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
       )
     : renderText(s, o.text);
   // A picked holiday tells its own story (the destination's line); the generic one would clash.
-  if (!(def.special === 'vacation' && params['dest'])) ctx.log('activity', `${def.emoji} ${line}`);
+  // A picked holiday or club tells its own story; the generic line would clash.
+  if (!(def.special === 'vacation' && params['dest']) && def.special !== 'club')
+    ctx.log('activity', `${def.emoji} ${line}`);
   for (const e of o.effects) applyEffect(ctx, e, {}, {}, def.id, [line, def.label]);
 
   if (def.special === 'fertility' && o.success) {

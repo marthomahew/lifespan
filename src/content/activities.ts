@@ -338,30 +338,18 @@ const BASE_ACTIVITIES: ActivityDef[] = [
   {
     id: 'join_club',
     label: 'Join a club',
-    emoji: '♟️',
+    emoji: '🤝',
     group: 'social',
     ages: [8, 100],
     limitPerYear: 1,
-    description: 'Chess, choir, birdwatching, five-a-side: people with a shared obsession.',
+    special: 'club',
+    description:
+      'Chess, running, a choir, drama, books, code, an allotment: people with a shared obsession.',
+    // The club tells its own story (content/clubs.ts); these only set how the year goes.
     outcomes: [
-      {
-        chance: 0.45,
-        text: 'The chess club is mostly snacks and arguing. You fit right in and make a friend.',
-        effects: [{ status: 'friend' }, { stat: 'happiness', delta: 4 }],
-      },
-      {
-        chance: 0.3,
-        text: 'You join a walking group and learn the names of eleven birds and two people.',
-        effects: [
-          { stat: 'health', delta: 2 },
-          { stat: 'happiness', delta: 3 },
-        ],
-      },
-      {
-        chance: 0.25,
-        text: 'The club is an hour of minutes, motions, and a fierce debate about biscuits. You do not go back.',
-        effects: [{ stat: 'happiness', delta: -1 }],
-      },
+      { chance: 0.5, success: true, text: 'A good year at the club.', effects: [] },
+      { chance: 0.35, text: 'A middling year at the club.', effects: [] },
+      { chance: 0.15, text: 'A poor year at the club.', effects: [] },
     ],
   },
 ];

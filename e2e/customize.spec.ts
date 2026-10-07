@@ -47,7 +47,7 @@ test('free time: a year holds only so many activities, and a birthday refills it
   await page.getByTestId('tab-activities').click();
   const meter = page.getByTestId('free-time');
   await expect(meter).toContainText('7 of 7 left');
-  for (const id of ['gym', 'meditate', 'nightlife', 'volunteer', 'join_club', 'diet', 'study']) {
+  for (const id of ['gym', 'meditate', 'nightlife', 'volunteer', 'write_novel', 'diet', 'study']) {
     await page.getByTestId(`act-${id}`).click();
     await clearPopups(page);
   }

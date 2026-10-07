@@ -1,4 +1,10 @@
-import { FOCUS_COST, focusOptions, focusReason, type GameState } from '../../../../engine';
+import {
+  FOCUS_COST,
+  focusForecast,
+  focusOptions,
+  focusReason,
+  type GameState,
+} from '../../../../engine';
 import { doAct } from '../../../store/app';
 
 /** What your free time goes to, year after year: a skill or a language, or nothing in particular. */
@@ -28,7 +34,7 @@ export function FocusCard({
         <option value="">Nothing in particular</option>
         {options.map((o) => (
           <option key={o.id} value={o.id}>
-            {o.label} ({o.level})
+            {o.label} ({o.level}, about +{focusForecast(game, o.id)} a year)
           </option>
         ))}
       </select>
