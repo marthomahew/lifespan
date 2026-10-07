@@ -258,7 +258,7 @@ What changed:
   | Crimes | 15 |
   | Vehicles / possessions / home types | 12 / 13 / 6 |
   | Countries | 25 |
-  | Cheat commands | 74 |
+  | Cheat commands | 76 |
 
 ## Screenshots
 

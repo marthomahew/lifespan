@@ -18,6 +18,16 @@ describe('health and legal cheats', () => {
     expect(runCheat(sick, 'cure.all', {}).state.health.illnesses).toEqual([]);
   });
 
+  it("'illness.remove' cures one illness; 'injury.heal' heals injuries only", () => {
+    const sick = runCheat(runCheat(base, 'illness.add', { illness: 'flu' }).state, 'injury.add', {
+      severity: 15,
+    }).state;
+    expect(runCheat(sick, 'illness.remove', { illness: 'flu' }).state.health.illnesses).toEqual([]);
+    const healed = runCheat(sick, 'injury.heal', {}).state;
+    expect(healed.health.injuryList).toEqual([]);
+    expect(healed.health.illnesses.map((i) => i.id)).toEqual(['flu']);
+  });
+
   it("'injury.add' records an injury of the chosen tier", () => {
     const hurt = runCheat(base, 'injury.add', { severity: 15 }).state;
     expect(hurt.health.injuryList.map((i) => i.tier)).toEqual(['major']);

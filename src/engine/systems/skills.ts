@@ -39,7 +39,7 @@ export function skillYearRoom(s: GameState, id: string, freshYear = false): numb
 }
 
 /** Add to a skill (0..100). Positive deltas count as practice this year, at your learning rate. */
-export function addSkill(s: GameState, id: string, delta: number): void {
+export function addSkill(s: GameState, id: string, delta: number, floorOne = true): void {
   const cur = s.player.skills[id] ?? 0;
   // The top is hard: above 80 gains shrink, and above 90 a small one can round to nothing.
   // 100 is the best in the world.
@@ -49,7 +49,9 @@ export function addSkill(s: GameState, id: string, delta: number): void {
   let d = delta > 0 ? Math.max(1, Math.round(raw)) : delta;
   if (d > 0) {
     // However many sources pile in (focus, practice, tournaments), a year only holds so much.
-    d = Math.min(d, Math.floor(skillYearRoom(s, id)));
+    const room = Math.floor(skillYearRoom(s, id));
+    // Past the year's room, practice still shows: +1 a time, until the last ten points.
+    d = room >= 1 ? Math.min(d, room) : cur < 90 && floorOne ? 1 : 0;
     if (s.usage.year !== s.year) s.usage = { year: s.year, used: {} };
     s.usage.used[`sk:${id}`] = (s.usage.used[`sk:${id}`] ?? 0) + d;
   }

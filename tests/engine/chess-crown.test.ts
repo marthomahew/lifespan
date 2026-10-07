@@ -70,6 +70,9 @@ describe('the world title cycle', () => {
     const due = { ...c, year: 2018 };
     expect(isChampion(due)).toBe(true);
     expect(majorReason(due, 'title')).toBeNull();
-    expect(isChampion({ ...c, year: 2019 })).toBe(false);
+    // Nobody has beaten you: you're still champion years later, until you lose a match.
+    expect(isChampion({ ...c, year: 2023 })).toBe(true);
+    const lost = { ...c, chess: { ...c.chess!, dethroned: 2018 } };
+    expect(isChampion({ ...lost, year: 2019 })).toBe(false);
   });
 });

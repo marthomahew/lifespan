@@ -93,7 +93,7 @@ export function focusTick(ctx: Ctx): void {
     const cur = focusLevel(s, f);
     if (cur >= 100) break;
     if (f.startsWith('lang:')) addLanguage(s, f.slice(5), Math.max(2, Math.round((100 - cur) / 8)));
-    else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)));
+    else addSkill(s, f, Math.max(1, Math.round((100 - cur) / 12)), false);
   }
   // Even a prodigy needs a few years.
   const after = Math.min(focusLevel(s, f), before + yearCap(s, f));

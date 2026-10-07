@@ -111,6 +111,8 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | Console | What it does |
 |---|---|
 | `cure all` | Remove every illness and injury and top up Health. |
+| `illness remove {illness}` | Cure one illness you have. Example: illness remove flu |
+| `injury heal` | Heal every injury, lingering ones included (illnesses stay). |
 | `illness add {illness}` | Give yourself an illness from the catalog. |
 | `injury add {severity}` | Hurt yourself: 6–11 is minor, 12–19 major, 20+ serious. Example: injury add 15 |
 | `addiction {vice} {value}` | Set a vice addiction meter 0–100. |
@@ -154,7 +156,7 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 | `state size` | How big the current save is. |
 | `deathbot` | Let the default sim bot play the rest of this life. |
 
-74 commands in all. Every one is also a form in the cheat panel.
+76 commands in all. Every one is also a form in the cheat panel.
 
 <!-- cheats:end -->
 

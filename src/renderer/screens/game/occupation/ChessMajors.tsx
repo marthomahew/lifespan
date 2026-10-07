@@ -22,7 +22,7 @@ export function ChessMajors({
             {isChampion(game) ? '👑 World champion' : 'Former world champion'} ({crowns.join(', ')})
           </strong>
           {isChampion(game) && crowns.at(-1) !== game.year && game.year % 2 === 0 && (
-            <span className="muted"> · a defence is due this year, or the title lapses</span>
+            <span className="muted"> · a challenger awaits: defend your title this year</span>
           )}
         </div>
       )}

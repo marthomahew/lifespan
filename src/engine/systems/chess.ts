@@ -26,6 +26,8 @@ export type ChessRecord = {
   challenger?: number;
   /** Years you won or defended the world title. */
   crowns?: number[];
+  /** The year you lost the title in a match (you are champion until then). */
+  dethroned?: number;
   /** World Cup, Candidates and title-match results, newest last. */
   majors?: { year: number; id: string; result: string }[];
 };

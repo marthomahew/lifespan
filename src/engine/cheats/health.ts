@@ -24,6 +24,33 @@ export const HEALTH_CHEATS: CheatDef[] = [
     },
   },
   {
+    id: 'illness.remove',
+    group: 'health',
+    label: 'Remove an illness',
+    syntax: 'illness remove {illness}',
+    help: 'Cure one illness you have. Example: illness remove flu',
+    params: [{ name: 'illness', type: 'enum', options: illnessOptions }],
+    run: (ctx, p) => {
+      const id = String(p['illness']);
+      const had = ctx.s.health.illnesses.length;
+      ctx.s.health.illnesses = ctx.s.health.illnesses.filter((i) => i.id !== id);
+      return had === ctx.s.health.illnesses.length ? `You don't have ${id}` : `Cured ${id}`;
+    },
+  },
+  {
+    id: 'injury.heal',
+    group: 'health',
+    label: 'Heal all injuries',
+    syntax: 'injury heal',
+    help: 'Heal every injury, lingering ones included (illnesses stay).',
+    params: [],
+    run: (ctx) => {
+      const n = ctx.s.health.injuryList.length;
+      ctx.s.health.injuryList = [];
+      return n ? `Healed ${n} ${n === 1 ? 'injury' : 'injuries'}` : 'No injuries to heal';
+    },
+  },
+  {
     id: 'illness.add',
     group: 'health',
     label: 'Add an illness',

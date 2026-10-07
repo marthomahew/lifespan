@@ -37,10 +37,11 @@ export const MAJORS: Major[] = [
 const usd = (s: GameState, ref: number): number =>
   Math.round(ref * s.inflation * countryOf(s).currency.perUsd);
 
-/** World champion now: you won or defended the title within the last two years. */
+/** World champion now: you won the title and nobody has beaten you in a match since. */
 export function isChampion(s: GameState): boolean {
-  const last = s.chess?.crowns?.at(-1);
-  return last !== undefined && s.year - last <= 2;
+  const rec = s.chess;
+  const last = rec?.crowns?.at(-1);
+  return last !== undefined && !(rec?.dethroned !== undefined && rec.dethroned >= last);
 }
 
 const playedThisYear = (rec: ChessRecord | null, id: string, year: number): boolean =>
@@ -69,6 +70,8 @@ export function majorReason(s: GameState, id: MajorId): string | null {
     const champ = isChampion(s);
     if (!champ && rec?.challenger !== s.year) return 'win the Candidates first';
     if (champ && rec?.crowns?.at(-1) === s.year) return 'already decided this year';
+    if (champ && rec?.majors?.some((m) => m.id === 'title' && m.year === s.year))
+      return 'already decided this year';
   }
   if (usedThisYear(s, 'chess:events') >= PER_YEAR) return `${PER_YEAR} tournaments a year`;
   if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
@@ -215,6 +218,7 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
         : 1200000
       : 200000 * m.wins + (2500000 - 200000 * (m.wins + m.losses)) / 2;
     if (m.won) rec.crowns = [...(rec.crowns ?? []), s.year];
+    else if (champ) rec.dethroned = s.year;
     result = m.won
       ? champ
         ? 'title defended'
