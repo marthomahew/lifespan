@@ -12,7 +12,7 @@ import {
   fromAnchors,
 } from '../../content/history/markets';
 import type { Ctx } from '../ctx';
-import { countryOf, formatMoney } from '../economy';
+import { countryOf, formatMoney, money } from '../economy';
 import { EngineError } from '../errors';
 import type { GameState } from '../types';
 
@@ -157,4 +157,40 @@ export function sharesValue(s: GameState): number {
   let v = 0;
   for (const [id, n] of Object.entries(s.money.shares ?? {})) v += n * (priceLocal(s, id) ?? 0);
   return Math.round(v);
+}
+
+/**
+ * Share effects from events, arg "ID:n": buy n reference dollars' worth (if you have it),
+ * sell or lose a fraction n of what you hold, or receive n shares (coins you mined).
+ */
+export function sharesEffect(ctx: Ctx, kind: string, arg: string): void {
+  const s = ctx.s;
+  const [id = '', raw = '0'] = arg.split(':');
+  const n = Number(raw);
+  const price = priceLocal(s, id);
+  if (price === null || !Number.isFinite(n)) return;
+  const held = (s.money.shares ??= {});
+  const have = held[id] ?? 0;
+  if (kind === 'buy_shares') {
+    const spend = Math.min(money(s, n, 'price'), Math.max(0, s.money.cash));
+    if (spend <= 0) return;
+    s.money.cash -= spend;
+    held[id] = have + spend / price;
+  } else if (kind === 'grant_shares') {
+    held[id] = have + n;
+  } else if (have > 0) {
+    const part = have * Math.min(1, Math.max(0, n));
+    held[id] = have - part;
+    if (kind === 'sell_shares') {
+      const got = Math.round(part * price);
+      s.money.cash += got;
+      ctx.log('money', `You sell for ${formatMoney(s, got)}.`);
+    }
+    if (held[id] <= 1e-9) delete held[id];
+  }
+}
+
+/** Holding at least this much of something (local money), for event conditions. */
+export function holdingValue(s: GameState, id: string): number {
+  return (s.money.shares?.[id] ?? 0) * (priceLocal(s, id) ?? 0);
 }

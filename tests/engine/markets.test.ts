@@ -47,4 +47,17 @@ describe('markets that follow history', () => {
     expect(priceUsd(s, 'AAPL')).not.toBe(priceUsd(at(2000, 25), 'AAPL'));
     expect(priceUsd(s, 'AAPL') ?? 0).toBeGreaterThan(0);
   });
+
+  it('an early miner holds coins that become a fortune, unless the drive goes in the bin', async () => {
+    const { choose, currentPopup } = await import('../../src/engine');
+    let s = runCheat(at(1985, 25), 'skill.set', { skill: 'programming', value: 60 }).state;
+    expect(s.year).toBe(2010);
+    s = runCheat({ ...s, pending: [] }, 'event.fire', { event: 'mk_btc_forum', force: 'on' }).state;
+    expect(currentPopup(s)?.eventId).toBe('mk_btc_forum');
+    s = choose(s, 'mine').state;
+    expect(s.money.shares?.['BTC']).toBe(180);
+    expect(s.chains.some((c) => c.eventId === 'mk_btc_drive')).toBe(true);
+    const binned = runCheat(s, 'event.fire', { event: 'mk_btc_drive', force: 'on' }).state;
+    expect(choose(binned, 'bin').state.money.shares?.['BTC'] ?? 0).toBe(0);
+  });
 });

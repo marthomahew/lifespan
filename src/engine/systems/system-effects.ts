@@ -1,3 +1,4 @@
+import { JOB_BY_ID } from '../../content/jobs';
 import { MAJORS } from '../../content/education';
 import { COUNTRY_BY_ID } from '../../content/countries';
 import { enroll, enrollReason } from './education';
@@ -18,6 +19,7 @@ import { addLoan, payFromLiquid } from './loans';
 import { money } from '../economy';
 import { businessEffect } from './business';
 import { backgroundEffect } from './backgrounds';
+import { sharesEffect } from './markets';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
@@ -73,6 +75,32 @@ export function applySystemEffect(
     case 'biz_manager':
       businessEffect(ctx, kind, Number(arg ?? 0));
       return;
+    case 'buy_shares':
+    case 'sell_shares':
+    case 'lose_shares':
+    case 'grant_shares':
+      sharesEffect(ctx, kind, arg ?? '');
+      return;
+    case 'lockdown': {
+      // The pandemic year: shops, bars and stages close; desks move home; school goes remote.
+      const field = s.career.jobId ? JOB_BY_ID[s.career.jobId]?.field : undefined;
+      if (field && ['hospitality', 'retail', 'arts'].includes(field) && ctx.rng.chance(0.45)) {
+        applyCareerEffect(ctx, 'fire');
+        ctx.log(
+          'work',
+          'Your workplace closes its doors “for now”. Now turns out to mean for good.',
+          true,
+        );
+      } else if (s.career.jobId)
+        ctx.log('work', 'Your job moves to the kitchen table, along with everyone’s.');
+      if (s.player.age >= 5 && s.player.age <= 22)
+        s.education.grade = Math.max(0, s.education.grade - 4);
+      addStat(s, 'happiness', -5);
+      addStat(s, 'stress', 6);
+      if (!s.player.flags.includes('lived_through_pandemic'))
+        s.player.flags.push('lived_through_pandemic');
+      return;
+    }
     case 'take_fambiz':
     case 'sell_fambiz':
     case 'birth_parent':

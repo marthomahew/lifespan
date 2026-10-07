@@ -94,6 +94,11 @@ export type Effect =
         | 'take_fambiz'
         | 'sell_fambiz'
         | 'birth_parent'
+        | 'buy_shares'
+        | 'sell_shares'
+        | 'lose_shares'
+        | 'grant_shares'
+        | 'lockdown'
         | 'retrain'
         | 'move_city'
         | 'severance';
@@ -157,6 +162,8 @@ export type EventDef = {
   once?: boolean;
   /** The earliest world year this can happen (phones, apps, video calls...). */
   fromYear?: number;
+  /** Last world year it can happen in (a moment in history, a craze that passed). */
+  toYear?: number;
   /** Events sharing a group are alternatives: at most one of them happens in a life. */
   group?: string;
   cooldownYears?: number;

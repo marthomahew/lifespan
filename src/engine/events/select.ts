@@ -134,6 +134,7 @@ export function eligibility(
     if (s.legal.prison && !def.inPrison) return { ok: false, reason: 'not while in prison' };
     if (def.fromYear && s.year < def.fromYear)
       return { ok: false, reason: `not until ${def.fromYear}` };
+    if (def.toYear && s.year > def.toYear) return { ok: false, reason: `over by ${def.toYear}` };
     if (s.legal.fugitive && !s.player.flags.includes('false_papers') && offersJob(def))
       return { ok: false, reason: 'job offers want papers you cannot show' };
     if (
