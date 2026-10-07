@@ -55,7 +55,7 @@ export function costsFreeTime(def: ActivityDef): boolean {
 export function freeTime(s: GameState): { total: number; left: number; why: string[] } {
   const why: string[] = [];
   // Children have the most free time: no job, no bills, long holidays.
-  let total = s.player.age < 6 ? 4 : s.player.age < 13 ? 7 : 6;
+  let total = s.player.age < 6 ? 4 : s.player.age < 18 ? 9 : 8;
   if (s.player.age >= 18) {
     if (s.career.jobId || s.military?.active || s.business?.hands === 'self') {
       total -= 2;
@@ -86,8 +86,22 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
     total -= FOCUS_COST;
     why.push(`your focus`);
   }
-  total = Math.max(s.player.focus ? 1 : 2, total);
+  // Never so busy that there's no time for anything.
+  total = Math.max(3, total);
   return { total, left: Math.max(0, total - usedThisYear(s, 'a:total')), why };
+}
+
+/** Activities that belong to your working life (the Occupation tab), not your free time. */
+export const WORK_ACTIVITIES = new Set(['study']);
+export const WORK_TIME = 6;
+
+/**
+ * Work time: a separate yearly allowance for career moves (tournaments, gigs and releases,
+ * extra study), so they never compete with hobbies and family for the same hours.
+ */
+export function workTime(s: GameState): { total: number; left: number } {
+  const total = s.player.age < 6 ? 0 : WORK_TIME;
+  return { total, left: Math.max(0, total - usedThisYear(s, 'w:total')) };
 }
 
 /** Why an activity can't be done now, or null. */
@@ -103,7 +117,10 @@ export function activityReason(s: GameState, def: ActivityDef): string | null {
   const special = specialReason(s, def);
   if (special) return special;
   if (usedThisYear(s, `a:${def.id}`) >= def.limitPerYear) return 'done enough this year';
-  if (costsFreeTime(def) && s.settings.freeTime !== false && freeTime(s).left <= 0)
+  if (WORK_ACTIVITIES.has(def.id)) {
+    if (s.settings.freeTime !== false && workTime(s).left <= 0)
+      return 'no work time left this year';
+  } else if (costsFreeTime(def) && s.settings.freeTime !== false && freeTime(s).left <= 0)
     return 'no free time left this year';
   if (def.special === 'meet' && def.group === 'love' && partnerOf(s))
     return 'you are already seeing someone';
@@ -155,7 +172,8 @@ export function doActivity(ctx: Ctx, id: string, params: Record<string, unknown>
   // The casino shoe is shuffled for this visit, so read it before the visit is counted.
   const shoe = def.special === 'casino' && params['plan'] !== undefined ? shoeFor(s) : null;
   markUsed(s, `a:${def.id}`);
-  if (costsFreeTime(def)) markUsed(s, 'a:total');
+  if (WORK_ACTIVITIES.has(def.id)) markUsed(s, 'w:total');
+  else if (costsFreeTime(def)) markUsed(s, 'a:total');
   if (def.cost && !parentsPay(s, def)) s.money.cash -= money(s, def.cost);
 
   let outcomes = def.outcomes;

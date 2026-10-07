@@ -6,7 +6,7 @@ import { fireEvent } from '../events/select';
 import { addStat } from '../stats';
 import type { GameState } from '../types';
 import { addSkill } from './skills';
-import { freeTime } from './activities';
+import { workTime } from './activities';
 import { markUsed, usedThisYear } from './usage';
 
 /** Your chess record: an Elo rating earned by results, titles, and norms toward them. */
@@ -147,7 +147,7 @@ export function tournamentReason(s: GameState, tierId: string): string | null {
   const rating = chessOf(s)?.rating ?? 0;
   if (rating < t.minRating) return `needs a rating of ${t.minRating}`;
   if (usedThisYear(s, 'chess:events') >= PER_YEAR) return `${PER_YEAR} tournaments a year`;
-  if (s.settings.freeTime !== false && freeTime(s).left <= 0) return 'no free time left this year';
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
   return null;
 }
 
@@ -196,7 +196,7 @@ export function playTournament(ctx: Ctx, tierId: string): void {
   if (why) throw new EngineError(why);
   const t = CHESS_TIERS.find((x) => x.id === tierId) as ChessTier;
   markUsed(s, 'chess:events');
-  markUsed(s, 'a:total');
+  markUsed(s, 'w:total');
   const rec: ChessRecord = (s.chess ??= {
     rating: Math.max(800, Math.min(1400, playingStrength(s) - 150)),
     best: 0,

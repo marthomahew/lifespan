@@ -13,20 +13,20 @@ const adult = (seed = 2): GameState => {
 describe('free time', () => {
   it('depends on your life: work and small children take it, retirement gives it back', () => {
     const idle = adult();
-    expect(freeTime(idle).total).toBe(7);
+    expect(freeTime(idle).total).toBe(9);
     const worker = runCheat(idle, 'job.set', { job: 'accountant' }).state;
-    expect(freeTime(worker).total).toBe(4);
+    expect(freeTime(worker).total).toBe(6);
     const parent = runCheat(worker, 'baby.now', {}).state;
-    expect(freeTime(parent).total).toBe(3);
+    expect(freeTime(parent).total).toBe(5);
     const retired = clone(idle);
     retired.career.retired = true;
-    expect(freeTime(retired).total).toBe(8);
+    expect(freeTime(retired).total).toBe(10);
     expect(freeTime(newLife({}, 3)).total).toBe(4);
   });
 
   it('activities use it up; health care and admin do not; a new year refills it', () => {
     let s = runCheat(adult(4), 'job.set', { job: 'accountant' }).state;
-    for (const id of ['gym', 'meditate', 'nightlife', 'volunteer'])
+    for (const id of ['gym', 'meditate', 'nightlife', 'volunteer', 'go_running', 'diet'])
       s = act(s, { type: 'activity', id }).state;
     expect(freeTime(s).left).toBe(0);
     expect(() => act(s, { type: 'activity', id: 'join_club' })).toThrow(/free time/);

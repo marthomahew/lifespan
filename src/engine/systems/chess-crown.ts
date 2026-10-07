@@ -3,7 +3,8 @@ import { countryOf, formatMoney } from '../economy';
 import { EngineError } from '../errors';
 import { addStat } from '../stats';
 import type { GameState } from '../types';
-import { freeTime } from './activities';
+import { workTime } from './activities';
+import { addSkill } from './skills';
 import { PER_YEAR, chessOf, expected, game, playingStrength, type ChessRecord } from './chess';
 import { markUsed, usedThisYear } from './usage';
 
@@ -70,7 +71,7 @@ export function majorReason(s: GameState, id: MajorId): string | null {
     if (champ && rec?.crowns?.at(-1) === s.year) return 'already decided this year';
   }
   if (usedThisYear(s, 'chess:events') >= PER_YEAR) return `${PER_YEAR} tournaments a year`;
-  if (s.settings.freeTime !== false && freeTime(s).left <= 0) return 'no free time left this year';
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
   return null;
 }
 
@@ -109,8 +110,11 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
   if (why) throw new EngineError(why);
   const rec = s.chess as ChessRecord;
   markUsed(s, 'chess:events');
-  markUsed(s, 'a:total');
+  markUsed(s, 'w:total');
   rec.events += 1;
+  // Top-level chess is the best practice there is.
+  addSkill(s, 'chess', 1);
+  s.player.skillPractice['chess'] = s.year;
   const me = playingStrength(s);
   let result: string;
   let prize: number;

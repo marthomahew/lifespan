@@ -1,5 +1,5 @@
 import { luck } from './luck';
-import { freeTime } from './activities';
+import { workTime } from './activities';
 import { pickFresh } from '../fresh';
 import { EVENT_BY_ID } from '../../content/events';
 import type { Ctx } from '../ctx';
@@ -66,7 +66,7 @@ export function musicReason(s: GameState, id: MusicActionId): string | null {
   if (usedThisYear(s, `m:${id}`) >= (id === 'busk' || id === 'gig' ? 2 : 1))
     return 'done this year';
   // Music takes time like anything else you do with a year.
-  if (s.settings.freeTime !== false && freeTime(s).left <= 0) return 'no free time left this year';
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
   switch (id) {
     case 'busk':
       if (s.player.stats.fame >= 70) return 'too famous: it would cause a crush';
@@ -108,7 +108,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
   const why = musicReason(s, id);
   if (why) throw new EngineError(why);
   markUsed(s, `m:${id}`);
-  markUsed(s, 'a:total');
+  markUsed(s, 'w:total');
   const m = s.music;
   const r = ctx.rng;
   const skill = musicSkill(s);

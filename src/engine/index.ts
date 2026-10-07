@@ -40,7 +40,7 @@ export {
   type ActionItem,
 } from './actions';
 export { interactionsFor, interactionOdds, type InteractionView } from './systems/interactions';
-export { activitiesFor, freeTime, type ActivityView } from './systems/activities';
+export { activitiesFor, freeTime, workTime, type ActivityView } from './systems/activities';
 export {
   focusForecast,
   focusOptions,

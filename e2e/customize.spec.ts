@@ -46,14 +46,28 @@ test('free time: a year holds only so many activities, and a birthday refills it
   await clearPopups(page);
   await page.getByTestId('tab-activities').click();
   const meter = page.getByTestId('free-time');
-  await expect(meter).toContainText('7 of 7 left');
-  for (const id of ['gym', 'meditate', 'nightlife', 'volunteer', 'write_novel', 'diet', 'study']) {
+  await expect(meter).toContainText('9 of 9 left');
+  for (const id of [
+    'gym',
+    'meditate',
+    'nightlife',
+    'volunteer',
+    'write_novel',
+    'diet',
+    'go_running',
+    'chess_study',
+    'code_project',
+  ]) {
     await page.getByTestId(`act-${id}`).click();
     await clearPopups(page);
   }
   await expect(meter).toHaveAttribute('data-left', '0');
-  await expect(page.getByTestId('act-practice_skill')).toBeDisabled();
-  await expect(page.getByTestId('act-practice_skill')).toContainText('No free time left this year');
+  await expect(page.getByTestId('act-vacation')).toBeDisabled();
+  await expect(page.getByTestId('act-vacation')).toContainText('No free time left this year');
+  // Career moves have their own allowance, untouched by hobbies.
+  await page.getByTestId('tab-occupation').click();
+  await expect(page.getByTestId('work-time')).toContainText('6 of 6 left');
+  await page.getByTestId('tab-activities').click();
   await page.getByTestId('age-up').click();
   await clearPopups(page);
   await page.getByTestId('tab-activities').click();

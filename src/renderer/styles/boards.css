@@ -85,3 +85,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.free-time .pip.on.work {
+  background: var(--amber);
+  border-color: var(--amber);
+}

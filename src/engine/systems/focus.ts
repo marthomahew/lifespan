@@ -2,13 +2,13 @@ import { LANGUAGE_BY_ID, SKILL_BY_ID } from '../../content/skills';
 import type { Ctx } from '../ctx';
 import { EngineError } from '../errors';
 import type { GameState } from '../types';
-import { addLanguage, addSkill, learnRate } from './skills';
+import { addLanguage, addSkill, learnRate, skillYearRoom } from './skills';
 
 /**
  * A focus: the thing you give your free time to, year after year. Worth about three
  * practice sessions a year (at your learning rate), for two pips of free time.
  */
-export const FOCUS_COST = 2;
+export const FOCUS_COST = 1;
 const SESSIONS = 3;
 /** The most a focus can add in a year: hard work, a gift, or a prodigy's gift. */
 export function yearCap(s: GameState, skill: string): number {
@@ -116,5 +116,7 @@ export function focusForecast(s: GameState, id: string): number {
       : Math.max(1, Math.round((100 - cur) / 12));
     cur = Math.min(100, cur + Math.max(1, Math.round(g * rate)));
   }
-  return Math.min(cur, start + yearCap(s, id)) - start;
+  const gain = Math.min(cur, start + yearCap(s, id)) - start;
+  // A skill also has this year's room (shared with tournaments and practice).
+  return lang ? gain : Math.min(gain, Math.floor(skillYearRoom(s, id)));
 }

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { FOCUS_COST } from '../../src/engine/systems/focus';
 import {
   act,
   ageUp,
@@ -53,7 +54,7 @@ describe('a focus, and how fast you learn', () => {
     const before = freeTime(s).total;
     s = act(s, { type: 'focus', target: 'instrument' }).state;
     expect(s.player.focus).toBe('instrument');
-    expect(freeTime(s).total).toBe(before - 2);
+    expect(freeTime(s).total).toBe(before - FOCUS_COST);
     s = years(s, 7);
     // Steady to 50, slower after: good, not world-class.
     expect(s.player.skills['instrument'] ?? 0).toBeGreaterThanOrEqual(60);

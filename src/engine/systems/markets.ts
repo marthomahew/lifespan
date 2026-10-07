@@ -155,7 +155,8 @@ export function onRadar(s: GameState, id: string): boolean {
  * by its end. In 2009 there was no exchange, only a few forum trades worth pocket money.
  */
 const BTC_MARKET: Record<number, [volumeUsd: number, supply: number]> = {
-  2009: [30, 1_600_000],
+  // 2009: no exchange, but early miners would sell thousands of coins for almost nothing.
+  2009: [100, 1_600_000],
   2010: [1_000_000, 5_000_000],
   2011: [150_000_000, 8_000_000],
   2012: [300_000_000, 10_600_000],
@@ -164,19 +165,19 @@ const BTC_MARKET: Record<number, [volumeUsd: number, supply: number]> = {
   2015: [20_000_000_000, 15_000_000],
   2016: [40_000_000_000, 16_100_000],
 };
-/** The share of a year's trading one buyer can take before the price notices them. */
-const QUIET_SHARE = 0.05;
+/** How much of a year's trading one buyer can take (generous: this is a game). */
+const QUIET_SHARE = 0.5;
 
 /**
- * Coins you can still buy this year without moving the price (Infinity once the market is
- * deep enough that no one person matters): a twentieth of the year's trading, and never
- * more than a fiftieth of the coins in existence.
+ * Coins you can still buy this year (Infinity once the market is deep enough that no one
+ * person matters): generous on purpose, up to half the year's trading and a tenth of the
+ * coins in existence. About 50,000 coins in 2009 and 500,000 in 2010.
  */
 export function btcAllowance(s: GameState): number {
   const m = BTC_MARKET[s.year];
   const price = priceUsd(s, 'BTC');
   if (!m || !price) return Infinity;
-  const cap = Math.min((m[0] * QUIET_SHARE) / price, m[1] * 0.02);
+  const cap = Math.min((m[0] * QUIET_SHARE) / price, m[1] * 0.1);
   const bought = s.usage.year === s.year ? (s.usage.used['btc_coins'] ?? 0) : 0;
   return Math.max(0, cap - bought);
 }

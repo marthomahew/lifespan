@@ -104,12 +104,12 @@ describe('markets that follow history', () => {
       const s = runCheat(at(1980, age), 'skill.set', { skill: 'programming', value: 60 }).state;
       return runCheat(s, 'money.add', { amount: 10_000_000 }).state;
     };
-    // 2009: a few forum trades, so only about 1,500 coins could be had at all.
+    // 2009: no exchange, but about 50,000 coins can be had from early miners.
     const y2009 = rich(29);
     expect(y2009.year).toBe(2009);
     const first = act(y2009, { type: 'shares', id: 'BTC', op: 'buy', amount: 1_000_000 }).state;
-    expect(first.money.shares?.['BTC']).toBeCloseTo(1500, 0);
-    expect(y2009.money.cash - first.money.cash).toBeLessThan(10);
+    expect(first.money.shares?.['BTC']).toBeCloseTo(50000, 0);
+    expect(y2009.money.cash - first.money.cash).toBeLessThan(100);
     expect(() => act(first, { type: 'shares', id: 'BTC', op: 'buy', amount: 100 })).toThrow(
       /too thin/,
     );
