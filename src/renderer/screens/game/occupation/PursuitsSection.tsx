@@ -13,6 +13,7 @@ import {
   type GameState,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
+import { ChessMajors } from './ChessMajors';
 
 /** Pursuits: things you can get good at that keep their own record. */
 export function PursuitsSection({
@@ -166,6 +167,7 @@ function ChessPanel({
           );
         })}
       </div>
+      <ChessMajors game={game} onError={onError} />
       <p className="muted small">
         Titles: Candidate Master at 2200, FIDE Master at 2300, International Master at 2400 with
         three norms, Grandmaster at 2500 with three grandmaster norms (a 2600 performance in a

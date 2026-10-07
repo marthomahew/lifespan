@@ -196,6 +196,30 @@ export const CHARACTER_CHEATS: CheatDef[] = [
     },
   },
   {
+    id: 'chess.rating',
+    group: 'character',
+    label: 'Set chess rating',
+    syntax: 'chess rating {rating}',
+    help: 'Set your chess rating (titles follow on your next event). Example: chess rating 2700',
+    params: [{ name: 'rating', type: 'int', min: 100, max: 3000 }],
+    run: (ctx, p) => {
+      const rating = Number(p['rating']);
+      const rec = (ctx.s.chess ??= {
+        rating,
+        best: rating,
+        title: null,
+        imNorms: 0,
+        gmNorms: 0,
+        events: 0,
+        wins: 0,
+        recent: [],
+      });
+      rec.rating = rating;
+      rec.best = Math.max(rec.best, rating);
+      return `Chess rating: ${rating}`;
+    },
+  },
+  {
     id: 'grade.set',
     group: 'character',
     label: 'Set school average',

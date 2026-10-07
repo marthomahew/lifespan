@@ -44,6 +44,15 @@ describe('character cheats', () => {
     );
   });
 
+  it("'chess.rating' sets a rating, starting a record if there is none", () => {
+    const out = runCheat(base, 'chess.rating', { rating: 2650 }).state;
+    expect(out.chess?.rating).toBe(2650);
+    expect(out.chess?.best).toBe(2650);
+    const lower = runCheat(out, 'chess.rating', { rating: 2400 }).state;
+    expect(lower.chess?.rating).toBe(2400);
+    expect(lower.chess?.best).toBe(2650);
+  });
+
   it("'skill.set' and 'language.set' set levels", () => {
     expect(
       runCheat(base, 'skill.set', { skill: 'instrument', value: 80 }).state.player.skills[

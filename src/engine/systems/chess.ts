@@ -20,6 +20,14 @@ export type ChessRecord = {
   wins: number;
   /** The last few tournaments, newest last. */
   recent: { year: number; tier: string; score: number; change: number; place: string }[];
+  /** The Candidates year you have qualified for (World Cup podium, a big open, or rating). */
+  candQual?: number;
+  /** The year you won the Candidates and earned a title match. */
+  challenger?: number;
+  /** Years you won or defended the world title. */
+  crowns?: number[];
+  /** World Cup, Candidates and title-match results, newest last. */
+  majors?: { year: number; id: string; result: string }[];
 };
 export type ChessTitle = 'CM' | 'FM' | 'IM' | 'GM';
 export const TITLE_NAMES: Record<ChessTitle, string> = {
@@ -80,7 +88,7 @@ const ROUNDS = 9;
 export function appearanceFee(rating: number): number {
   return Math.max(10000, 20000 + (rating - 2650) * 800);
 }
-const PER_YEAR = 6;
+export const PER_YEAR = 6;
 
 export const chessOf = (s: GameState): ChessRecord | null => s.chess ?? null;
 
@@ -135,7 +143,7 @@ export function tournamentReason(s: GameState, tierId: string): string | null {
   return null;
 }
 
-const expected = (me: number, them: number): number => 1 / (1 + 10 ** ((them - me) / 400));
+export const expected = (me: number, them: number): number => 1 / (1 + 10 ** ((them - me) / 400));
 
 /** A tier's money in local currency: international funds in dollars, others by local wages. */
 export function chessMoney(s: GameState, t: ChessTier, ref: number): number {
@@ -160,7 +168,7 @@ export function tierPayLine(s: GameState, t: ChessTier): string {
  * One game: 1, ½ or 0. Strong players draw more with each other, but a big rating gap leaves
  * little room for a draw: the stronger side usually just wins.
  */
-function game(ctx: Ctx, me: number, opp: number): number {
+export function game(ctx: Ctx, me: number, opp: number): number {
   const e = expected(me, opp);
   const close = Math.max(0.15, 1 - Math.abs(me - opp) / 450);
   const draw = Math.min(0.55, 0.15 + Math.min(me, opp) / 6000) * close;
@@ -225,6 +233,15 @@ export function playTournament(ctx: Ctx, tierId: string): void {
   const fund = t.id === 'international' ? (ctx.rng.chance(0.12) ? 4 : 0.5 + ctx.rng.next()) : 1;
   const prize =
     place === 'first' ? t.prize * fund : place === 'in the top three' ? t.prize * fund * 0.5 : 0;
+  // Winning one of the big opens (the Grand Swiss) earns a place in the next Candidates.
+  if (t.id === 'international' && fund === 4 && place === 'first') {
+    rec.candQual = s.year % 2 === 0 ? s.year + 2 : s.year + 1;
+    ctx.log(
+      'activity',
+      `🎟️ Winning the big open earns you a place in the ${rec.candQual} Candidates.`,
+      true,
+    );
+  }
   const fee = t.id === 'elite' ? appearanceFee(rec.rating - change) : 0;
   const toLocal = (ref: number): number => chessMoney(s, t, ref);
   const pay = prize ? toLocal(prize) : 0;

@@ -558,3 +558,7 @@ button.quiet-danger {
   background: var(--accent);
   border-color: var(--accent);
 }
+
+.chess-majors {
+  margin-top: 0.75rem;
+}

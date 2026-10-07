@@ -32,6 +32,7 @@ import { checkChallenge } from './systems/challenge';
 import { setFocus } from './systems/focus';
 import { businessAction, type BusinessOp } from './systems/business';
 import { playTournament } from './systems/chess';
+import { playMajor, type MajorId } from './systems/chess-crown';
 import { takeUpSport } from './systems/sport';
 import { letHome } from './systems/lettings';
 import { tradeShares } from './systems/markets';
@@ -62,6 +63,7 @@ export type PlayerAction =
   | { type: 'focus'; target: string | null }
   | { type: 'business'; action: BusinessOp }
   | { type: 'chess'; tier: string }
+  | { type: 'chess_major'; id: MajorId }
   | { type: 'sport'; sport: string | null }
   | { type: 'let_home'; id: number; on: boolean }
   | {
@@ -154,6 +156,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'chess':
       playTournament(ctx, action.tier);
+      break;
+    case 'chess_major':
+      playMajor(ctx, action.id);
       break;
     case 'sport':
       takeUpSport(ctx, action.sport);
