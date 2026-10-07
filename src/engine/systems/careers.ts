@@ -253,7 +253,13 @@ export function careerTick(ctx: Ctx): void {
     canPromote &&
     c.performance >= 75 &&
     yearsAtLevel >= (lucky >= 1 ? 1 : 2) &&
-    r.chance(Math.min(0.95, 0.35 + 0.35 * lucky))
+    // Better work and a longer wait both make it likelier: a star rarely waits long.
+    r.chance(
+      Math.min(
+        0.95,
+        0.35 + (c.performance - 75) * 0.015 + Math.max(0, yearsAtLevel - 2) * 0.15 + 0.35 * lucky,
+      ),
+    )
   )
     promote(ctx, job);
   else if (c.performance < 25 && lucky < 1 && r.chance(0.4)) {

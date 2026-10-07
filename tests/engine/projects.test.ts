@@ -214,6 +214,8 @@ describe('one book at a time', () => {
     const drawer = choose(s, 'drawer').state;
     expect(drawer.projects?.novel).toBeNull();
     expect(drawer.player.flags).toContain('novel_in_drawer');
-    expect(() => act(drawer, { type: 'activity', id: 'write_novel' })).not.toThrow();
+    expect(() =>
+      act({ ...drawer, pending: [] }, { type: 'activity', id: 'write_novel' }),
+    ).not.toThrow();
   });
 });

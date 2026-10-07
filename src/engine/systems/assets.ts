@@ -1,6 +1,7 @@
 import type { VehicleDef } from '../../content/types';
 import { historicalMortgage, houseReturn } from './markets';
 import { lifestyleTick } from './lifestyle';
+import { netWorthRef } from '../networth';
 import {
   HOME_TYPE_BY_ID,
   HOME_TYPES,
@@ -10,7 +11,7 @@ import {
   onSale,
 } from '../../content/assets';
 import type { Ctx } from '../ctx';
-import { countryOf, formatMoney, money } from '../economy';
+import { countryOf, formatMoney, localToRef, money } from '../economy';
 import { EngineError } from '../errors';
 import { addStat } from '../stats';
 import type { GameState, Home } from '../types';
@@ -28,8 +29,20 @@ export function refreshListings(ctx: Ctx): void {
   const s = ctx.s;
   if (s.player.age < 18 || s.assets.listingsYear === s.year) return;
   const r = ctx.rng;
+  // What the market shows you depends on what you could buy: savings and borrowing power.
+  const income = localToRef(s, s.career.salary + (s.money.last?.otherIncome ?? 0));
+  const power = Math.max(0, netWorthRef(s)) + income * 4.5;
+  const byPrice = [...HOME_TYPES].sort((a, b) => a.price - b.price);
+  const within = byPrice.filter((h) => h.price <= Math.max(power * 1.1, byPrice[2]?.price ?? 0));
+  // The best few you can manage, a couple of cheaper ones, and one to dream about.
+  const top = within.slice(-4);
+  const cheaper = r.shuffle(within.slice(0, -4)).slice(0, 1);
+  const dream = byPrice.find((h) => h.price > power * 1.1);
+  const pool = [...new Set([...top, ...cheaper, ...(dream ? [dream] : [])])];
+  // Always five to look at: fill with whatever else is in reach.
+  for (const h of byPrice) if (pool.length < 5 && !pool.includes(h)) pool.push(h);
   s.assets.listings = r
-    .shuffle(HOME_TYPES)
+    .shuffle(pool)
     .slice(0, 5)
     .map((t) => {
       const condition = r.int(25, 100);
@@ -39,7 +52,8 @@ export function refreshListings(ctx: Ctx): void {
         condition,
         price: Math.round(money(s, (t.price * conditionMult(condition) * r.int(85, 115)) / 100)),
       };
-    });
+    })
+    .sort((a, b) => a.price - b.price);
   s.assets.listingsYear = s.year;
 }
 
@@ -293,6 +307,9 @@ export function assetsTick(ctx: Ctx): void {
   const r = ctx.rng;
   refreshListings(ctx);
   let maintenance = 0;
+  const home = s.assets.homes.find((h) => h.livingIn);
+  const joy = home ? (HOME_TYPES.find((x) => x.id === home.type)?.joy ?? 0) : 0;
+  if (joy) addStat(s, 'happiness', joy);
   for (const h of s.assets.homes) {
     const hist = houseReturn(s.year);
     const g = r.normal(0.03, 0.06);

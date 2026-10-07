@@ -130,7 +130,8 @@ describe('applications and the job (M6.5)', () => {
       let s = star;
       for (let i = 0; i < 8 && s.career.jobId; i++)
         s = playYears(act(s, { type: 'career', id: 'work_harder' }).state, 1);
-      if (s.career.jobId) stayed = s;
+      // Judge a star still in the same job (a new job starts again at the bottom).
+      if (s.career.jobId === star.career.jobId) stayed = s;
     }
     expect(stayed?.career.level).toBeGreaterThan(0);
     expect(stayed?.log.some((l) => l.text.startsWith('Promoted to'))).toBe(true);

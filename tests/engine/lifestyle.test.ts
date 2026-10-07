@@ -53,3 +53,18 @@ describe('the good life', () => {
     expect(s.log.some((l) => /start-up/.test(l.text))).toBe(true);
   });
 });
+
+describe('homes for every budget', () => {
+  it('a billionaire is shown estates and castles; someone broke is shown starter homes', () => {
+    const list = (usd: number): string[] => {
+      const s = worth(usd, 4700);
+      const next = ageUp({ ...s, pending: [] }).state;
+      return next.assets.listings.map((l) => l.type);
+    };
+    const rich = list(2_000_000_000);
+    expect(rich.some((t) => ['mansion', 'estate', 'castle', 'mega_mansion'].includes(t))).toBe(true);
+    const poor = list(0);
+    expect(poor.some((t) => ['mansion', 'estate', 'castle', 'mega_mansion'].includes(t))).toBe(false);
+    expect(poor.length).toBe(5);
+  });
+});

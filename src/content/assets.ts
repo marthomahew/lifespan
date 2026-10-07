@@ -4,6 +4,28 @@ import { CATALOGUE_VEHICLES } from './vehicles';
 /** Home types (SPEC §5.7). Listings are type × condition × the country's price level. */
 export const HOME_TYPES: HomeTypeDef[] = [
   {
+    id: 'mobile_home',
+    label: 'Mobile home',
+    emoji: '🚐',
+    price: 70000,
+    names: [
+      'a mobile home with a porch someone built by hand',
+      'a double-wide with a satellite dish and a flag',
+      'a mobile home at the edge of a quiet park',
+    ],
+  },
+  {
+    id: 'fixer_upper',
+    label: 'Fixer-upper',
+    emoji: '🏚️',
+    price: 120000,
+    names: [
+      'a fixer-upper with good bones and bad wiring',
+      'a house that needs everything, at a price that shows it',
+      'a boarded-up bungalow with potential, says the agent',
+    ],
+  },
+  {
     id: 'studio',
     label: 'Studio flat',
     emoji: '🏢',
@@ -67,6 +89,104 @@ export const HOME_TYPES: HomeTypeDef[] = [
       'a villa with a pool and a gate',
       'a hillside villa with a view',
       'a villa with more bathrooms than people',
+    ],
+  },
+  {
+    id: 'beach_house',
+    label: 'Beach house',
+    emoji: '🏖️',
+    price: 3000000,
+    joy: 2,
+    perks: { social: 0.03 },
+    names: [
+      'a glass beach house with the sea at the bottom of the garden',
+      'a weathered shingle house on the dunes',
+      'a beach house with an outdoor shower and a surfboard rack',
+    ],
+  },
+  {
+    id: 'penthouse',
+    label: 'Luxury penthouse',
+    emoji: '🌆',
+    price: 4500000,
+    joy: 2,
+    perks: { social: 0.05, romance: 0.04 },
+    names: [
+      'a penthouse with a terrace above the whole city',
+      'a duplex penthouse with its own lift and a rooftop pool',
+      'a penthouse with floor-to-ceiling windows and a doorman named Frank',
+    ],
+  },
+  {
+    id: 'chalet',
+    label: 'Ski chalet',
+    emoji: '🏔️',
+    price: 5000000,
+    joy: 2,
+    perks: { social: 0.03 },
+    names: [
+      'a timber chalet with ski-in, ski-out and a boot-warmer room',
+      'a chalet with a hot tub on the balcony and a view of three peaks',
+    ],
+  },
+  {
+    id: 'ranch',
+    label: 'Ranch',
+    emoji: '🐄',
+    price: 6000000,
+    joy: 2,
+    names: [
+      'a working ranch with two thousand acres and a creek',
+      'a ranch with horses, a barn and a sky that never ends',
+    ],
+  },
+  {
+    id: 'mansion',
+    label: 'Mansion',
+    emoji: '🏛️',
+    price: 9000000,
+    joy: 3,
+    perks: { social: 0.06, romance: 0.05, work: 0.02 },
+    names: [
+      'a mansion with a gated drive, a tennis court and a cinema',
+      'a hillside mansion with an infinity pool and a wine room',
+      'a mansion with eleven bedrooms and a staff wing',
+    ],
+  },
+  {
+    id: 'estate',
+    label: 'Country estate',
+    emoji: '🏰',
+    price: 15000000,
+    joy: 3,
+    perks: { social: 0.07, work: 0.03 },
+    names: [
+      'a country estate with a lake, a deer park and a ballroom',
+      'a Georgian estate with stables and a walled garden',
+    ],
+  },
+  {
+    id: 'castle',
+    label: 'Castle',
+    emoji: '🏯',
+    price: 25000000,
+    joy: 3,
+    perks: { social: 0.08, romance: 0.06 },
+    names: [
+      'a restored castle with a moat, a chapel and terrible plumbing',
+      'a castle on a hill with a tower you can sleep in',
+    ],
+  },
+  {
+    id: 'mega_mansion',
+    label: 'Mega-mansion',
+    emoji: '💎',
+    price: 40000000,
+    joy: 4,
+    perks: { social: 0.1, romance: 0.07, work: 0.03 },
+    names: [
+      'a mega-mansion with a nightclub, a bowling alley and a car gallery',
+      'a clifftop compound with three guest houses and a helipad',
     ],
   },
 ];

@@ -1,4 +1,4 @@
-import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../content/assets';
+import { HOME_TYPES, POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../content/assets';
 import { GIFT_BY_ID } from '../../content/gifts';
 import { SKILL_BY_ID } from '../../content/skills';
 import { TRAIT_BY_ID } from '../../content/traits';
@@ -22,6 +22,9 @@ export function playerOdds(s: GameState, key: OddsKey): number {
     const def = k.startsWith('v:') ? VEHICLE_BY_ID[k.slice(2)] : POSSESSION_BY_ID[k.slice(2)];
     t += def?.perks?.[key] ?? 0;
   }
+  // Where you live opens doors too (a mansion, a penthouse).
+  const home = s.assets.homes.find((h) => h.livingIn);
+  if (home) t += HOME_TYPES.find((x) => x.id === home.type)?.perks?.[key] ?? 0;
   return t + lifestyleOdds(s, key);
 }
 

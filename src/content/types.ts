@@ -335,6 +335,10 @@ export type HomeTypeDef = {
   emoji: string;
   /** Base price in reference dollars before condition and country. */ price: number;
   names: string[];
+  /** What living in it does for your odds (a mansion opens doors). */
+  perks?: Partial<Record<OddsKey, number>>;
+  /** A little happiness each year you live there. */
+  joy?: number;
 };
 export type VehicleDef = {
   id: string;
