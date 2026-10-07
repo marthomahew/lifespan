@@ -24,6 +24,7 @@ import { HISTORY_EVENTS } from './history';
 import { PRO_SPORT_EVENTS } from './pro-sport';
 import { ACTING_EVENTS } from './acting';
 import { CLASS_LIFE_EVENTS } from './class-life';
+import { POLITICS_EVENTS } from './politics-life';
 import { WORLD_HISTORY_EVENTS } from './history-world';
 import { DECADE_EVENTS } from './decades';
 import { SPECIAL_PATH_EVENTS } from './special-paths';
@@ -118,6 +119,7 @@ export const EVENTS: EventDef[] = [
   ...PRO_SPORT_EVENTS,
   ...ACTING_EVENTS,
   ...CLASS_LIFE_EVENTS,
+  ...POLITICS_EVENTS,
   ...WORLD_HISTORY_EVENTS,
   ...DECADE_EVENTS,
   ...SPECIAL_PATH_EVENTS,

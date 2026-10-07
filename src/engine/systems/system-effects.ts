@@ -1,3 +1,5 @@
+import { clampStat } from '../util';
+import { initPolitics } from './politics';
 import { turnPro } from './sport-pro';
 import { acceptScholarship, takeUpSport } from './sport';
 import { SPORT_BY_ID } from '../../content/sports';
@@ -167,6 +169,12 @@ export function applySystemEffect(
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';
       return;
+    case 'approval': {
+      // A politician's standing with voters moves (events: campaigns, crises).
+      const pol = s.politics;
+      if (pol && arg) pol.approval = clampStat(pol.approval + Number(arg));
+      return;
+    }
     case 'hang_up':
       takeUpSport(ctx, null);
       return;
@@ -186,6 +194,7 @@ export function applySystemEffect(
     case 'hire': {
       const jobId = arg ?? (typeof payload['jobId'] === 'string' ? payload['jobId'] : undefined);
       if (jobId) hire(ctx, jobId);
+      if (jobId === 'politician' && s.career.jobId === 'politician') initPolitics(ctx);
       return;
     }
     case 'conscript': {

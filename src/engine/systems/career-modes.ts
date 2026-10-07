@@ -3,18 +3,30 @@ import type { Ctx } from '../ctx';
 import { addStat } from '../stats';
 import { endJob, salaryFor, titleFor } from './careers';
 import { proSeason } from './sport-pro';
+import { politicsTick } from './politics';
+import { MISSION_JOBS, missionYear } from './missions';
 
 /**
  * Careers that aren't ladders. An athlete's standing follows their form, season by season;
  * an actor's work comes and goes; a politician rises by elections (events), not reviews.
  * Returns true when the job was handled here (no performance promotions).
  */
-export const RESULTS_JOBS = ['professional_athlete', 'film_actor', 'politician'];
+export const RESULTS_JOBS = [
+  'professional_athlete',
+  'film_actor',
+  'politician',
+  'astronaut',
+  'intelligence_officer',
+  'diplomat',
+];
 /** Why you can't just ask (shown on the buttons). */
 export const RESULTS_REASON: Record<string, string> = {
   professional_athlete: 'your standing follows your form on the pitch',
   film_actor: 'your billing follows the parts you land',
   politician: 'only the voters can promote you',
+  astronaut: 'you rise by the missions you fly',
+  intelligence_officer: 'you rise by the operations you run',
+  diplomat: 'you rise with each posting',
 };
 
 export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
@@ -79,6 +91,14 @@ export function resultsCareerTick(ctx: Ctx, job: JobDef): boolean {
     addStat(s, 'fame', year < 0.25 ? 0 : year < 0.75 ? 1 + c.level : 3 + c.level * 2);
     return true;
   }
-  // Politicians: elections decide (the campaign events), not the annual review.
-  return job.id === 'politician';
+  if (MISSION_JOBS.includes(job.id)) {
+    missionYear(ctx);
+    return true;
+  }
+  // Politicians: elections decide, not the annual review.
+  if (job.id === 'politician') {
+    politicsTick(ctx);
+    return true;
+  }
+  return false;
 }

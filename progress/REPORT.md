@@ -4,7 +4,7 @@
 
 Lifespan is a single-player life simulator for macOS, built with Electron, React and TypeScript. You live one year at a time from birth to death.
 - **Engine:** pure and deterministic, with seeded randomness, so the same seed and choices give the same life.
-- **Content:** 918 original events (54 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
+- **Content:** 950 original events (54 chains) shape each year, including career-specific events for all 14 job fields, life after prison, life abroad, and the wider world.
 - **Systems:** family, friends and adult romance; school, university and 51 careers; the military, music and fame; money (inflation, local currencies, tax, loans, bankruptcy, investments); homes, vehicles and possessions; 25 illnesses and six vices; crime, courts and prison; 25 countries with emigration; traits, skills and languages; achievements, life titles, wills, and generations you can continue as your child.
 - **Cheats:** a full cheat menu (73 commands). One registry drives both the GUI forms and a console with autocomplete, plus a 20-year rewind.
 - **Interface:** the app is keyboard-first (Space, 1–4, ⌘K command palette) and has light and dark themes.
@@ -245,7 +245,7 @@ What changed:
 
   | Content | Count |
   |---|---|
-  | Events (in 54 chains) | 918 |
+  | Events (in 54 chains) | 950 |
   | Full-time jobs (14 fields) | 51 |
   | Part-time jobs | 10 |
   | Majors / grad programs | 16 / 4 |

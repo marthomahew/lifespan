@@ -37,6 +37,8 @@ import { playMajor, type MajorId } from './systems/chess-crown';
 import { takeFameDeal, type FameDeal } from './systems/fame-deals';
 import { buyLifestyle, endLifestyle } from './systems/lifestyle';
 import { doHustle, type HustleId } from './systems/hustle';
+import { politicsAction, type PoliticsAction } from './systems/politics';
+import { missionAction, type MissionAction } from './systems/missions';
 import { takeUpSport, trainExtra } from './systems/sport';
 import { letHome } from './systems/lettings';
 import { tradeShares } from './systems/markets';
@@ -72,6 +74,8 @@ export type PlayerAction =
   | { type: 'sport_train' }
   | { type: 'lifestyle'; id: string }
   | { type: 'hustle'; id: HustleId }
+  | { type: 'politics'; action: PoliticsAction }
+  | { type: 'mission'; id: MissionAction }
   | { type: 'lifestyle_end'; key: number }
   | { type: 'fame_deal'; id: FameDeal['id'] }
   | { type: 'let_home'; id: number; on: boolean }
@@ -180,6 +184,12 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'hustle':
       doHustle(ctx, action.id);
+      break;
+    case 'politics':
+      politicsAction(ctx, action.action);
+      break;
+    case 'mission':
+      missionAction(ctx, action.id);
       break;
     case 'lifestyle_end':
       endLifestyle(ctx, action.key);

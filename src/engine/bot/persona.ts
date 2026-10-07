@@ -138,6 +138,8 @@ function chessSeason(s: GameState, rng: Rng): GameState {
 
 /** Some children take up a sport and stick with it. */
 function sportStart(s: GameState, rng: Rng): GameState {
+  // Players train hard (it is how the good ones get picked).
+  if (s.sport?.active) return tryAct(tryAct(s, { type: 'sport_train' }), { type: 'sport_train' });
   if (s.sport || s.player.age < 6 || s.player.age > 14 || !rng.chance(0.15)) return s;
   return tryAct(s, { type: 'sport', sport: rng.pick(SPORTS).id });
 }

@@ -73,6 +73,7 @@ export type Effect =
         | 'sport_scholarship'
         | 'turn_pro'
         | 'hang_up'
+        | 'approval'
         | 'conscript'
         | 'sign_label'
         | 'dishonorable'

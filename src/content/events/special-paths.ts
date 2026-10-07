@@ -530,7 +530,7 @@ export const SPECIAL_PATH_EVENTS: EventDef[] = [
     weight: 10,
     cooldownYears: 4,
     when: pol,
-    text: 'Re-election season. Your opponent’s posters are bigger than yours, and someone has drawn a moustache on the one outside your house.',
+    text: 'Campaign season. Your opponent’s posters are bigger than yours, and someone has drawn a moustache on the one outside your house.',
     choices: [
       {
         id: 'hard',
@@ -538,14 +538,17 @@ export const SPECIAL_PATH_EVENTS: EventDef[] = [
         outcomes: [
           {
             chance: oddsBy('karma', 0.6),
-            text: 'You knock on so many doors that dogs start recognising you. You win comfortably, and the party starts mentioning your name in rooms you are not in.',
-            effects: [{ job: 'promote' }, { stat: 'stress', delta: 10 }, { fame: 3 }],
+            text: 'You knock on so many doors that dogs start recognising you. Your numbers climb, and the party starts mentioning your name in rooms you are not in.',
+            effects: [{ system: 'approval', arg: '8' }, { stat: 'stress', delta: 10 }, { fame: 3 }],
             success: true,
           },
           {
             chance: 0.3,
-            text: 'You lose by a few hundred votes, on a rainy day, to a man who promised a car park. You make a gracious speech and go home to sleep for a week.',
-            effects: [{ job: 'fire' }, { stat: 'happiness', delta: -10 }],
+            text: 'A rival’s promise of a free car park steals the headlines all month. Your numbers slide, and you sleep for a weekend.',
+            effects: [
+              { system: 'approval', arg: '-10' },
+              { stat: 'happiness', delta: -10 },
+            ],
           },
         ],
       },
@@ -561,9 +564,9 @@ export const SPECIAL_PATH_EVENTS: EventDef[] = [
           },
           {
             chance: 0.4,
-            text: 'Decency loses to a catchier slogan. You concede with dignity, and three people write to say they will vote for you next time.',
+            text: 'Decency loses the news cycle to a catchier slogan. Three people write to say they admire you anyway.',
             effects: [
-              { job: 'fire' },
+              { system: 'approval', arg: '-6' },
               { stat: 'karma', delta: 4 },
               { stat: 'happiness', delta: -6 },
             ],
@@ -716,7 +719,7 @@ export const SPECIAL_PATH_EVENTS: EventDef[] = [
           {
             chance: oddsBy('smarts', 0.55),
             text: 'You sign the order before dawn and are standing in wellies in the worst-hit town by noon. The water goes down; your approval goes up.',
-            effects: [{ job: 'promote' }, { fame: 6 }, { stat: 'karma', delta: 4 }],
+            effects: [{ system: 'approval', arg: '10' }, { fame: 6 }, { stat: 'karma', delta: 4 }],
             success: true,
           },
           {

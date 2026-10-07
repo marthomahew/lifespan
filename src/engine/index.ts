@@ -107,6 +107,13 @@ export {
 } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
 export { HUSTLES, hustleReason, strapped, type HustleId } from './systems/hustle';
+export { missionReason, type MissionAction, type MissionRecord } from './systems/missions';
+export {
+  officeName,
+  politicsReason,
+  type PoliticsAction,
+  type PoliticsRecord,
+} from './systems/politics';
 export {
   lifestyleCost,
   lifestyleReason,

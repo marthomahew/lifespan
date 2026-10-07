@@ -13,7 +13,8 @@ export function knownFor(s: GameState): string[] {
   const job = s.career.jobId ? JOB_BY_ID[s.career.jobId] : undefined;
   const title = s.career.history.at(-1)?.title?.toLowerCase();
   if (f.includes('nobel_laureate')) out.push('your Nobel prize');
-  if (f.includes('been_to_space')) out.push('going to space');
+  if (f.includes('walked_on_moon')) out.push('walking on the Moon');
+  else if (f.includes('been_to_space')) out.push('going to space');
   if (f.includes('olympic_gold')) out.push('Olympic gold');
   else if (f.includes('olympic_medal')) out.push('an Olympic medal');
   if (job?.special && title) out.push(`being a ${title}`);

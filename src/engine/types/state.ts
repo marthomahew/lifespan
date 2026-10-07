@@ -1,3 +1,5 @@
+import type { MissionRecord } from '../systems/missions';
+import type { PoliticsRecord } from '../systems/politics';
 import type { LifestyleItem } from '../systems/lifestyle';
 import type { ProRecord } from '../systems/sport-pro';
 import type { Projects } from '../systems/projects';
@@ -110,6 +112,10 @@ export type GameState = {
   proSport?: ProRecord | null;
   /** The good life: what wealth has bought (jets, staff, start-up bets). */
   lifestyle?: LifestyleItem[];
+  /** A political career: party, approval, elections, bills. */
+  politics?: PoliticsRecord | null;
+  /** Astronaut flights, spy operations, diplomatic postings. */
+  missions?: MissionRecord | null;
   /** Your chess record, once you have played a rated tournament. */
   chess?: ChessRecord | null;
   /** A business of your own (one at a time). */

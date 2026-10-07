@@ -6,6 +6,7 @@ import { JOB_BY_ID } from '../../content/jobs';
 import { SPORT_BY_ID } from '../../content/sports';
 import { netWorth } from '../networth';
 import { PRO_LEAGUES } from '../../content/sport-pro';
+import { officeTitles } from '../../content/politics';
 import { GRAD_BY_ID } from '../../content/education';
 import type { JobDef } from '../../content/types';
 import type { Ctx } from '../ctx';
@@ -52,6 +53,8 @@ export function salaryFor(ctx: Ctx, job: JobDef, level: number): number {
 
 /** A job's title at a level: a professional athlete's comes from their sport. */
 export function titleFor(s: GameState, job: JobDef, level: number): string {
+  if (job.id === 'politician')
+    return officeTitles(s.player.country)[Math.min(4, level)] ?? 'Politician';
   const sport = job.id === 'professional_athlete' ? SPORT_BY_ID[s.sport?.sport ?? ''] : null;
   const titles = sport ? sport.pro.titles : job.titles;
   return titles[Math.min(level, titles.length - 1)] ?? job.titles[0] ?? '';
