@@ -375,6 +375,13 @@ export type CrimeDef = {
   minAge: number;
   /** Needs a job (embezzlement). */
   needsJob?: boolean;
+  /** The skill it leans on: it raises your odds, and below skillNeeded you can't try. */
+  skill?: string;
+  skillNeeded?: number;
+  /** Needs this much Looks (or the Charming trait): a con runs on being believed. */
+  looks?: number;
+  /** Not possible before this year (no computers to break into in 1950). */
+  fromYear?: number;
   /** Base success chance before stats, traits, skills, and notoriety. */
   base: number;
   /** Loot in reference dollars on success. */

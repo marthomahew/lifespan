@@ -924,5 +924,10 @@
     "title": "Careers that are not ladders: athletes standing by form (needs a sport), actors by the parts (income swings), politicians by elections; no asking for raises in those",
     "passes": true,
     "evidence": "tests/engine/career-modes.test.ts"
+  },
+  "S90": {
+    "title": "An activity for every skill; skill-based crimes (hacking, forgery, a con) and crime odds that use the crime’s own skill",
+    "passes": true,
+    "evidence": "tests/engine/skill-crimes.test.ts"
   }
 }

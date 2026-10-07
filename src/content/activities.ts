@@ -1,5 +1,6 @@
 import type { ActivityDef } from './types';
 import { MORE_ACTIVITIES } from './activities-more';
+import { SKILL_ACTIVITIES } from './activities-skills';
 
 /** Activities (SPEC §5.13), grouped and gated by age. Each has at least three outcome texts. */
 const BASE_ACTIVITIES: ActivityDef[] = [
@@ -355,7 +356,11 @@ const BASE_ACTIVITIES: ActivityDef[] = [
 ];
 
 /** Health, vice, fun, and prison activities live in their own module. */
-export const ACTIVITIES: ActivityDef[] = [...BASE_ACTIVITIES, ...MORE_ACTIVITIES];
+export const ACTIVITIES: ActivityDef[] = [
+  ...BASE_ACTIVITIES,
+  ...MORE_ACTIVITIES,
+  ...SKILL_ACTIVITIES,
+];
 
 export const ACTIVITY_BY_ID: Record<string, ActivityDef> = Object.fromEntries(
   ACTIVITIES.map((a) => [a.id, a]),

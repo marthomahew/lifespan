@@ -21,6 +21,11 @@ export function crimeReason(s: GameState, crimeId: string): string | null {
   if (!def) return 'unknown crime';
   if (s.player.age < def.minAge) return `from age ${def.minAge}`;
   if (def.needsJob && !s.career.jobId) return 'needs a job to embezzle from';
+  if (def.fromYear && s.year < def.fromYear) return `not until ${def.fromYear}`;
+  if (def.skill && def.skillNeeded && (s.player.skills[def.skill] ?? 0) < def.skillNeeded)
+    return `needs ${def.skill} ${def.skillNeeded}`;
+  if (def.looks && s.player.stats.looks < def.looks && !s.player.traits.includes('charming'))
+    return `needs looks ${def.looks} (or charm)`;
   if (def.id === 'tax_evasion' && !s.career.jobId && !(s.career.pension > 0))
     return 'no income to hide';
   if (s.legal.prison) return 'not from prison';
@@ -37,8 +42,17 @@ export function crimeOdds(s: GameState, crimeId: string): number {
     (def.id === 'fraud' || def.id === 'embezzlement' || def.id === 'tax_evasion'
       ? (s.player.skills['programming'] ?? 0) / 300 + (st.smarts - 50) / 150
       : 0);
+  // The crime's own skill (code, a brush, a convincing face) does much of the work.
+  const own = def.skill ? (s.player.skills[def.skill] ?? 0) / 250 : 0;
+  const face = def.looks ? (st.looks - 50) / 250 : 0;
   return clampOdds(
-    def.base + playerOdds(s, 'crime') + skill - st.notoriety * 0.004 + (st.smarts - 50) * 0.002,
+    def.base +
+      playerOdds(s, 'crime') +
+      skill +
+      own +
+      face -
+      st.notoriety * 0.004 +
+      (st.smarts - 50) * 0.002,
   );
 }
 
