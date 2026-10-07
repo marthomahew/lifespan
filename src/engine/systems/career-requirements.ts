@@ -1,3 +1,4 @@
+import { inRecession } from './markets';
 import { JOBS } from '../../content/jobs';
 import { SPECIALTY_BY_ID } from '../../content/military';
 import type { EducationLevel, JobDef } from '../../content/types';
@@ -99,7 +100,9 @@ export function interviewOdds(s: GameState, job: JobDef): number {
     playerOdds(s, 'work') +
     playerOdds(s, 'social') * 0.5 +
     // Scouts notice a born athlete.
-    (job.field === 'sports' ? 0.4 * luck(s, 'sport') : 0);
+    (job.field === 'sports' ? 0.4 * luck(s, 'sport') : 0) -
+    // In a recession, every opening has a queue.
+    (inRecession(s.year) ? 0.15 : 0);
   for (const [k, v] of Object.entries(job.req.skills ?? {}))
     o += Math.min(0.15, ((s.player.skills[k] ?? 0) - v) * 0.005);
   if (

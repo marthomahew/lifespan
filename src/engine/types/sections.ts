@@ -43,6 +43,8 @@ export type MoneyState = {
   savings: number;
   savingsRate: number;
   holdings: Record<InvestKey, number>;
+  /** Shares held, by ticker (BTC for bitcoin): a count, priced by the markets. */
+  shares?: Record<string, number>;
   loans: Loan[];
   nextLoanId: number;
   lifestyle: Lifestyle;

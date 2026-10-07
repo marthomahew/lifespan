@@ -1,3 +1,4 @@
+import { inRecession } from './markets';
 import { luck } from './luck';
 import {
   BUSINESS_BY_ID,
@@ -217,7 +218,8 @@ export function businessYear(ctx: Ctx): number {
     (s.player.stats.smarts - 50) / 8 +
     (b.hands === 'self' ? 10 : -4) +
     (s.player.stats.discipline - 50) / 10 +
-    businessLuck(s);
+    businessLuck(s) -
+    (inRecession(s.year) ? 10 : 0);
   b.health = clampStat(b.health + (target - b.health) * 0.3 + ctx.rng.normal(0, 30 * k.volatility));
   if (b.health <= 5) {
     s.business = null;

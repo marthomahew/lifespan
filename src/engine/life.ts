@@ -1,3 +1,4 @@
+import { priceIndex } from './systems/markets';
 import { BACKGROUND_LINES, setupBackground } from './systems/backgrounds';
 import { COUNTRIES, COUNTRY_BY_ID } from '../content/countries';
 import { FAMILY_WEALTH, PARENT_JOBS, SKIN_TONES } from '../content/family';
@@ -249,7 +250,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
   );
   s.year = birthYear;
   // Prices before 2026 follow the default 2.5% a year.
-  s.inflation = Math.pow(1.025, birthYear - 2026);
+  s.inflation = priceIndex(birthYear) ?? Math.pow(1.025, birthYear - 2026);
 
   p.gender = opts.gender ?? (r.chance(0.04) ? 'nonbinary' : r.chance(0.5) ? 'male' : 'female');
   p.attraction =

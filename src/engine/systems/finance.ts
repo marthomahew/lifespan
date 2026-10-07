@@ -1,3 +1,4 @@
+import { marketReturn } from './markets';
 import { luck } from './luck';
 import type { Ctx } from '../ctx';
 import { incomeTax, localToRef, money } from '../economy';
@@ -107,11 +108,14 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     const v = m.holdings[k];
     if (v <= 0) continue;
     const def = INVESTMENTS[k];
+    // What the market really did that year, where there is a record.
+    const hist = marketReturn(s.year, k);
     let r = ctx.rng.normal(def.mean, def.sd);
+    if (hist !== null) r = hist + (k === 'bonds' ? 0 : ctx.rng.normal(0, 0.02));
     // Money luck: a better year than the market, and the crash that happens to other people.
     const lucky = luck(s, 'money');
     r += 0.06 * lucky;
-    if (def.crash && lucky < 1 && ctx.rng.chance(def.crash)) r = -0.9;
+    if (def.crash && hist === null && lucky < 1 && ctx.rng.chance(def.crash)) r = -0.9;
     r = Math.max(-0.95, r);
     const delta = Math.round(v * r);
     m.holdings[k] = Math.max(0, v + delta);

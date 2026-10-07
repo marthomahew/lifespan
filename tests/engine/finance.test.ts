@@ -94,6 +94,8 @@ describe('income tax (SPEC §5.6, §10)', () => {
 describe('inflation and local currency (M7.2)', () => {
   it('averages about 2.5% with ±1.5 points of seeded noise and never goes negative', () => {
     const s = clone(adult(4));
+    // The simulated rule applies after the real price record ends (real years follow real CPI).
+    s.year = 2040;
     const ctx = new Ctx(s);
     const rates: number[] = [];
     for (let i = 0; i < 2000; i++) {
@@ -362,13 +364,19 @@ describe('vehicles, possessions, licence (M7.6)', () => {
     s = act(s, { type: 'buy_vehicle', model: 'brisk_sedan', financed: false }).state;
     s = act(s, { type: 'buy_item', item: 'gaming_laptop' }).state;
     s = act(s, { type: 'buy_item', item: 'acoustic_guitar' }).state;
-    const v0 = s.assets.vehicles[0]?.value ?? 0;
     const l0 = s.assets.possessions[0]?.value ?? 0;
     const g0 = s.player.skills['instrument'] ?? 0;
     const next = playYears(s, 1);
-    const ratio = (next.assets.vehicles[0]?.value ?? 0) / v0;
-    expect(ratio).toBeGreaterThan(0.75);
-    expect(ratio).toBeLessThan(0.95);
+    // Averaged over ten lives (a crash in one of them knocks a car's value further).
+    let sum = 0;
+    for (let seed = 30; seed < 40; seed++) {
+      let o = runCheat(adult(seed), 'money.set', { amount: 1e6 }).state;
+      o = act(o, { type: 'buy_vehicle', model: 'brisk_sedan', financed: false }).state;
+      const o0 = o.assets.vehicles[0]?.value ?? 1;
+      sum += (playYears(o, 1).assets.vehicles[0]?.value ?? 0) / o0;
+    }
+    expect(sum / 10).toBeGreaterThan(0.75);
+    expect(sum / 10).toBeLessThan(0.95);
     expect(next.assets.vehicles[0]?.condition).toBeLessThan(100);
     expect(next.assets.possessions[0]?.value).toBeLessThan(l0);
     expect(next.player.skills['instrument']).toBeGreaterThan(g0);

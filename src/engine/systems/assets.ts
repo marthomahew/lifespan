@@ -1,3 +1,4 @@
+import { historicalMortgage, houseReturn } from './markets';
 import {
   HOME_TYPE_BY_ID,
   HOME_TYPES,
@@ -42,6 +43,9 @@ export function refreshListings(ctx: Ctx): void {
 
 /** Mortgage rates sit between 3% and 8% and move with the economy (the drifting savings rate). */
 export function mortgageRate(s: GameState): number {
+  // The rate of the day: 16% in 1981, 3% in 2021.
+  const hist = historicalMortgage(s);
+  if (hist !== null) return hist;
   return Math.min(
     0.08,
     Math.max(0.03, countryOf(s).mortgageRate + (s.money.savingsRate - 0.025) * 1.5),
@@ -254,7 +258,9 @@ export function assetsTick(ctx: Ctx): void {
   refreshListings(ctx);
   let maintenance = 0;
   for (const h of s.assets.homes) {
-    h.value = Math.max(0, Math.round(h.value * (1 + r.normal(0.03, 0.06))));
+    const hist = houseReturn(s.year);
+    const g = r.normal(0.03, 0.06);
+    h.value = Math.max(0, Math.round(h.value * (1 + (hist === null ? g : hist + g / 3))));
     // Maintenance (paid below) keeps wear slow; a renovation is for the big jobs.
     h.condition = clampStat(h.condition - r.int(0, 2));
     const m = Math.round(h.value * 0.01);

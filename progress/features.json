@@ -934,5 +934,10 @@
     "title": "Possessions that matter: a sports car, a luxury saloon, a fine watch, art, a racing bike and a ring tilt odds while you own one; shown in the shop",
     "passes": true,
     "evidence": "tests/engine/lettings.test.ts"
+  },
+  "S92": {
+    "title": "Markets that follow history: real US prices (CPI), mortgage rates, S&P 500 and Nasdaq returns, house-price years, recessions (harder hiring, layoffs, business strain), and real stocks and bitcoin to buy and sell; simulated after 2025",
+    "passes": true,
+    "evidence": "tests/engine/markets.test.ts; tests/engine/finance.test.ts"
   }
 }

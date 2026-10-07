@@ -1,0 +1,50 @@
+import { describe, expect, it } from 'vitest';
+import { act, ageUp, newLife, runCheat, type GameState } from '../../src/engine';
+import { inRecession, marketReturn, priceIndex, priceUsd } from '../../src/engine/systems/markets';
+import { mortgageRate } from '../../src/engine/systems/assets';
+
+const at = (birthYear: number, age: number, seed = 2900): GameState => {
+  let s = runCheat(newLife({ birthYear, country: 'us' }, seed), 'age.set', { age }).state;
+  s = runCheat({ ...s, pending: [] }, 'money.set', { amount: 1_000_000 }).state;
+  return { ...s, pending: [], cheats: { ...s.cheats, immortal: true, noBadEvents: true } };
+};
+
+describe('markets that follow history', () => {
+  it('prices, rates and returns are those of the year', () => {
+    expect(priceIndex(1980)).toBeCloseTo(82.4 / 330, 3);
+    expect(marketReturn(2008, 'index')).toBeCloseTo(-0.37, 2);
+    expect(marketReturn(1999, 'growth')).toBeCloseTo(0.856, 2);
+    expect(inRecession(2009)).toBe(true);
+    expect(inRecession(2017)).toBe(false);
+    const in1981 = at(1955, 26);
+    expect(in1981.year).toBe(1981);
+    expect(mortgageRate(in1981)).toBeGreaterThan(0.14);
+    expect(mortgageRate(at(1990, 31))).toBeLessThan(0.05);
+  });
+
+  it('a life born in 1960 sees 1960s prices', () => {
+    const s = newLife({ birthYear: 1960, country: 'us' }, 2901);
+    expect(s.inflation).toBeLessThan(0.12);
+    expect(newLife({ birthYear: 2020, country: 'us' }, 2902).inflation).toBeGreaterThan(0.75);
+  });
+
+  it('Nvidia bought in 2015 is worth a fortune by 2024; Apple doesn’t exist in 1975', () => {
+    expect(priceUsd(at(1950, 25), 'AAPL')).toBeNull();
+    let s = at(1985, 30);
+    expect(s.year).toBe(2015);
+    s = act(s, { type: 'shares', id: 'NVDA', op: 'buy', amount: 10000 }).state;
+    for (let i = 0; i < 9; i++) s = ageUp({ ...s, pending: [] }).state;
+    expect(s.year).toBe(2024);
+    const n = s.money.shares?.['NVDA'] ?? 0;
+    expect(n * (priceUsd(s, 'NVDA') ?? 0)).toBeGreaterThan(1_000_000);
+  });
+
+  it('after the record ends, prices keep moving', () => {
+    let s = at(2000, 25);
+    expect(s.year).toBe(2025);
+    s = ageUp(s).state;
+    s = ageUp({ ...s, pending: [] }).state;
+    expect(priceUsd(s, 'AAPL')).not.toBe(priceUsd(at(2000, 25), 'AAPL'));
+    expect(priceUsd(s, 'AAPL') ?? 0).toBeGreaterThan(0);
+  });
+});

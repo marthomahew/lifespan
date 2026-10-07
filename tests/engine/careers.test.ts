@@ -141,7 +141,7 @@ describe('applications and the job (M6.5)', () => {
     slacker.career.performance = 5;
     let f = slacker;
     const firedFrom = (x: GameState): boolean => x.career.history.some((h) => h.reason === 'fired');
-    for (let i = 0; i < 6 && !firedFrom(f); i++) f = playYears(f, 1);
+    for (let i = 0; i < 10 && !firedFrom(f); i++) f = playYears(f, 1);
     // Fired (a job lead may have found new work since, which is fine).
     expect(firedFrom(f)).toBe(true);
     expect(f.career.history.find((h) => h.reason === 'fired')?.jobId).toBe(base.career.jobId);

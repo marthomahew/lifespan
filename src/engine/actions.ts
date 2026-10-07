@@ -34,6 +34,7 @@ import { businessAction, type BusinessOp } from './systems/business';
 import { playTournament } from './systems/chess';
 import { takeUpSport } from './systems/sport';
 import { letHome } from './systems/lettings';
+import { tradeShares } from './systems/markets';
 
 export type PlayerAction =
   | { type: 'interact'; npcId: number; id: string; params?: InteractParams }
@@ -62,7 +63,8 @@ export type PlayerAction =
   | { type: 'business'; action: BusinessOp }
   | { type: 'chess'; tier: string }
   | { type: 'sport'; sport: string | null }
-  | { type: 'let_home'; id: number; on: boolean };
+  | { type: 'let_home'; id: number; on: boolean }
+  | { type: 'shares'; id: string; op: 'buy' | 'sell'; amount: number };
 
 /** Activities, interactions, purchases, applications (SPEC §9.3 act). */
 export function act(input: GameState, action: PlayerAction): Step {
@@ -151,6 +153,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'let_home':
       letHome(ctx, action.id, action.on);
+      break;
+    case 'shares':
+      tradeShares(ctx, action.id, action.op, action.amount);
       break;
   }
   prunePending(ctx.s);

@@ -96,3 +96,4 @@ export {
 export { levelLabel, sportOf, takeUpReason, SPORT_COST, type SportRecord } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
 export { letReason, rentFor, type Tenancy } from './systems/lettings';
+export { TRADABLES, inRecession, priceLocal, sharesValue } from './systems/markets';

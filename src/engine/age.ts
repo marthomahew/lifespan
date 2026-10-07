@@ -1,3 +1,4 @@
+import { priceIndex } from './systems/markets';
 import { Ctx, type Step } from './ctx';
 import { EngineError } from './errors';
 import { die } from './death';
@@ -19,7 +20,9 @@ import { checkChallenge } from './systems/challenge';
 export function stepInflation(ctx: Ctx): void {
   const s = ctx.s;
   const rate = Math.max(0, (0.025 + (ctx.rng.next() - 0.5) * 0.03) * s.inflationMult);
-  s.inflation = s.inflation * (1 + rate);
+  // Real prices for real years (unless a cheat has changed the rate); the dice after that.
+  const real = s.inflationMult === 1 ? priceIndex(s.year) : null;
+  s.inflation = real ?? s.inflation * (1 + rate);
 }
 
 /** One year (SPEC §3.4). Throws if a decision is pending or the life is over. */

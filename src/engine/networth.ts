@@ -1,6 +1,7 @@
 import { localToRef } from './economy';
 import type { GameState } from './types';
 import { sum } from './util';
+import { sharesValue } from './systems/markets';
 
 export function netWorth(s: GameState): number {
   const m = s.money;
@@ -12,7 +13,8 @@ export function netWorth(s: GameState): number {
     sum(a.homes.map((h) => h.value)) +
     sum(a.vehicles.map((v) => v.value)) +
     sum(a.possessions.map((p) => p.value)) +
-    (s.business?.value ?? 0);
+    (s.business?.value ?? 0) +
+    sharesValue(s);
   const debts = sum(m.loans.map((l) => l.balance));
   return Math.round(assets - debts);
 }

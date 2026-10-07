@@ -2,6 +2,7 @@ import type { Projects } from '../systems/projects';
 import type { Business } from '../systems/business';
 import type { ChessRecord } from '../systems/chess';
 import type { SportRecord } from '../systems/sport';
+import type { MarketSim } from '../systems/markets';
 import type {
   Attraction,
   CheatState,
@@ -95,6 +96,8 @@ export type GameState = {
   pets: Pet[];
   /** Long projects (a novel in progress); absent in older saves. */
   projects?: Projects;
+  /** Market prices after the real record ends (simulated, year by year). */
+  market?: MarketSim | null;
   /** The sport you play, season by season. */
   sport?: SportRecord | null;
   /** Your chess record, once you have played a rated tournament. */

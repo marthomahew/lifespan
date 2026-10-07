@@ -41,6 +41,8 @@ export function moneyAction(ctx: Ctx, a: MoneyAction): void {
     }
     case 'invest': {
       if (s.player.age < 18) throw new EngineError('investing is for adults');
+      if (a.key === 'coin' && s.year < 2013) throw new EngineError('no crypto funds until 2013');
+      if (a.key === 'growth' && s.year < 1972) throw new EngineError('no growth funds until 1972');
       const n = Math.min(positive(a.amount), Math.max(0, m.cash));
       if (n <= 0) throw new EngineError('you have no cash to invest');
       m.cash -= n;

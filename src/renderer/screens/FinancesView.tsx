@@ -1,3 +1,4 @@
+import { SharesSection } from './SharesSection';
 import { useState } from 'react';
 import { formatMoney, INVESTMENTS, type GameState, type PlayerAction } from '../../engine';
 import { Modal } from '../components/Modal';
@@ -183,6 +184,7 @@ export function FinancesView({ game }: { game: GameState }): React.JSX.Element {
           )}
         </section>
       </div>
+      <SharesSection game={game} run={run} />
       <h3 className="section-title">Net worth (inflation-adjusted)</h3>
       <NetWorthChart history={m.history} />
     </Modal>

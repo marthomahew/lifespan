@@ -1,3 +1,4 @@
+import { inRecession } from './markets';
 import { RESULTS_JOBS, RESULTS_REASON, resultsCareerTick } from './career-modes';
 import { luck } from './luck';
 import { pickFresh } from '../fresh';
@@ -237,6 +238,15 @@ export function careerTick(ctx: Ctx): void {
     endJob(ctx, 'fired');
     addStat(s, 'happiness', -10);
     addStat(s, 'stress', 8);
+  } else if (inRecession(s.year) && c.performance < 65 && lucky < 1 && r.chance(0.07)) {
+    ctx.log(
+      'work',
+      'The recession reaches your floor. A meeting is booked with HR, and you are part of the cuts.',
+      true,
+    );
+    endJob(ctx, 'laid off');
+    addStat(s, 'happiness', -10);
+    addStat(s, 'stress', 10);
   }
 }
 
