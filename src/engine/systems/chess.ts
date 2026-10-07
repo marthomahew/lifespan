@@ -205,7 +205,7 @@ export function playTournament(ctx: Ctx, tierId: string): void {
     score += game(ctx, me, opp);
   }
   // The strongest rival in the field plays the same nine rounds; to win, outscore them.
-  const rivalStrength = t.field + (t.id === 'elite' ? 90 : 250);
+  const rivalStrength = t.field + (t.id === 'elite' ? 70 : 250);
   let rival = 0;
   for (let i = 0; i < ROUNDS; i++)
     rival += game(ctx, rivalStrength, t.field + ctx.rng.int(-120, 120));

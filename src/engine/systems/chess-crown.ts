@@ -79,8 +79,8 @@ function match(ctx: Ctx, me: number, opp: number, games: number): { won: boolean
   let score = 0;
   for (let i = 0; i < games; i++) score += game(ctx, me, opp);
   if (score !== games / 2) return { won: score > games / 2, score };
-  // Rapid tiebreaks: quicker chess, so the gap counts for a little less.
-  return { won: ctx.rng.chance(expected(me * 0.8 + 520, opp * 0.8 + 520)), score };
+  // Rapid tiebreaks: the best classical players are usually the best at rapid too.
+  return { won: ctx.rng.chance(expected(me, opp)), score };
 }
 
 function rate(rec: ChessRecord, score: number, exp: number): number {
@@ -129,7 +129,8 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
     );
     if (first) addStat(s, 'fame', 3);
   } else if (id === 'worldcup') {
-    const ladder = [2450, 2550, 2620, 2670, 2700, 2730, 2750, 2770];
+    // The top seed's path: weaker opponents early, the elite from the quarter-finals.
+    const ladder = [2380, 2480, 2560, 2620, 2670, 2700, 2730, 2750];
     const prizes = [6000, 10000, 16000, 25000, 35000];
     let round = 0;
     let score = 0;
@@ -146,8 +147,8 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
       result = round >= 4 ? 'out in the quarter-finals' : `out in round ${round + 1}`;
     } else {
       // The final four: a semi-final, then the final or the match for third.
-      const semi = match(ctx, me, ladder[6] ?? 2750, 2).won;
-      const last = match(ctx, me, ladder[7] ?? 2770, 2).won;
+      const semi = match(ctx, me, ladder[6] ?? 2730, 2).won;
+      const last = match(ctx, me, ladder[7] ?? 2750, 2).won;
       result = semi ? (last ? 'World Cup winner' : 'runner-up') : last ? 'third' : 'fourth';
       prize = semi ? (last ? 110000 : 80000) : last ? 60000 : 50000;
       if (result !== 'fourth') {
@@ -167,10 +168,10 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
     let exp = 0;
     let rival = 0;
     for (let i = 0; i < 14; i++) {
-      const opp = 2760 + ctx.rng.int(-30, 30);
+      const opp = 2750 + ctx.rng.int(-30, 30);
       score += game(ctx, me, opp);
       exp += expected(rec.rating, opp);
-      rival += game(ctx, 2790, 2760 + ctx.rng.int(-30, 30));
+      rival += game(ctx, 2780, 2750 + ctx.rng.int(-30, 30));
     }
     const won = score > rival || (score === rival && ctx.rng.chance(0.5));
     prize = won ? 55000 : score >= rival - 1 ? 40000 : 15000;
@@ -186,7 +187,7 @@ export function playMajor(ctx: Ctx, id: MajorId): void {
   } else {
     const champ = isChampion(s);
     // The reigning champion is the best in the world; a challenger is the next best.
-    const opp = champ ? 2785 : 2830;
+    const opp = champ ? 2785 : 2800;
     const m = match(ctx, me, opp, 14);
     rate(rec, m.score, 14 * expected(rec.rating, opp));
     prize = m.won ? 1500000 : 1000000;

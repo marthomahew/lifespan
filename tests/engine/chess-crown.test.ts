@@ -42,15 +42,15 @@ describe('the world title cycle', () => {
 
   it('a World Cup podium earns a Candidates place; the world #1 usually gets there', () => {
     let podiums = 0;
-    // Knockouts are cruel even to the best: a podium about a third of the time.
+    // Knockouts are cruel, but the world #1 reaches the podium more often than not.
     for (let i = 0; i < 20; i++) {
       const s = star(2017, 2850, 3200 + i);
       const after = act(s, { type: 'chess_major', id: 'worldcup' }).state;
       if (after.chess?.candQual === 2018) podiums++;
       expect(after.money.cash).toBeGreaterThan(s.money.cash);
     }
-    expect(podiums).toBeGreaterThanOrEqual(4);
-    expect(podiums).toBeLessThanOrEqual(16);
+    expect(podiums).toBeGreaterThanOrEqual(7);
+    expect(podiums).toBeLessThanOrEqual(18);
   });
 
   it('the title match pays millions, crowns a champion who must defend every two years', () => {
