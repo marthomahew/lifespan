@@ -5,6 +5,7 @@ import { pickFresh } from '../fresh';
 import { JOB_BY_ID } from '../../content/jobs';
 import { SPORT_BY_ID } from '../../content/sports';
 import { netWorth } from '../networth';
+import { initPolitics } from './politics';
 import { PRO_LEAGUES } from '../../content/sport-pro';
 import { officeTitles } from '../../content/politics';
 import { GRAD_BY_ID } from '../../content/education';
@@ -107,6 +108,8 @@ export function hire(ctx: Ctx, jobId: string, force = false, quiet = false): voi
   leaveCoworkers(ctx);
   c.jobId = job.id;
   c.level = 0;
+  // A politician starts with a party, a term and an approval rating.
+  if (job.id === 'politician' && !s.politics) initPolitics(ctx);
   c.since = s.year;
   c.performance = 55;
   c.salary = salaryFor(ctx, job, 0);

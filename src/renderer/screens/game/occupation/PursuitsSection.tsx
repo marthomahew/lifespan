@@ -109,7 +109,7 @@ function SportPanel({
           </div>
         </div>
       ) : (
-        <div className="row small">
+        <div className="row small wrap">
           <select
             aria-label="Sport"
             data-testid="sport-pick"

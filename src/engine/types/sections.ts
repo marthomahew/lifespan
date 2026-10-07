@@ -1,3 +1,4 @@
+import type { Genre } from '../systems/music-charts';
 import type { Tenancy } from '../systems/lettings';
 import type { Category, ViceKey } from './core';
 
@@ -135,7 +136,19 @@ export type MusicState = {
   stage: number;
   act: 'solo' | 'band' | null;
   label: string | null;
-  releases: { year: number; title: string; quality: number }[];
+  releases: {
+    year: number;
+    title: string;
+    quality: number;
+    /** Chart peak (0: didn't chart), units sold, certification. */
+    chart?: number;
+    sales?: number;
+    cert?: string;
+  }[];
+  /** Your genre (its moment comes and goes with the era). */
+  genre?: Genre;
+  /** Award nominations and wins. */
+  awards?: string[];
   touring: boolean;
   lastWork: number;
 };

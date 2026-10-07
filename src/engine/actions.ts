@@ -39,6 +39,9 @@ import { buyLifestyle, endLifestyle } from './systems/lifestyle';
 import { doHustle, type HustleId } from './systems/hustle';
 import { politicsAction, type PoliticsAction } from './systems/politics';
 import { missionAction, type MissionAction } from './systems/missions';
+import type { Genre } from './systems/music-charts';
+import { setGenre } from './systems/music';
+import { underworldAction, type UnderworldAction } from './systems/underworld';
 import { takeUpSport, trainExtra } from './systems/sport';
 import { letHome } from './systems/lettings';
 import { tradeShares } from './systems/markets';
@@ -76,6 +79,8 @@ export type PlayerAction =
   | { type: 'hustle'; id: HustleId }
   | { type: 'politics'; action: PoliticsAction }
   | { type: 'mission'; id: MissionAction }
+  | { type: 'music_genre'; genre: Genre }
+  | { type: 'underworld'; action: UnderworldAction }
   | { type: 'lifestyle_end'; key: number }
   | { type: 'fame_deal'; id: FameDeal['id'] }
   | { type: 'let_home'; id: number; on: boolean }
@@ -190,6 +195,12 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'mission':
       missionAction(ctx, action.id);
+      break;
+    case 'music_genre':
+      setGenre(ctx, action.genre);
+      break;
+    case 'underworld':
+      underworldAction(ctx, action.action);
       break;
     case 'lifestyle_end':
       endLifestyle(ctx, action.key);

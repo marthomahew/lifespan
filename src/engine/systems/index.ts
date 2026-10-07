@@ -1,3 +1,4 @@
+import { underworldTick } from './underworld';
 import { petsTick } from './pets';
 import { memoryTick } from './memories';
 import { crossroadsTick, lateChapterTick, lifeChapterTick, marriageTick } from './crossroads';
@@ -109,6 +110,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   fameTick(ctx);
   healthTick(ctx);
   legalTick(ctx);
+  underworldTick(ctx);
   languageTick(ctx);
   assetsTick(ctx);
   npcLifecycle(ctx);

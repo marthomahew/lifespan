@@ -1,3 +1,4 @@
+import { GENRES, genreMoment, type Genre } from '../../../../engine';
 import { useState } from 'react';
 import { BRANCHES, SPECIALTIES, SPECIALTY_BY_ID } from '../../../../content/military';
 import {
@@ -150,14 +151,50 @@ export function MusicSection({
           );
         })}
       </div>
+      {m.stage > 0 && (
+        <label className="row small">
+          Genre
+          <select
+            data-testid="music-genre"
+            value={m.genre ?? ''}
+            onChange={(e) =>
+              onError(doAct({ type: 'music_genre', genre: e.target.value as Genre }))
+            }
+          >
+            {!m.genre && <option value="">Choose your sound</option>}
+            {GENRES.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.label}{' '}
+                {genreMoment(g.id, game.year) >= 1.1
+                  ? '· in fashion'
+                  : genreMoment(g.id, game.year) < 0.75
+                    ? '· out of fashion'
+                    : ''}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {m.releases.length > 0 && (
         <ul className="plain small" data-testid="releases">
-          {m.releases.slice(-5).map((r) => (
+          {m.releases.slice(-6).map((r) => (
             <li key={`${r.year}-${r.title}`}>
               💿 “{r.title}” ({r.year}) · {r.quality}/100
+              {r.chart !== undefined && (
+                <span className="muted">
+                  {' '}
+                  · {r.chart ? `peaked #${r.chart}` : 'didn’t chart'}
+                  {r.cert ? ` · ${r.cert}` : ''}
+                </span>
+              )}
             </li>
           ))}
         </ul>
+      )}
+      {(m.awards?.length ?? 0) > 0 && (
+        <div className="small muted" data-testid="music-awards">
+          Awards: {m.awards?.join('; ')}
+        </div>
       )}
     </section>
   );

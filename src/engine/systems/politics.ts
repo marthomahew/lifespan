@@ -269,10 +269,10 @@ export function politicsTick(ctx: Ctx): void {
   const c = s.career;
   // Approval: your record, your fame, the economy (a recession hurts whoever governs).
   const drift =
-    (52 - p.approval) * 0.15 +
+    (52 - p.approval) * 0.08 +
     (c.performance - 60) / 12 +
     s.player.stats.fame / 60 -
-    (inRecession(s.year) && p.inGovernment ? 6 : 0) +
+    (inRecession(s.year) && p.inGovernment ? 4 : 0) +
     (s.player.flags.includes('dodgy_donor') && ctx.rng.chance(0.15) ? -10 : 0) +
     ctx.rng.normal(0, 4);
   p.approval = clampStat(Math.round(p.approval + drift));

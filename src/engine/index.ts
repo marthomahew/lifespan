@@ -107,6 +107,14 @@ export {
 } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
 export { HUSTLES, hustleReason, strapped, type HustleId } from './systems/hustle';
+export { GENRES, genreMoment, type Genre } from './systems/music-charts';
+export {
+  CREW_JOBS,
+  RANKS,
+  joinReason,
+  jobReason,
+  type UnderworldAction,
+} from './systems/underworld';
 export { missionReason, type MissionAction, type MissionRecord } from './systems/missions';
 export {
   officeName,

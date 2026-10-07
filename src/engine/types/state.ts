@@ -1,3 +1,4 @@
+import type { UnderworldRecord } from '../systems/underworld';
 import type { MissionRecord } from '../systems/missions';
 import type { PoliticsRecord } from '../systems/politics';
 import type { LifestyleItem } from '../systems/lifestyle';
@@ -116,6 +117,8 @@ export type GameState = {
   politics?: PoliticsRecord | null;
   /** Astronaut flights, spy operations, diplomatic postings. */
   missions?: MissionRecord | null;
+  /** Organised crime: crew, rank, respect, heat. */
+  underworld?: UnderworldRecord | null;
   /** Your chess record, once you have played a rated tournament. */
   chess?: ChessRecord | null;
   /** A business of your own (one at a time). */

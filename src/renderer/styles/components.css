@@ -502,3 +502,7 @@ button.fold-toggle:focus-visible {
   color: var(--text-2);
   text-align: center;
 }
+
+.row.wrap {
+  flex-wrap: wrap;
+}

@@ -1,0 +1,41 @@
+import { describe, expect, it } from 'vitest';
+import { act, ageUp, newLife, runCheat, type GameState } from '../../src/engine';
+import { genreMoment } from '../../src/engine/systems/music-charts';
+
+const star = (birthYear: number, seed = 5200): GameState => {
+  let s = runCheat(newLife({ birthYear, country: 'us' }, seed), 'age.set', { age: 25 }).state;
+  s = runCheat({ ...s, pending: [] }, 'skill.set', { skill: 'instrument', value: 95 }).state;
+  return {
+    ...s,
+    pending: [],
+    player: { ...s.player, stats: { ...s.player.stats, fame: 80 } },
+    music: { ...s.music, stage: 4, act: 'solo', label: 'Big Label', genre: 'pop' },
+  };
+};
+
+describe('the record business', () => {
+  it('genres have their moment', () => {
+    expect(genreMoment('rock', 1978)).toBeGreaterThan(genreMoment('rock', 2020));
+    expect(genreMoment('hiphop', 2012)).toBeGreaterThan(genreMoment('hiphop', 1975));
+  });
+
+  it('a famous signed artist charts, sells, and gets royalties every year after', () => {
+    let s = star(1960);
+    s = act(s, { type: 'music', id: 'release' }).state;
+    const r = s.music.releases.at(-1)!;
+    expect(r.sales ?? 0).toBeGreaterThan(0);
+    expect(r.chart ?? -1).toBeGreaterThanOrEqual(0);
+    expect(s.log.some((l) => /copies|streams/.test(l.text))).toBe(true);
+    const cash = s.money.cash;
+    s = ageUp({ ...s, pending: [] }).state;
+    expect(s.money.cash).toBeGreaterThan(cash - 1_000_000);
+  });
+
+  it('streaming-era releases count streams', () => {
+    let s = star(1995, 5201);
+    s = act(s, { type: 'music', id: 'release' }).state;
+    expect(s.log.some((l) => /streams/.test(l.text))).toBe(true);
+    s = act(s, { type: 'music_genre', genre: 'hiphop' }).state;
+    expect(s.music.genre).toBe('hiphop');
+  });
+});

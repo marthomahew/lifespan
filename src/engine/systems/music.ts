@@ -1,3 +1,12 @@
+import {
+  GENRES,
+  awardSeason,
+  catalogueRoyalties,
+  releaseLine,
+  releaseResult,
+  royaltiesLine,
+  type Genre,
+} from './music-charts';
 import { luck } from './luck';
 import { workTime } from './activities';
 import { pickFresh } from '../fresh';
@@ -222,18 +231,36 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
         title = `${r.pick(TITLE_A)} ${r.pick(TITLE_B)}`;
       if (used.has(title)) title = `${title} II`;
       const mum = s.npcs.some((n) => n.alive && n.roles.includes('mother'));
-      m.releases.push({ year: s.year, title, quality });
+      if (!m.genre) m.genre = r.pick(GENRES).id;
+      const run = releaseResult(ctx, quality, !!m.label);
+      m.releases.push({
+        year: s.year,
+        title,
+        quality,
+        chart: run.chart,
+        sales: run.sales,
+        ...(run.cert ? { cert: run.cert } : {}),
+      });
       const fameGain = Math.round(quality / 16) + (m.label ? 3 : 1);
       // A flop costs you: the audience drifts and the critics are unkind.
       addStat(s, 'fame', quality < 45 ? -4 : quality > 70 ? fameGain + 3 : fameGain);
       if (quality < 45) addStat(s, 'happiness', -6);
-      const pay = money(s, quality * (m.label ? 600 : 60) * (1 + s.player.stats.fame / 25), 'wage');
+      const pay = Math.max(
+        run.pay,
+        money(s, quality * (m.label ? 600 : 60) * (1 + s.player.stats.fame / 25), 'wage'),
+      );
       s.money.cash += pay;
       ctx.log(
         'fame',
         `You release "${title}". ${quality > 80 ? (mum ? 'Critics call it a masterpiece; your mum agrees.' : 'Critics call it a masterpiece, and for once you agree.') : quality > 55 ? 'It finds an audience and keeps it.' : quality >= 45 ? (s.player.stats.fame >= 30 ? 'The critics shrug; the fans buy it anyway, out of loyalty.' : 'It finds an audience of about forty people.') : 'It flops. A critic calls it "a bold misstep" and that is the kindest review.'} It earns ${formatMoney(s, pay)}.`,
         true,
       );
+      ctx.log(
+        'fame',
+        `${run.chart === 1 ? '🥇' : '📀'} ${releaseLine(s, run)}`,
+        run.chart > 0,
+      );
+      awardSeason(ctx, title, quality, run.chart);
       if (!m.label && quality >= 60 - 15 * luck(s, 'music') && m.stage === 3) {
         const def = EVENT_BY_ID['fame_record_deal_offer'];
         if (def) fireEvent(ctx, def, 'system');
@@ -286,6 +313,16 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
 }
 
 /** Sign with a label (from the record deal event). */
+/** Change your sound (free: it's a choice, not a chore). */
+export function setGenre(ctx: Ctx, genre: Genre): void {
+  if (!GENRES.some((g) => g.id === genre)) throw new EngineError('unknown genre');
+  ctx.s.music.genre = genre;
+  ctx.log(
+    'fame',
+    `🎛️ You change your sound: ${GENRES.find((g) => g.id === genre)?.label.toLowerCase()} from now on.`,
+  );
+}
+
 export function signRecordDeal(ctx: Ctx, label: string): void {
   ctx.s.music.label = label;
   ctx.s.music.stage = Math.max(ctx.s.music.stage, 4);
@@ -304,13 +341,19 @@ export function fameTick(ctx: Ctx): void {
   const fame = s.player.stats.fame;
   if (fame > 0 && s.year - m.lastWork > 1)
     s.player.stats.fame = clampStat(fame - (fame > 50 ? 4 : 2));
-  if (m.label && m.releases.length) {
-    const royalties = money(
-      s,
-      m.releases.reduce((t, r) => t + r.quality, 0) * 15 * (1 + fame / 50),
-      'wage',
+  if (m.releases.length) {
+    // The back catalogue pays every year: hits most, and less as they age.
+    const royalties = Math.max(
+      catalogueRoyalties(s),
+      m.label
+        ? money(s, m.releases.reduce((t, r) => t + r.quality, 0) * 15 * (1 + fame / 50), 'wage')
+        : 0,
     );
-    s.money.cash += royalties;
+    if (royalties > 0) {
+      s.money.cash += royalties;
+      if (royalties > money(s, 20000, 'wage') && ctx.rng.chance(0.4))
+        ctx.log('fame', `💿 ${royaltiesLine(s, royalties)}`);
+    }
   }
   // Fame lifts happiness up to a point, then the attention starts to press (SPEC §5.5).
   if (fame > 0)

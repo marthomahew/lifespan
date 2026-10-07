@@ -10,6 +10,7 @@ import { OPTION_ACTIVITIES, OptionDialog } from './OptionDialog';
 import { cap } from '../../../components/text';
 import { FreeTime } from './FreeTime';
 import { FoldTitle } from '../../../components/Fold';
+import { UnderworldSection } from './UnderworldSection';
 
 const GROUP_LABEL: Record<string, string> = {
   mind_body: 'Mind and body',
@@ -124,6 +125,7 @@ export function ActivitiesTab({ game }: { game: GameState }): React.JSX.Element 
       ))}
       <EmigrateSection game={game} onError={setError} />
       <CrimeSection game={game} onError={setError} />
+      <UnderworldSection game={game} onError={setError} />
       {picking && (
         <OptionDialog
           game={game}
