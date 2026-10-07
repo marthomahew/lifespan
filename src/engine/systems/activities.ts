@@ -1,3 +1,4 @@
+import { lifestyleFreeTime } from './lifestyle';
 import { novelReason } from './projects';
 import { FOCUS_COST } from './focus';
 import { SPORT_COST } from './sport';
@@ -85,6 +86,11 @@ export function freeTime(s: GameState): { total: number; left: number; why: stri
   if (s.player.focus && !s.legal.prison && s.player.age >= 4) {
     total -= FOCUS_COST;
     why.push(`your focus`);
+  }
+  const bought = lifestyleFreeTime(s);
+  if (bought > 0) {
+    total += bought;
+    why.push('staff and private travel');
   }
   // Never so busy that there's no time for anything.
   total = Math.max(3, total);

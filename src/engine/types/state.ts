@@ -1,3 +1,4 @@
+import type { LifestyleItem } from '../systems/lifestyle';
 import type { ProRecord } from '../systems/sport-pro';
 import type { Projects } from '../systems/projects';
 import type { Business } from '../systems/business';
@@ -105,6 +106,8 @@ export type GameState = {
   sport?: SportRecord | null;
   /** A professional sports career: team, contract, numbers, honours. */
   proSport?: ProRecord | null;
+  /** The good life: what wealth has bought (jets, staff, start-up bets). */
+  lifestyle?: LifestyleItem[];
   /** Your chess record, once you have played a rated tournament. */
   chess?: ChessRecord | null;
   /** A business of your own (one at a time). */

@@ -106,6 +106,13 @@ export {
   type SportRecord,
 } from './systems/sport';
 export { knownFor, knownForLine } from './fame';
+export {
+  lifestyleCost,
+  lifestyleReason,
+  lifestyleUpkeep,
+  owned as lifestyleOwned,
+  wealthTier,
+} from './systems/lifestyle';
 export { FAME_DEALS, fameDealPay, fameDealReason, type FameDeal } from './systems/fame-deals';
 export { MAJORS, isChampion, majorReason, type Major, type MajorId } from './systems/chess-crown';
 export { letReason, rentFor, type Tenancy } from './systems/lettings';

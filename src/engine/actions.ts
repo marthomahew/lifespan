@@ -34,6 +34,7 @@ import { businessAction, type BusinessOp } from './systems/business';
 import { playTournament } from './systems/chess';
 import { playMajor, type MajorId } from './systems/chess-crown';
 import { takeFameDeal, type FameDeal } from './systems/fame-deals';
+import { buyLifestyle, endLifestyle } from './systems/lifestyle';
 import { takeUpSport, trainExtra } from './systems/sport';
 import { letHome } from './systems/lettings';
 import { tradeShares } from './systems/markets';
@@ -67,6 +68,8 @@ export type PlayerAction =
   | { type: 'chess_major'; id: MajorId }
   | { type: 'sport'; sport: string | null; position?: string }
   | { type: 'sport_train' }
+  | { type: 'lifestyle'; id: string }
+  | { type: 'lifestyle_end'; key: number }
   | { type: 'fame_deal'; id: FameDeal['id'] }
   | { type: 'let_home'; id: number; on: boolean }
   | {
@@ -168,6 +171,12 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'sport_train':
       trainExtra(ctx);
+      break;
+    case 'lifestyle':
+      buyLifestyle(ctx, action.id);
+      break;
+    case 'lifestyle_end':
+      endLifestyle(ctx, action.key);
       break;
     case 'fame_deal':
       takeFameDeal(ctx, action.id);

@@ -1,5 +1,6 @@
 import type { VehicleDef } from '../../content/types';
 import { historicalMortgage, houseReturn } from './markets';
+import { lifestyleTick } from './lifestyle';
 import {
   HOME_TYPE_BY_ID,
   HOME_TYPES,
@@ -323,6 +324,9 @@ export function assetsTick(ctx: Ctx): void {
     p.condition = clampStat(p.condition - r.int(0, 4));
     if (def?.skill) addSkill(s, def.skill, 1);
   }
+  // The good life's upkeep (staff, jets, yachts) is paid in its own tick.
+  const lux = lifestyleTick(ctx);
+  if (lux && s.money.last) s.money.last.maintenance += lux;
   if (maintenance) {
     s.money.cash -= maintenance;
     if (s.money.last) s.money.last.maintenance += maintenance;

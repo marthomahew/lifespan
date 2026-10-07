@@ -1,3 +1,4 @@
+import { familyOfficeBonus } from './lifestyle';
 import { marketReturn } from './markets';
 import { luck } from './luck';
 import type { Ctx } from '../ctx';
@@ -141,7 +142,7 @@ export function runFinances(ctx: Ctx, income: { salary: number; other: number })
     if (hist !== null) r = hist + (k === 'bonds' ? 0 : ctx.rng.normal(0, 0.02));
     // Money luck: a better year than the market, and the crash that happens to other people.
     const lucky = luck(s, 'money');
-    r += 0.06 * lucky;
+    r += 0.06 * lucky + familyOfficeBonus(s);
     if (def.crash && hist === null && lucky < 1 && ctx.rng.chance(def.crash)) r = -0.9;
     r = Math.max(-0.95, r);
     const delta = Math.round(v * r);

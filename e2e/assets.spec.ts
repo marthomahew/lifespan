@@ -101,3 +101,14 @@ test('an action in a panel says what it did, right there', async ({ page }) => {
   await page.getByTestId('tab-assets').click();
   await expect(page.getByTestId('act-feedback')).toHaveCount(0);
 });
+
+test('the good life opens with wealth: hire staff and see them listed', async ({ page }) => {
+  await startSeeded(page, 618);
+  await cheat(page, 'age set 40', 'money add 60000000');
+  await clearPopups(page);
+  await page.getByTestId('tab-assets').click();
+  await expect(page.getByTestId('good-life')).toBeVisible();
+  await page.getByTestId('gl-staff').click();
+  await expect(page.getByTestId('good-life-owned')).toContainText('Household staff');
+  await expect(page.getByTestId('gl-superyacht')).toBeDisabled();
+});

@@ -4,6 +4,7 @@ import { SKILL_BY_ID } from '../../content/skills';
 import { TRAIT_BY_ID } from '../../content/traits';
 import type { OddsKey } from '../../content/types';
 import type { GameState, Npc } from '../types';
+import { lifestyleOdds } from './lifestyle';
 
 /** Sum of the player's trait and skill modifiers for an odds domain (SPEC §5.12). */
 export function playerOdds(s: GameState, key: OddsKey): number {
@@ -21,7 +22,7 @@ export function playerOdds(s: GameState, key: OddsKey): number {
     const def = k.startsWith('v:') ? VEHICLE_BY_ID[k.slice(2)] : POSSESSION_BY_ID[k.slice(2)];
     t += def?.perks?.[key] ?? 0;
   }
-  return t;
+  return t + lifestyleOdds(s, key);
 }
 
 export function npcOdds(n: Npc, key: OddsKey): number {

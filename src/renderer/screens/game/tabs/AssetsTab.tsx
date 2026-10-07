@@ -3,6 +3,7 @@ import { itemName, vehicleName } from '../../../../engine/systems/assets';
 import { useState } from 'react';
 import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
 import { BuyDialog, type BuyTarget } from './BuyDialog';
+import { GoodLife } from './GoodLife';
 import {
   formatMoney,
   formatMoneyShort,
@@ -244,6 +245,7 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
           </button>
         </section>
       )}
+      <GoodLife game={game} onError={setError} />
       {buying && <BuyDialog game={game} target={buying} onClose={() => setBuying(null)} />}
     </div>
   );
