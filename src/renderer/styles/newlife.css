@@ -346,3 +346,59 @@ button.cl-dice:hover:not(:disabled) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Saved setups: a row of one-click templates above the form. */
+.cl-templates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -6px 0 18px;
+}
+.cl-templates-label {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 2px;
+}
+.cl-template {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 2px 4px 2px 2px;
+}
+.cl-template.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.cl-template-load {
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 600;
+}
+.cl-template-icon {
+  border: 0;
+  background: transparent;
+  padding: 2px 6px;
+  color: var(--text-2);
+  border-radius: 999px;
+}
+.cl-template-icon:hover,
+.cl-template-load:hover {
+  background: var(--surface-3, var(--border));
+}
+.cl-template input,
+.cl-template-save input[type='text'],
+.cl-template-save input:not([type]) {
+  width: 14em;
+}
+.cl-template-save {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}

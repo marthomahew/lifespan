@@ -10,6 +10,7 @@ import {
 import { DICE, START, toOptions, useNewLife } from './newlife/useNewLife';
 import { useState } from 'react';
 import { ChallengePicker } from './ChallengePicker';
+import { Templates } from './newlife/Templates';
 
 /** Random in one click, or built piece by piece with a live preview of who you'll be. */
 export function NewLifeScreen(): React.JSX.Element {
@@ -53,6 +54,7 @@ export function NewLifeScreen(): React.JSX.Element {
           </button>
         </div>
       </div>
+      <Templates d={d} onLoad={(t) => set(() => t)} />
       <form className="cl-body" onSubmit={begin} data-testid="custom-form" aria-label="Custom life">
         <Preview d={d} onSeed={(v) => set({ seed: v })}>
           <button className="primary cl-begin" type="submit" data-testid="btn-begin">
