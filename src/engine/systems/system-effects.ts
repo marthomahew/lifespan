@@ -1,4 +1,4 @@
-import { takeUpSport } from './sport';
+import { acceptScholarship, takeUpSport } from './sport';
 import { SPORT_BY_ID } from '../../content/sports';
 import { JOB_BY_ID } from '../../content/jobs';
 import { MAJORS } from '../../content/education';
@@ -152,6 +152,9 @@ export function applySystemEffect(
       return;
     case 'move_out':
       if (s.assets.housing === 'parents') s.assets.housing = 'renting';
+      return;
+    case 'sport_scholarship':
+      if (arg) acceptScholarship(ctx, arg);
       return;
     case 'take_up_sport': {
       // Making a team means playing the sport for real (unless you already play one).

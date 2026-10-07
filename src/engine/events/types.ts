@@ -70,6 +70,7 @@ export type Effect =
       system:
         | 'hire'
         | 'take_up_sport'
+        | 'sport_scholarship'
         | 'conscript'
         | 'sign_label'
         | 'dishonorable'

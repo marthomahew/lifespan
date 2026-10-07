@@ -192,4 +192,49 @@ export const SPORT_EVENTS: EventDef[] = [
       },
     ],
   },
+  {
+    id: 'sport_scholarship',
+    kind: 'choice',
+    category: 'school',
+    emoji: '🎓',
+    ages: [17, 19],
+    weight: 1,
+    chainOnly: true,
+    text: 'A university {sport} coach has been in the stands for your last three games. Now there is a letter on the kitchen table: a full athletic scholarship. Tuition, books, a dorm room and a place on the team.',
+    choices: [
+      {
+        id: 'business',
+        label: 'Accept, and study business',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You sign on the kitchen table while your family takes photographs of you signing on the kitchen table.',
+            effects: [{ system: 'sport_scholarship', arg: 'business' }],
+          },
+        ],
+      },
+      {
+        id: 'education',
+        label: 'Accept, and study education (coaching, one day)',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You sign, and pick a degree that keeps a whistle in your future either way.',
+            effects: [{ system: 'sport_scholarship', arg: 'education' }],
+          },
+        ],
+      },
+      {
+        id: 'decline',
+        label: 'Turn it down',
+        outcomes: [
+          {
+            chance: 1,
+            text: 'You write a polite letter saying no. The coach writes back to say the door is closed, but kindly.',
+            effects: [{ flag: 'declined_scholarship' }],
+          },
+        ],
+      },
+    ],
+  },
 ];

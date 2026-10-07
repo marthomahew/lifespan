@@ -11,6 +11,8 @@ import { luck } from './luck';
 import { addSkill } from './skills';
 import { workTime } from './activities';
 import { markUsed } from './usage';
+import { athleticScholarship } from './education';
+import { hasEducation } from './careers';
 
 /** A sport you play, season by season: the level you have reached, your form, your honours. */
 export type SportRecord = {
@@ -86,6 +88,48 @@ export function takeUpSport(ctx: Ctx, id: string | null): void {
 
 export const EXTRA_TRAINING = 2;
 
+/**
+ * Athletic scholarships (in the US, where they exist): a strong school athlete finishing high
+ * school is offered a university place with the fees paid. Once.
+ */
+function scholarshipOffer(ctx: Ctx, def: SportDef, r: SportRecord, band: string): void {
+  const s = ctx.s;
+  const age = s.player.age;
+  if (
+    s.player.country !== 'us' ||
+    age < 17 ||
+    age > 19 ||
+    r.level < 2 ||
+    band === 'bad' ||
+    r.form < 50 ||
+    s.education.enrollment ||
+    !hasEducation(s, 'high_school') ||
+    s.career.jobId === 'professional_athlete' ||
+    s.player.flags.includes('scholarship_offered')
+  )
+    return;
+  s.player.flags.push('scholarship_offered');
+  const ev = EVENT_BY_ID['sport_scholarship'];
+  if (ev) fireEvent(ctx, ev, 'system', { sport: def.label.toLowerCase() });
+}
+
+/** Accepting: university with the fees paid, and (in college sports) a place on the team. */
+export function acceptScholarship(ctx: Ctx, programId: string): void {
+  const s = ctx.s;
+  const r = s.sport;
+  if (!athleticScholarship(ctx, programId) || !r?.active) return;
+  const def = sportDef(r);
+  const first = def?.recruited?.[0];
+  if (def && first !== undefined && r.level < first) {
+    const star = r.form >= 88 && def.recruited?.includes(first + 1);
+    r.level = star ? first + 1 : first;
+    r.best = Math.max(r.best, r.level);
+    const where = def.levels[r.level] ?? '';
+    r.honours.push(`${where} (${s.year})`);
+    ctx.log('activity', `${def.emoji} You join ${where} on scholarship.`, true);
+  }
+}
+
 /** Why you can't put in extra training now, or null. */
 export function trainReason(s: GameState): string | null {
   const r = s.sport;
@@ -153,15 +197,23 @@ export function sportTick(ctx: Ctx): void {
   const keep = [0, 15, 32, 48, 62][r.level] ?? 0;
   const band = perf >= need ? 'good' : perf >= keep ? 'fair' : 'bad';
   ctx.log('activity', `${def.emoji} ${pickFresh(ctx, def[band])}`);
+  // A senior with good form hears from colleges first (before school sport ends).
+  scholarshipOffer(ctx, def, r, band);
   const next = r.level + 1;
-  if (age > 18 && schoolRung(def, r.level) && !(band === 'good' && def.recruited?.includes(next))) {
+  if (age > 19 && schoolRung(def, r.level) && !s.education.enrollment) {
     // School is over and no college called: an adult league from here.
     r.level = 0;
     ctx.log(
       'activity',
       `${def.emoji} School sport ends, and no college calls. You play on in ${def.adult}.`,
     );
-  } else if (band === 'good' && next < def.levels.length && age >= (def.ages[next] ?? 99)) {
+  } else if (
+    band === 'good' &&
+    next < def.levels.length &&
+    age >= (def.ages[next] ?? 99) &&
+    // College teams are reached by a scholarship (below), not by being picked.
+    !(def.recruited?.includes(next) && !def.recruited.includes(r.level))
+  ) {
     r.level = next;
     // A school star can be recruited straight into a major programme.
     const jump =
@@ -204,12 +256,21 @@ export function sportTick(ctx: Ctx): void {
     band !== 'bad' &&
     s.career.jobId !== 'professional_athlete' &&
     !s.player.flags.includes(`pro_offer:${s.year}`) &&
-    (promoted || ctx.rng.chance(0.5))
+    // The best are always wanted; others get a look about half the time.
+    (promoted || r.level >= def.levels.length - 1 || r.form >= 75 || ctx.rng.chance(0.5))
   ) {
     s.player.flags.push(`pro_offer:${s.year}`);
     const ev =
       EVENT_BY_ID[def.route.kind === 'club' ? 'sport_pro_offer' : `sport_pro_${def.route.kind}`];
     if (ev) fireEvent(ctx, ev, 'system', { sport: def.label.toLowerCase() });
+  }
+  // College sport lasts as long as college does (the draft above gets its chance first).
+  if (def.recruited?.includes(r.level) && !s.education.enrollment && age > 18) {
+    r.level = 0;
+    ctx.log(
+      'activity',
+      `${def.emoji} Your college playing days are over. You play on in ${def.adult}.`,
+    );
   }
   // Contact sports and long seasons bring knocks (a born athlete shrugs off most).
   if (ctx.rng.chance(0.08 * (1 - 0.6 * Math.min(1, luck(s, 'sport')))))

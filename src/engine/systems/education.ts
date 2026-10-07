@@ -277,6 +277,33 @@ export function enroll(
   return { accepted: true, scholarship, tuition };
 }
 
+/**
+ * An athletic scholarship: a university place with the fees paid, in return for playing.
+ * Coaches get their recruits in, grades or no grades (a diploma is still needed).
+ */
+export function athleticScholarship(ctx: Ctx, programId: string): boolean {
+  const s = ctx.s;
+  if (s.education.enrollment || !hasEducation(s, 'high_school') || !MAJOR_BY_ID[programId])
+    return false;
+  s.education.enrollment = {
+    kind: 'university',
+    programId,
+    year: 0,
+    length: 4,
+    gradeSum: 0,
+    tuition: 0,
+    scholarship: true,
+  };
+  s.player.flags.push('athletic_scholarship');
+  ctx.log(
+    'school',
+    `You start university on a full athletic scholarship, studying ${MAJOR_BY_ID[programId]?.label.toLowerCase() ?? programId}. The fees are paid; the training schedule is not optional.`,
+    true,
+  );
+  addStat(s, 'happiness', 8);
+  return true;
+}
+
 /** A year of university: pay (or borrow) tuition, perform, graduate (SPEC §5.2). */
 export function universityTick(ctx: Ctx): void {
   const s = ctx.s;

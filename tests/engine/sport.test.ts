@@ -133,6 +133,19 @@ describe('sport, season by season', () => {
         pending: [],
         sport: { sport, level: 4, best: 4, form: 95, seasons: 10, honours: [], active: true },
         player: { ...s.player, skills: { ...s.player.skills, athletics: 100 } },
+        // College athletes are enrolled (on scholarship).
+        education: {
+          ...s.education,
+          enrollment: {
+            kind: 'university' as const,
+            programId: 'business',
+            year: 0,
+            length: 8,
+            gradeSum: 0,
+            tuition: 0,
+            scholarship: true,
+          },
+        },
       };
     };
     const offers = (s: GameState): string[] => {
@@ -196,10 +209,11 @@ describe('sport, season by season', () => {
       expect(def.ages[s.sport?.level ?? 0] ?? 0).toBeLessThanOrEqual(s.player.age);
       expect(s.sport?.level ?? 0).toBeLessThan(3);
     }
-    // At 18 a star is recruited into college football.
+    // At 18 a star is offered a scholarship (the helper accepts it) and goes to college.
     for (let i = 0; i < 4 && (s.sport?.level ?? 0) < 3; i++) s = seasons(s, 1);
     expect(s.sport?.level ?? 0).toBeGreaterThanOrEqual(3);
-    expect(s.log.some((l) => /Recruiters come calling/.test(l.text))).toBe(true);
+    expect(s.education.enrollment?.scholarship).toBe(true);
+    expect(s.log.some((l) => /athletic scholarship/.test(l.text))).toBe(true);
   });
 
   it('school tryouts that you pass start the sport for real', () => {
@@ -213,5 +227,37 @@ describe('sport, season by season', () => {
     // Already playing something else: making a school team doesn't switch your sport.
     applyEffect(ctx, { system: 'take_up_sport', arg: 'football' }, {}, {}, 'test');
     expect(ctx.s.sport?.sport).toBe('ice_hockey');
+  });
+
+  it('a strong school athlete is offered a scholarship: accepting means college and the team', () => {
+    let s = runCheat(kid(2480), 'age.set', { age: 18 }).state;
+    s = runCheat({ ...s, pending: [] }, 'degree.grant', { level: 'high_school' }).state;
+    s = {
+      ...s,
+      pending: [],
+      education: { ...s.education, enrollment: null, inSchool: false },
+      sport: {
+        sport: 'basketball',
+        level: 2,
+        best: 2,
+        form: 90,
+        seasons: 8,
+        honours: [],
+        active: true,
+      },
+      player: { ...s.player, skills: { ...s.player.skills, athletics: 95 } },
+    };
+    let offered: GameState | null = null;
+    for (let i = 0; i < 3 && !offered; i++) {
+      s = ageUp({ ...s, pending: [] }).state;
+      if (s.pending.some((p) => p.eventId === 'sport_scholarship')) offered = s;
+    }
+    expect(offered).not.toBeNull();
+    let o = offered as GameState;
+    o = { ...o, pending: o.pending.filter((p) => p.eventId === 'sport_scholarship') };
+    const yes = choose(o, 'business').state;
+    expect(yes.education.enrollment?.scholarship).toBe(true);
+    expect(yes.education.enrollment?.tuition).toBe(0);
+    expect(yes.sport?.level ?? 0).toBeGreaterThanOrEqual(3);
   });
 });
