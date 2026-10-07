@@ -178,4 +178,15 @@ describe('family faces', () => {
     ).state;
     expect(npcLook(dyed, kid)).toEqual(face);
   });
+
+  it('parents, siblings and grandparents share your skin colour, a shade either way', () => {
+    for (let seed = 1; seed <= 20; seed++) {
+      const s = newLife({}, 9000 + seed);
+      const me = s.player.birthLook ?? s.player.look;
+      for (const n of s.npcs.filter((x) =>
+        x.roles.some((r) => ['mother', 'father', 'sibling', 'grandparent'].includes(r)),
+      ))
+        expect(Math.abs(npcLook(s, n).skin - me.skin)).toBeLessThanOrEqual(1);
+    }
+  });
 });

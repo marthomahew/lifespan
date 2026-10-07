@@ -356,5 +356,8 @@ export function npcLook(s: GameState, npc: Npc, depth = 0): Look {
     const o = other !== undefined ? s.npcs.find((n) => n.id === other) : undefined;
     return blendLooks(r, me, o ? natural(npcLook(s, o, depth + 1)) : own, npc.gender);
   }
-  return blendLooks(r, me, own, npc.gender);
+  // Parents, siblings and grandparents share your colouring: a shade either way at most.
+  const kin = blendLooks(r, me, own, npc.gender);
+  const skin = Math.max(0, Math.min(SKIN_COLORS.length - 1, me.skin + r.int(-1, 1)));
+  return { ...kin, skin };
 }
