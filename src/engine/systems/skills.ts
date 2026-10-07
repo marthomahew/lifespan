@@ -26,21 +26,23 @@ export function learnRate(s: GameState, skill?: string): number {
 
 /**
  * How much one session is worth at your level: everything counts, but the top is slow.
- * Full value below 30, then 35% from 30, 20% from 50, 10% from 70, 5% from 85 and 2.5% from 95:
- * the last points to 100 (the best in the world) take years.
+ * Full value below 30, then 35% from 30, 20% from 50, 12% from 70, 10% from 85, 9% from 90
+ * and 7% from 95: near the top a few sessions still move you a point, just not many.
  */
 export function levelFactor(cur: number): number {
   return cur >= 95
-    ? 0.025
-    : cur >= 85
-      ? 0.05
-      : cur >= 70
+    ? 0.07
+    : cur >= 90
+      ? 0.09
+      : cur >= 85
         ? 0.1
-        : cur >= 50
-          ? 0.2
-          : cur >= 30
-            ? 0.35
-            : 1;
+        : cur >= 70
+          ? 0.12
+          : cur >= 50
+            ? 0.2
+            : cur >= 30
+              ? 0.35
+              : 1;
 }
 
 /**
