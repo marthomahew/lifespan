@@ -1,3 +1,4 @@
+import { RESULTS_REASON } from '../../../../engine/systems/career-modes';
 import { useState } from 'react';
 import { JOB_BY_ID } from '../../../../content/jobs';
 import { formatMoney, type GameState } from '../../../../engine';
@@ -52,12 +53,20 @@ export function CareerSection({
             <button data-testid="btn-work-harder" onClick={() => act('work_harder')}>
               Work harder
             </button>
-            <button data-testid="btn-ask-raise" onClick={() => act('ask_raise')}>
-              Ask for a raise
-            </button>
-            <button data-testid="btn-ask-promotion" onClick={() => act('ask_promotion')}>
-              Ask for a promotion
-            </button>
+            {RESULTS_REASON[c.jobId ?? ''] ? (
+              <span className="muted small" data-testid="results-career">
+                No raises or promotions to ask for: {RESULTS_REASON[c.jobId ?? '']}.
+              </span>
+            ) : (
+              <>
+                <button data-testid="btn-ask-raise" onClick={() => act('ask_raise')}>
+                  Ask for a raise
+                </button>
+                <button data-testid="btn-ask-promotion" onClick={() => act('ask_promotion')}>
+                  Ask for a promotion
+                </button>
+              </>
+            )}
             <button className="quiet-danger" data-testid="btn-quit" onClick={() => act('quit')}>
               Quit
             </button>

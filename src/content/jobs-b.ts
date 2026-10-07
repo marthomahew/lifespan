@@ -453,13 +453,20 @@ export const JOBS_B: JobDef[] = [
   {
     id: 'professional_athlete',
     field: 'sports',
-    titles: ['Practice Squad Player', 'Rookie', 'Starter', 'All-Star', 'Franchise Legend'],
+    // Standing follows form, season by season (career-modes.ts), not promotions.
+    titles: [
+      'Squad Player',
+      'First-Team Regular',
+      'Established Starter',
+      'International',
+      'Superstar',
+    ],
     salary: [
-      [50000, 90000],
-      [90000, 300000],
-      [400000, 1500000],
-      [2000000, 8000000],
-      [8000000, 25000000],
+      [40000, 90000],
+      [90000, 350000],
+      [350000, 1200000],
+      [1200000, 4000000],
+      [4000000, 12000000],
     ],
     req: { minAge: 18, health: 70, skills: { athletics: 70 } },
     stress: 70,

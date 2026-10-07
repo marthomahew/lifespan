@@ -919,5 +919,10 @@
     "title": "Fame says what for (known for: titles, records, books, roles, honours); homes can be let to tenants (rent taxed as income, tenant stories, rent shown on listings); renovation value follows repair",
     "passes": true,
     "evidence": "tests/engine/fame.test.ts; tests/engine/lettings.test.ts"
+  },
+  "S89": {
+    "title": "Careers that are not ladders: athletes standing by form (needs a sport), actors by the parts (income swings), politicians by elections; no asking for raises in those",
+    "passes": true,
+    "evidence": "tests/engine/career-modes.test.ts"
   }
 }
