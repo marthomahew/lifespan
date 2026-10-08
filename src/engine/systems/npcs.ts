@@ -174,13 +174,15 @@ function npcAging(ctx: Ctx): void {
           ? n.fertility - 4
           : n.fertility,
     );
-    // Savings keep pace with prices, and working adults put a little away.
-    n.money = Math.round(
-      n.money * 1.025 +
-        (n.age >= 22 && n.age < 66 && n.job && !['At school', 'At university'].includes(n.job)
-          ? money(s, 1500, 'wage')
-          : 0),
-    );
+    // Savings keep pace with prices, and working adults put a little away (the people whose
+    // finances npc-economy follows do their saving there).
+    if (n.pay === undefined)
+      n.money = Math.round(
+        n.money * 1.025 +
+          (n.age >= 22 && n.age < 66 && n.job && !['At school', 'At university'].includes(n.job)
+            ? money(s, 1500, 'wage')
+            : 0),
+      );
   }
 }
 

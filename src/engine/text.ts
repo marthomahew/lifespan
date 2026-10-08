@@ -2,7 +2,13 @@
 
 /** Lower-case a catalog label for mid-sentence use, keeping acronyms (COPD, CEO) intact. */
 export function lowerLabel(label: string): string {
-  return /^[A-Z]{2}/.test(label) ? label : label.charAt(0).toLowerCase() + label.slice(1);
+  // Acronyms (BMW) and brand-and-model names (Chevrolet Bel Air, Porsche 911) keep their capitals.
+  const proper =
+    /^[A-Z]{2}/.test(label) ||
+    /^[A-Z][a-z-]+ [A-Z]/.test(label) ||
+    // A model number, every word after it capitalised too (not "Type 2 diabetes").
+    /^[A-Z][a-z-]+ \d\w*( [A-Z0-9]\S*)*$/.test(label);
+  return proper ? label : label.charAt(0).toLowerCase() + label.slice(1);
 }
 
 /** A job title mid-sentence: every word lower-case except acronyms (CEO, EMT, IT). */

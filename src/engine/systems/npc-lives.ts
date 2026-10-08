@@ -1,3 +1,4 @@
+import { jobTier } from './npc-economy';
 import { lowerTitle } from '../text';
 import { pickFresh } from '../fresh';
 import { COUNTRIES } from '../../content/countries';
@@ -92,7 +93,9 @@ const MILESTONES: Milestone[] = [
     run: (ctx, n) => {
       const was = n.job;
       const left = n.flags.find((f) => f.startsWith('left_job:'))?.slice(9);
-      const pool = [...PARENT_JOBS.working, ...PARENT_JOBS.middle].filter(
+      // A fresh start at the same level of work (promotions are npc-careers' business).
+      const tier = jobTier(was) ?? 'working';
+      const pool = [...PARENT_JOBS[tier === 'poor' ? 'working' : tier]].filter(
         (j) => j !== was && j !== left && !NOT_WORKING.includes(j),
       );
       n.job = ctx.rng.pick(pool);

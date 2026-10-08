@@ -97,7 +97,14 @@ function convertCurrency(s: GameState, ratio: number): void {
   if (s.career.peakSalary) s.career.peakSalary = r(s.career.peakSalary);
   s.career.pension = r(s.career.pension);
   if (s.legal.case) s.legal.case.bail = r(s.legal.case.bail);
-  for (const n of s.npcs) n.money = r(n.money);
+  // Everyone's money is shown in yours: pay, savings, homes and debts too.
+  for (const n of s.npcs) {
+    n.money = r(n.money);
+    for (const k of ['pay', 'invest', 'home', 'mortgage', 'debt'] as const) {
+      const v = n[k];
+      if (v !== undefined) n[k] = r(v);
+    }
+  }
 }
 
 /** Move to another country (SPEC §5.11). The cheat version skips the requirements and the cost. */

@@ -84,8 +84,10 @@ export function settleFinances(ctx: Ctx, n: Npc, tier?: Tier): void {
   n.money = Math.max(n.money, Math.round(saved * 0.3));
   const owns = n.age >= 28 && r.chance([0.15, 0.45, 0.7, 0.85, 0.95][rank] ?? 0.6);
   if (owns) {
+    // About four to six years' pay, as homes cost in most places (a table for those without).
     const price =
-      money(s, [120000, 220000, 400000, 900000, 3000000][rank] ?? 400000) * (0.7 + r.next() * 0.6);
+      (n.pay ? n.pay * 5 : money(s, [120000, 220000, 400000, 900000, 3000000][rank] ?? 400000)) *
+      (0.7 + r.next() * 0.6);
     n.home = Math.round(price);
     n.mortgage = Math.round(price * Math.max(0, 0.8 - years * 0.025));
   }
@@ -112,6 +114,13 @@ function followed(s: GameState, n: Npc): boolean {
   );
 }
 
+/** Your parents, while together, live in one home (whichever of them holds it). */
+function sharesHome(s: GameState, n: Npc): boolean {
+  const parent = (x: Npc): boolean => x.roles.includes('mother') || x.roles.includes('father');
+  if (!parent(n) || n.flags.includes('parents_split')) return false;
+  return s.npcs.some((o) => o.id !== n.id && o.alive && parent(o) && (o.home ?? 0) > 0);
+}
+
 /** The year in other people's money: pay, savings, markets, homes, debts, pensions. */
 export function npcEconomy(ctx: Ctx): void {
   const s = ctx.s;
@@ -135,23 +144,22 @@ export function npcEconomy(ctx: Ctx): void {
     else n.pay = 0;
     const tier = t ?? 'working';
     // Savings: what's left after living, at the tier's habit; the rest goes to the house.
-    const spare = Math.max(0, (n.pay ?? 0) - living) * SAVE[tier] * 3;
-    n.invest = Math.round(((n.invest ?? 0) + spare * 0.7) * (1 + idx));
-    n.money = Math.round(n.money * 1.02 + spare * 0.3);
+    const spare = Math.max(0, (n.pay ?? 0) - living) * SAVE[tier];
+    // Wealth gets spent as well as saved: a few percent a year on the life it buys (more once
+    // retired), so fortunes grow with the markets but don't run away.
+    const draw = n.job === 'Retired' ? 0.05 : 0.03;
+    n.invest = Math.round(((n.invest ?? 0) + spare * 0.7) * (1 + idx - draw));
+    n.money = Math.round(n.money * (1.02 - draw) + spare * 0.3);
     if (n.home) {
       n.home = Math.round(n.home * (1 + homes));
       n.mortgage = Math.max(
         0,
         Math.round((n.mortgage ?? 0) - Math.max(n.home * 0.03, (n.pay ?? 0) * 0.12)),
       );
-    } else if (n.age >= 26 && n.age <= 55 && (n.pay ?? 0) > 0) {
+    } else if (n.age >= 26 && n.age <= 55 && (n.pay ?? 0) > 0 && !sharesHome(s, n)) {
       // First home: a deposit of a fifth.
-      const price = money(
-        s,
-        [140000, 240000, 420000, 900000, 3000000][
-          ['poor', 'working', 'middle', 'comfortable', 'rich'].indexOf(tier)
-        ] ?? 400000,
-      );
+      // About five years' pay.
+      const price = Math.round((n.pay ?? 0) * (4 + r.next() * 2));
       const deposit = price * 0.2;
       if (n.money + (n.invest ?? 0) >= deposit * 1.2 && r.chance(0.35)) {
         const fromInvest = Math.max(0, deposit - n.money);
@@ -162,7 +170,14 @@ export function npcEconomy(ctx: Ctx): void {
         n.flags.push(`bought_home:${s.year}`);
       }
     }
-    if (n.debt) n.debt = Math.max(0, Math.round(n.debt * 1.15 - (n.pay ?? 0) * 0.05));
+    // Debts: interest, then repayments that always beat it (more when there's cash to hand).
+    if (n.debt) {
+      const owed = n.debt * 1.06;
+      const pay = Math.max((n.pay ?? 0) * 0.08, owed * 0.12, Math.min(n.money * 0.5, owed));
+      if (pay > owed * 0.12) n.money = Math.max(0, n.money - Math.min(n.money * 0.5, owed));
+      n.debt = Math.max(0, Math.round(owed - pay));
+      if (n.debt < money(s, 100)) delete n.debt;
+    }
   }
 }
 

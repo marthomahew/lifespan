@@ -6,6 +6,8 @@ import { Rng, seedRng } from '../rng';
 import type { GameState, Npc } from '../types';
 import { jobTier } from './npc-economy';
 
+const withA = (w: string): string => `${/^[aeiou]/i.test(w) ? 'an' : 'a'} ${w}`;
+
 /**
  * Other people's working lives: leaving school for university or a job, graduating into
  * work that fits the degree, promotions, a change of job, finding work again, and retiring
@@ -47,7 +49,7 @@ function setJob(ctx: Ctx, r: Rng, n: Npc, tier: Tier, why?: string): void {
     Math.round((n.pay ?? 0) * 1.05),
   );
   if (why && n.roles.some((x) => CLOSE.includes(x)) && n.rel >= 30)
-    ctx.log('family', why.replace('{job}', n.job.toLowerCase()));
+    ctx.log('family', why.replace('{job}', withA(n.job.toLowerCase())));
 }
 
 /** A year in the working lives of the people you know. */
@@ -88,7 +90,7 @@ export function npcCareers(ctx: Ctx): void {
         r,
         n,
         up ? 'comfortable' : 'middle',
-        `🎓 {name} graduates and starts work as a {job}.`.replace('{name}', n.first),
+        `🎓 {name} graduates and starts work as {job}.`.replace('{name}', n.first),
       );
       continue;
     }
@@ -120,13 +122,15 @@ export function npcCareers(ctx: Ctx): void {
     const rank = TIERS.indexOf(t);
     // Promotion to the next kind of work: the top needs a degree, and talent.
     const degree = n.edu === 'degree' || n.edu === 'postgrad';
-    const ceiling = degree ? (smart > 70 ? 4 : 3) : smart > 60 ? 2 : 1;
-    if (rank < ceiling && n.age >= 25 && r.chance(0.05 + Math.max(0, smart - 50) / 500)) {
+    const ceiling = degree ? (smart > 80 ? 4 : 3) : smart > 60 ? 2 : 1;
+    // Most people move up a level once or twice in a career, if at all.
+    const odds = (0.02 + Math.max(0, smart - 50) / 1000) * (rank >= 3 ? 0.4 : 1);
+    if (rank < ceiling && n.age >= 25 && n.age <= 55 && r.chance(odds)) {
       const next = TIERS[rank + 1] as Tier;
-      setJob(ctx, r, n, next, `📈 ${n.first} moves up in the world: now a {job}.`);
+      setJob(ctx, r, n, next, `📈 ${n.first} moves up in the world: now {job}.`);
       continue;
     }
     // Or a change of job at the same level, now and then.
-    if (r.chance(0.03)) setJob(ctx, r, n, t);
+    if (r.chance(0.015)) setJob(ctx, r, n, t);
   }
 }

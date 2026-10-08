@@ -308,7 +308,13 @@ export function pensionFor(s: GameState): number {
   const c = countryOf(s);
   const years = s.career.yearsWorked + (s.military?.years ?? 0);
   // Final pay, or most of your best if you're between jobs when the pension starts.
-  const pay = Math.max(s.career.salary, (s.career.peakSalary ?? 0) * 0.85);
+  // (A long-ago peak, such as a sports contract, counts only up to twice today's pay or a
+  // generous professional salary: a pension follows a working life, not one big year.)
+  const peak = Math.min(
+    (s.career.peakSalary ?? 0) * 0.85,
+    Math.max(s.career.salary * 2, money(s, 200000, 'wage')),
+  );
+  const pay = Math.max(s.career.salary, peak);
   const full = money(s, years * c.pensionPerYear, 'wage') + pay * Math.min(0.4, years * 0.01);
   // Past seven-tenths of final pay (or a floor, for low earners) each extra counts a quarter:
   // a pension rarely beats the salary it replaces. A pension perk is a better scheme on top.

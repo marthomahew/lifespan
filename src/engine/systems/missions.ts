@@ -134,11 +134,14 @@ function astronautYear(ctx: Ctx): void {
       setLevel(
         ctx,
         1,
-        `🚀 Two years of training at ${m.org}: centrifuges, survival courses and Russian lessons. You are assigned to the flight pool.`,
+        `🚀 Two years of training at ${m.org}: centrifuges, survival courses and ${s.year >= 1994 ? 'Russian lessons' : 'geology field trips'}. You are assigned to the flight pool.`,
       );
     return;
   }
-  if (!ctx.rng.chance(0.4)) {
+  // Crews rotate: three years without a flight and your name comes up next.
+  const lastFlight = m.log.at(-1)?.year ?? (c.history.at(-1)?.from ?? s.year) + 2;
+  const due = s.year - lastFlight >= 3;
+  if (!due && !ctx.rng.chance(0.55)) {
     ctx.log(
       'work',
       '🛰️ A year of simulators, mission support and waiting for your name on a crew list.',

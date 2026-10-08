@@ -1,3 +1,4 @@
+import { privateSchoolBonus } from './upbringing';
 import { pickFresh } from '../fresh';
 import { GRAD_BY_ID, MAJOR_BY_ID, MAJORS } from '../../content/education';
 import type { Ctx } from '../ctx';
@@ -30,6 +31,7 @@ function gradeTarget(s: GameState): number {
     (st.smarts - expectedSmarts(s.player.age)) * 1.1 +
     (st.discipline - 50) * 0.3 +
     (studied ? 12 : 0) +
+    privateSchoolBonus(s) +
     playerOdds(s, 'study') * 60 -
     Math.max(0, st.stress - 70) * 0.3 -
     // Serious training (county level and up) takes hours that homework would have had.

@@ -417,8 +417,13 @@ function generateFamily(ctx: Ctx, opts: NewLifeOptions = {}): void {
     money: familyMoney / 2,
   });
   // Their wealth is more than cash: a home (most families), savings and investments.
+  for (const parent of [mother, father]) settleFinances(ctx, parent, tier);
+  // A couple share one home (it's in the father's name here); a split family has two.
+  if (together && father.home) {
+    delete mother.home;
+    delete mother.mortgage;
+  }
   for (const parent of [mother, father]) {
-    settleFinances(ctx, parent, tier);
     const total = familyMoney / 2;
     const equity = (parent.home ?? 0) - (parent.mortgage ?? 0);
     const liquid = Math.max(0, total - Math.max(0, equity));
