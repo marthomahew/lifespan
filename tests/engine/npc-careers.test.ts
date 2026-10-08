@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { newLife, type GameState } from '../../src/engine';
+import { ageUp, newLife, runCheat, type GameState } from '../../src/engine';
 import { playYears } from '../helpers';
 
 const immortal = (s: GameState): GameState => ({ ...s, cheats: { ...s.cheats, immortal: true } });
@@ -44,5 +44,48 @@ describe('other people’s working lives', () => {
       ).length;
     }
     expect(moves).toBeGreaterThan(2);
+  });
+});
+
+describe('inheriting the family home', () => {
+  it('a share that covers the house brings the house itself', () => {
+    let got = false;
+    for (let seed = 1; seed <= 6 && !got; seed++) {
+      let s = runCheat(
+        immortal(newLife({ wealth: 'middle', birthYear: 1960, siblings: 0 }, seed)),
+        'age.set',
+        {
+          age: 40,
+        },
+      ).state;
+      s = {
+        ...s,
+        pending: [],
+        npcs: s.npcs.map((n) =>
+          n.roles.includes('mother')
+            ? {
+                ...n,
+                birthYear: s.year - 97,
+                age: 97,
+                rel: 95,
+                home: 600000,
+                mortgage: 0,
+                stats: { ...n.stats, health: 0 },
+              }
+            : n.roles.includes('father')
+              ? { ...n, alive: false, deathYear: s.year - 5 }
+              : n,
+        ),
+      };
+      for (let i = 0; i < 8 && !got; i++) {
+        s = { ...ageUp({ ...s, pending: [] }).state, pending: [] };
+        const mum = s.npcs.find((n) => n.roles.includes('mother'))!;
+        if (!mum.alive) {
+          got = s.assets.homes.some((h) => h.name.startsWith(`${mum.first}'s`));
+          expect(got).toBe(true);
+        }
+      }
+    }
+    expect(got).toBe(true);
   });
 });

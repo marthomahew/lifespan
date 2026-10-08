@@ -1,8 +1,8 @@
 import { npcNetWorth } from './npc-economy';
-import { productPhrase } from './assets';
+import { moveInto, productPhrase } from './assets';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
-import { POSSESSION_BY_ID } from '../../content/assets';
+import { HOME_TYPES, POSSESSION_BY_ID } from '../../content/assets';
 
 const HEIRLOOMS = ['gold_watch', 'diamond_ring', 'oil_painting', 'rare_stamps', 'violin'];
 import { netWorth } from '../networth';
@@ -14,6 +14,8 @@ const isChildOf = (n: Npc, parentId: number): boolean => n.parentIds.includes(pa
 export function inheritFrom(ctx: Ctx, dead: Npc): void {
   const s = ctx.s;
   // The estate is everything: savings, investments and the house, less what they owed.
+  const house = dead.home ?? 0;
+  const equity = Math.max(0, house - (dead.mortgage ?? 0));
   dead.money = Math.max(0, npcNetWorth(dead));
   dead.invest = 0;
   dead.home = 0;
@@ -43,8 +45,24 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
   const amount = Math.round(dead.money * share * (0.5 + dead.rel / 200));
   if (amount <= 0) return;
   dead.money -= amount;
-  s.money.cash += amount;
+  // A share big enough to cover the house brings the house itself (its mortgage settled from
+  // the estate): live in it, let it or sell it. A smaller share is paid from its sale.
+  const takeHouse =
+    house > 0 && equity > 0 && amount >= equity * 0.9 && s.player.age >= 18 && !s.legal.prison;
+  if (takeHouse) {
+    inheritHouse(ctx, dead, house);
+    const rest = Math.max(0, amount - equity);
+    s.money.cash += rest;
+    if (rest >= money(s, 100))
+      ctx.log(
+        'money',
+        `The rest of ${dead.first}'s estate comes to you as well: ${formatMoney(s, rest)}.`,
+      );
+  } else s.money.cash += amount;
   // A token sum reads as a keepsake, not a windfall.
+  if (takeHouse) return heirloom(ctx, dead);
+  if (house > 0 && amount >= money(s, 100))
+    ctx.log('money', `${dead.first}'s house is sold and the money shared among the heirs.`);
   ctx.log(
     'money',
     amount < money(s, 100)
@@ -52,7 +70,44 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
       : `${dead.first}'s will leaves you ${formatMoney(s, amount)}.`,
     amount >= money(s, 100),
   );
-  // Older relatives sometimes leave an heirloom too.
+  heirloom(ctx, dead);
+}
+
+/** The house itself, as a home of your own. */
+function inheritHouse(ctx: Ctx, dead: Npc, value: number): void {
+  const s = ctx.s;
+  // The kind of place it is, from what it's worth.
+  const types = HOME_TYPES.filter((h) => h.id !== 'mobile_home' || value < money(s, 100000));
+  const type = types.reduce((best, h) =>
+    Math.abs(money(s, h.price) - value) < Math.abs(money(s, best.price) - value) ? h : best,
+  );
+  const name = `${dead.first}'s ${type.label.toLowerCase()}`;
+  s.assets.homes.push({
+    id: s.assets.nextAssetId++,
+    type: type.id,
+    name,
+    value: Math.round(value),
+    paid: 0,
+    condition: ctx.rng.int(55, 90),
+    bought: s.year,
+    city: s.player.city,
+    country: s.player.country,
+    livingIn: false,
+  });
+  s.assets.listingsPower = 0;
+  // Still living at home: it's yours now, and you stay.
+  const home = s.assets.homes[s.assets.homes.length - 1];
+  if (s.assets.housing === 'parents' && home) moveInto(ctx, home.id);
+  ctx.log(
+    'money',
+    `🏡 ${dead.first} leaves you the house: ${name}, worth about ${formatMoney(s, Math.round(value))}. It still smells of them. You can live in it, let it out or sell it (Assets).`,
+    true,
+  );
+}
+
+/** Older relatives sometimes leave an heirloom too. */
+function heirloom(ctx: Ctx, dead: Npc): void {
+  const s = ctx.s;
   if (
     (dead.roles.includes('grandparent') ||
       dead.roles.includes('mother') ||
