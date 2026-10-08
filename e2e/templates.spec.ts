@@ -11,6 +11,7 @@ test('a New Life setup saves as a template, survives a reload, loads, renames an
   await page.getByTestId('f-year').fill('1988');
   await page.getByTestId('f-wealth-rich').click();
   await page.getByTestId('f-seed').fill('777');
+  await page.getByTestId('f-pace-challenging').click();
 
   await page.getByTestId('btn-save-template').click();
   await page.getByTestId('template-name').fill('Rich Canadian');
@@ -27,6 +28,7 @@ test('a New Life setup saves as a template, survives a reload, loads, renames an
   await expect(page.getByTestId('f-country')).toHaveValue('ca');
   await expect(page.getByTestId('f-year')).toHaveValue('1988');
   await expect(page.getByTestId('f-seed')).toHaveValue('777');
+  await expect(page.getByTestId('f-pace-challenging')).toHaveAttribute('aria-checked', 'true');
 
   await page.getByTestId('template-rename-t1').click();
   await page.getByTestId('template-rename-input-t1').fill('Canada, rich');
@@ -37,6 +39,9 @@ test('a New Life setup saves as a template, survives a reload, loads, renames an
   await expect(page.getByTestId('player-name')).toContainText('Philippa');
   await expect(page.getByTestId('header-year')).toHaveText('1988');
   await expect(page.getByTestId('header')).toHaveAttribute('data-wealth', 'rich');
+  // The life keeps the pace it was created with (Settings shows it for this life).
+  await page.getByTestId('btn-settings').click();
+  await expect(page.getByTestId('set-pace')).toHaveValue('challenging');
 
   await page.goto('/');
   await page.getByTestId('btn-new-life').click();

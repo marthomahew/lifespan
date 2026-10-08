@@ -18,8 +18,8 @@ export function NewLifeScreen(): React.JSX.Element {
   const [challenges, setChallenges] = useState(false);
   const begin = (e?: React.FormEvent): void => {
     e?.preventDefault();
-    const { opts, seed } = toOptions(d);
-    startLife(opts, seed);
+    const { opts, seed, pace } = toOptions(d);
+    startLife(opts, seed, pace);
   };
   const rollAll = (): void =>
     set((cur) => Object.values(DICE).reduce((acc, roll) => roll(acc), { ...cur }));

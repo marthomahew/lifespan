@@ -85,10 +85,10 @@ export function SettingsScreen(): React.JSX.Element {
           <span>Free time: a year only holds so many activities</span>
         </label>
         <label className="setting">
-          <span>Pips each year</span>
+          <span>Pips each year{game ? ' (this life, and the default for new ones)' : ''}</span>
           <select
             data-testid="set-pace"
-            value={s.pace}
+            value={game?.settings.pace ?? s.pace}
             onChange={(e) =>
               updateSettings({ pace: e.target.value as 'relaxed' | 'standard' | 'challenging' })
             }

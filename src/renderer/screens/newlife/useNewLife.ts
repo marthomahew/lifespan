@@ -40,8 +40,12 @@ export type Draft = {
   gifts: string[];
   /** 'auto' follows the Settings frequency; 'none' is an ordinary upbringing. */
   background: string;
+  /** Pips a year for this life; '' follows Settings. */
+  pace: Pace | '';
   seed: string;
 };
+
+export type Pace = 'relaxed' | 'standard' | 'challenging';
 
 export const START: Draft = {
   first: '',
@@ -62,6 +66,7 @@ export const START: Draft = {
   prodigy: false,
   gifts: [],
   background: 'auto',
+  pace: '',
   seed: '',
 };
 
@@ -126,7 +131,7 @@ export const DICE = {
   }),
 };
 
-export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
+export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number; pace?: Pace } {
   const opts: NewLifeOptions = {
     country: d.country,
     birthYear: d.birthYear,
@@ -147,7 +152,10 @@ export function toOptions(d: Draft): { opts: NewLifeOptions; seed?: number } {
   if (d.last.trim()) opts.last = d.last.trim();
   if (d.city) opts.city = d.city;
   const n = Number(d.seed);
-  return d.seed.trim() && Number.isFinite(n) ? { opts, seed: Math.abs(Math.floor(n)) } : { opts };
+  const pace = d.pace ? { pace: d.pace } : {};
+  return d.seed.trim() && Number.isFinite(n)
+    ? { opts, seed: Math.abs(Math.floor(n)), ...pace }
+    : { opts, ...pace };
 }
 
 export function useNewLife(): [Draft, (patch: Partial<Draft> | ((d: Draft) => Draft)) => void] {

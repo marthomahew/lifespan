@@ -6,7 +6,8 @@ import { BACKGROUNDS, BACKGROUND_BY_ID } from '../../../content/backgrounds';
 import { WEALTH_TIERS } from '../../../engine';
 import { LookBuilder } from '../../portrait/LookBuilder';
 import type { ParentSetup } from '../../../engine/types';
-import { shownLook, STATS, toggleTrait, type Draft } from './useNewLife';
+import { shownLook, STATS, toggleTrait, type Draft, type Pace } from './useNewLife';
+import { app } from '../../store/app';
 import { useMemo } from 'react';
 import { Section, Segmented, type SetDraft } from './parts';
 
@@ -336,6 +337,22 @@ export function StatsSection({ d, set }: Props): React.JSX.Element {
           </label>
         ))}
       </div>
+      <Segmented
+        label="Pips each year"
+        testId="f-pace"
+        value={d.pace}
+        onChange={(v) => set({ pace: v })}
+        options={[
+          { value: '' as Pace | '', label: `As in Settings (${Cap(app.get().settings.pace)})` },
+          { value: 'relaxed', label: 'Relaxed' },
+          { value: 'standard', label: 'Standard' },
+          { value: 'challenging', label: 'Challenging' },
+        ]}
+      />
+      <p className="muted small">
+        Relaxed: 3 more free-time pips and 9 work-time. Challenging: 2 fewer and 4 work-time. Kept
+        with this life (and its template); Settings can still change it later.
+      </p>
     </Section>
   );
 }

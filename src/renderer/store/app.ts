@@ -142,7 +142,11 @@ export function applyStep(step: Step, opts: { autosave?: boolean } = {}): void {
   if ((opts.autosave ?? true) && app.get().settings.autosave && newYear) void persist(game);
 }
 
-export function startLife(opts: NewLifeOptions, seed?: number): void {
+export function startLife(
+  opts: NewLifeOptions,
+  seed?: number,
+  pace?: 'relaxed' | 'standard' | 'challenging',
+): void {
   const s = app.get().settings;
   const theSeed = seed ?? Math.floor(Math.random() * 2 ** 31);
   const background =
@@ -160,7 +164,8 @@ export function startLife(opts: NewLifeOptions, seed?: number): void {
     },
     theSeed,
   );
-  game.settings = { ...game.settings, pace: s.pace, languageDecay: s.languageDecay };
+  // A life can choose its own pace; otherwise it takes the one in Settings.
+  game.settings = { ...game.settings, pace: pace ?? s.pace, languageDecay: s.languageDecay };
   app.set({
     game,
     screen: 'game',
