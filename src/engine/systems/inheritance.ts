@@ -21,7 +21,20 @@ export function inheritFrom(ctx: Ctx, dead: Npc): void {
   dead.home = 0;
   dead.mortgage = 0;
   dead.debt = 0;
-  if (dead.money <= 0 || dead.rel < 15) return;
+  if (dead.money <= 0) return;
+  if (dead.rel < 15) {
+    // Estranged: the will says so, in writing.
+    if (
+      dead.money >= money(s, 10000) &&
+      dead.roles.some((x) => ['mother', 'father', 'grandparent', 'spouse'].includes(x))
+    )
+      ctx.log(
+        'money',
+        `📜 ${dead.first}'s will leaves you nothing. ${formatMoney(s, Math.round(dead.money))} goes ${ctx.rng.pick(['to a donkey sanctuary', 'to the church roof fund', 'to a nephew you’ve never met', 'to their bridge club', 'to a cats’ home'])}. You weren’t speaking, and now you never will.`,
+        true,
+      );
+    return;
+  }
   let share = 0;
   if (dead.roles.includes('spouse')) share = 1;
   else if (dead.roles.includes('mother') || dead.roles.includes('father')) {

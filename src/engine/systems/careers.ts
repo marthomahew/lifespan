@@ -2,6 +2,7 @@ import { inRecession } from './markets';
 import { RESULTS_JOBS, RESULTS_REASON, resultsCareerTick } from './career-modes';
 import { luck } from './luck';
 import { pickFresh } from '../fresh';
+import { WORK_HARDER_ARTS, WORK_HARDER_OFFICE, WORK_HARDER_SPORT } from '../../content/work-lines';
 import { JOB_BY_ID } from '../../content/jobs';
 import { SPORT_BY_ID } from '../../content/sports';
 import { netWorth } from '../networth';
@@ -393,18 +394,15 @@ export function careerAction(ctx: Ctx, id: string): void {
       c.workedHarder = s.year;
       c.performance = clampStat(c.performance + 8);
       addStat(s, 'stress', 5);
-      ctx.log(
-        'work',
-        pickFresh(ctx, [
-          'You stay late every night for a month. Your boss notices; your houseplants do not survive.',
-          'You answer emails at weekends. It works, and it shows on your face.',
-          'You volunteer for the project nobody wants and quietly nail it.',
-          'You learn the system everyone else avoids. Suddenly people bring you their problems, and their biscuits.',
-          'You arrive first and leave last for a season. The cleaner starts saying good night to you by name.',
-          'You fix a process that has annoyed everyone for years. Nobody thanks you, but the right person notices.',
-          'You take the difficult client off a colleague’s hands and win them round with sheer patience.',
-        ]),
-      );
+      // Athletes and performers work harder in their own way.
+      if (job.field === 'sports' || job.field === 'arts') {
+        ctx.log(
+          'work',
+          pickFresh(ctx, job.field === 'sports' ? WORK_HARDER_SPORT : WORK_HARDER_ARTS),
+        );
+        return;
+      }
+      ctx.log('work', pickFresh(ctx, WORK_HARDER_OFFICE));
       return;
     }
     case 'ask_raise': {

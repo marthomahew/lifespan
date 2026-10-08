@@ -306,7 +306,7 @@ export function musicAction(ctx: Ctx, id: MusicActionId): void {
           ]),
           true,
         );
-        if (tired)
+        if (tired && ctx.rng.chance(0.35))
           ctx.log(
             'fame',
             'Back on the road a year after the last tour: some fans sit this one out.',
@@ -378,12 +378,13 @@ export function fameTick(ctx: Ctx): void {
   if (fame > 70) addStat(s, 'stress', 2);
   // Endorsements and appearances pay famous people even without a release.
   if (fame >= 40 && !s.legal.prison) {
-    const deal = money(s, (fame - 30) * 1500, 'wage');
+    // (Not the big deals: those are Cash in on fame. This is the trickle a name earns.)
+    const deal = money(s, (fame - 30) * 3000, 'wage');
     s.money.cash += deal;
     if (ctx.rng.chance(0.25))
       ctx.log(
         'fame',
-        `A brand pays you ${formatMoney(s, deal)} this year to be photographed near its product.`,
+        `Merchandise, licensing and your name on things you’ve never seen: ${formatMoney(s, deal)} this year, without lifting a finger.`,
       );
   }
 }

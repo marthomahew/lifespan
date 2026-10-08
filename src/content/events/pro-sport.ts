@@ -1,5 +1,6 @@
 import type { EventDef } from '../../engine/events/types';
 import type { GameState } from '../../engine/types';
+import { PRO_LEAGUES } from '../sport-pro';
 
 const pro = (s: GameState): boolean =>
   s.career.jobId === 'professional_athlete' && !!s.sport?.active && !s.legal.prison;
@@ -8,6 +9,11 @@ const proIn =
   (s: GameState): boolean =>
     pro(s) && ids.includes(s.sport?.sport ?? '');
 const star = (s: GameState): boolean => pro(s) && s.career.level >= 3;
+/** A team sport (a club, teammates, a front office); cycling has its teams too. */
+const teamPro = (s: GameState): boolean =>
+  pro(s) &&
+  ((PRO_LEAGUES[s.sport?.sport ?? '']?.nicknames.length ?? 0) > 0 || s.sport?.sport === 'cycling');
+const teamStar = (s: GameState): boolean => teamPro(s) && s.career.level >= 3;
 
 /** Life as a professional athlete: contracts, cameras, injuries, and the odd moral test. */
 export const PRO_SPORT_EVENTS: EventDef[] = [
@@ -20,7 +26,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [22, 38],
     weight: 6,
     cooldownYears: 6,
-    when: star,
+    when: teamStar,
     text: 'You are the best player on the payroll and nowhere near the best paid. Your agent says the word "holdout" slowly, as if tasting it. Pre-season starts on Monday.',
     choices: [
       {
@@ -74,7 +80,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [20, 36],
     weight: 6,
     cooldownYears: 6,
-    when: pro,
+    when: teamPro,
     bind: { coach: { role: 'boss' } },
     text: 'Three losing seasons in a row and a front office that thinks a new mascot is a rebuild. {coach.first} catches you staring at the league table like it owes you money.',
     choices: [
@@ -138,7 +144,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [18, 40],
     weight: 7,
     cooldownYears: 4,
-    when: pro,
+    when: teamPro,
     text: 'The biggest game of the season is on Saturday and your knee is the size of a grapefruit. The physio says "rest". The coach says "we\'ll see". Your knee says nothing, ominously.',
     choices: [
       {
@@ -240,7 +246,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [18, 38],
     weight: 6,
     cooldownYears: 5,
-    when: pro,
+    when: teamPro,
     text: 'A rival from the team you play next week tells a radio host you are "overrated, overpaid and over there," pointing at nothing in particular. The quote is on every back page.',
     choices: [
       {
@@ -345,7 +351,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [18, 38],
     weight: 6,
     cooldownYears: 6,
-    when: pro,
+    when: teamPro,
     bind: { mate: { role: 'coworker', nearAge: 12 } },
     text: '{mate.first} pulls you aside after training. Gambling debts, the wrong kind of lenders, and a request for money before the weekend. {mate.They} {mate.is} shaking.',
     choices: [
@@ -710,7 +716,7 @@ export const PRO_SPORT_EVENTS: EventDef[] = [
     ages: [18, 38],
     weight: 6,
     cooldownYears: 4,
-    when: pro,
+    when: teamPro,
     text: 'You have just won something shiny. The team is heading to a nightclub that has closed its doors to everyone else, and the captain is already wearing the trophy as a hat.',
     choices: [
       {

@@ -189,7 +189,14 @@ export function trainExtra(ctx: Ctx): void {
   const def = sportDef(r);
   ctx.log(
     'activity',
-    `${def?.emoji ?? '🏅'} Extra sessions: early mornings, drills and video. The coaches notice.`,
+    `${def?.emoji ?? '🏅'} ${pickFresh(ctx, [
+      'Extra sessions: early mornings, drills and video. The coaches notice.',
+      'You stay behind after practice until the floodlights go off.',
+      'A season of extra conditioning. Your legs hate you; your times love you.',
+      'You film yourself and watch it back frame by frame until you see the flaw.',
+      'Weekend sessions with a specialist coach. Small fixes, big difference.',
+      'You train through the holidays while everyone else eats.',
+    ])}`,
   );
 }
 

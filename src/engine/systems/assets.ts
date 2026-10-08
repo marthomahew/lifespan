@@ -218,7 +218,8 @@ export function serviceVehicle(ctx: Ctx, vehicleId: number): void {
   const classic = def?.collectible && def.to !== undefined && s.year > def.to;
   const gain = 100 - v.condition;
   v.condition = 100;
-  v.value = Math.round(v.value * (1 + (gain / 100) * (classic ? 0.3 : 0.1)));
+  // Worth a little more for it, though never more than the work cost.
+  v.value = Math.round(v.value * (1 + (gain / 100) * (classic ? 0.12 : 0.05)));
   ctx.log(
     'money',
     classic
