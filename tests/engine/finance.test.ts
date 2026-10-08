@@ -121,8 +121,9 @@ describe('inflation and local currency (M7.2)', () => {
     expect(formatMoney(us, money(us, 1000))).toMatch(/^\$/);
     expect(formatMoney(jp, money(jp, 1000))).toMatch(/^¥/);
     expect(refToLocal(ng, 1000) / refToLocal(us, 1000)).toBeGreaterThan(100);
+    // Prices rise over the years (compared as a price level: a life may emigrate meanwhile).
     const later = playYears(us, 10);
-    expect(money(later, 1000)).toBeGreaterThan(money(us, 1000));
+    expect(later.inflation).toBeGreaterThan(us.inflation);
   });
 });
 

@@ -131,7 +131,7 @@ export function npcEconomy(ctx: Ctx): void {
         n.flags.push(`laid_off:${s.year}`);
         n.pay = Math.round(n.pay * 0.4);
       }
-    } else if (n.job === 'Retired') n.pay = Math.round((n.pay ?? 0) * 0.98);
+    } else if (n.job === 'Retired') n.pay = Math.round((n.pay ?? 0) * 1.02);
     else n.pay = 0;
     const tier = t ?? 'working';
     // Savings: what's left after living, at the tier's habit; the rest goes to the house.
@@ -163,9 +163,6 @@ export function npcEconomy(ctx: Ctx): void {
       }
     }
     if (n.debt) n.debt = Math.max(0, Math.round(n.debt * 1.15 - (n.pay ?? 0) * 0.05));
-    // Retirement: work ends and a pension starts (a share of the last pay).
-    if (n.age === 66 && n.job && !NOT_WORKING.includes(n.job))
-      n.pay = Math.round((n.pay ?? 0) * 0.45);
   }
 }
 

@@ -1,5 +1,6 @@
 import { underworldTick } from './underworld';
 import { npcEconomy } from './npc-economy';
+import { npcCareers } from './npc-careers';
 import { upbringingTick } from './upbringing';
 import { petsTick } from './pets';
 import { memoryTick } from './memories';
@@ -116,6 +117,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   languageTick(ctx);
   assetsTick(ctx);
   npcLifecycle(ctx);
+  npcCareers(ctx);
   npcEconomy(ctx);
   upbringingTick(ctx);
   petsTick(ctx);

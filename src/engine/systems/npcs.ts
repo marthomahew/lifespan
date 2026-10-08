@@ -1,5 +1,4 @@
 import { pickFreshTemplate } from '../fresh';
-import { PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { baseHazard, healthMultiplier } from '../mortality';
 import { addNpc, relLabel, remember } from '../npc';
@@ -161,12 +160,10 @@ function npcAging(ctx: Ctx): void {
       n.roles.includes('sibling')
     ) {
       if (n.age === 5) n.job = 'At school';
-      else if (n.age === 18 && n.roles.includes('child')) {
-        n.job = r.chance(0.5) ? 'At university' : r.pick(PARENT_JOBS.working);
+      else if (n.age === 18 && n.roles.includes('child'))
         ctx.log('family', `${n.first} turns 18 and moves out, taking most of your mugs.`);
-      } else if (n.age === 22 && n.job === 'At university') n.job = r.pick(PARENT_JOBS.middle);
     }
-    if (n.age === 66 && n.job && !['At school', 'At university'].includes(n.job)) n.job = 'Retired';
+    // (Leaving school, work, promotions and retirement: npc-careers.)
     // Women's fertility follows the same curve as the player's and ends in the mid-forties.
     n.fertility = clampStat(
       n.gender === 'female'
