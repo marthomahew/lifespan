@@ -6,6 +6,7 @@ import { petsTick } from './pets';
 import { memoryTick } from './memories';
 import { crossroadsTick, lateChapterTick, lifeChapterTick, marriageTick } from './crossroads';
 import { projectsTick } from './projects';
+import { scienceTick } from './science';
 import type { Ctx } from '../ctx';
 import { drawRandomEvents, runDueChains } from '../events/select';
 import type { Circumstances } from '../stats';
@@ -123,6 +124,7 @@ export function runYearSystems(ctx: Ctx, hooks: YearHooks): void {
   petsTick(ctx);
   memoryTick(ctx);
   projectsTick(ctx);
+  scienceTick(ctx);
   romanceTick(ctx);
   teenRomanceTick(ctx);
   // 5. Chain steps due this year.

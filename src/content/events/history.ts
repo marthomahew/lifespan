@@ -478,12 +478,12 @@ export const HISTORY_EVENTS: EventDef[] = [
     text: 'A reactor explodes at Chernobyl in Soviet Ukraine. The Soviet authorities say little at first, until the radiation cloud is picked up by alarms far away in Sweden. A whole town is emptied.',
     outcomes: [
       {
-        chance: (s) => (['se', 'uk', 'de', 'fr'].includes(s.player.country) ? 1 : 0),
+        chance: (s) => (['se', 'uk', 'de', 'fr', 'si'].includes(s.player.country) ? 1 : 0),
         text: 'The cloud drifts over Europe. For a while you are told not to drink fresh milk or eat certain mushrooms, and to wash the vegetables twice.',
         effects: [{ stat: 'stress', delta: 5 }, { flag: 'remembers_chernobyl' }],
       },
       {
-        chance: (s) => (['se', 'uk', 'de', 'fr'].includes(s.player.country) ? 0 : 1),
+        chance: (s) => (['se', 'uk', 'de', 'fr', 'si'].includes(s.player.country) ? 0 : 1),
         text: 'You follow it from far away: the maps, the empty town, the helicopters. It is the first time you think about what could go wrong with a power station.',
         effects: [{ stat: 'stress', delta: 2 }, { flag: 'remembers_chernobyl' }],
       },

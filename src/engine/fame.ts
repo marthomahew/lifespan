@@ -1,5 +1,6 @@
 import { JOB_BY_ID } from '../content/jobs';
 import { SPORT_BY_ID } from '../content/sports';
+import { FIELD_LABEL } from '../content/science';
 import { TITLE_NAMES } from './systems/chess';
 import type { GameState } from './types';
 
@@ -31,6 +32,8 @@ export function knownFor(s: GameState): string[] {
   if ((s.projects?.books ?? 0) > 0)
     out.push((s.projects?.books ?? 0) > 1 ? 'your novels' : 'your novel');
   if (f.includes('young_composer')) out.push('composing');
+  if ((s.science?.rep ?? 0) >= 60)
+    out.push(`your research in ${FIELD_LABEL[s.science?.field ?? 'life']}`);
   if (f.includes('michelin_star')) out.push('your restaurant');
   if (s.business && s.business.level >= 3) out.push(s.business.name);
   if (f.includes('philanthropist')) out.push('your foundation');

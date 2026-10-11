@@ -949,5 +949,10 @@
     "title": "Living through history: ~50 real moments by year and country (tragedies included; lockdown and draft with real effects), decade childhoods, jobs by era, same-sex marriage by country and year, generations",
     "passes": true,
     "evidence": "tests/engine/era.test.ts; content:check"
+  },
+  "S144": {
+    "title": "Science and grants; Slovenia; tester distribution",
+    "passes": true,
+    "evidence": "tests/engine/science.test.ts; e2e/science.spec.ts; content:check; npm run verify"
   }
 }

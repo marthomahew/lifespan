@@ -10,6 +10,7 @@ import { WorkTime } from './FreeTime';
 import { PursuitsSection } from '../occupation/PursuitsSection';
 import { PoliticsPanel } from '../occupation/PoliticsPanel';
 import { MissionPanel } from '../occupation/MissionPanel';
+import { SciencePanel } from '../occupation/SciencePanel';
 import { FameSection } from '../occupation/FameSection';
 
 export function OccupationTab({ game }: { game: GameState }): React.JSX.Element {
@@ -50,6 +51,7 @@ export function OccupationTab({ game }: { game: GameState }): React.JSX.Element 
       <MilitarySection game={game} onError={setError} />
       <PoliticsPanel game={game} onError={setError} />
       <MissionPanel game={game} onError={setError} />
+      <SciencePanel game={game} onError={setError} />
       <PursuitsSection game={game} onError={setError} />
       <FameSection game={game} onError={setError} />
       <MusicSection game={game} onError={setError} />

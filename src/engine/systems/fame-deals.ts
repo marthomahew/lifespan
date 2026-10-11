@@ -96,6 +96,7 @@ export function fameLanes(s: GameState): Lane[] {
   if (
     s.chess?.title ||
     f.includes('nobel_laureate') ||
+    (s.science?.rep ?? 0) >= 60 ||
     f.includes('been_to_space') ||
     f.includes('young_composer') ||
     (s.projects?.books ?? 0) > 0

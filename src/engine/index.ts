@@ -117,6 +117,22 @@ export {
 } from './systems/underworld';
 export { missionReason, type MissionAction, type MissionRecord } from './systems/missions';
 export {
+  acceptOdds,
+  activeGrants,
+  citations,
+  funderName,
+  grantAmount,
+  grantOdds,
+  grantReason,
+  hIndex,
+  publishReason,
+  RESEARCH_PIPS,
+  scienceOpen,
+  scienceReason,
+  type ScienceAction,
+  type ScienceRecord,
+} from './systems/science';
+export {
   officeName,
   politicsReason,
   type PoliticsAction,

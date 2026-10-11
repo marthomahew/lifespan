@@ -17,6 +17,7 @@ import { spain } from './spain';
 import { ireland } from './ireland';
 import { netherlands } from './netherlands';
 import { poland } from './poland';
+import { slovenia } from './slovenia';
 import { turkey } from './turkey';
 import { china } from './china';
 import { philippines } from './philippines';
@@ -44,6 +45,7 @@ export const COUNTRIES: Country[] = [
   ireland,
   netherlands,
   poland,
+  slovenia,
   turkey,
   china,
   philippines,

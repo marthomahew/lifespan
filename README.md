@@ -6,7 +6,7 @@ A single-player life simulator for macOS. Each press of **Age Up** is one year: 
 
 Start a **random life** or build one: name, gender, attraction, country, city, birth year, who raised you and how many siblings, traits, a gift for one skill (or a prodigy's gift), pick-only gifts such as quick study and luck with money, work, sport, music, crime or business, a background (family business, parents with plans, a famous parent, always moving, new arrivals, raised by a grandparent, a twin, adopted), starting stats, family wealth, an optional seed that replays a life, and a drawn character. The builder has skin, face, hair and colour, eyes, brows, nose, mouth, facial hair, glasses, clothes, hats and earrings, and every option is drawn on your own face. Or pick a **challenge**: a premised life with goals and a deadline. The main screen has your stats and traits on the left, the life log in the middle, and four tabs on the right:
 
-- **Occupation**: school grades, university and graduate school, job listings with filters, your job (work harder, raises, promotions, quitting, retirement), part-time work and freelance gigs, a business of your own (open it, grow it, hire a manager, sell it), the military, music and fame, and your legal record.
+- **Occupation**: school grades, university and graduate school, job listings with filters, your job (work harder, raises, promotions, quitting, retirement), part-time work and freelance gigs, a business of your own (open it, grow it, hire a manager, sell it), the military, music and fame, research (projects, papers, grant applications and prizes, with funders that follow your country and era), and your legal record.
 - **Assets**: cash, savings, investments, loans, homes for sale (cash or mortgage), vehicles, possessions, lifestyle, and the Finances view with last year's breakdown and a net-worth graph.
 - **Relationships**: family, partners, children, friends, pets, and everyone else, each with a drawn face (relatives look like you). Click someone to see what they remember about you and to interact. The family tree shows three generations each way.
 - **Activities**: health, social, love (18+), money, fun, travel, admin, crime, and prison activities, plus illness treatments and moving abroad. A year only holds so much free time, and you can give some of it to a focus: one skill or language you practise year after year (children and the gifted learn fastest, and a child far ahead of their age gets noticed). Finding a date shows three people to choose from, the casino has a blackjack table, and prison has an escape you plan square by square.
@@ -162,6 +162,10 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 
 ## Installing on the Mac
 
+**Testers:** open Terminal and paste the install line from the latest release's notes (`curl … install.sh | bash`). It installs into `~/Applications`, works on Apple silicon and Intel Macs, and keeps your saved lives when you update. The matching `uninstall.sh` line removes the app and everything it saved.
+
+**Publishing a release** (owner, on the Mac, with the GitHub CLI): build `release/Lifespan-mac.zip` (and `release/Lifespan-mac-intel.zip` from `npm run dist:mac:intel`), then run `bash scripts/mac/publish.sh`. It creates the repository on first use, pushes, and uploads the zips with the install and uninstall scripts.
+
 The overnight build leaves an unsigned app at `release/Lifespan-darwin-arm64/Lifespan.app`. On the Mac:
 
 ```bash
@@ -191,7 +195,7 @@ Requires Node 22. `npm ci`, then:
 | `npm run e2e` | Playwright against the built web app |
 | `npm run electron:smoke` | The built Electron app under xvfb |
 | `npm run shots` | Screenshots of key screens into `reports/screenshots/` |
-| `npm run dist:mac` | Unsigned darwin-arm64 `Lifespan.app` in `release/` |
+| `npm run dist:mac` | Unsigned darwin-arm64 `Lifespan.app` in `release/` (`dist:mac:intel` for Intel Macs) |
 | `npm run dist:linux` | Unpacked linux-arm64 build in `release/`; `npm run electron:smoke:packaged` tests it |
 | `npm run docs:cheats` | Regenerate the cheat list above from the registry |
 

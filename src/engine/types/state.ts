@@ -1,6 +1,7 @@
 import type { Upbringing } from '../systems/upbringing';
 import type { UnderworldRecord } from '../systems/underworld';
 import type { MissionRecord } from '../systems/missions';
+import type { ScienceRecord } from '../systems/science';
 import type { PoliticsRecord } from '../systems/politics';
 import type { LifestyleItem } from '../systems/lifestyle';
 import type { ProRecord } from '../systems/sport-pro';
@@ -118,6 +119,8 @@ export type GameState = {
   politics?: PoliticsRecord | null;
   /** Astronaut flights, spy operations, diplomatic postings. */
   missions?: MissionRecord | null;
+  /** A research life: projects, papers, grants and prizes. */
+  science?: ScienceRecord | null;
   /** Childhood by class: the school you went to and the home you grew up in. */
   upbringing?: Upbringing;
   /** Organised crime: crew, rank, respect, heat. */

@@ -40,7 +40,7 @@ const AGENCY: Record<string, string> = {
   in: 'ISRO',
   ca: 'the Canadian Space Agency',
 };
-const ESA = ['uk', 'fr', 'de', 'it', 'es', 'se', 'nl', 'ie', 'pl'];
+const ESA = ['uk', 'fr', 'de', 'it', 'es', 'se', 'nl', 'ie', 'pl', 'si'];
 
 function orgFor(s: GameState, job: string): string {
   const c = s.player.country;

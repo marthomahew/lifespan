@@ -27,7 +27,8 @@
     "dist:mac": "tsx scripts/dist.ts mac",
     "dist:linux": "tsx scripts/dist.ts linux",
     "verify": "tsx scripts/verify.ts",
-    "docs:cheats": "tsx scripts/docs-cheats.ts"
+    "docs:cheats": "tsx scripts/docs-cheats.ts",
+    "dist:mac:intel": "tsx scripts/dist.ts mac x64"
   },
   "dependencies": {
     "react": "19.3.0",

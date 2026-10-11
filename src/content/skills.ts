@@ -86,6 +86,7 @@ export const LANGUAGES: LanguageDef[] = [
   { id: 'mandarin', label: 'Mandarin' },
   { id: 'dutch', label: 'Dutch' },
   { id: 'polish', label: 'Polish' },
+  { id: 'slovene', label: 'Slovene' },
   { id: 'turkish', label: 'Turkish' },
   { id: 'filipino', label: 'Filipino' },
   { id: 'zulu', label: 'Zulu' },

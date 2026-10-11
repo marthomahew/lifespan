@@ -2,6 +2,7 @@
  * npm run dist:mac | dist:linux — package the built app with @electron/packager (SPEC §9.8).
  * mac: unsigned darwin-arm64 Lifespan.app in release/ (the owner signs it ad hoc on the Mac).
  * linux: unpacked linux-arm64 build in release/ for the packaged smoke test.
+ * `mac x64` builds the same app for Intel Macs (release/Lifespan-darwin-x64), for testers.
  */
 import { packager } from '@electron/packager';
 import { spawnSync } from 'node:child_process';
@@ -9,8 +10,9 @@ import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const target = process.argv[2];
-if (target !== 'mac' && target !== 'linux') {
-  console.error('usage: tsx scripts/dist.ts mac|linux');
+const arch = process.argv[3] ?? 'arm64';
+if ((target !== 'mac' && target !== 'linux') || (arch !== 'arm64' && arch !== 'x64')) {
+  console.error('usage: tsx scripts/dist.ts mac|linux [arm64|x64]');
   process.exit(2);
 }
 const run = (cmd: string, args: string[]): void => {
@@ -27,7 +29,7 @@ const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as {
 };
 const electronVersion = pkg.devDependencies['electron'] ?? '44.5.1';
 const platform = target === 'mac' ? 'darwin' : 'linux';
-const outDir = resolve('release', `Lifespan-${platform}-arm64`);
+const outDir = resolve('release', `Lifespan-${platform}-${arch}`);
 // Retries: on the Mac bind mount, Finder can drop a .DS_Store in mid-delete.
 if (existsSync(outDir))
   rmSync(outDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
@@ -39,7 +41,7 @@ const paths = await packager({
   name: 'Lifespan',
   executableName: target === 'linux' ? 'lifespan' : 'Lifespan',
   platform,
-  arch: 'arm64',
+  arch,
   electronVersion,
   appVersion: pkg.version,
   appBundleId: 'dev.local.lifespan',
@@ -54,4 +56,5 @@ const paths = await packager({
   quiet: true,
 });
 console.log(`dist:${target}: ${paths.join(', ')}`);
-if (target === 'mac') run('npx', ['tsx', 'scripts/check-mac-bundle.ts']);
+if (target === 'mac')
+  run('npx', ['tsx', 'scripts/check-mac-bundle.ts', resolve(outDir, 'Lifespan.app')]);

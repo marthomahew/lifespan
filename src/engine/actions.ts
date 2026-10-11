@@ -40,6 +40,7 @@ import { buyLifestyle, endLifestyle } from './systems/lifestyle';
 import { doHustle, type HustleId } from './systems/hustle';
 import { politicsAction, type PoliticsAction } from './systems/politics';
 import { missionAction, type MissionAction } from './systems/missions';
+import { scienceAction, type ScienceAction } from './systems/science';
 import type { Genre } from './systems/music-charts';
 import { setGenre } from './systems/music';
 import { underworldAction, type UnderworldAction } from './systems/underworld';
@@ -81,6 +82,7 @@ export type PlayerAction =
   | { type: 'hustle'; id: HustleId }
   | { type: 'politics'; action: PoliticsAction }
   | { type: 'mission'; id: MissionAction }
+  | ({ type: 'science' } & ScienceAction)
   | { type: 'music_genre'; genre: Genre }
   | { type: 'underworld'; action: UnderworldAction }
   | { type: 'lifestyle_end'; key: number }
@@ -200,6 +202,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'mission':
       missionAction(ctx, action.id);
+      break;
+    case 'science':
+      scienceAction(ctx, action);
       break;
     case 'music_genre':
       setGenre(ctx, action.genre);

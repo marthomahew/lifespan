@@ -1,0 +1,456 @@
+import {
+  academy,
+  FIELD_LABEL,
+  FUNDER_BY_ID,
+  institutionFor,
+  LAB_LINES,
+  MAJOR_FIELD,
+  nationalPrize,
+  PROJECTS,
+  REVIEWER_TWO,
+  topPrize,
+  VENUES,
+  type Funder,
+  type ScienceField,
+} from '../../content/science';
+import type { Ctx } from '../ctx';
+import { formatMoney, money } from '../economy';
+import { EngineError } from '../errors';
+import { COUNTRY_BY_ID } from '../../content/countries';
+import { pickFresh } from '../fresh';
+import { Rng, seedRng } from '../rng';
+import { addStat } from '../stats';
+import type { GameState } from '../types';
+import { clampStat } from '../util';
+import { workTime } from './activities';
+import { markUsed, usedThisYear } from './usage';
+
+/**
+ * Science as a pursuit: a research project you push along with work time, papers that pick
+ * up citations year after year, grant applications decided on your next birthday, and the
+ * prizes that come to the very best. Open to anyone in a research job or doing a PhD.
+ */
+export type Paper = {
+  year: number;
+  title: string;
+  venue: string;
+  tier: number;
+  quality: number;
+  cites: number;
+  breakthrough?: boolean;
+};
+export type Grant = {
+  funder: string;
+  name: string;
+  kind: string;
+  /** Local money a year. */
+  perYear: number;
+  from: number;
+  years: number;
+  stipend?: boolean;
+};
+export type ScienceRecord = {
+  field: ScienceField;
+  institution: string;
+  /** Standing in the field, 0..100. */
+  rep: number;
+  project: { title: string; progress: number; quality: number; tried: number[] } | null;
+  papers: Paper[];
+  grants: Grant[];
+  /** Applications awaiting a decision on your next birthday. */
+  pending: { funder: string; name: string; year: number; odds: number }[];
+  /** Rejections so far, by funder: each one makes the next proposal sharper. */
+  rejected: Record<string, number>;
+  prizes: string[];
+};
+
+export const RESEARCH_JOBS = [
+  'research_scientist',
+  'professor',
+  'chemist',
+  'environmental_scientist',
+  'data_scientist',
+  'doctor',
+];
+export const RESEARCH_PIPS = 3;
+const cap = (x: string): string => x.charAt(0).toUpperCase() + x.slice(1);
+
+const doingPhd = (s: GameState): boolean => s.education.enrollment?.programId === 'phd';
+/** Jobs (and the PhD) where research is the work itself: projects move along every year. */
+const FULL_TIME = ['research_scientist', 'professor'];
+const fullTime = (s: GameState): boolean => FULL_TIME.includes(s.career.jobId ?? '') || doingPhd(s);
+
+/** Can this life do research at all, and why not. */
+export function scienceOpen(s: GameState): boolean {
+  if (s.death || s.legal.prison || s.player.age < 20) return false;
+  return RESEARCH_JOBS.includes(s.career.jobId ?? '') || doingPhd(s);
+}
+
+export function fieldFor(s: GameState): ScienceField {
+  if (s.career.jobId === 'doctor') return 'life';
+  if (s.career.jobId === 'data_scientist') return 'cs';
+  for (const d of [...s.education.degrees].reverse()) {
+    const f = MAJOR_FIELD[d.field] ?? MAJOR_FIELD[d.level];
+    if (f) return f;
+  }
+  return 'life';
+}
+
+function ensure(s: GameState): ScienceRecord {
+  const job = s.career.jobId ?? 'phd';
+  const inst = institutionFor(s, job, s.seed >>> 0);
+  if (!s.science)
+    s.science = {
+      field: fieldFor(s),
+      institution: inst,
+      // A doctorate and a senior post count for something on day one.
+      rep: Math.min(
+        40,
+        (s.education.degrees.some((d) => d.level === 'doctorate') ? 8 : 0) +
+          (RESEARCH_JOBS.includes(job) ? s.career.level * 6 : 0),
+      ),
+      project: null,
+      papers: [],
+      grants: [],
+      pending: [],
+      rejected: {},
+      prizes: [],
+    };
+  if (RESEARCH_JOBS.includes(job)) s.science.institution = inst;
+  return s.science;
+}
+
+export function hIndex(papers: readonly Paper[]): number {
+  const c = papers.map((p) => p.cites).sort((a, b) => b - a);
+  let h = 0;
+  while (h < c.length && (c[h] ?? 0) >= h + 1) h++;
+  return h;
+}
+export const citations = (papers: readonly Paper[]): number =>
+  papers.reduce((t, p) => t + p.cites, 0);
+
+export const activeGrants = (s: GameState): Grant[] =>
+  (s.science?.grants ?? []).filter((g) => s.year < g.from + g.years);
+
+/** Extra progress a pip of research makes with money behind it. */
+const labBoost = (s: GameState): number =>
+  Math.min(30, activeGrants(s).filter((g) => !g.stipend).length * 12);
+
+function newProject(ctx: Ctx, sc: ScienceRecord, rng: Rng): void {
+  const s = ctx.s;
+  const pool = PROJECTS[sc.field].filter((p) => (p.from ?? 0) <= s.year);
+  const done = new Set(sc.papers.map((p) => p.title));
+  const fresh = pool.filter((p) => !done.has(p.title));
+  const pick = rng.pick(fresh.length ? fresh : pool);
+  sc.project = {
+    title: pick.title,
+    progress: 0,
+    quality: clampStat(rng.int(20, 35) + Math.round(s.player.stats.smarts / 4)),
+    tried: [],
+  };
+  ctx.log('work', `🔬 A new research project: ${pick.title}.`);
+}
+
+/** Push the project along: progress, a little quality, and once in a while a breakthrough. */
+function work(ctx: Ctx, sc: ScienceRecord, pip: boolean, rng: Rng): void {
+  const s = ctx.s;
+  if (!sc.project) newProject(ctx, sc, rng);
+  const p = sc.project;
+  if (!p || p.progress >= 100) return;
+  const smart = s.player.stats.smarts;
+  const gain = (pip ? 22 : 18) + Math.round(smart / 8) + labBoost(s) + rng.int(0, 10);
+  p.progress = Math.min(100, p.progress + gain);
+  p.quality = clampStat(
+    p.quality + rng.int(1, 6) + (labBoost(s) > 0 ? 3 : 0) + (smart >= 80 ? 2 : 0),
+  );
+  if (p.quality >= 65 && rng.chance(pip ? 0.05 : 0.03)) {
+    p.quality = clampStat(p.quality + 20);
+    ctx.log(
+      'work',
+      `💡 A result nobody expected, in ${p.title}. You check it three times. It holds.`,
+      true,
+    );
+  }
+  if (p.progress >= 100)
+    ctx.log('work', `📝 The work on ${p.title} is done and written up. Time to choose a journal.`);
+}
+
+export function scienceReason(s: GameState, what: 'research' | 'talk'): string | null {
+  if (!scienceOpen(s)) return 'only in a research job or a PhD';
+  if (what === 'research') {
+    if (usedThisYear(s, 'sc:research') >= RESEARCH_PIPS) return 'done enough this year';
+    if (s.science?.project && s.science.project.progress >= 100)
+      return 'publish the finished work first';
+  } else {
+    if ((s.science?.rep ?? 0) < 25) return 'from standing 25';
+    if (usedThisYear(s, 'sc:talk') > 0) return 'once a year';
+  }
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
+  return null;
+}
+
+/** Odds a venue accepts the finished work. */
+export function acceptOdds(s: GameState, tier: number): number {
+  const p = s.science?.project;
+  if (!p) return 0;
+  if (tier >= 3) return 0.97;
+  const need = [88, 72, 52][tier] ?? 52;
+  return Math.max(0.03, Math.min(0.92, 0.5 + (p.quality - need) / 40));
+}
+
+export function publishReason(s: GameState, tier: number): string | null {
+  if (!scienceOpen(s)) return 'only in a research job or a PhD';
+  const p = s.science?.project;
+  if (!p || p.progress < 100) return 'nothing finished to publish';
+  if (p.tried.includes(tier)) return 'already turned you down';
+  return null;
+}
+
+/** A funder's name for this life now, or null when it's closed. */
+export function funderName(s: GameState, f: Funder): string | null {
+  return f.name(s, s.science?.field ?? fieldFor(s));
+}
+
+export function grantOdds(s: GameState, f: Funder): number {
+  const sc = s.science;
+  const recent = (sc?.papers ?? []).filter((p) => s.year - p.year <= 5);
+  const top = recent.filter((p) => p.tier <= 1).length;
+  const odds =
+    f.odds +
+    (sc?.rep ?? 0) / 250 +
+    Math.min(0.15, recent.length * 0.03) +
+    Math.min(0.15, top * 0.05) +
+    Math.min(0.15, (sc?.rejected[f.id] ?? 0) * 0.05) +
+    (s.player.stats.smarts - 60) / 400;
+  return Math.max(0.03, Math.min(0.85, odds));
+}
+
+export function grantAmount(s: GameState, f: Funder): number {
+  const mid = (f.amount[0] + f.amount[1]) / 2;
+  if (!f.intl) return money(s, mid, 'wage');
+  // European grants are set in euros, the same euros wherever you are (amounts are € a year).
+  const c = COUNTRY_BY_ID[s.player.country];
+  return Math.round((mid * (c?.currency.perUsd ?? 0.92)) / 0.92);
+}
+
+export function grantReason(s: GameState, id: string): string | null {
+  const f = FUNDER_BY_ID[id];
+  if (!f) return 'no such funder';
+  if (!scienceOpen(s)) return 'only in a research job or a PhD';
+  if (!funderName(s, f)) return 'not open to you';
+  if ((s.science?.rep ?? 0) < f.minRep) return `from standing ${f.minRep}`;
+  if (activeGrants(s).some((g) => g.funder === id)) return 'already funded by them';
+  if (s.science?.pending.some((p) => p.funder === id)) return 'waiting to hear back';
+  if (s.settings.freeTime !== false && workTime(s).left <= 0) return 'no work time left this year';
+  return null;
+}
+
+export type ScienceAction =
+  | { id: 'research' }
+  | { id: 'publish'; tier: number }
+  | { id: 'apply'; funder: string }
+  | { id: 'talk' };
+
+export function scienceAction(ctx: Ctx, a: ScienceAction): void {
+  const s = ctx.s;
+  if (a.id === 'publish') return publish(ctx, a.tier);
+  const why = a.id === 'apply' ? grantReason(s, a.funder) : scienceReason(s, a.id);
+  if (why) throw new EngineError(why);
+  const sc = ensure(s);
+  markUsed(s, 'w:total');
+  if (a.id === 'research') {
+    markUsed(s, 'sc:research');
+    work(ctx, sc, true, ctx.rng);
+    if (sc.project && sc.project.progress < 100) ctx.log('work', `🧪 ${pickFresh(ctx, LAB_LINES)}`);
+  } else if (a.id === 'talk') {
+    markUsed(s, 'sc:talk');
+    addStat(s, 'fame', 2 + Math.floor(sc.rep / 30));
+    sc.rep = clampStat(sc.rep + 1);
+    ctx.log(
+      'work',
+      `🎤 You give a public lecture on ${FIELD_LABEL[sc.field]}. A child in the front row asks the best question of the night.`,
+    );
+  } else {
+    const f = FUNDER_BY_ID[a.funder] as Funder;
+    const name = funderName(s, f) ?? f.id;
+    sc.pending.push({ funder: f.id, name, year: s.year, odds: grantOdds(s, f) });
+    ctx.log(
+      'work',
+      `📨 You send a proposal to ${name}: forty pages, a budget that adds up, and a title you are proud of. The answer comes next year.`,
+    );
+  }
+}
+
+function publish(ctx: Ctx, tier: number): void {
+  const s = ctx.s;
+  const why = publishReason(s, tier);
+  if (why) throw new EngineError(why);
+  const sc = ensure(s);
+  const p = sc.project;
+  if (!p) return;
+  const venue = VENUES[sc.field][tier] ?? 'a journal';
+  if (!ctx.rng.chance(acceptOdds(s, tier))) {
+    p.tried.push(tier);
+    ctx.log('work', `📭 ${venue} turns the paper down. ${pickFresh(ctx, REVIEWER_TWO)}`);
+    addStat(s, 'happiness', -2);
+    return;
+  }
+  const breakthrough = p.quality >= 90 && tier <= 1 && ctx.rng.chance(0.35);
+  sc.papers.push({
+    year: s.year,
+    title: p.title,
+    venue,
+    tier,
+    quality: p.quality,
+    cites: 0,
+    ...(breakthrough ? { breakthrough: true } : {}),
+  });
+  sc.project = null;
+  sc.rep = clampStat(sc.rep + ([8, 4, 2, 1][tier] ?? 1) + (breakthrough ? 10 : 0));
+  s.career.performance = clampStat(s.career.performance + ([20, 12, 6, 2][tier] ?? 2));
+  addStat(s, 'happiness', [10, 6, 3, 1][tier] ?? 1);
+  if (tier === 0) addStat(s, 'fame', breakthrough ? 10 : 3);
+  ctx.log(
+    'work',
+    breakthrough
+      ? `🌟 Your paper on ${p.title} comes out in ${venue}, and the field changes direction overnight.`
+      : tier === 0
+        ? `📰 Your paper on ${p.title} is published in ${venue}. Your mother buys three copies.`
+        : `📄 Your paper on ${p.title} is published in ${venue}.`,
+    tier <= 1,
+  );
+}
+
+/** Citations a paper picks up in a year: they rise for a few years, then tail off. */
+function yearCites(r: Rng, s: GameState, p: Paper): number {
+  const age = s.year - p.year;
+  if (age <= 0) return 0;
+  const shape = age <= 5 ? age / 3 : Math.pow(0.85, age - 5) * 1.6;
+  const base = (p.quality / 15) * ([25, 10, 4, 1.2][p.tier] ?? 1);
+  return Math.round(base * shape * (0.5 + r.next()) * (p.breakthrough ? 5 : 1));
+}
+
+/** The year in a research life: the day job's own progress, citations, decisions, prizes. */
+export function scienceTick(ctx: Ctx): void {
+  const s = ctx.s;
+  const open = scienceOpen(s);
+  if (!s.science && !(open && fullTime(s))) return;
+  const live = ensure(s);
+  // Its own dice: a research life never shifts the rolls of the rest of the year.
+  const r = new Rng(seedRng(((s.seed >>> 0) ^ Math.imul(s.year + 104729, 0x85ebca6b)) >>> 0));
+  for (const p of live.papers) p.cites += yearCites(r, s, p);
+  if (!open) return;
+  live.field = live.papers.length ? live.field : fieldFor(s);
+  // The research the job itself pays for: a project moves along even without extra hours.
+  if (fullTime(s)) work(ctx, live, false, r);
+  // Standing grows with what you have done.
+  live.rep = clampStat(live.rep + Math.floor(hIndex(live.papers) / 12));
+  decide(ctx, r, live);
+  grantYear(ctx, live);
+  prizes(ctx, r, live);
+}
+
+function decide(ctx: Ctx, r: Rng, sc: ScienceRecord): void {
+  const s = ctx.s;
+  const due = sc.pending.filter((p) => p.year < s.year);
+  sc.pending = sc.pending.filter((p) => p.year >= s.year);
+  for (const p of due) {
+    const f = FUNDER_BY_ID[p.funder];
+    if (!f) continue;
+    if (!r.chance(p.odds)) {
+      sc.rejected[f.id] = (sc.rejected[f.id] ?? 0) + 1;
+      ctx.log(
+        'work',
+        `📭 ${cap(p.name)} says no. The panel scored it “excellent”, which this year was not enough. The reviews will make the next one stronger.`,
+      );
+      continue;
+    }
+    const perYear = grantAmount(s, f);
+    sc.grants.push({
+      funder: f.id,
+      name: p.name,
+      kind: f.kind,
+      perYear,
+      from: s.year,
+      years: f.years,
+      ...(f.stipend ? { stipend: true } : {}),
+    });
+    sc.rep = clampStat(sc.rep + (f.intl ? 6 : f.id === 'seed' ? 0 : 2));
+    s.career.performance = clampStat(s.career.performance + 15);
+    addStat(s, 'happiness', 8);
+    ctx.log(
+      'work',
+      f.stipend
+        ? `🎉 ${cap(p.name)} takes you on as a young researcher: ${formatMoney(s, perYear)} a year for ${f.years} years, paid to you.`
+        : `🎉 ${cap(p.name)} funds your ${f.kind}: ${formatMoney(s, perYear * f.years)} over ${f.years} ${f.years === 1 ? 'year' : 'years'}.`,
+      true,
+    );
+  }
+}
+
+/** Grant money: a stipend is yours; a lab grant pays a slice of your salary (summer months, consulting). */
+function grantYear(ctx: Ctx, sc: ScienceRecord): void {
+  const s = ctx.s;
+  let paid = 0;
+  for (const g of sc.grants) {
+    const left = g.from + g.years - s.year;
+    if (left < 0 || g.from === s.year) continue;
+    paid += g.stipend ? g.perYear : Math.round(g.perYear * (g.funder === 'industry' ? 0.12 : 0.08));
+    if (left === 0)
+      ctx.log(
+        'work',
+        `📁 Your ${g.kind} from ${g.name} comes to an end, with a final report nobody reads.`,
+      );
+  }
+  if (paid > 0) {
+    s.money.cash += paid;
+    ctx.log(
+      'money',
+      `💶 Grant money: ${formatMoney(s, paid)} to you this year (salary from grants and consulting).`,
+    );
+  }
+}
+
+function prizes(ctx: Ctx, r: Rng, sc: ScienceRecord): void {
+  const s = ctx.s;
+  if (s.player.age < 35) return;
+  const won = (p: string): boolean => sc.prizes.includes(p);
+  const nat = nationalPrize(s);
+  if (sc.rep >= 60 && !won(nat) && r.chance(0.12)) {
+    sc.prizes.push(nat);
+    s.money.cash += money(s, 20000, 'wage');
+    addStat(s, 'fame', 5);
+    addStat(s, 'happiness', 10);
+    ctx.log('work', `🏅 You receive ${nat} for your work on ${FIELD_LABEL[sc.field]}.`, true);
+  }
+  const ac = academy(s);
+  if (sc.rep >= 72 && !won(ac) && r.chance(0.1)) {
+    sc.prizes.push(ac);
+    addStat(s, 'happiness', 8);
+    ctx.log('work', `🏛️ You are elected to ${ac}. There is a dinner, and a very old chair.`, true);
+  }
+  const top = topPrize(s, sc.field);
+  const best = Math.max(0, ...sc.papers.map((p) => p.cites));
+  const laureate = s.player.flags.includes('nobel_laureate');
+  if (
+    top &&
+    !won(top) &&
+    !(laureate && top.includes('Nobel')) &&
+    s.player.age >= 42 &&
+    sc.rep >= 85 &&
+    best >= 3000 &&
+    r.chance(0.05)
+  ) {
+    sc.prizes.push(top);
+    if (top.includes('Nobel')) s.player.flags.push('nobel_laureate');
+    const shared = r.chance(0.6);
+    s.money.cash += money(s, shared ? 350000 : 1000000);
+    addStat(s, 'fame', 40);
+    addStat(s, 'happiness', 25);
+    ctx.log(
+      'work',
+      `🏆 A phone call at dawn from far away: you have won ${top}${shared ? ', shared with two others' : ''}. The work it is for is decades old. You are on every front page by breakfast.`,
+      true,
+    );
+  }
+}

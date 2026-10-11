@@ -53,6 +53,10 @@ export const GUIDE: [string, string][] = [
     'Tournaments earn an Elo rating and norms toward titles (GM at 2500 with three norms). At the top: the World Rapid & Blitz, the World Cup, the Candidates and the title match. A champion keeps the title until beaten.',
   ],
   [
+    'Science and grants',
+    'In a research job (research scientist, professor, chemist, doctor and others) or during a PhD, Occupation › Research has a project on the bench. Research pips push it along; publish it in a journal of your choice (the higher you aim, the harder to get in and the more it is cited). Apply for grants with a pip each: decisions arrive on your next birthday, and funders follow your country and era (in Slovenia: the Research Community, then ARRS and ARIS, young researcher posts and programme funding; in the EU from 2007, the ERC). Standing brings national prizes, academies and, for the very best, a Nobel.',
+  ],
+  [
     'Money and markets',
     'Real history drives prices, mortgage rates, index funds and famous shares (year-end prices to 2025). Bitcoin appears once you have heard of it. When money is tight, Assets › Making ends meet has gig work and other options; with wealth, The good life opens tier by tier.',
   ],

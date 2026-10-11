@@ -20,6 +20,7 @@ export const SAME_SEX_MARRIAGE: Record<string, number | null> = {
   ie: 2015,
   nl: 2001,
   pl: null,
+  si: 2022,
   tr: null,
   cn: null,
   ph: null,
