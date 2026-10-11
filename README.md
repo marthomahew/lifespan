@@ -183,7 +183,7 @@ bash overnight/build-mac.sh
 Claude Code runs in a Docker container (OrbStack on the Mac) that sees only this folder, in bypass-permissions mode. From the Mac:
 
 ```bash
-bash scripts/agent.sh            # attach to Claude, starting the container and the session if needed
+./start.sh                       # attach to Claude, starting the container and the session if needed (same as bash scripts/agent.sh)
 bash scripts/agent.sh status     # container up? Claude running?
 bash scripts/agent.sh shell      # a plain shell inside the container
 bash scripts/agent.sh stop       # stop the container (logins, caches and the folder are kept)
