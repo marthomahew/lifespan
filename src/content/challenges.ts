@@ -45,6 +45,19 @@ export const CHALLENGES: ChallengeDef[] = [
     done: (s) => realNetWorth(s) >= 1_000_000,
   },
   {
+    id: 'lab_to_laurels',
+    title: 'From Lab Coat to Laurels',
+    emoji: '🔬',
+    setup: { stats: { smarts: 70 } },
+    premise: 'A curious child who takes apart the radio to see where the voices live.',
+    goal: 'Earn a doctorate, run a research lab, and win a national science prize or a seat in the academy by 70.',
+    difficulty: 3,
+    done: (s) =>
+      (s.science?.prizes.length ?? 0) > 0 &&
+      s.education.degrees.some((d) => d.level === 'doctorate'),
+    byAge: 70,
+  },
+  {
     id: 'doctor_from_nowhere',
     title: 'The Doctor from Nowhere',
     emoji: '🩺',

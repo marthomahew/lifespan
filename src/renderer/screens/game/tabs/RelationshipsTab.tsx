@@ -15,6 +15,7 @@ const GROUPS: { label: string; roles: string[] }[] = [
   { label: 'Love', roles: ['spouse', 'partner', 'sweetheart'] },
   { label: 'Children', roles: ['child', 'grandchild'] },
   { label: 'Friends', roles: ['friend', 'bandmate'] },
+  { label: 'Your lab', roles: ['labmate'] },
   {
     label: 'Others',
     roles: ['classmate', 'coworker', 'boss', 'teacher', 'cellmate', 'enemy', 'ex', 'acquaintance'],

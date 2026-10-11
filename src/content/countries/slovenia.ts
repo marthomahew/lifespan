@@ -1,4 +1,5 @@
 import type { Country } from '../types';
+import { SLOVENIA_TOWNS } from './slovenia-towns';
 
 /** Slovenia: the Alps to the Adriatic in a morning's drive, and a vineyard in every family. */
 export const slovenia: Country = {
@@ -34,6 +35,7 @@ export const slovenia: Country = {
   mortgageRate: 0.042,
   pensionPerYear: 480,
   languages: ['slovene'],
+  towns: SLOVENIA_TOWNS,
   cities: [
     'Ljubljana',
     'Maribor',
@@ -53,6 +55,8 @@ export const slovenia: Country = {
     'Izola',
     'Piran',
     'Postojna',
+    'Cerknica',
+    'Ilirska Bistrica',
     'Bled',
     'Kočevje',
     'Slovenj Gradec',
@@ -67,17 +71,23 @@ export const slovenia: Country = {
     'Logatec',
     'Vrhnika',
     'Žalec',
+    'Laško',
     'Slovenska Bistrica',
     'Ormož',
+    'Lenart',
+    'Gornja Radgona',
     'Lendava',
     'Črnomelj',
     'Metlika',
     'Ravne na Koroškem',
+    'Dravograd',
     'Litija',
     'Grosuplje',
+    'Trebnje',
     'Ribnica',
     'Zagorje ob Savi',
     'Šentjur',
+    'Mozirje',
     'Rogaška Slatina',
     'Bovec',
     'Medvode',

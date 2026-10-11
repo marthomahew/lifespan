@@ -28,6 +28,7 @@ import { sharesEffect } from './markets';
 import { COUNTRIES } from '../../content/countries';
 import { emigrate } from './emigration';
 import { canMoveAbroad } from '../../content/events/conditions';
+import { scienceEffect } from './science';
 
 /** Real record labels, each from the year it was founded. */
 const LABELS: { name: string; from: number }[] = [
@@ -61,6 +62,12 @@ export function applySystemEffect(
       if (!enrollReason(s, 'community', major)) enroll(ctx, 'community', major);
       return;
     }
+    case 'sci_rep':
+    case 'sci_quality':
+    case 'sci_retract':
+    case 'sci_finish':
+      scienceEffect(ctx, kind, Number(arg ?? 0));
+      return;
     case 'move_city': {
       // A fresh start in another city of the same country.
       const cities =

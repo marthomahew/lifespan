@@ -106,6 +106,11 @@ export type Effect =
         | 'lockdown'
         | 'retrain'
         | 'move_city'
+        /** Research life (systems/science.ts): arg is a number for rep/quality. */
+        | 'sci_rep'
+        | 'sci_quality'
+        | 'sci_retract'
+        | 'sci_finish'
         | 'severance';
       arg?: string;
     }

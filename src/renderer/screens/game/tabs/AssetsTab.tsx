@@ -5,6 +5,7 @@ import { POSSESSION_BY_ID, VEHICLE_BY_ID } from '../../../../content/assets';
 import { BuyDialog, type BuyTarget } from './BuyDialog';
 import { GoodLife } from './GoodLife';
 import { EndsMeet } from './EndsMeet';
+import { TownPanel } from './TownPanel';
 import {
   formatMoney,
   formatMoneyShort,
@@ -128,6 +129,7 @@ export function AssetsTab({ game }: { game: GameState }): React.JSX.Element {
           )}
         </section>
       )}
+      <TownPanel game={game} run={run} />
       {adult && (
         <section className="panel-section" data-testid="housing">
           <h3 className="section-title">Home</h3>

@@ -141,7 +141,7 @@ export function OriginsSection({ d, set }: Props): React.JSX.Element {
               .sort((a, b) => a.localeCompare(b))
               .map((x) => (
                 <option key={x} value={x}>
-                  {x}
+                  {c?.towns?.[x] ? `${x} (${c.towns[x]?.region})` : x}
                 </option>
               ))}
           </select>

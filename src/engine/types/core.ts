@@ -155,6 +155,8 @@ export type Role =
   /** A sibling's child, and a parent's sibling (after you continue as an heir). */
   | 'nibling'
   | 'aunt_uncle'
+  /** A PhD student or postdoc in your research group. */
+  | 'labmate'
   | 'acquaintance';
 
 export type RomanceStage = 'dating' | 'serious' | 'engaged' | 'married';

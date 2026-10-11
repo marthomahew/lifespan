@@ -18,6 +18,8 @@ import { treatmentsFor } from '../systems/health';
 import { countryOf } from '../economy';
 import { mortgageQuote } from '../systems/assets';
 import type { GameState } from '../types';
+import { isScientist, scienceYear, scientistJob, scientistStudies } from './scientist';
+import { scienceOpen } from '../systems/science';
 
 type TryAct = (s: GameState, a: Parameters<typeof act>[1]) => GameState;
 
@@ -97,7 +99,9 @@ function randomInteraction(
 export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
   let cur = doActivity(s, 'study', tryAct);
   const p = cur.player;
-  if (p.age >= 17 && !cur.education.enrollment) {
+  const sci = isScientist(cur);
+  if (sci) cur = scientistStudies(cur, rng, tryAct);
+  else if (p.age >= 17 && !cur.education.enrollment) {
     if (!cur.education.degrees.some((d) => d.level === 'bachelor')) {
       const major = rng.pick(MAJORS);
       if (!enrollReason(cur, 'university', major.id))
@@ -111,8 +115,12 @@ export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
   if (p.age >= 15 && p.age < 18 && !cur.career.partTimeId)
     cur = tryAct(cur, { type: 'apply_job', jobId: rng.pick(PART_TIME_JOBS).id });
   if (p.age >= 18 && !cur.education.enrollment) {
-    const job = bestJob(cur);
-    if (job && (!cur.career.jobId || rng.chance(0.15)))
+    const job = (sci && scientistJob(cur)) || bestJob(cur);
+    if (
+      job &&
+      (!cur.career.jobId ||
+        (sci ? job !== cur.career.jobId && !scienceOpen(cur) : rng.chance(0.15)))
+    )
       cur = tryAct(cur, { type: 'apply_job', jobId: job });
   }
   // Some careerists go into politics, and play the game once elected.
@@ -126,6 +134,7 @@ export function careerist(s: GameState, rng: Rng, tryAct: TryAct): GameState {
       action: { op: 'bill', area: rng.pick(['schools', 'healthcare', 'housing', 'transport']) },
     });
   }
+  cur = scienceYear(cur, tryAct);
   if (cur.career.jobId) {
     for (const id of ['work_harder', 'ask_promotion', 'ask_raise'])
       cur = tryAct(cur, { type: 'career', id });

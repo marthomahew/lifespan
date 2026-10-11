@@ -2,20 +2,17 @@ import {
   academy,
   FIELD_LABEL,
   FUNDER_BY_ID,
-  institutionFor,
   LAB_LINES,
   LECTURE_LINES,
   PROPOSAL_LINES,
   REJECT_LINES,
   SEED_LINES,
   venueFor,
-  MAJOR_FIELD,
   nationalPrize,
   PROJECTS,
   REVIEWER_TWO,
   topPrize,
   type Funder,
-  type ScienceField,
 } from '../../content/science';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
@@ -28,123 +25,38 @@ import type { GameState } from '../types';
 import { clampStat } from '../util';
 import { workTime } from './activities';
 import { markUsed, usedThisYear } from './usage';
+import {
+  filePatent,
+  hireMember,
+  labAction,
+  labTick,
+  patentsOnly,
+  type LabAction,
+} from './science-lab';
 
-/**
- * Science as a pursuit: a research project you push along with work time, papers that pick
- * up citations year after year, grant applications decided on your next birthday, and the
- * prizes that come to the very best. Open to anyone in a research job or doing a PhD.
- */
-export type Paper = {
-  year: number;
-  title: string;
-  venue: string;
-  tier: number;
-  quality: number;
-  cites: number;
-  breakthrough?: boolean;
-};
-export type Grant = {
-  funder: string;
-  name: string;
-  kind: string;
-  /** Local money a year. */
-  perYear: number;
-  from: number;
-  years: number;
-  stipend?: boolean;
-};
-export type ScienceRecord = {
-  field: ScienceField;
-  institution: string;
-  /** Standing in the field, 0..100. */
-  rep: number;
-  project: { title: string; progress: number; quality: number; tried: number[] } | null;
-  papers: Paper[];
-  grants: Grant[];
-  /** Applications awaiting a decision on your next birthday. */
-  pending: { funder: string; name: string; year: number; odds: number }[];
-  /** Rejections so far, by funder: each one makes the next proposal sharper. */
-  rejected: Record<string, number>;
-  prizes: string[];
-};
-
-export const RESEARCH_JOBS = [
-  'research_scientist',
-  'professor',
-  'chemist',
-  'environmental_scientist',
-  'data_scientist',
-  'doctor',
-];
-export const RESEARCH_PIPS = 3;
-const cap = (x: string): string => x.charAt(0).toUpperCase() + x.slice(1);
-
-/** Standing gets harder to add to the higher it is: the last few points take a career. */
-function addRep(sc: ScienceRecord, n: number): void {
-  sc.rep = clampStat(
-    sc.rep + Math.max(n > 0 ? 1 : 0, Math.round(n * Math.max(0.2, 1 - sc.rep / 110))),
-  );
-}
-const doingPhd = (s: GameState): boolean => s.education.enrollment?.programId === 'phd';
-/** Jobs (and the PhD) where research is the work itself: projects move along every year. */
-const FULL_TIME = ['research_scientist', 'professor'];
-const fullTime = (s: GameState): boolean => FULL_TIME.includes(s.career.jobId ?? '') || doingPhd(s);
-
-/** Can this life do research at all, and why not. */
-export function scienceOpen(s: GameState): boolean {
-  if (s.death || s.legal.prison || s.player.age < 20) return false;
-  return RESEARCH_JOBS.includes(s.career.jobId ?? '') || doingPhd(s);
-}
-
-export function fieldFor(s: GameState): ScienceField {
-  if (s.career.jobId === 'doctor') return 'life';
-  if (s.career.jobId === 'data_scientist') return 'cs';
-  for (const d of [...s.education.degrees].reverse()) {
-    const f = MAJOR_FIELD[d.field] ?? MAJOR_FIELD[d.level];
-    if (f) return f;
-  }
-  return 'life';
-}
-
-function ensure(s: GameState): ScienceRecord {
-  const job = s.career.jobId ?? 'phd';
-  const inst = institutionFor(s, job, s.seed >>> 0);
-  if (!s.science)
-    s.science = {
-      field: fieldFor(s),
-      institution: inst,
-      // A doctorate and a senior post count for something on day one.
-      rep: Math.min(
-        40,
-        (s.education.degrees.some((d) => d.level === 'doctorate') ? 8 : 0) +
-          (RESEARCH_JOBS.includes(job) ? s.career.level * 6 : 0),
-      ),
-      project: null,
-      papers: [],
-      grants: [],
-      pending: [],
-      rejected: {},
-      prizes: [],
-    };
-  if (RESEARCH_JOBS.includes(job)) s.science.institution = inst;
-  return s.science;
-}
-
-export function hIndex(papers: readonly Paper[]): number {
-  const c = papers.map((p) => p.cites).sort((a, b) => b - a);
-  let h = 0;
-  while (h < c.length && (c[h] ?? 0) >= h + 1) h++;
-  return h;
-}
-export const citations = (papers: readonly Paper[]): number =>
-  papers.reduce((t, p) => t + p.cites, 0);
-
-export const activeGrants = (s: GameState): Grant[] =>
-  (s.science?.grants ?? []).filter((g) => s.year < g.from + g.years);
-
-/** Extra progress a pip of research makes with money behind it. */
-const labBoost = (s: GameState): number =>
-  Math.min(30, activeGrants(s).filter((g) => !g.stipend).length * 12);
+export * from './science-core';
+export {
+  hireReason,
+  labCapacity,
+  labReason,
+  patentable,
+  patentReason,
+  type LabAction,
+} from './science-lab';
+import {
+  activeGrants,
+  addRep,
+  cap,
+  ensure,
+  fieldFor,
+  fullTime,
+  hIndex,
+  labBoost,
+  RESEARCH_PIPS,
+  scienceOpen,
+  type Paper,
+  type ScienceRecord,
+} from './science-core';
 
 function newProject(ctx: Ctx, sc: ScienceRecord, rng: Rng): void {
   const s = ctx.s;
@@ -159,7 +71,11 @@ function newProject(ctx: Ctx, sc: ScienceRecord, rng: Rng): void {
   sc.project = {
     title,
     progress: 0,
-    quality: clampStat(rng.int(20, 35) + Math.round(s.player.stats.smarts / 4)),
+    quality: clampStat(
+      rng.int(20, 35) +
+        Math.round(s.player.stats.smarts / 4) +
+        Math.min(10, (sc.collaborators ?? 0) * 2),
+    ),
     tried: [],
   };
   ctx.log('work', `🔬 A new research project: ${title}.`);
@@ -267,11 +183,17 @@ export type ScienceAction =
   | { id: 'research' }
   | { id: 'publish'; tier: number }
   | { id: 'apply'; funder: string }
-  | { id: 'talk' };
+  | { id: 'talk' }
+  | { id: 'hire'; role: 'phd' | 'postdoc' }
+  | { id: 'lab'; what: LabAction }
+  | { id: 'patent'; paper: number };
 
 export function scienceAction(ctx: Ctx, a: ScienceAction): void {
   const s = ctx.s;
   if (a.id === 'publish') return publish(ctx, a.tier);
+  if (a.id === 'hire') return hireMember(ctx, a.role);
+  if (a.id === 'lab') return labAction(ctx, a.what);
+  if (a.id === 'patent') return filePatent(ctx, a.paper);
   const why = a.id === 'apply' ? grantReason(s, a.funder) : scienceReason(s, a.id);
   if (why) throw new EngineError(why);
   const sc = ensure(s);
@@ -357,7 +279,18 @@ export function scienceTick(ctx: Ctx): void {
   // Its own dice: a research life never shifts the rolls of the rest of the year.
   const r = new Rng(seedRng(((s.seed >>> 0) ^ Math.imul(s.year + 104729, 0x85ebca6b)) >>> 0));
   for (const p of live.papers) p.cites += yearCites(r, s, p);
-  if (!open) return;
+  if (!open) {
+    if (live.lab?.length) {
+      for (const m of live.lab) {
+        const n = s.npcs.find((x) => x.id === m.id);
+        if (n) n.roles = n.roles.map((x) => (x === 'labmate' ? 'acquaintance' : x));
+      }
+      live.lab = [];
+      ctx.log('work', '🔬 Without you, your lab disbands: the students find new supervisors.');
+    }
+    patentsOnly(ctx, r, live);
+    return;
+  }
   live.field = live.papers.length ? live.field : fieldFor(s);
   // The research the job itself pays for: a project moves along even without extra hours.
   if (fullTime(s)) work(ctx, live, false, r);
@@ -366,6 +299,7 @@ export function scienceTick(ctx: Ctx): void {
   decide(ctx, r, live);
   grantYear(ctx, live);
   prizes(ctx, r, live);
+  labTick(ctx, r, live);
 }
 
 function decide(ctx: Ctx, r: Rng, sc: ScienceRecord): void {
@@ -484,5 +418,23 @@ function prizes(ctx: Ctx, r: Rng, sc: ScienceRecord): void {
       `🏆 A phone call at dawn from far away: you have won ${top}${shared ? ', shared with two others' : ''}. The work it is for is decades old. You are on every front page by breakfast.`,
       true,
     );
+  }
+}
+
+/** Events reach into a research life: standing, the project on the bench, a retraction. */
+export function scienceEffect(ctx: Ctx, kind: string, n: number): void {
+  const sc = ctx.s.science;
+  if (!sc) return;
+  if (kind === 'sci_rep') {
+    if (n >= 0) addRep(sc, n);
+    else sc.rep = clampStat(sc.rep + n);
+  } else if (kind === 'sci_quality' && sc.project) {
+    sc.project.quality = clampStat(sc.project.quality + n);
+  } else if (kind === 'sci_finish' && sc.project) {
+    sc.project.progress = 100;
+  } else if (kind === 'sci_retract') {
+    // The most recent paper comes out of the record, and its citations with it.
+    const gone = sc.papers.pop();
+    if (gone) sc.rep = clampStat(sc.rep - 10 - (gone.tier <= 1 ? 10 : 0));
   }
 }

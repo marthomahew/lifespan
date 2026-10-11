@@ -29,6 +29,7 @@ import { MUSIC_LIFE_EVENTS } from './music-life';
 import { CHILDHOOD_CLASS_EVENTS } from './childhood-class';
 import { WORLD_HISTORY_EVENTS } from './history-world';
 import { SLOVENIA_EVENTS } from './slovenia';
+import { SLOVENIA_TOWN_EVENTS } from './slovenia-towns';
 import { DECADE_EVENTS } from './decades';
 import { SPECIAL_PATH_EVENTS } from './special-paths';
 import { LEGAL_EVENTS } from './legal';
@@ -42,6 +43,7 @@ import { CAREER_CARE_EVENTS } from './careers-care';
 import { CAREER_OFFICE_EVENTS } from './careers-office';
 import { CAREER_HANDS_EVENTS } from './careers-hands';
 import { CAREER_FIELD_EVENTS } from './careers-field';
+import { SCIENCE_LIFE_EVENTS } from './science-life';
 import { ROMANCE_EVENTS_2 } from './romance-2';
 import { CRIME_EVENTS_2 } from './crime-2';
 import { RELEASE_EVENTS } from './release';
@@ -72,6 +74,7 @@ export const EVENTS: EventDef[] = [
   ...CAREER_OFFICE_EVENTS,
   ...CAREER_HANDS_EVENTS,
   ...CAREER_FIELD_EVENTS,
+  ...SCIENCE_LIFE_EVENTS,
   ...ROMANCE_EVENTS_2,
   ...CRIME_EVENTS_2,
   ...RELEASE_EVENTS,
@@ -127,6 +130,7 @@ export const EVENTS: EventDef[] = [
   ...CHILDHOOD_CLASS_EVENTS,
   ...WORLD_HISTORY_EVENTS,
   ...SLOVENIA_EVENTS,
+  ...SLOVENIA_TOWN_EVENTS,
   ...DECADE_EVENTS,
   ...SPECIAL_PATH_EVENTS,
   ...LEGAL_EVENTS,

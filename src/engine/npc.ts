@@ -181,6 +181,8 @@ export function relLabel(n: Npc): string {
       return 'your ex';
     case 'stepparent':
       return pick('your stepfather', 'your stepmother', 'your stepparent');
+    case 'labmate':
+      return 'someone from your lab';
     default:
       return `your ${role}`;
   }

@@ -42,6 +42,7 @@ const FRIENDLY_ROLES = new Set<Role>([
   'cellmate',
   'teacher',
   'bandmate',
+  'labmate',
   'acquaintance',
   'ex',
   'partner',

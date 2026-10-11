@@ -954,5 +954,10 @@
     "title": "Science and grants; Slovenia; tester distribution",
     "passes": true,
     "evidence": "tests/engine/science.test.ts; e2e/science.spec.ts; content:check; npm run verify"
+  },
+  "S146": {
+    "title": "Slovene towns in depth; science career mode",
+    "passes": true,
+    "evidence": "tests/engine/science-career.test.ts; tests/content/slovenia-towns.test.ts; e2e/science.spec.ts; tests/integration/coverage.test.ts; npm run verify"
   }
 }

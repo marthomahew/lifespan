@@ -11,6 +11,7 @@ import { COUNTRIES } from '../src/content/countries';
 import { ALL_STATS, CATEGORIES, VICES } from '../src/engine/types';
 import { bindingQueries, ROLES } from '../src/engine/events/select';
 import { tokensIn } from '../src/engine/events/tokens';
+import { TOWN_FIELDS } from '../src/engine/towns';
 import { PET_KINDS } from '../src/content/pets';
 import { ERA_WORDS } from '../src/content/era';
 import type { EventDef, Effect, OutcomeDef } from '../src/engine/events/types';
@@ -218,6 +219,13 @@ export function validateEvents(
       for (const tok of tokensIn(t)) {
         if (PLAYER_TOKENS.has(tok)) continue;
         if (/^money:\d+(\.\d+)?$/.test(tok)) continue;
+        // Town detail ({town:landmark}): the event must check where you live (townOf) in `when`.
+        if (tok.startsWith('town:')) {
+          if (!(TOWN_FIELDS as readonly string[]).includes(tok.slice(5)))
+            err(where, `token {${tok}} uses unknown town field`);
+          else if (!e.when) err(where, `{${tok}} needs a when that checks the town (inTownWith…)`);
+          continue;
+        }
         // Pet tokens; tests/content/pets-content.test.ts checks such events need a pet.
         if (PET_TOKENS.has(tok) || PROJECT_TOKENS.has(tok)) continue;
         if (

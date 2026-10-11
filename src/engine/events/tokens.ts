@@ -5,6 +5,7 @@ import { favouritePet } from '../systems/pets';
 import { formatMoney, money } from '../economy';
 import { countryOf } from '../economy';
 import { pronouns, relLabel } from '../npc';
+import { townToken } from '../towns';
 import type { ChainPayload, GameState, Npc } from '../types';
 
 const TOKEN = /\{([^{}]+)\}/g;
@@ -124,6 +125,7 @@ export function resolveToken(
     if (!pet) return null;
     return token === 'pet.kind' ? (PET_BY_ID[pet.kind]?.label ?? pet.kind).toLowerCase() : pet.name;
   }
+  if (token.startsWith('town:')) return townToken(s, token.slice(5));
   const dot = token.indexOf('.');
   if (dot > 0) {
     const name = token.slice(0, dot);

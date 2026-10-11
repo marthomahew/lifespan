@@ -116,6 +116,7 @@ export {
   type UnderworldAction,
 } from './systems/underworld';
 export { missionReason, type MissionAction, type MissionRecord } from './systems/missions';
+export { moveCost, moveTownReason, townOf } from './towns';
 export {
   acceptOdds,
   activeGrants,
@@ -130,6 +131,12 @@ export {
   scienceOpen,
   scienceReason,
   personalShare,
+  hireReason,
+  labCapacity,
+  labReason,
+  patentable,
+  patentReason,
+  type LabAction,
   type ScienceAction,
   type ScienceRecord,
 } from './systems/science';

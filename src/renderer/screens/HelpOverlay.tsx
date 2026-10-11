@@ -54,7 +54,11 @@ export const GUIDE: [string, string][] = [
   ],
   [
     'Science and grants',
-    'In a research job (research scientist, professor, chemist, doctor and others) or during a PhD, Occupation › Research has a project on the bench. Research pips push it along; publish it in a journal of your choice (the higher you aim, the harder to get in and the more it is cited). Apply for grants with a pip each: decisions arrive on your next birthday, and funders follow your country and era (in Slovenia: the Research Community, then ARRS and ARIS, young researcher posts and programme funding; in the EU from 2007, the ERC). Standing brings national prizes, academies and, for the very best, a Nobel.',
+    'In a research job (research scientist, professor, chemist, doctor and others) or during a PhD, Occupation › Research is a career of its own. Research pips push a project along; publish it in a journal of your choice (aim higher: harder to get in, far more citations). Grant applications take a pip and are decided on your next birthday; funders follow your country and era (the ERC in the EU from 2007). Grants pay for a lab of PhD students and postdocs who speed up your work and graduate on their own schedule. Conferences bring collaborators, professors teach and face a tenure review after six years, tenured professors can take a sabbatical abroad every seven, and applied results can be patented for royalties. Standing (your reputation, 0–100) opens bigger grants, lectures, national prizes, the academy and, for a lucky few, a Nobel. The challenge “From Lab Coat to Laurels” is a good way in.',
+  ],
+  [
+    'Towns',
+    'Where you live has a character of its own. In Slovenia every town has its region, landmarks, local food, river and famous names (Assets › your town), and its events know where you are: the burja in Ajdovščina, the mine in Velenje, the Mura in Prekmurje. Home prices follow the town, and from 18 you can move to another one.',
   ],
   [
     'Money and markets',

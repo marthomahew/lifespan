@@ -27,6 +27,9 @@ const NULLABLE: RegExp[] = [
   /^\$\.npcs\[\]\.job$/,
   /^\$\.money\.last$/,
   /^\$\.family\.pregnancy$/,
+  /^\$\.science$/,
+  /^\$\.science\.project$/,
+  /^\$\.science\.patents\[\]\.licensed$/,
 ];
 const nullable = (path: string): boolean => {
   const p = path.replace(/\[\d+\]/g, '[]');

@@ -18,6 +18,7 @@ import {
 } from '../../../../engine';
 import { usedThisYear } from '../../../../engine/systems/usage';
 import { doAct } from '../../../store/app';
+import { ScienceLab } from './ScienceLab';
 
 const pct = (p: number): string => `${Math.round(p * 100)}%`;
 const cap = (x: string): string => x.charAt(0).toUpperCase() + x.slice(1);
@@ -117,6 +118,7 @@ export function SciencePanel({
                 🎤 Public lecture
               </button>
             </div>
+            <ScienceLab game={game} onError={onError} />
             <strong>Grants</strong>
             <p className="muted">
               A proposal takes one work pip. The answer comes on your next birthday. The money

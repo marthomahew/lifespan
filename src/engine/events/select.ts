@@ -31,6 +31,7 @@ export const ROLES: Role[] = [
   'sweetheart',
   'nibling',
   'aunt_uncle',
+  'labmate',
   'acquaintance',
 ];
 const ROLE_SET = new Set<string>(ROLES);

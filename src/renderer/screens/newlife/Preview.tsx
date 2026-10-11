@@ -82,6 +82,7 @@ export function Preview({
             ? ` A prodigy at ${talent.label.toLowerCase()}.`
             : ` A gift for ${talent.label.toLowerCase()}.`)}
         {d.gifts.includes('quick_study') && ' A quick study.'}
+        {d.city && c?.towns?.[d.city] && ` ${c.towns[d.city]?.blurb}`}
         {BACKGROUND_BY_ID[d.background] &&
           ` ${BACKGROUND_BY_ID[d.background]?.emoji} ${BACKGROUND_BY_ID[d.background]?.label}.`}
       </p>

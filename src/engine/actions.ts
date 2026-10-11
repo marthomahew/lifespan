@@ -41,6 +41,7 @@ import { doHustle, type HustleId } from './systems/hustle';
 import { politicsAction, type PoliticsAction } from './systems/politics';
 import { missionAction, type MissionAction } from './systems/missions';
 import { scienceAction, type ScienceAction } from './systems/science';
+import { moveTown } from './towns';
 import type { Genre } from './systems/music-charts';
 import { setGenre } from './systems/music';
 import { underworldAction, type UnderworldAction } from './systems/underworld';
@@ -83,6 +84,7 @@ export type PlayerAction =
   | { type: 'politics'; action: PoliticsAction }
   | { type: 'mission'; id: MissionAction }
   | ({ type: 'science' } & ScienceAction)
+  | { type: 'move_town'; city: string }
   | { type: 'music_genre'; genre: Genre }
   | { type: 'underworld'; action: UnderworldAction }
   | { type: 'lifestyle_end'; key: number }
@@ -205,6 +207,9 @@ export function act(input: GameState, action: PlayerAction): Step {
       break;
     case 'science':
       scienceAction(ctx, action);
+      break;
+    case 'move_town':
+      moveTown(ctx, action.city);
       break;
     case 'music_genre':
       setGenre(ctx, action.genre);

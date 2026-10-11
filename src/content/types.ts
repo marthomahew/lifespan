@@ -48,8 +48,52 @@ export type Country = {
   languages: string[];
   cities: string[];
   names: { male: string[]; female: string[]; last: string[] };
+  /** Towns in depth (optional): region, character and local colour, keyed by the names in `cities`. */
+  towns?: Record<string, TownInfo>;
   /** First names by generation (optional): the first era whose `until` is after the birth year. */
   nameEras?: { until: number; male: string[]; female: string[] }[];
+};
+
+export type TownTag =
+  | 'capital'
+  | 'coast'
+  | 'alpine'
+  | 'ski'
+  | 'lake'
+  | 'river'
+  | 'karst'
+  | 'wine'
+  | 'spa'
+  | 'industrial'
+  | 'mining'
+  | 'university'
+  | 'historic'
+  | 'border'
+  | 'minority'
+  | 'forest'
+  | 'farming';
+
+/** A town as the people who grew up there know it. */
+export type TownInfo = {
+  /** The traditional region (Koroška, Štajerska, Gorenjska…). */
+  region: string;
+  size: 'capital' | 'city' | 'town' | 'small town';
+  /** Rough population, today. */
+  population: number;
+  tags: TownTag[];
+  /** One sentence for the new-life screen and the town panel. */
+  blurb: string;
+  /** Two to four places everyone local knows; used as "a school trip to {town:landmark}". */
+  landmarks: string[];
+  /** A dish or treat the town or region is known for (lower case, no article). */
+  food: string;
+  river?: string;
+  /** Someone born or long associated with the town, written to fit "the town of {town:famous}". */
+  famous?: string;
+  /** A local saying, habit or fact: a full sentence. */
+  quirk: string;
+  /** Home prices against the national average (1 = average). */
+  housing: number;
 };
 
 export type StatKeyC =

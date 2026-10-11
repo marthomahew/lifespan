@@ -20,6 +20,7 @@ import { hasAdultRecord } from './careers';
 import { addLoan, annuityPayment } from './loans';
 import { addSkill } from './skills';
 import { article, lowerLabel, withArticle } from '../text';
+import { townOf } from '../towns';
 import { addInjury } from './injuries';
 
 const conditionMult = (c: number): number => 0.6 + c / 250;
@@ -38,6 +39,7 @@ export function refreshListings(ctx: Ctx, windfallOnly = false): void {
   if (windfallOnly && !fresh) return;
   s.assets.listingsPower = power;
   const r = ctx.rng;
+  const housing = townOf(s)?.housing ?? 1;
   const byPrice = [...HOME_TYPES].sort((a, b) => a.price - b.price);
   const within = byPrice.filter((h) => h.price <= Math.max(power * 1.1, byPrice[2]?.price ?? 0));
   // The best few you can manage, a couple of cheaper ones, and one to dream about.
@@ -56,7 +58,10 @@ export function refreshListings(ctx: Ctx, windfallOnly = false): void {
         type: t.id,
         name: r.pick(t.names),
         condition,
-        price: Math.round(money(s, (t.price * conditionMult(condition) * r.int(85, 115)) / 100)),
+        // Ljubljana costs more than Trbovlje: the town's housing level, where it's known.
+        price: Math.round(
+          money(s, (t.price * conditionMult(condition) * r.int(85, 115)) / 100) * housing,
+        ),
       };
     })
     .sort((a, b) => a.price - b.price);
