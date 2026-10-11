@@ -32,7 +32,7 @@ It removes the app, your saved lives, settings, caches and logs, and lists every
 
 ### Worth trying
 
-- A life in **Slovenia**: Yugoslav childhoods, independence in 1991, the tolar and the euro, Triglav and Planica.
-- **Science**: get a PhD and a research job, then publish papers and win grants (in Slovenia from ARRS and ARIS, and from the ERC in Europe), and maybe a Nobel.
+- A life in **Slovenia**: pick your town (Slovenj Gradec, Ljubljana, Piran, Idrija… 55 of them), each with its own region, landmarks, food and local events. Yugoslav childhoods, independence in 1991, the tolar and the euro, Triglav and Planica. Assets › your town shows where you live, and you can move.
+- **A life in science**: get a PhD and a research job, then run your own lab: projects, papers, grants, PhD students, conferences, tenure, patents and, maybe, a Nobel. The challenge “From Lab Coat to Laurels” starts you on that road.
 
 Any feedback is welcome: what was fun, what was confusing, what felt wrong.
