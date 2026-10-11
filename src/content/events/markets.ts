@@ -173,7 +173,7 @@ export const MARKET_EVENTS: EventDef[] = [
     choices: [
       {
         id: 'small',
-        label: 'Buy a hundred dollars’ worth',
+        label: 'Buy {money:100} worth',
         outcomes: [
           {
             chance: 1,
@@ -184,11 +184,11 @@ export const MARKET_EVENTS: EventDef[] = [
       },
       {
         id: 'big',
-        label: 'Put in a thousand',
+        label: 'Put in {money:1000}',
         outcomes: [
           {
             chance: 1,
-            text: 'A thousand dollars goes in. You check the price on your phone more often than you check the weather.',
+            text: 'In goes {money:1000}. You check the price on your phone more often than you check the weather.',
             effects: [
               { system: 'buy_shares', arg: 'BTC:1000' },
               { flag: 'bitcoin_dabbler' },

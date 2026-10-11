@@ -19,7 +19,6 @@ targets=(
   "$L/Preferences/$ID"*.plist
   "$L/Saved Application State/$ID"*
   "$L/HTTPStorages/$ID"*
-  "$L/WebKit/$ID"*
   "$HOME/Downloads/Lifespan-mac.zip"
   "$HOME/Downloads/Lifespan-mac-intel.zip"
 )

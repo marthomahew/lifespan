@@ -12,6 +12,29 @@ import { hasEducation } from './careers';
 import { borrowForStudy, startStudentRepayment } from './loans';
 import { playerOdds } from './odds';
 
+const BRITISH = ['uk', 'ie', 'au', 'nz', 'za', 'in'];
+/** The two-year college that takes anyone, by its local name. */
+export function collegeName(s: GameState): string {
+  const c = s.player.country;
+  if (c === 'si') return 'higher vocational college';
+  if (BRITISH.includes(c)) return 'further education college';
+  return c === 'us' ? 'community college' : 'a local college';
+}
+/** Slovenian marks: 1–5 at school, 6–10 at university. */
+const SI_SCHOOL = ['nezadostno', 'zadostno', 'dobro', 'prav dobro', 'odlično'];
+function schoolLeavingLine(s: GameState): string {
+  const c = s.player.country;
+  if (c === 'si') {
+    const mark = Math.max(2, Math.min(5, Math.round(s.education.grade / 20)));
+    return `You finish secondary school${s.year >= 1995 ? ' and pass the matura' : ' with your final exams behind you'}, with an average of ${mark} (${SI_SCHOOL[mark - 1]}). Your family cheers slightly too loudly.`;
+  }
+  const g = letterGrade(s.education.grade);
+  const art = /^[AF]/.test(g) ? 'an' : 'a';
+  if (BRITISH.includes(c))
+    return `You finish school with ${art} ${g} average and your exams behind you. Your family cheers slightly too loudly.`;
+  return `You graduate from high school with ${art} ${g} average. Your family cheers slightly too loudly.`;
+}
+
 export const UNIVERSITY_MIN_GRADE = 72;
 
 export const inSchoolAge = (s: GameState): boolean =>
@@ -124,11 +147,7 @@ export function graduateHighSchool(ctx: Ctx): void {
     year: s.year,
   });
   s.education.inSchool = false;
-  ctx.log(
-    'school',
-    `You graduate from high school with ${/^[AF]/.test(letterGrade(s.education.grade)) ? 'an' : 'a'} ${letterGrade(s.education.grade)} average. Your family cheers slightly too loudly.`,
-    true,
-  );
+  ctx.log('school', schoolLeavingLine(s), true);
 }
 
 export function dropOut(ctx: Ctx): void {
@@ -205,7 +224,7 @@ export function enrollReason(
     if (s.legal.fugitive && !s.player.flags.includes('false_papers'))
       return 'enrolment needs papers you cannot show while on the run';
     if (kind === 'university' && e.grade < UNIVERSITY_MIN_GRADE && !e.veteranBenefit)
-      return `needs a school average of ${UNIVERSITY_MIN_GRADE}; yours is ${Math.round(e.grade)} (try community college)`;
+      return `needs a school average of ${UNIVERSITY_MIN_GRADE}; yours is ${Math.round(e.grade)} (try ${collegeName(s)})`;
     if (
       e.degrees.some(
         (d) =>
@@ -242,7 +261,7 @@ export function enroll(
   const name =
     kind === 'grad'
       ? (GRAD_BY_ID[programId]?.label ?? programId)
-      : `${MAJOR_BY_ID[programId]?.label ?? programId}${kind === 'community' ? ' at community college' : ''}`;
+      : `${MAJOR_BY_ID[programId]?.label ?? programId}${kind === 'community' ? ` at ${collegeName(s)}` : ''}`;
   // Community colleges take everyone with a diploma.
   if (kind !== 'community' && !ctx.roll(Math.min(0.97, Math.max(0.03, odds)))) {
     ctx.log('school', `The rejection letter for ${name} is polite and very brief.`, true);
@@ -272,7 +291,7 @@ export function enroll(
   }
   ctx.log(
     'school',
-    `You're accepted to study ${name}.${scholarship ? ' A scholarship covers the fees.' : s.education.veteranBenefit ? ' Your veteran benefit pays the tuition.' : tuition ? ` Tuition is ${formatMoney(s, tuition)} a year.` : ' Tuition is free here.'}`,
+    `${programId === 'phd' ? 'You’re accepted onto a doctorate' : `You're accepted to study ${name}`}.${scholarship ? ' A scholarship covers the fees.' : s.education.veteranBenefit ? ' Your veteran benefit pays the tuition.' : tuition ? ` Tuition is ${formatMoney(s, tuition)} a year.` : ' Tuition is free here.'}`,
     true,
   );
   addStat(s, 'happiness', 6);
@@ -370,7 +389,11 @@ function graduate(ctx: Ctx): void {
       : (MAJOR_BY_ID[en.programId]?.label ?? en.programId);
   ctx.log(
     'school',
-    `You graduate${en.kind === 'grad' ? ` from ${label}` : ` in ${label}`} with a ${gpa.toFixed(2)} GPA. The hat goes up; it does not come down where you threw it.`,
+    en.programId === 'phd'
+      ? 'You defend your thesis in front of three examiners and a jug of water, and walk out a doctor. Somebody has brought sparkling wine in a paper cup.'
+      : s.player.country === 'si'
+        ? `You graduate${en.kind === 'grad' ? ` from ${label}` : ` in ${label}`} with an average mark of ${(6 + gpa).toFixed(1)}. The hat goes up; it does not come down where you threw it.`
+        : `You graduate${en.kind === 'grad' ? ` from ${label}` : ` in ${label}`} with a ${gpa.toFixed(2)} GPA. The hat goes up; it does not come down where you threw it.`,
     true,
   );
   addStat(s, 'happiness', 8);

@@ -22,17 +22,23 @@ export type NpcSpec = {
   lookSeed?: number;
 };
 
-export function randomName(ctx: Ctx, countryId: string, gender: Gender): string {
+export function randomName(ctx: Ctx, countryId: string, gender: Gender, born?: number): string {
   const c = COUNTRY_BY_ID[countryId] ?? COUNTRY_BY_ID['us'];
   if (!c) throw new Error('no countries');
+  // Names of the generation, where the country lists them (no Anže born in 1930).
+  const era =
+    born === undefined || !c.nameEras
+      ? undefined
+      : (c.nameEras.find((e) => born < e.until) ?? c.nameEras[c.nameEras.length - 1]);
+  const names = era ?? c.names;
   const pool =
     gender === 'male'
-      ? c.names.male
+      ? names.male
       : gender === 'female'
-        ? c.names.female
+        ? names.female
         : ctx.rng.chance(0.5)
-          ? c.names.male
-          : c.names.female;
+          ? names.male
+          : names.female;
   // Nobody new shares a first name with you, your family, or anyone still in your life.
   const s = ctx.s;
   const taken = new Set<string>([s.player.first]);
@@ -75,7 +81,7 @@ export function addNpc(ctx: Ctx, spec: NpcSpec): Npc {
   const r = ctx.rng;
   const npc: Npc = {
     id: s.nextNpcId++,
-    first: spec.first ?? randomName(ctx, country, gender),
+    first: spec.first ?? randomName(ctx, country, gender, s.year - spec.age),
     last: spec.last ?? randomSurname(ctx, country),
     gender,
     age: spec.age,
@@ -104,7 +110,7 @@ export function addNpc(ctx: Ctx, spec: NpcSpec): Npc {
   // Nobody in your life shares a full name with someone else in it (re-rolled only on a clash).
   if (!spec.first)
     for (let i = 0; i < 6 && s.npcs.some((n) => n.first === npc.first && n.last === npc.last); i++)
-      npc.first = randomName(ctx, country, gender);
+      npc.first = randomName(ctx, country, gender, npc.birthYear);
   s.npcs.push(npc);
   return npc;
 }

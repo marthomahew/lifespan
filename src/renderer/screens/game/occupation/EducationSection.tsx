@@ -10,7 +10,7 @@ import {
   type GameState,
 } from '../../../../engine';
 import { doAct } from '../../../store/app';
-import { UNIVERSITY_MIN_GRADE } from '../../../../engine/systems/education';
+import { collegeName, UNIVERSITY_MIN_GRADE } from '../../../../engine/systems/education';
 import { cap } from '../../../components/text';
 
 type Kind = 'university' | 'community' | 'grad';
@@ -78,7 +78,7 @@ export function EducationSection({
             {e.enrollment.kind === 'grad'
               ? GRAD_BY_ID[e.enrollment.programId]?.label
               : MAJOR_BY_ID[e.enrollment.programId]?.label}
-            {e.enrollment.kind === 'community' ? ' (community college)' : ''}, year{' '}
+            {e.enrollment.kind === 'community' ? ` (${collegeName(game)})` : ''}, year{' '}
             {e.enrollment.year + 1} of {e.enrollment.length}
           </span>
           <button data-testid="btn-drop-out" onClick={() => onError(doAct({ type: 'drop_out' }))}>

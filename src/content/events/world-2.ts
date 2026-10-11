@@ -500,7 +500,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
     weight: 5,
     cooldownYears: 10,
     when: hasJob,
-    text: 'A nationwide general strike shuts the trains, the buses and half the ferries across {countryThe}. Your commute is now a theoretical concept.',
+    text: 'A nationwide general strike shuts the trains, the buses and half the schools across {countryThe}. Your commute is now a theoretical concept.',
     choices: [
       {
         id: 'cycle',
@@ -553,6 +553,7 @@ export const WORLD_EVENTS_2: EventDef[] = [
     ages: [12, 51],
     weight: 5,
     once: true,
+    fromYear: 2000,
     text: 'The evening news leads with a breakthrough: a lab team has grown working nerve tissue from a few skin cells. A scientist in a cardigan tries not to cry on camera and fails.',
     outcomes: [
       {
@@ -580,6 +581,8 @@ export const WORLD_EVENTS_2: EventDef[] = [
     ages: [6, 45],
     weight: 6,
     once: true,
+    // Slovenia only fields its own teams after independence.
+    when: (s) => s.player.country !== 'si' || s.year >= 1992,
     text: 'In the last seconds of a final nobody thought {country} could win, {country} wins. The whole street erupts. Car horns, pans banged with spoons, a postman weeping openly.',
     outcomes: [
       {

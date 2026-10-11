@@ -546,7 +546,7 @@ export const MIDDLE_AGE_EVENTS_2: EventDef[] = [
   },
   {
     id: 'mid2_landmark_birthday',
-    fromYear: 2008,
+    fromYear: 2010,
     kind: 'choice',
     category: 'social',
     ages: [55, 60],

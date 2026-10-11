@@ -108,6 +108,8 @@ export const SPECIAL_PATHS: SpecialPath[] = [
       free(s) &&
       s.player.age >= 40 &&
       s.player.stats.smarts >= 88 &&
+      // A research record has its own road to Stockholm (systems/science.ts).
+      !s.science?.papers.length &&
       job(s, 'research_scientist', 'professor', 'chemist', 'doctor') &&
       s.career.level >= 3,
   },

@@ -346,6 +346,8 @@ export function unemploymentBenefit(s: GameState): number {
   const p = s.player;
   if (p.age < 18 || p.age >= countryOf(s).ages.retirement) return 0;
   if (c.jobId || c.partTimeId || c.retired || s.education.enrollment || s.business) return 0;
+  // A school-leaver with no work record lives at home first; support comes later.
+  if (p.age < 21 && c.history.length === 0 && c.yearsWorked === 0) return 0;
   // Support needs papers; someone on the run can't sign on.
   if (s.legal.prison || s.military?.active || s.legal.fugitive) return 0;
   // Means-tested: savings above a modest cushion mean you live on those first.

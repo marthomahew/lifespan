@@ -48,6 +48,8 @@ export type Country = {
   languages: string[];
   cities: string[];
   names: { male: string[]; female: string[]; last: string[] };
+  /** First names by generation (optional): the first era whose `until` is after the birth year. */
+  nameEras?: { until: number; male: string[]; female: string[] }[];
 };
 
 export type StatKeyC =

@@ -305,6 +305,7 @@ export const YOUNG_ADULT_EVENTS: EventDef[] = [
   },
   {
     id: 'ya_boss_saturday_email',
+    fromYear: 1998,
     kind: 'choice',
     category: 'work',
     ages: [20, 29],

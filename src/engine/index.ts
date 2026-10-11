@@ -129,6 +129,7 @@ export {
   RESEARCH_PIPS,
   scienceOpen,
   scienceReason,
+  personalShare,
   type ScienceAction,
   type ScienceRecord,
 } from './systems/science';

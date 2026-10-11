@@ -90,6 +90,8 @@ export const DECADE_EVENTS: EventDef[] = [
     id: 'dec50_sweets_off_ration',
     emoji: '🍬',
     category: 'money',
+    // Threepenny bits and sherbet lemons: a British-coinage childhood.
+    when: (s) => ['uk', 'ie', 'au', 'nz'].includes(s.player.country),
     text: 'You have a threepenny bit, the sweet shop has every jar in the window full, and the woman behind the counter is waiting with her paper bag and her patience running out.',
     choices: [
       {

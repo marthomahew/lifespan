@@ -1553,6 +1553,7 @@ export const SCHOOL_EVENTS: EventDef[] = [
   },
   {
     id: 'school_s_career_quiz',
+    fromYear: 1985,
     kind: 'notice',
     category: 'school',
     ages: [14, 17],

@@ -1,4 +1,4 @@
-import { PARENT_JOBS } from '../../content/family';
+import { jobExists, PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { money } from '../economy';
 import { netWorth } from '../networth';
@@ -40,7 +40,9 @@ function homeTier(s: GameState, n: Npc): number {
 }
 
 function setJob(ctx: Ctx, r: Rng, n: Npc, tier: Tier, why?: string): void {
-  const options = PARENT_JOBS[tier].filter((j) => j !== n.job && j !== 'Unemployed');
+  const options = PARENT_JOBS[tier].filter(
+    (j) => j !== n.job && j !== 'Unemployed' && jobExists(j, ctx.s.year),
+  );
   n.job = r.pick(options.length ? options : PARENT_JOBS[tier]);
   const [lo, hi] = PAY[tier];
   // A new job pays at least what the old one did, and usually a little more.

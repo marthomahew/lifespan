@@ -49,7 +49,13 @@ export const PROJECTS: Record<ScienceField, { title: string; from?: number }[]> 
     { title: 'the immune memory of a common cold' },
     { title: 'a gene that switches on only at night' },
     { title: 'what the olm does with its 100-year life' },
-    { title: 'mapping a genome, one stubborn stretch at a time', from: 1990 },
+    { title: 'mapping a genome one stubborn stretch at a time', from: 1990 },
+    { title: 'how tardigrades survive being boiled' },
+    { title: 'the sense of smell in salmon finding home' },
+    { title: 'a blood test for an early cancer', from: 1985 },
+    { title: 'why some trees talk through their roots' },
+    { title: 'the bacteria that live in clouds' },
+    { title: 'how the brain files away a memory overnight' },
     { title: 'editing a gene with CRISPR without breaking its neighbours', from: 2013 },
     { title: 'a messenger-RNA vaccine that keeps in an ordinary fridge', from: 2005 },
     { title: 'how antibiotics stop working' },
@@ -119,7 +125,7 @@ export const PROJECTS: Record<ScienceField, { title: string; from?: number }[]> 
     { title: 'the letters of a provincial printer' },
     { title: 'how a folk song travelled across three borders' },
     { title: 'the lost first draft of a famous poem' },
-    { title: 'a medieval recipe book, and who really wrote it' },
+    { title: 'who really wrote a medieval recipe book' },
     { title: 'the language of shop signs in a port town' },
     { title: 'a painter everybody knew and nobody bought' },
     { title: 'the history of the weekend' },
@@ -265,7 +271,7 @@ export const FUNDERS: Funder[] = [
         ? slovenianAgency(s.year)
         : null,
     kind: 'young researcher post',
-    amount: [22000, 26000],
+    amount: [40000, 44000],
     years: 4,
     odds: 0.55,
     minRep: 0,
@@ -302,14 +308,14 @@ export const FUNDERS: Funder[] = [
     amount: [290000, 310000],
     years: 5,
     odds: 0.12,
-    minRep: 20,
+    minRep: 25,
     intl: true,
     blurb: 'Europe’s big prize for young scientists: €1.5 million and five years of freedom.',
   },
   {
     id: 'erc_consolidator',
     name: (s) =>
-      inEu(s) && s.year >= 2007 && s.player.age >= 36 && s.player.age <= 52
+      inEu(s) && s.year >= 2013 && s.player.age >= 36 && s.player.age <= 52
         ? 'the European Research Council'
         : null,
     kind: 'Consolidator Grant',
@@ -322,12 +328,13 @@ export const FUNDERS: Funder[] = [
   },
   {
     id: 'erc_advanced',
-    name: (s) => (inEu(s) && s.year >= 2008 ? 'the European Research Council' : null),
+    name: (s) =>
+      inEu(s) && s.year >= 2008 && s.player.age >= 45 ? 'the European Research Council' : null,
     kind: 'Advanced Grant',
     amount: [490000, 510000],
     years: 5,
     odds: 0.12,
-    minRep: 55,
+    minRep: 70,
     intl: true,
     blurb: '€2.5 million for a leader in the field with one more big idea.',
   },
@@ -465,4 +472,39 @@ export const REVIEWER_TWO = [
   'Reviewer 2 finds the conclusions “premature” and the font “distracting”.',
   'Reviewer 2 writes one line: “I am not convinced.” Nothing else.',
   'Reviewer 2 wants more experiments, a bigger sample and, implicitly, a time machine.',
+];
+
+/** The journal for a tier, as the era had it: open access is a 2000s idea, and so are some titles. */
+export function venueFor(s: GameState, f: ScienceField, tier: number): string {
+  const v = VENUES[f][tier] ?? 'a journal';
+  if (v === 'an open-access journal' && s.year < 2000) return 'a smaller journal';
+  if (v === 'Nature Materials' && s.year < 2002) return 'a leading materials journal';
+  if (v === 'a top conference' && s.year < 1980) return 'the leading journal in your field';
+  return v;
+}
+
+export const PROPOSAL_LINES = [
+  'You send a proposal to {name}: forty pages, a budget that adds up, and a title you are proud of.',
+  'A proposal goes off to {name} at 11:58 p.m., two minutes before the portal closes.',
+  'You and a colleague spend a month on a proposal to {name}, and agree on the title in the last hour.',
+  'Your proposal to {name} has a figure so good you almost frame it.',
+  'You send {name} a proposal after the department’s grant office reads it and changes every comma.',
+];
+export const SEED_LINES = [
+  'You ask {name} for a little money to try an idea: two pages and a hopeful paragraph.',
+  'A short application to {name}: enough for a student’s summer and some reagents.',
+  'You fill in {name}’s one-page form for pilot money, and attach a very confident diagram.',
+];
+export const REJECT_LINES = [
+  'The panel scored it “excellent”, which this year was not enough.',
+  'One reviewer loved it; the other thought it was about something else entirely.',
+  'It came close: just below the line, the letter says, in a sentence clearly written for many people.',
+  'The money went to fewer projects than ever this year.',
+];
+export const LECTURE_LINES = [
+  'You give a public lecture on {field}. A child in the front row asks the best question of the night.',
+  'You talk about {field} on the radio and are recognised the next day by the woman at the bakery.',
+  'A lecture on {field} in a packed library hall. Someone asks whether it will be on the test.',
+  'You explain {field} at a science festival using a balloon, a torch and great confidence.',
+  'A school invites you to talk about {field}. Thirty hands go up at once, all asking about explosions.',
 ];

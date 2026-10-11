@@ -2,7 +2,7 @@ import { jobTier } from './npc-economy';
 import { lowerTitle } from '../text';
 import { pickFresh } from '../fresh';
 import { COUNTRIES } from '../../content/countries';
-import { PARENT_JOBS } from '../../content/family';
+import { jobExists, PARENT_JOBS } from '../../content/family';
 import type { Ctx } from '../ctx';
 import { formatMoney, money } from '../economy';
 import { pronouns, relLabel } from '../npc';
@@ -78,7 +78,7 @@ const MILESTONES: Milestone[] = [
   },
   {
     kind: 'job',
-    chance: 0.05,
+    chance: 0.02,
     // Bosses and coworkers are defined by the job you share: they don't drift off-stage.
     when: (_c, n) =>
       n.age >= 22 &&
@@ -96,7 +96,7 @@ const MILESTONES: Milestone[] = [
       // A fresh start at the same level of work (promotions are npc-careers' business).
       const tier = jobTier(was) ?? 'working';
       const pool = [...PARENT_JOBS[tier === 'poor' ? 'working' : tier]].filter(
-        (j) => j !== was && j !== left && !NOT_WORKING.includes(j),
+        (j) => j !== was && j !== left && !NOT_WORKING.includes(j) && jobExists(j, ctx.s.year),
       );
       n.job = ctx.rng.pick(pool);
       n.flags = n.flags.filter((f) => !f.startsWith('left_job:'));

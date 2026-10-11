@@ -37,7 +37,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'diploma',
     label: 'Diploma',
     emoji: '🎓',
-    description: 'Finished high school.',
+    description: 'Finished school.',
     check: (s) => hasDegree(s, ['high_school']),
   },
   {
@@ -93,7 +93,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'homeowner',
     label: 'Homeowner',
     emoji: '🏡',
-    description: 'Bought a home.',
+    description: 'Own a home.',
     check: (s) => s.assets.homes.length > 0,
   },
   {

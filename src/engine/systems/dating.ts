@@ -1,5 +1,5 @@
 import { COUNTRY_BY_ID } from '../../content/countries';
-import { PARENT_JOBS } from '../../content/family';
+import { jobExists, PARENT_JOBS } from '../../content/family';
 import { TRAITS } from '../../content/traits';
 import { Rng, seedRng } from '../rng';
 import type { GameState, Gender } from '../types';
@@ -60,7 +60,7 @@ export function dateCandidates(s: GameState, activityId: string): Candidate[] {
     // Jobs fit the age: students and starters when young, retirees later on.
     const tier =
       age < 23 ? 'working' : r.pick(['working', 'middle', 'middle', 'comfortable'] as const);
-    const jobs = PARENT_JOBS[tier].filter((j) => j !== 'Unemployed');
+    const jobs = PARENT_JOBS[tier].filter((j) => j !== 'Unemployed' && jobExists(j, s.year));
     const job = age >= 67 ? 'Retired' : age < 21 && r.chance(0.5) ? 'Student' : r.pick(jobs);
     const t1 = r.pick(TRAITS);
     const t2 = r.pick(TRAITS.filter((t) => t.id !== t1.id && !t1.excludes.includes(t.id)));

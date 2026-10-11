@@ -107,7 +107,8 @@ export function runCheat(
   if (!def.readOnly) ctx.s.cheats.used = true;
   prunePending(ctx.s);
   applyLocks(ctx.s);
-  refreshListings(ctx, true);
+  // A rewind is the past exactly as it was: no fresh listings drawn on top of it.
+  if (id !== 'rewind') refreshListings(ctx, true);
   return { ...ctx.finish(), message };
 }
 

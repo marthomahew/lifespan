@@ -38,6 +38,10 @@ export const PARENT_JOBS: Record<'poor' | 'working' | 'middle' | 'comfortable' |
     rich: ['Surgeon', 'Company founder', 'Investment banker', 'Hotel owner', 'Corporate executive'],
   };
 
+/** Jobs that didn't exist yet: nobody is a software engineer in 1955. */
+const JOB_FROM: Record<string, number> = { 'Software engineer': 1970 };
+export const jobExists = (job: string, year: number): boolean => year >= (JOB_FROM[job] ?? 0);
+
 /** Family savings in reference dollars by tier. */
 export const FAMILY_WEALTH: Record<
   'poor' | 'working' | 'middle' | 'comfortable' | 'rich',

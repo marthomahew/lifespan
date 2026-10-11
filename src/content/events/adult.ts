@@ -230,6 +230,7 @@ export const ADULT_EVENTS: EventDef[] = [
   },
   {
     id: 'adult_work_reply_all',
+    fromYear: 1995,
     kind: 'choice',
     category: 'work',
     ages: [30, 49],

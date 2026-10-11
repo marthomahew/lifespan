@@ -1,7 +1,7 @@
 import { priceIndex } from './systems/markets';
 import { BACKGROUND_LINES, setupBackground } from './systems/backgrounds';
 import { COUNTRIES, COUNTRY_BY_ID } from '../content/countries';
-import { FAMILY_WEALTH, PARENT_JOBS, SKIN_TONES } from '../content/family';
+import { FAMILY_WEALTH, jobExists, PARENT_JOBS, SKIN_TONES } from '../content/family';
 import { TRAIT_BY_ID } from '../content/traits';
 import { GIFT_BY_ID } from '../content/gifts';
 import { Ctx } from './ctx';
@@ -269,7 +269,7 @@ export function newLife(opts: NewLifeOptions, seed: number): GameState {
           : r.chance(0.5)
             ? 'men'
             : 'women');
-  p.first = (opts.first ?? '').trim().slice(0, 40) || randomName(ctx, country, p.gender);
+  p.first = (opts.first ?? '').trim().slice(0, 40) || randomName(ctx, country, p.gender, s.year);
   p.last = (opts.last ?? '').trim().slice(0, 40) || randomSurname(ctx, country);
   p.country = country;
   p.birthCountry = country;
@@ -404,7 +404,7 @@ function generateFamily(ctx: Ctx, opts: NewLifeOptions = {}): void {
     age: motherAge,
     last: p.last,
     rel: r.int(65, 95),
-    job: r.chance(0.8) ? r.pick(PARENT_JOBS[tier]) : null,
+    job: r.chance(0.8) ? r.pick(PARENT_JOBS[tier].filter((j) => jobExists(j, s.year))) : null,
     money: familyMoney / 2,
   });
   const father = addNpc(ctx, {
@@ -413,7 +413,7 @@ function generateFamily(ctx: Ctx, opts: NewLifeOptions = {}): void {
     age: fatherAge,
     last: together ? p.last : r.chance(0.5) ? p.last : randomSurname(ctx, p.country),
     rel: r.int(55, 95),
-    job: r.chance(0.85) ? r.pick(PARENT_JOBS[tier]) : null,
+    job: r.chance(0.85) ? r.pick(PARENT_JOBS[tier].filter((j) => jobExists(j, s.year))) : null,
     money: familyMoney / 2,
   });
   // Their wealth is more than cash: a home (most families), savings and investments.

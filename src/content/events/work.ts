@@ -956,6 +956,7 @@ export const WORK_EVENTS: EventDef[] = [
   },
   {
     id: 'work_ad_reply_all_storm',
+    fromYear: 1995,
     kind: 'notice',
     category: 'work',
     ages: [30, 44],

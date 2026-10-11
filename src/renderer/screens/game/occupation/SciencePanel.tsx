@@ -13,6 +13,7 @@ import {
   RESEARCH_PIPS,
   scienceOpen,
   scienceReason,
+  personalShare,
   type GameState,
 } from '../../../../engine';
 import { usedThisYear } from '../../../../engine/systems/usage';
@@ -47,9 +48,9 @@ export function SciencePanel({
             <strong>{cap(sc.institution)}</strong>
             <span className="muted"> · {FIELD_LABEL[sc.field]}</span>
             <div>
-              Standing {sc.rep}/100 · {sc.papers.length}{' '}
-              {sc.papers.length === 1 ? 'paper' : 'papers'} · {citations(sc.papers)} citations ·
-              h-index {hIndex(sc.papers)}
+              Standing {sc.rep}/100 <span className="muted">(your reputation in the field)</span> ·{' '}
+              {sc.papers.length} {sc.papers.length === 1 ? 'paper' : 'papers'} ·{' '}
+              {citations(sc.papers)} citations · h-index {hIndex(sc.papers)}
             </div>
           </div>
         ) : (
@@ -62,7 +63,8 @@ export function SciencePanel({
               Research pips use work time (up to {RESEARCH_PIPS} a year) and move it faster; grant
               money behind you speeds it up again. When it’s written up, pick a journal: aim higher
               and it’s harder to get in, but far more people read and cite it. Papers keep picking
-              up citations for years, and standing opens bigger grants and, one day, prizes.
+              up citations for years, and standing opens bigger grants and, one day, prizes. Public
+              lectures open at standing 25.
             </p>
             {p && (
               <div data-testid="science-project">
@@ -117,14 +119,16 @@ export function SciencePanel({
             </div>
             <strong>Grants</strong>
             <p className="muted">
-              A proposal takes one work pip. The answer comes on your next birthday. Lab grants
-              speed up your research and pay you a slice as salary; a rejection makes your next
-              proposal to the same funder stronger.
+              A proposal takes one work pip. The answer comes on your next birthday. The money
+              mostly goes to the lab: it speeds up your research and lifts your standing, and some
+              grants pay you a little on top. A rejection makes your next proposal to the same
+              funder stronger.
             </p>
             <ul className="plain col" data-testid="science-funders">
               {funders.map((f) => {
                 const why = grantReason(game, f.id);
                 const amount = grantAmount(game, f);
+                const mine = personalShare(game, { funder: f.id, perYear: amount });
                 return (
                   <li key={f.id} className="sci-funder">
                     <span className="grow col">
@@ -135,6 +139,8 @@ export function SciencePanel({
                         {formatMoney(game, amount * f.years)} over {f.years}{' '}
                         {f.years === 1 ? 'year' : 'years'} ·{' '}
                         {why ?? `about ${pct(grantOdds(game, f))} chance`}
+                        {mine > 0 &&
+                          ` · ${f.stipend ? 'paid to you' : `about ${formatMoney(game, mine)} a year to you`}`}
                       </span>
                     </span>
                     <button
@@ -169,7 +175,7 @@ export function SciencePanel({
             {top.map((x) => (
               <li key={`${x.year}-${x.title}`} className="muted">
                 {x.breakthrough ? '🌟 ' : ''}
-                {x.year}: {x.title}, in {x.venue} · {x.cites} citations
+                {x.year}: {cap(x.title)}, in {x.venue} · {x.cites} citations
               </li>
             ))}
           </ul>

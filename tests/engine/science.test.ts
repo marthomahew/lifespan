@@ -9,6 +9,7 @@ import {
   newLife,
   publishReason,
   runCheat,
+  personalShare,
   scienceOpen,
   type GameState,
 } from '../../src/engine';
@@ -80,7 +81,7 @@ describe('science as a pursuit', () => {
     expect(decided).toBe(1);
     for (let i = 0; i < 10; i++) s = keenYear(s);
     expect(s.science?.grants.length ?? 0).toBeGreaterThanOrEqual(2);
-    expect(s.log.some((e) => e.text.startsWith('💶 Grant money'))).toBe(true);
+    expect(s.log.some((e) => e.text.startsWith('💰 Grant money'))).toBe(true);
   });
 
   it('a rejection makes the next proposal to that funder likelier', () => {
@@ -126,5 +127,55 @@ describe('science as a pursuit', () => {
     expect(funderName(later, nat)).toBe('ARIS, the Slovenian Research and Innovation Agency');
     // ERC money is in euros, the same wherever in Europe.
     expect(funderName(researcher('research_scientist', 1980, 'us', 7104, 32), erc)).toBeNull();
+  });
+
+  it('one ERC grant at a time, ERC money goes to the lab, and Slovenian names follow the generation', () => {
+    const s = researcher('research_scientist', 1975, 'si', 7105, 38);
+    const base = {
+      field: 'physics' as const,
+      institution: 'x',
+      rep: 80,
+      project: null,
+      papers: [],
+      grants: [
+        {
+          funder: 'erc_starting',
+          name: 'ERC',
+          kind: 'Starting Grant',
+          perYear: 300000,
+          from: s.year - 1,
+          years: 5,
+        },
+      ],
+      pending: [],
+      rejected: {},
+      prizes: [],
+    };
+    const t = { ...s, science: base };
+    expect(grantReason(t, 'erc_consolidator')).toBe('one ERC grant at a time');
+    expect(personalShare(t, { funder: 'erc_starting', perYear: 300000 })).toBe(0);
+    expect(personalShare(t, { funder: 'national', perYear: 100000 })).toBeLessThan(5000);
+    const old = newLife({ birthYear: 1935, country: 'si', gender: 'male' }, 7106);
+    const young = newLife({ birthYear: 2010, country: 'si', gender: 'male' }, 7106);
+    expect([
+      'Janez',
+      'Franc',
+      'Jože',
+      'Anton',
+      'Ivan',
+      'Stanislav',
+      'Marjan',
+      'Milan',
+      'Alojz',
+      'Stanko',
+      'Rudolf',
+      'Vinko',
+      'Ciril',
+      'Peter',
+      'Andrej',
+    ]).toContain(old.player.first);
+    expect(['Janez', 'Franc', 'Jože', 'Alojz', 'Rudolf', 'Vinko', 'Ciril', 'Stanko']).not.toContain(
+      young.player.first,
+    );
   });
 });

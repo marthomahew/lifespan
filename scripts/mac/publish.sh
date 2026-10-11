@@ -7,7 +7,12 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 VIS="${1:---public}"
 command -v gh >/dev/null || { echo "Install the GitHub CLI first: brew install gh && gh auth login"; exit 1; }
-[ -f release/Lifespan-mac.zip ] || { echo "No release/Lifespan-mac.zip yet: build it first."; exit 1; }
+# Zip the built apps (--keepParent: the zip holds Lifespan.app itself, as install.sh expects).
+for pair in "darwin-arm64:Lifespan-mac.zip" "darwin-x64:Lifespan-mac-intel.zip"; do
+  app="release/Lifespan-${pair%%:*}/Lifespan.app"
+  if [ -d "$app" ]; then rm -f "release/${pair#*:}" && ditto -c -k --keepParent "$app" "release/${pair#*:}"; fi
+done
+[ -f release/Lifespan-mac.zip ] || { echo "No app in release/ yet: run npm run dist:mac first."; exit 1; }
 
 OWNER="$(gh api user -q .login)"
 REPO="$OWNER/lifespan"

@@ -84,7 +84,7 @@ export const SYSTEM_EVENTS: EventDef[] = [
     ages: [14, 90],
     weight: 0,
     chainOnly: true,
-    text: 'The {$title} interview is "just a casual chat" at a café. The manager is already on their second flat white and asks what drives you.',
+    text: 'The {$title} interview is "just a casual chat" at a café. The manager is already on their second coffee and asks what drives you.',
     choices: [
       {
         id: 'passion',

@@ -20,6 +20,18 @@ const elsewhere =
   (...towns: string[]) =>
   (s: GameState): number =>
     towns.includes(s.player.city) ? 0 : 1;
+/** A young man of call-up age, not already in uniform and not deferred for university. */
+const callUpAge = (s: GameState): boolean =>
+  s.player.gender === 'male' &&
+  s.player.age >= 18 &&
+  s.player.age <= 20 &&
+  !s.military?.active &&
+  !atUniversity(s);
+/** Still in the Yugoslav army when Slovenia declares independence (called up in 1990). */
+const inJna1991 = (s: GameState): boolean =>
+  s.player.flags.includes('jna_service') &&
+  (s.events.lastFired['si_jna_service'] ?? 0) >= 1990 &&
+  !atUniversity(s);
 const one = (text: string, effects: OutcomeDef['effects']): OutcomeDef[] => [
   { chance: 1, text, effects },
 ];
@@ -43,7 +55,7 @@ const FLOODED_2023 = [
 export const SLOVENIA_EVENTS: EventDef[] = [
   // ── History ───────────────────────────────────────────────────────────────
   {
-    id: 'si_friuli_quake_1976',
+    id: 'hist_si_friuli_quake_1976',
     kind: 'notice',
     category: 'world',
     emoji: '🏚️',
@@ -76,7 +88,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_tito_dies_1980',
+    id: 'hist_si_tito_dies_1980',
     kind: 'notice',
     category: 'world',
     emoji: '📻',
@@ -106,7 +118,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_jbtz_trial_1988',
+    id: 'hist_si_jbtz_trial_1988',
     kind: 'notice',
     category: 'world',
     emoji: '⚖️',
@@ -135,7 +147,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_may_declaration_1989',
+    id: 'hist_si_may_declaration_1989',
     kind: 'notice',
     category: 'world',
     emoji: '📜',
@@ -160,7 +172,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_plebiscite_1990',
+    id: 'hist_si_plebiscite_1990',
     kind: 'choice',
     category: 'world',
     emoji: '🗳️',
@@ -174,7 +186,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     choices: [
       {
         id: 'yes',
-        label: 'Vote za, yes',
+        label: 'Vote ZA (yes)',
         outcomes: one(
           'Turnout is over ninety per cent and the yes vote is a landslide, 88.5 per cent of everyone entitled to vote. Your Christmas dinner turns into a long, loud argument about what happens next.',
           [
@@ -186,7 +198,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
       },
       {
         id: 'no',
-        label: 'Vote proti, against',
+        label: 'Vote PROTI (against)',
         outcomes: one(
           'You vote against, out of caution more than anything. You lose by a mile. Over the potica, your brother-in-law calls you a pessimist, and you call him an optimist, and neither of you means it kindly.',
           [{ stat: 'stress', delta: 3 }, { flag: 'si_voted_plebiscite' }],
@@ -203,7 +215,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_plebiscite_child_1990',
+    id: 'hist_si_plebiscite_child_1990',
     kind: 'notice',
     category: 'world',
     emoji: '🗳️',
@@ -220,7 +232,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ),
   },
   {
-    id: 'si_independence_war_1991',
+    id: 'hist_si_independence_war_1991',
     kind: 'choice',
     category: 'military',
     emoji: '🇸🇮',
@@ -229,7 +241,8 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     once: true,
     fromYear: 1991,
     toYear: 1991,
-    when: inSlovenia,
+    // A conscript still in the Yugoslav army gets the deserter's version instead.
+    when: (s) => inSlovenia(s) && !inJna1991(s),
     text: 'Slovenia declares independence on the twenty-fifth of June. A day after the flag goes up in Republic Square, army tanks roll out of their barracks towards the border posts. The Territorial Defence is calling up volunteers.',
     choices: [
       {
@@ -278,7 +291,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_ten_day_war_child_1991',
+    id: 'hist_si_ten_day_war_child_1991',
     kind: 'notice',
     category: 'world',
     emoji: '🚨',
@@ -295,7 +308,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ),
   },
   {
-    id: 'si_jna_deserter_1991',
+    id: 'hist_si_jna_deserter_1991',
     kind: 'choice',
     category: 'military',
     emoji: '🪖',
@@ -304,7 +317,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     once: true,
     fromYear: 1991,
     toYear: 1991,
-    when: (s) => inSlovenia(s) && s.player.gender === 'male' && !s.military?.active,
+    when: (s) => inSlovenia(s) && s.player.gender === 'male' && !s.military?.active && inJna1991(s),
     text: 'You are doing national service in the Yugoslav army at a barracks hundreds of kilometres from home when the news comes that Slovenia has declared independence. The officers have stopped looking you in the eye.',
     choices: [
       {
@@ -343,7 +356,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_tolar_1991',
+    id: 'hist_si_tolar_1991',
     kind: 'notice',
     category: 'money',
     emoji: '💵',
@@ -368,7 +381,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_recognition_1992',
+    id: 'hist_si_recognition_1992',
     kind: 'notice',
     category: 'world',
     emoji: '🌍',
@@ -385,7 +398,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ),
   },
   {
-    id: 'si_posocje_quake_1998',
+    id: 'hist_si_posocje_quake_1998',
     kind: 'notice',
     category: 'world',
     emoji: '🏔️',
@@ -415,7 +428,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_eu_night_2004',
+    id: 'hist_si_eu_night_2004',
     kind: 'choice',
     category: 'world',
     emoji: '🇪🇺',
@@ -454,7 +467,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_euro_2007',
+    id: 'hist_si_euro_2007',
     kind: 'notice',
     category: 'money',
     emoji: '💶',
@@ -479,7 +492,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_eu_presidency_2008',
+    id: 'hist_si_eu_presidency_2008',
     kind: 'notice',
     category: 'world',
     emoji: '🏛️',
@@ -496,7 +509,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ),
   },
   {
-    id: 'si_uprising_2012',
+    id: 'hist_si_uprising_2012',
     kind: 'choice',
     category: 'world',
     emoji: '📣',
@@ -532,7 +545,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_green_capital_2016',
+    id: 'hist_si_green_capital_2016',
     kind: 'notice',
     category: 'world',
     emoji: '🌳',
@@ -561,7 +574,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
-    id: 'si_eurobasket_2017',
+    id: 'hist_si_eurobasket_2017',
     kind: 'notice',
     category: 'world',
     emoji: '🏀',
@@ -579,18 +592,18 @@ export const SLOVENIA_EVENTS: EventDef[] = [
         effects: [
           { stat: 'happiness', delta: 6 },
           { skill: 'athletics', delta: 2 },
-          { flag: 'si_eurobasket_2017' },
+          { flag: 'hist_si_eurobasket_2017' },
         ],
       },
       {
         chance: asAdult,
         text: 'Ljubljana’s Congress Square fills with tens of thousands of people in green for the team’s homecoming. You lose your voice and gain a sunburn.',
-        effects: [{ stat: 'happiness', delta: 6 }, { flag: 'si_eurobasket_2017' }],
+        effects: [{ stat: 'happiness', delta: 6 }, { flag: 'hist_si_eurobasket_2017' }],
       },
     ],
   },
   {
-    id: 'si_tour_2020',
+    id: 'hist_si_tour_2020',
     kind: 'notice',
     category: 'world',
     emoji: '🚴',
@@ -603,11 +616,11 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     text: 'On the second-to-last day of the Tour de France, in a mountain time trial, Tadej Pogačar overturns Primož Roglič’s lead. Two Slovenians finish first and second in Paris, and the winner turns twenty-two the next day.',
     outcomes: one(
       'You watch the time trial through your fingers and do not know whom to cheer for, so you cheer for both. By Sunday every child on a bicycle in {city} is wearing yellow.',
-      [{ stat: 'happiness', delta: 5 }, { flag: 'si_tour_2020' }],
+      [{ stat: 'happiness', delta: 5 }, { flag: 'hist_si_tour_2020' }],
     ),
   },
   {
-    id: 'si_floods_2023',
+    id: 'hist_si_floods_2023',
     kind: 'choice',
     category: 'world',
     emoji: '🌊',
@@ -630,7 +643,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
               { money: -2500 },
               { stat: 'stress', delta: 8 },
               { stat: 'karma', delta: 3 },
-              { flag: 'si_floods_2023' },
+              { flag: 'hist_si_floods_2023' },
             ],
           },
           {
@@ -640,7 +653,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
               { stat: 'karma', delta: 5 },
               { stat: 'health', delta: -2 },
               { stat: 'happiness', delta: 3 },
-              { flag: 'si_floods_2023' },
+              { flag: 'hist_si_floods_2023' },
             ],
             success: true,
           },
@@ -651,10 +664,61 @@ export const SLOVENIA_EVENTS: EventDef[] = [
         label: 'Send money to the relief fund',
         outcomes: one(
           'You give what you can. The appeal raises an astonishing amount for a country of two million, and the list of donors on the news goes on for a long time.',
-          [{ money: -300 }, { stat: 'karma', delta: 3 }, { flag: 'si_floods_2023' }],
+          [{ money: -300 }, { stat: 'karma', delta: 3 }, { flag: 'hist_si_floods_2023' }],
         ),
       },
     ],
+  },
+  {
+    id: 'si_jna_service',
+    kind: 'notice',
+    category: 'military',
+    emoji: '🪖',
+    ages: [18, 20],
+    weight: 60,
+    once: true,
+    fromYear: 1950,
+    toYear: 1990,
+    when: (s) => inSlovenia(s) && callUpAge(s),
+    text: 'The call-up papers arrive in a brown envelope: national service in the Yugoslav People’s Army, and as usual for a Slovene boy, at a barracks about as far from home as the country goes.',
+    outcomes: [
+      {
+        chance: (s) => (s.year < 1990 ? 1 : 0),
+        text: 'Fifteen months in Štip, then Prizren: you march to commands in Serbo-Croatian, and your mother’s letters come with dried apple rings folded inside. You come home thinner, browner, with a mustache nobody asked for and friends from every republic.',
+        effects: [
+          { stat: 'discipline', delta: 5 },
+          { stat: 'health', delta: 2 },
+          { stat: 'happiness', delta: -2 },
+          { flag: 'jna_service' },
+        ],
+      },
+      {
+        chance: (s) => (s.year >= 1990 ? 1 : 0),
+        text: 'In the autumn you report to a barracks near Niš, and learn to make your bed and shout the commands in Serbo-Croatian. Your mother’s letters are full of the news from home, and the sergeants are starting to call you lot the separatists.',
+        effects: [
+          { stat: 'discipline', delta: 4 },
+          { stat: 'stress', delta: 4 },
+          { flag: 'jna_service' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'si_sv_service',
+    kind: 'notice',
+    category: 'military',
+    emoji: '🎖️',
+    ages: [18, 20],
+    weight: 60,
+    once: true,
+    fromYear: 1992,
+    toYear: 2003,
+    when: (s) => inSlovenia(s) && callUpAge(s),
+    text: 'Your call-up comes from the new Slovenian Army: seven months of national service, close enough to home that you can get back most weekends with a bag of laundry.',
+    outcomes: one(
+      'You learn to strip a rifle, sleep in a tent on Pokljuka in the rain, and peel more potatoes than you knew existed. The commands are all in Slovene, and the sergeant’s jokes are exactly as bad as your father said they would be.',
+      [{ stat: 'discipline', delta: 4 }, { stat: 'health', delta: 2 }, { flag: 'si_army_service' }],
+    ),
   },
 
   // ── Growing up ────────────────────────────────────────────────────────────
@@ -741,7 +805,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     weight: 8,
     once: true,
     when: inSlovenia,
-    text: 'On a trip to Ljubljana you are introduced to the copper dragons on the bridge, green with age. Your father explains that Jason and the Argonauts killed the first one in the marshes nearby.',
+    text: 'On a trip to Ljubljana you are introduced to the copper dragons on the bridge, green with age. A man selling postcards on the bridge tells you that Jason and the Argonauts killed the first one in the marshes nearby.',
     outcomes: one(
       'You decide the dragons are on your side. For years, every drawing you make has one in the corner, guarding something.',
       [
@@ -999,11 +1063,19 @@ export const SLOVENIA_EVENTS: EventDef[] = [
       },
       {
         id: 'museum',
-        label: 'Skip it and visit a free museum',
-        outcomes: one(
-          'Museums are free on Prešeren Day, so you spend the afternoon looking at a Roman tombstone and a very old canoe. It is more interesting than you admit at dinner.',
-          [{ stat: 'smarts', delta: 2 }],
-        ),
+        label: 'Skip it and visit a museum',
+        outcomes: [
+          {
+            chance: (s) => (s.year >= 2000 ? 1 : 0),
+            text: 'Museums are free on Prešeren Day, so you spend the afternoon looking at a Roman tombstone and a very old canoe. It is more interesting than you admit at dinner.',
+            effects: [{ stat: 'smarts', delta: 2 }],
+          },
+          {
+            chance: (s) => (s.year < 2000 ? 1 : 0),
+            text: 'The museum is almost empty on a holiday afternoon, so you have a Roman tombstone and a very old canoe all to yourself. It is more interesting than you admit at dinner.',
+            effects: [{ stat: 'smarts', delta: 2 }],
+          },
+        ],
       },
     ],
   },
@@ -1015,6 +1087,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ages: [17, 19],
     weight: 12,
     once: true,
+    fromYear: 1995,
     when: (s) => inSlovenia(s) && inSchool(s),
     text: 'The matura is a month away: the exam that decides which faculty will have you. The Slovene essay is on a set novel you have mostly read the back cover of.',
     choices: [
@@ -1067,6 +1140,36 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ],
   },
   {
+    id: 'si_zakljucni_izpit',
+    kind: 'notice',
+    category: 'school',
+    emoji: '📝',
+    ages: [17, 19],
+    weight: 10,
+    once: true,
+    toYear: 1994,
+    when: (s) => inSlovenia(s) && inSchool(s),
+    text: 'It is time for the zaključni izpit, the final exam set and marked by your own school: a Slovene essay, a written paper in your subject, and an oral in front of three teachers who have known you for four years.',
+    outcomes: [
+      {
+        chance: oddsBy('smarts', 0.55, 0.008),
+        text: 'Your form teacher is on the panel and nods along to your answers like a proud relative. You leave with good marks and a handshake in the corridor.',
+        effects: [
+          { stat: 'smarts', delta: 3 },
+          { stat: 'happiness', delta: 4 },
+        ],
+      },
+      {
+        chance: 0.4,
+        text: 'You go blank at the oral, and the history teacher patiently asks the same question three different ways until you remember the answer. You pass.',
+        effects: [
+          { stat: 'smarts', delta: 1 },
+          { stat: 'stress', delta: 3 },
+        ],
+      },
+    ],
+  },
+  {
     id: 'si_cetvorka',
     kind: 'choice',
     category: 'school',
@@ -1074,6 +1177,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ages: [17, 19],
     weight: 8,
     once: true,
+    fromYear: 2000,
     bind: { mate: { role: 'classmate' } },
     when: (s) => inSlovenia(s) && inSchool(s),
     text: 'In May, final-year students all over the country dance the četvorka, an old quadrille, in their town squares at the same moment. {mate.first} needs a partner for the rehearsals.',
@@ -1212,8 +1316,17 @@ export const SLOVENIA_EVENTS: EventDef[] = [
         label: 'Stand in the crowd at the outrun',
         outcomes: [
           {
-            chance: 0.7,
+            chance: (s) => (s.year >= 1994 ? 0.7 : 0),
             text: 'A jumper floats past overhead for what feels like a full minute and lands beyond two hundred metres. The roar shakes the snow off the pines, and you are part of it.',
+            effects: [
+              { stat: 'happiness', delta: 7 },
+              { status: 'friend' },
+              { flag: 'si_planica' },
+            ],
+          },
+          {
+            chance: (s) => (s.year < 1994 ? 0.7 : 0),
+            text: 'A jumper floats past overhead for what feels like a full minute, and the loudspeaker announces the longest flight ever seen on this hill. The roar shakes the snow off the pines, and you are part of it.',
             effects: [
               { stat: 'happiness', delta: 7 },
               { status: 'friend' },
@@ -1292,6 +1405,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
     ages: [18, 70],
     weight: 6,
     cooldownYears: 5,
+    fromYear: 1996,
     when: inSlovenia,
     text: 'The Ljubljana Marathon is at the end of October, through the old town and along the river under the castle. A friend has signed you both up, and is weirdly calm about it.',
     choices: [
@@ -1458,7 +1572,7 @@ export const SLOVENIA_EVENTS: EventDef[] = [
           },
           {
             chance: 0.4,
-            text: 'You wake up the next morning with a headache and a receipt for a whole case of something called a cviček. It turns out to be very good.',
+            text: 'You wake up the next morning with a headache and a receipt for a whole case of cviček. It turns out to be very good.',
             effects: [
               { stat: 'happiness', delta: 3 },
               { stat: 'health', delta: -2 },

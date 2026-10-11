@@ -10,7 +10,7 @@ Open **Terminal** (press ⌘ Space, type *Terminal*, press Return), paste this l
 curl -fsSL https://github.com/__REPO__/releases/latest/download/install.sh | bash
 ```
 
-It downloads the app into the Applications folder in your home folder and opens it. Nothing else on your Mac is changed. If you run it again later, you get the newest version and your saved lives are kept.
+It downloads the app into the Applications folder in your home folder and opens it. To open it again later, press ⌘ Space, type *Lifespan* and press Return. Nothing else on your Mac is changed. If you run it again later, you get the newest version and your saved lives are kept.
 
 ### Remove it completely
 
@@ -26,9 +26,9 @@ It removes the app, your saved lives, settings, caches and logs, and lists every
 
 - **New life** lets you build a person (country, city, birth year, family, traits, looks), or press **⚡ Random life**.
 - The four tabs on the right are where you act: **Occupation** (school, jobs, research, fame), **Assets** (money, homes, cars), **Relationships** and **Activities**.
-- Each year has a few pips of free time and work time. Spend them, then press **Age Up** (or Space).
+- Each year has a few dots of free time and work time: one dot per thing you do. Spend them, then press **Age Up** (or Space).
 - The **❓** button at the top explains how each part of the game works.
-- A cheat menu is built in (the backquote key, `). Use it freely: it's a sandbox.
+- There's a cheat panel too: **Cheats › Open Cheat Panel** in the menu bar. Use it freely: it's a sandbox.
 
 ### Worth trying
 
