@@ -36,8 +36,23 @@ case "${1:-attach}" in
     ;;
 esac
 
-command -v docker >/dev/null 2>&1 || die "docker not found. Start OrbStack."
-docker info >/dev/null 2>&1 || die "Docker engine not reachable. Is OrbStack running?"
+# OrbStack not running? Start it and wait for the Docker engine (up to a minute).
+if ! docker info >/dev/null 2>&1; then
+  if command -v orb >/dev/null 2>&1; then
+    say "Starting OrbStack"
+    orb start >/dev/null 2>&1 || true
+  elif [ -d /Applications/OrbStack.app ] || [ -d "$HOME/Applications/OrbStack.app" ]; then
+    say "Starting OrbStack"
+    open -ga OrbStack
+  else
+    die "OrbStack isn't installed (or docker isn't on your PATH)."
+  fi
+  for _ in $(seq 1 60); do
+    docker info >/dev/null 2>&1 && break
+    sleep 1
+  done
+  docker info >/dev/null 2>&1 || die "OrbStack didn't come up within a minute. Open it by hand and try again."
+fi
 
 exists() { docker container inspect "$NAME" >/dev/null 2>&1; }
 running() { [ "$(docker container inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = true ]; }
