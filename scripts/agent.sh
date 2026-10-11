@@ -11,8 +11,11 @@
 # missing and started if stopped, and an existing Claude session is reattached, never replaced.
 # It never commits, tags or touches git. Detach from Claude with Ctrl-b d.
 #
-# Optional env: MODEL (opus, sonnet, fable or a model id), REMOTE=0 (no Remote Control), ALLOW_WEB=1 (enable WebFetch and
-# WebSearch), AWAKE_HOURS (keep the Mac awake this long with caffeinate), CLAUDE_CODE_OAUTH_TOKEN.
+# A new Claude session continues the most recent conversation in the project (claude --continue) when one exists.
+#
+# Optional env: MODEL (opus, sonnet, fable or a model id), REMOTE=0 (no Remote Control), FRESH=1 (start a new
+# conversation instead of continuing the last one), ALLOW_WEB=1 (enable WebFetch and WebSearch), AWAKE_HOURS (keep
+# the Mac awake this long with caffeinate), CLAUDE_CODE_OAUTH_TOKEN.
 # Written for the bash 3.2 that ships with macOS.
 set -eo pipefail
 
@@ -92,8 +95,16 @@ keep_awake() {
   say "caffeinate keeps the Mac awake for ${AWAKE_HOURS}h (pid $!)"
 }
 
+# True when the container holds a saved conversation for the project (what `claude --continue` picks up).
+has_conversation() {
+  docker exec "$NAME" sh -c 'ls /home/node/.claude/projects/-workspaces-lifespan/*.jsonl >/dev/null 2>&1'
+}
+
 claude_cmd() {
   local cmd="claude --dangerously-skip-permissions"
+  # Continue the last conversation (FRESH=1 to start a new one). Skipped when nothing is saved yet, since
+  # --continue exits with an error in that case.
+  if [ "${FRESH:-0}" != 1 ] && has_conversation; then cmd="$cmd --continue"; fi
   # Remote Control: pick the session up from claude.ai/code or the Claude app (REMOTE=0 to skip).
   if [ "${REMOTE:-1}" != 0 ]; then cmd="$cmd --remote-control lifespan"; fi
   if [ -n "${MODEL:-}" ]; then cmd="$cmd --model $MODEL"; fi
