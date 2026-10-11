@@ -190,7 +190,7 @@ bash scripts/agent.sh stop       # stop the container (logins, caches and the fo
 bash scripts/agent.sh rebuild    # only after changing overnight/Dockerfile
 ```
 
-It reuses the existing image and container, reattaches a running session instead of starting a second one, and never touches git. Detach with Ctrl-b d; Claude keeps working. Options: `MODEL=opus`, `ALLOW_WEB=1` (turns WebFetch and WebSearch back on), `AWAKE_HOURS=8` (keeps the Mac awake). `overnight/start.sh` is the original unattended-night launcher, kept as it was.
+It reuses the existing image and container, reattaches a running session instead of starting a second one, and never touches git. Detach with Ctrl-b d; Claude keeps working. Claude starts with Remote Control on (session name "lifespan"), so you can continue from claude.ai/code or the Claude app. Options: `MODEL=opus`, `REMOTE=0` (no Remote Control), `ALLOW_WEB=1` (turns WebFetch and WebSearch back on), `AWAKE_HOURS=8` (keeps the Mac awake). `overnight/start.sh` is the original unattended-night launcher, kept as it was.
 
 ## Development
 

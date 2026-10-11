@@ -11,7 +11,7 @@
 # missing and started if stopped, and an existing Claude session is reattached, never replaced.
 # It never commits, tags or touches git. Detach from Claude with Ctrl-b d.
 #
-# Optional env: MODEL (opus, sonnet, fable or a model id), ALLOW_WEB=1 (enable WebFetch and
+# Optional env: MODEL (opus, sonnet, fable or a model id), REMOTE=0 (no Remote Control), ALLOW_WEB=1 (enable WebFetch and
 # WebSearch), AWAKE_HOURS (keep the Mac awake this long with caffeinate), CLAUDE_CODE_OAUTH_TOKEN.
 # Written for the bash 3.2 that ships with macOS.
 set -eo pipefail
@@ -94,6 +94,8 @@ keep_awake() {
 
 claude_cmd() {
   local cmd="claude --dangerously-skip-permissions"
+  # Remote Control: pick the session up from claude.ai/code or the Claude app (REMOTE=0 to skip).
+  if [ "${REMOTE:-1}" != 0 ]; then cmd="$cmd --remote-control lifespan"; fi
   if [ -n "${MODEL:-}" ]; then cmd="$cmd --model $MODEL"; fi
   # --disallowedTools takes several values, so it stays last on the line.
   if [ "${ALLOW_WEB:-0}" != 1 ]; then cmd="$cmd --disallowedTools WebFetch WebSearch"; fi
