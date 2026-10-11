@@ -178,6 +178,20 @@ If there is no app in `release/`, build it natively from the repo (needs Node):
 bash overnight/build-mac.sh
 ```
 
+## Working with Claude Code
+
+Claude Code runs in a Docker container (OrbStack on the Mac) that sees only this folder, in bypass-permissions mode. From the Mac:
+
+```bash
+bash scripts/agent.sh            # attach to Claude, starting the container and the session if needed
+bash scripts/agent.sh status     # container up? Claude running?
+bash scripts/agent.sh shell      # a plain shell inside the container
+bash scripts/agent.sh stop       # stop the container (logins, caches and the folder are kept)
+bash scripts/agent.sh rebuild    # only after changing overnight/Dockerfile
+```
+
+It reuses the existing image and container, reattaches a running session instead of starting a second one, and never touches git. Detach with Ctrl-b d; Claude keeps working. Options: `MODEL=opus`, `ALLOW_WEB=1` (turns WebFetch and WebSearch back on), `AWAKE_HOURS=8` (keeps the Mac awake). `overnight/start.sh` is the original unattended-night launcher, kept as it was.
+
 ## Development
 
 Requires Node 22. `npm ci`, then:
