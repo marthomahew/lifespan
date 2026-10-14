@@ -1,9 +1,9 @@
 #!/bin/bash
-# Morning, on the Mac: sign the app the agent built (ad hoc) and install it.
+# On the Mac: sign the app built in the container (ad hoc) and install it.
 set -eo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 APP_SRC="$(find release-final release -maxdepth 3 -name '*.app' -type d -prune 2>/dev/null | head -n 1 || true)"
-[ -n "$APP_SRC" ] || { echo "No .app in release-final/ or release/. Build one natively with: bash overnight/build-mac.sh"; exit 1; }
+[ -n "$APP_SRC" ] || { echo "No .app in release-final/ or release/. Build one natively with: bash scripts/mac/build-mac.sh"; exit 1; }
 APP_NAME="$(basename "$APP_SRC")"
 DEST=/Applications
 [ -w "$DEST" ] || DEST="$HOME/Applications"

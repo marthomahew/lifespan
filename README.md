@@ -166,16 +166,16 @@ Open the panel with backquote, ⇧⌘K, or the Cheats menu. Every command is a f
 
 **Publishing a release** (owner, on the Mac, with the GitHub CLI): build `release/Lifespan-mac.zip` (and `release/Lifespan-mac-intel.zip` from `npm run dist:mac:intel`), then run `bash scripts/mac/publish.sh`. It creates the repository on first use, pushes, and uploads the zips with the install and uninstall scripts.
 
-The overnight build leaves an unsigned app at `release/Lifespan-darwin-arm64/Lifespan.app`. On the Mac:
+`npm run dist:mac` leaves an unsigned app at `release/Lifespan-darwin-arm64/Lifespan.app`. On the Mac:
 
 ```bash
-bash overnight/install-mac.sh     # signs it ad hoc, copies it to /Applications, opens it
+bash scripts/mac/install-mac.sh    # signs it ad hoc, copies it to /Applications, opens it
 ```
 
 If there is no app in `release/`, build it natively from the repo (needs Node):
 
 ```bash
-bash overnight/build-mac.sh
+bash scripts/mac/build-mac.sh
 ```
 
 ## Working with Claude Code

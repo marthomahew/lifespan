@@ -16,8 +16,8 @@ describe('README (M12.5)', () => {
       '## Cheats',
       '## Installing on the Mac',
       '## Development',
-      'overnight/install-mac.sh',
-      'overnight/build-mac.sh',
+      'scripts/mac/install-mac.sh',
+      'scripts/mac/build-mac.sh',
       'npm run verify',
       '⌘K',
     ])

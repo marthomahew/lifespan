@@ -1,6 +1,6 @@
 # Definition of done
 
-The goal is met when the final check in §8 runs clean. That requires every section below.
+The project is done when the final check in §8 runs clean. That requires every section below.
 
 ## 1. Items
 Every `[M…]` item in `docs/PLAN.md` has `"passes": true` in `progress/features.json`, with evidence naming checks that exist in the repo and run inside `npm run verify` (M12.2 and M12.3 excepted, see CLAUDE.md). Only M0.6, M12.2, and M12.3 may instead be `"waived": true`, with evidence quoting the container error and a matching line in `progress/WAIVERS.md`.
@@ -32,7 +32,6 @@ Under 20 minutes in this container. Writes only to gitignored paths. Works from 
 - "BitLife" or "Candywriter" (any case) in `src/`.
 - Any file in `src/` over 600 lines, except under `src/content/`.
 - A `[Mx.y]` id in `docs/PLAN.md` without an entry in `progress/features.json`.
-- Any change to `CLAUDE.md`, `docs/SPEC.md`, `docs/PLAN.md`, `docs/DONE.md`, or `overnight/` since the `baseline` git tag, i.e. `git diff --quiet baseline -- <those paths>` fails. Skip this check only when the tag doesn't exist.
 
 ## 3. Content thresholds (checked by `content:check`)
 | Content | Minimum |
@@ -106,14 +105,14 @@ One spec per flow. Each fails on any console error or page error.
 15. Playthrough: start a life and do 40+ Age Ups by hand with random choices, without errors.
 
 ## 6. REPORT.md
-`progress/REPORT.md` contains: what was built (one paragraph); how the Mac app gets installed (`overnight/install-mac.sh`, with `overnight/build-mac.sh` as the fallback); item status counts and any waivers; known issues and limitations; the 10 most important decisions; verification evidence (test counts, sim results, coverage percentage, content counts, verify duration); an index of the screenshots in `reports/screenshots/`; suggested next steps.
+`progress/REPORT.md` contains: what was built (one paragraph); how the Mac app gets installed (`scripts/mac/install-mac.sh`, with `scripts/mac/build-mac.sh` as the fallback); item status counts and any waivers; known issues and limitations; the 10 most important decisions; verification evidence (test counts, sim results, coverage percentage, content counts, verify duration); an index of the screenshots in `reports/screenshots/`; suggested next steps.
 
 ## 7. Fresh-eyes audit (its own session, after every item passes)
 1. Re-read `docs/SPEC.md` from top to bottom. For each section, find the code that implements it and the check that covers it. Put a table in REPORT.md: section, files, checks, gaps.
 2. Play three lives through the UI with Playwright (ordinary, criminal, military), using cheats only to skip dull stretches, and capture a screenshot at each life stage. Look at them.
 3. Fix every gap that breaks a PLAN item, flipping that item back to `passes: false` first. List smaller gaps under known issues.
 
-## 8. Final check (what the goal evaluator reads)
+## 8. Final check
 After README.md and `progress/REPORT.md` are written and everything is committed, run this as one sequence and leave the complete output in the conversation:
 ```bash
 git status --porcelain | wc -l
@@ -122,7 +121,7 @@ npm run verify && echo FINAL_VERIFY_OK
 rm -rf /tmp/cleanroom && git clone -q . /tmp/cleanroom && (cd /tmp/cleanroom && npm ci && npm run verify) && echo FINAL_CLEANROOM_OK
 npm run dist:mac && ls -d release/*/Lifespan.app && echo FINAL_APP_OK
 ```
-The goal is met when one uninterrupted run prints `0`, `0`, `FINAL_VERIFY_OK`, `FINAL_CLEANROOM_OK`, and `FINAL_APP_OK`. If M12.2 is waived, skip the last line and say so. If anything fails, fix it, commit, and run the whole sequence again.
+The project is done when one uninterrupted run prints `0`, `0`, `FINAL_VERIFY_OK`, `FINAL_CLEANROOM_OK`, and `FINAL_APP_OK`. If M12.2 is waived, skip the last line and say so. If anything fails, fix it, commit, and run the whole sequence again.
 
 ## 9. Stretch
-The goal ends at §8. If the owner sets a new goal for stretch work, take the `[S…]` items in PLAN order, add each to `features.json` as `S1`, `S2`, and so on with evidence, keep verify green after every commit, and rebuild `dist:mac` when you finish.
+The required work ends at §8. For stretch work, take the `[S…]` items in PLAN order, add each to `features.json` as `S1`, `S2`, and so on with evidence, keep verify green after every commit, and rebuild `dist:mac` when you finish.

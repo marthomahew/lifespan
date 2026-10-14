@@ -25,8 +25,8 @@ describe('REPORT.md (M12.6, M12.7)', () => {
       'Suggested next steps',
     ])
       section(t);
-    expect(section('Installing the Mac app')).toContain('overnight/install-mac.sh');
-    expect(section('Installing the Mac app')).toContain('overnight/build-mac.sh');
+    expect(section('Installing the Mac app')).toContain('scripts/mac/install-mac.sh');
+    expect(section('Installing the Mac app')).toContain('scripts/mac/build-mac.sh');
     expect(section('Ten key decisions').match(/^\d+\. /gm)).toHaveLength(10);
   });
 

@@ -2,7 +2,6 @@
  * Repository hygiene (DONE §2.3). Every finding fails the step.
  * Run with `npm run hygiene`.
  */
-import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -141,48 +140,6 @@ const features = JSON.parse(read(join(root, 'progress/features.json'))) as Recor
 for (const m of plan.matchAll(/^- \[(M\d+\.\d+)\]/gm)) {
   const id = m[1] as string;
   if (!(id in features)) findings.push(`progress/features.json: missing entry for ${id}`);
-}
-
-// 10. Protected files unchanged since the baseline tag.
-let hasBaseline = true;
-try {
-  execFileSync('git', ['rev-parse', '-q', '--verify', 'refs/tags/baseline'], {
-    stdio: 'ignore',
-    cwd: root,
-  });
-} catch {
-  hasBaseline = false;
-}
-if (hasBaseline) {
-  try {
-    execFileSync(
-      'git',
-      [
-        'diff',
-        '--quiet',
-        'baseline',
-        '--',
-        'CLAUDE.md',
-        'docs/SPEC.md',
-        'docs/PLAN.md',
-        'docs/DONE.md',
-        'overnight/',
-      ],
-      { stdio: 'ignore', cwd: root },
-    );
-  } catch {
-    findings.push('protected files differ from the baseline tag');
-  }
-  // New untracked files under protected paths count as changes too.
-  const untracked = execFileSync(
-    'git',
-    ['ls-files', '--others', '--exclude-standard', '--', 'CLAUDE.md', 'docs/', 'overnight/'],
-    { cwd: root, encoding: 'utf8' },
-  ).trim();
-  if (untracked)
-    findings.push(`untracked files under protected paths: ${untracked.split('\n').join(', ')}`);
-} else {
-  console.log('hygiene: no baseline tag; protected-file check skipped');
 }
 
 if (findings.length) {

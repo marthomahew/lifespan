@@ -126,7 +126,7 @@ Each item's text is its acceptance criterion. Every item needs a check inside `n
 - [M12.6] `progress/REPORT.md` meets DONE §6.
 - [M12.7] The fresh-eyes audit from DONE §7 is done and recorded in REPORT.md.
 
-## Stretch (only on a new goal after DoD), in order
+## Stretch (after DoD), in order
 - [S1] Content to 500+ events and 30+ chains.
 - [S2] Acting and athletics careers with their own fame paths.
 - [S3] Business ownership: start a company, hire, grow, sell.

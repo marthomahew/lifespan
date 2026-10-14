@@ -5,7 +5,7 @@ Read this whole file before you start, and again whenever your context has been 
 ## What you're building
 Lifespan is a single-player life simulator for macOS (Electron), in the spirit of BitLife but deeper, with no monetization and a full cheat menu. It's for one person's private use.
 
-You're running unattended overnight: one long Claude Code session in a Linux container, driven by `/goal`. After each of your turns, an evaluator model reads the conversation and, if the goal isn't met, starts your next turn. The evaluator can't run commands or open files; it only knows what your turns show. Nobody reads anything until morning.
+You work in a Claude Code session inside a Linux dev container, which the owner starts from the Mac with `./start.sh`. The owner works with you directly, in the terminal or through Remote Control, and plays the builds on the Mac.
 
 Documents, highest authority first:
 1. `docs/DONE.md`: what finished means (gates, thresholds, the final check).
@@ -16,20 +16,20 @@ Documents, highest authority first:
 When two disagree, the higher one wins. Log the conflict and your resolution in `progress/DECISIONS.md`.
 
 ## Hard rules
-- Never ask a question or wait for input. When something is ambiguous, choose what best fits SPEC (depth, fun, no grind, player control), log one line in `progress/DECISIONS.md`, and keep going.
-- Every turn ships real work: a finished item, or a committed chunk of one. Never end a turn with only a plan, a question, or a status report.
-- Never end a turn with a background process still running (dev server, watcher, a sim in the background). The evaluator skips its check while background work runs, and an idle wait can stall the night. Run long commands in the foreground with a long timeout, and kill servers before the turn ends.
-- Read-only for you: `CLAUDE.md`, `docs/SPEC.md`, `docs/PLAN.md`, `docs/DONE.md`, and everything in `overnight/`. `npm run hygiene` fails if they differ from the `baseline` git tag. Put disagreements in `progress/DECISIONS.md`.
+- Don't stop to ask about routine ambiguity. Choose what best fits SPEC (depth, fun, no grind, player control), log one line in `progress/DECISIONS.md`, and keep going. Ask the owner only when the readings would lead to materially different work.
+- When you take on a task, ship real work: a finished item, or a committed chunk of one. Don't end a work turn with only a plan or a status report.
+- Never end a turn with a background process still running (dev server, watcher, a sim in the background). Stray servers break e2e and keep the container busy. Run long commands in the foreground with a long timeout, and kill servers before the turn ends.
+- `CLAUDE.md` and the docs in `docs/` can be edited. When you change SPEC, PLAN or DONE, log what changed and why in `progress/DECISIONS.md`.
 - Never weaken a gate to get green. No deleting or skipping tests, no lowering thresholds or invariants, no `@ts-ignore`, no marking items passing without evidence. A red build with an honest BLOCKERS entry beats a fake green.
 - Item status lives only in `progress/features.json`, which has one entry per PLAN item. Never delete entries; hygiene checks they're all there. You may add entries for sub-tasks (`X…`) and stretch items (`S…`). Edit the file with `jq` so its formatting stays stable.
-- Git: stay on the current branch. No rebase, no amending earlier commits, no resetting committed history, no force, no push (there's no remote). Undo with `git revert` or a new commit. Never move or delete the `baseline` tag.
+- Git: stay on the current branch. No rebase, no amending earlier commits, no resetting committed history, no force, no push (the owner pushes from the Mac). Undo with `git revert` or a new commit.
 - No sudo. System packages are fixed; everything else comes from npm.
 - WebFetch and WebSearch are off. For library docs read `node_modules/<pkg>/README.md`, the `.d.ts` files, or `npx <tool> --help`. Check versions with `npm view <pkg> version`.
 - Content must be original. Don't reproduce BitLife text, names, UI copy, or assets. The strings "BitLife" and "Candywriter" never appear in `src/`.
 - Romance, dating, sex, and pregnancy are adults-only (every participant 18+) and always fade-to-black. Under-18 characters get friendships, rivalries, school, and family drama.
 
 ## Working loop
-Repeat until the goal is met.
+Repeat for each task.
 
 ### 1. Orient (at the start, and after any compaction)
 ```bash
@@ -65,7 +65,7 @@ tail -n 30 progress/BLOCKERS.md
 One commit per finished item or coherent chunk, e.g. `M5.3: relationship interactions with NPC memory`.
 
 ### 7. Close the turn
-End every turn with a clean tree and this output visible, so the evaluator sees where things stand:
+End every work turn with a clean tree and this output visible, so the owner sees where things stand:
 ```bash
 git status --porcelain | wc -l
 jq '[to_entries[] | select(.key | test("^M")) | select(.value.passes != true and .value.waived != true)] | length' progress/features.json
@@ -130,7 +130,7 @@ Create them in M0.
 - Put durable gotchas and working commands in `progress/NOTES.md`, one line each. They're what you'll have after a compaction.
 
 ## Finishing
-When every `[M…]` item passes: run the fresh-eyes audit (DONE §7), write `README.md` and `progress/REPORT.md` (DONE §6), and commit. Then run the final check in DONE §8 as one uninterrupted sequence and leave its full output in the transcript. The goal is met when that output is clean. If any step fails, fix it, commit, and run the whole sequence again.
+When every `[M…]` item passes: run the fresh-eyes audit (DONE §7), write `README.md` and `progress/REPORT.md` (DONE §6), and commit. Then run the final check in DONE §8 as one uninterrupted sequence and leave its full output in the transcript. The project is done when that output is clean. If any step fails, fix it, commit, and run the whole sequence again.
 
 ## Disk
 

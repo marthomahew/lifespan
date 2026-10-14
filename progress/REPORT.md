@@ -11,7 +11,7 @@ Lifespan is a single-player life simulator for macOS, built with Electron, React
 
 ## Installing the Mac app
 
-`npm run dist:mac` builds an unsigned `release/Lifespan-darwin-arm64/Lifespan.app` in the container. On the Mac, run `bash overnight/install-mac.sh`. It copies the app to /Applications (or ~/Applications), clears quarantine, signs it ad hoc, verifies the signature and opens it. If that build won't run, `bash overnight/build-mac.sh` (needs Node on the Mac) clones the repo, runs `npm ci && npm run dist:mac` natively, and installs the result the same way. The README covers both.
+`npm run dist:mac` builds an unsigned `release/Lifespan-darwin-arm64/Lifespan.app` in the container. On the Mac, run `bash scripts/mac/install-mac.sh`. It copies the app to /Applications (or ~/Applications), clears quarantine, signs it ad hoc, verifies the signature and opens it. If that build won't run, `bash scripts/mac/build-mac.sh` (needs Node on the Mac) clones the repo, runs `npm ci && npm run dist:mac` natively, and installs the result the same way. The README covers both.
 
 ## Item status
 
@@ -34,7 +34,7 @@ After the first draft was finished, the owner asked to keep going. Each item bel
 - **S10 More packs:** crime, life after prison, travel and life abroad, and community/world events (51 events). Old cellmates can find you after release. Bankruptcy now covers every unsecured debt; the new persona sweep found that bug.
 - **S11 Story matches state:** moving abroad with a partner really moves you, the obituary records military service, and service counts as a career in life titles.
 
-## The overnight run (S17–S22)
+## Later sessions (S17 onward)
 
 - **Full character customization (S17):** the New Life screen has Who, Look (skin and hair), Where and when (including who raised you and how many siblings you have), Nature (traits and a gift for one skill) and Starting stats. Each section has its own dice, plus Roll everything and a live preview. In life you can practise a chosen skill, get a new look, or change your name.
 - **UI passes (S18):** three passes over every screen, covering contrast, clipping, button hierarchy, title case, tooltips, toast placement, empty states and the finance chart.
