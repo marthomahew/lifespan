@@ -22,7 +22,7 @@ When two disagree, the higher one wins. Log the conflict and your resolution in 
 - `CLAUDE.md` and the docs in `docs/` can be edited. When you change SPEC, PLAN or DONE, log what changed and why in `progress/DECISIONS.md`.
 - Never weaken a gate to get green. No deleting or skipping tests, no lowering thresholds or invariants, no `@ts-ignore`, no marking items passing without evidence. A red build with an honest BLOCKERS entry beats a fake green.
 - Item status lives only in `progress/features.json`, which has one entry per PLAN item. Never delete entries; hygiene checks they're all there. You may add entries for sub-tasks (`X…`) and stretch items (`S…`). Edit the file with `jq` so its formatting stays stable.
-- Git: stay on the current branch. No rebase, no amending earlier commits, no resetting committed history, no force, no push (the owner pushes from the Mac). Undo with `git revert` or a new commit.
+- Git: stay on the current branch. No rebase, no amending earlier commits, no resetting committed history, no force-push. Push to `origin` only when the owner asks (the token lives in `/home/node/.claude/github-token`; never print it, log it or commit it). Undo with `git revert` or a new commit.
 - No sudo. System packages are fixed; everything else comes from npm.
 - WebFetch and WebSearch are off. For library docs read `node_modules/<pkg>/README.md`, the `.d.ts` files, or `npx <tool> --help`. Check versions with `npm view <pkg> version`.
 - Content must be original. Don't reproduce BitLife text, names, UI copy, or assets. The strings "BitLife" and "Candywriter" never appear in `src/`.

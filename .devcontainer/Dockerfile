@@ -22,6 +22,9 @@ RUN npx -y playwright@latest install-deps chromium \
 # Claude Code. Auto-update is off (below) so the CLI only changes on a rebuild.
 RUN npm install -g @anthropic-ai/claude-code && npm cache clean --force
 
+# GitHub over HTTPS: git reads a token from the Claude config volume (survives rebuilds), if the owner put one there.
+RUN git config --system credential.https://github.com.helper \
+      '!f() { [ -s /home/node/.claude/github-token ] && echo username=x-access-token && echo "password=$(cat /home/node/.claude/github-token)"; }; f'
 RUN git config --system --add safe.directory '*' \
  && mkdir -p /workspaces/lifespan /home/node/.claude /home/node/.cache /home/node/.npm \
  && chown -R node:node /workspaces /home/node
