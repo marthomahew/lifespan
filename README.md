@@ -187,10 +187,10 @@ Claude Code runs in a Docker container (OrbStack on the Mac) that sees only this
 bash scripts/agent.sh status     # container up? Claude running?
 bash scripts/agent.sh shell      # a plain shell inside the container
 bash scripts/agent.sh stop       # stop the container (logins, caches and the folder are kept)
-bash scripts/agent.sh rebuild    # only after changing overnight/Dockerfile
+bash scripts/agent.sh rebuild    # only after changing .devcontainer/Dockerfile
 ```
 
-It reuses the existing image and container, reattaches a running session instead of starting a second one, and never touches git. Detach with Ctrl-b d; Claude keeps working. Claude starts with Remote Control on (session name "lifespan"), so you can continue from claude.ai/code or the Claude app, and a new session continues the last conversation in the project (`--continue`). Options: `MODEL=opus`, `REMOTE=0` (no Remote Control), `FRESH=1` (new conversation instead of continuing), `ALLOW_WEB=1` (turns WebFetch and WebSearch back on), `AWAKE_HOURS=8` (keeps the Mac awake). `overnight/start.sh` is the original unattended-night launcher, kept as it was.
+It reuses the existing image and container, reattaches a running session instead of starting a second one, and never touches git. Detach with Ctrl-b d; Claude keeps working. Claude starts with Remote Control on (session name "lifespan"), so you can continue from claude.ai/code or the Claude app, and a new session continues the last conversation in the project (`--continue`). Options: `MODEL=opus`, `REMOTE=0` (no Remote Control), `FRESH=1` (new conversation instead of continuing), `EFFORT=high`. Stop it with `./stop.sh`.
 
 ## Development
 

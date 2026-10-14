@@ -131,3 +131,9 @@ Create them in M0.
 
 ## Finishing
 When every `[M…]` item passes: run the fresh-eyes audit (DONE §7), write `README.md` and `progress/REPORT.md` (DONE §6), and commit. Then run the final check in DONE §8 as one uninterrupted sequence and leave its full output in the transcript. The goal is met when that output is clean. If any step fails, fix it, commit, and run the whole sequence again.
+
+## Disk
+
+- After extracting results from a large run (simulations, benchmarks, test sweeps), delete its output files. Keep at most one run's outputs at a time.
+- Tests and scripts must clean up their own temp directories.
+- Before starting a batch of large runs, check free space with `df -h` and tell the owner how much the batch will write.
